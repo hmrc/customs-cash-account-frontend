@@ -1,0 +1,35 @@
+.search-form {
+    display: flex;
+    flex-wrap: wrap;
+    &__label {
+        flex-basis: 100%;
+    }
+}
+
+.search-box {
+    display: flex;
+    width: 100%;
+    &__input {
+        flex-grow: 1;
+        height: 29px;
+        padding: 5px 4px 4px;
+        border: 1px solid $silver-sand;
+    }
+    &__button {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        border: none;
+        overflow: hidden;
+        text-indent: -5000px;
+        color: #fff;
+        background-color: $curious-blue;
+        background-repeat: no-repeat;
+        background-position: 80% 50%;
+        box-shadow:none;
+    }
+}
+
+.icon-search {
+    background-image: url(./images/icon-search.png);
+}

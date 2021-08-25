@@ -1,0 +1,228 @@
+language.cymraeg = Cymraeg
+language.english = English
+language.change.cymraeg=Newid yr iaith ir Gymraeg
+
+
+service.name=View your customs financial accounts
+service.homePageUrl = /customs/cash-account
+service.text = This is your new service
+service.back = Back
+
+footer.cookies.text = Cookies
+footer.cookies.url = /help/cookies
+footer.privacy.text = Privacy policy
+footer.privacy.url = /help/privacy
+footer.termsConditions.text = Terms and conditions
+footer.termsConditions.url = /help/terms-and-conditions
+footer.govukHelp.text = Help using GOV.UK
+footer.govukHelp.url = https://www.gov.uk/help
+footer.accessibility-statement.text = Accessibility statement
+footer.accessibility-statement.url = /accessibility-statement/customs-financials
+
+# BETA Banner
+# ----------------------------------------------------------
+feedback.before = This is a new service - your
+feedback.link = feedback
+feedback.after = will help us to improve it.
+
+# Cash CSV
+cf.cash-account.csv.date=Date (posted)
+cf.cash-account.csv.transactionType=Transaction
+cf.cash-account.csv.movementReferenceNumber=MRN
+cf.cash-account.csv.uniqueConsignmentReference = UCR
+cf.cash-account.csv.declarantEori=Declarant EORI
+cf.cash-account.csv.vat=VAT
+cf.cash-account.csv.duty=Duty
+cf.cash-account.csv.excise=Excise
+cf.cash-account.csv.credit=Credit
+cf.cash-account.csv.debit=Debit
+cf.cash-account.csv.balance=Balance
+
+
+cf.cash-account.csv.closing-balance=Closing balance
+cf.cash-account.csv.opening-balance=Opening balance
+cf.cash-account.csv.declaration=Declaration
+cf.cash-account.csv.transfer-out=Transfer to another account
+cf.cash-account.csv.top-up=Top-up
+cf.cash-account.csv.transfer-in=Transfer from another account
+cf.cash-account.csv.withdrawal=Withdrawal
+cf.cash-account.csv.withdrawal.account-ending=(to account ending {0})
+cf.cash-account.csv.filename=Cash_Account_Transactions_{0}.CSV
+cf.cash-account.detail.closing-balance=Closing balance {0}
+cf.cash-account.detail.opening-balance=Opening balance
+
+# Cash Account detail view
+cf.cash-account.detail.title=Cash account
+cf.cash-account.detail.heading=Cash account
+cf.cash-account.detail.account=Account
+cf.cash-account.detail.available=available
+cf.cash-account.top-up.guidance.link=Top up
+cf.cash-account.top-up.guidance.link.aria-label=Top up your cash account
+cf.cash-account.withdraw-funds.guidance.link=Withdraw funds
+cf.cash-account.withdraw-funds.guidance.link.aria-label=Withdraw funds from your cash account
+cf.cash-account.detail.download=Download payments and transactions as
+cf.cash-account.detail.csv=CSV
+cf.cash-account.detail.csv-definition=Comma-Separated Values. Can be used with most spreadsheet programs.
+cf.cash-account.detail.payments-heading=Your payments and transactions for the last 6 months
+cf.cash-account.detail.date=Date
+cf.cash-account.detail.movement-reference-number=Movement Reference Number
+cf.cash-account.detail.mrn=MRN
+cf.cash-account.detail.unique-consignment-reference=Unique Consignment Reference
+cf.cash-account.detail.ucr=UCR
+cf.cash-account.detail.declarant=Declarant
+cf.cash-account.detail.eori=EORI
+cf.cash-account.detail.eori-definition=Economic Operators Registration and Identification number
+cf.cash-account.detail.amount=Amount
+cf.cash-account.detail.balance=Balance
+cf.cash-account.detail.top-up=Top-up
+cf.cash-account.detail.withdrawal=Withdrawal
+cf.cash-account.detail.withdrawal.account-ending=(to account ending {0})
+cf.cash-account.detail.pending=(Pending)
+cf.cash-account.detail.transfer-in=Transfer from another account
+cf.cash-account.detail.transfer-out=Transfer to another account
+cf.cash-account.detail.account-not-available=We are unable to show your account at the moment. Please try again later.
+cf.cash-account.detail.transactions-not-available=We are unable to show your payments at the moment. Please try again later.
+cf.cash-account.detail.show-mrn=Show MRN
+cf.cash-account.detail.show-ucr=Show UCR
+cf.cash-account.detail.label.ucr = Show UCR instead of MRN
+cf.cash-account.detail.label.mrn = Show MRN instead of UCR
+cf.cash-account.detail.unable-download-csv=Sorry, there was a problem downloading your CSV
+cf.cash-account.detail.try-again-later=Try again later.
+cf.cash-account-detail.back-to-cash-account=Back to Cash account
+cf.cash-account-detail.exceeded-threshold.p1 = There are too many transactions from the last 6 months to display consecutively.
+cf.cash-account-detail.exceeded-threshold.p2 = View previous transactions from a narrower date period using the search link below.
+
+help.heading = Help and support
+help.p1 = If you are having issues, phone 0300 200 3701.
+help.p2 = Open 8am to 6pm, Monday to Friday (closed bank holidays).
+
+unauthorised.title = You can’t access this service with this account
+unauthorised.heading = You can’t access this service with this account
+
+# Timeout Messages
+# ----------------------------------------------------------
+timeout.title = You’re about to be signed out
+timeout.message = For security reasons, you will be signed out of this service in
+timeout.keepAlive = Stay signed in
+timeout.signOut = Sign out
+
+# Not subscribed to CDS
+# ----------------------------------------------------------
+cf.not-subscribed-to-cds.detail.title=Not registered with CDS
+cf.not-subscribed-to-cds.detail.heading=To continue with this you need to get access to Customs Declaration Services (CDS)
+cf.not-subscribed-to-cds.detail.eori-info=You''ll need an
+cf.not-subscribed-to-cds.detail.eori-link=Economic Operator and Registration Identification (EORI) number (opens in a new window or tab)
+cf.not-subscribed-to-cds.detail.get-access-info=If you already have an EORI number, you can
+cf.not-subscribed-to-cds.detail.get-access-link=get access to CDS (opens in a new window or tab)
+cf.not-subscribed-to-cds.detail.how-to-get-access-info=How to get access to CDS
+cf.not-subscribed-to-cds.detail.process-application-info=It can take up to one hour for HMRC to process your application.
+cf.not-subscribed-to-cds.detail.already-applied-info=If you''ve already applied to get access to CDS
+cf.not-subscribed-to-cds.detail.status-info=You can
+cf.not-subscribed-to-cds.detail.status-check-info=check the status of your application (opens in a new window or tab)
+
+# Page Not Found Error
+# ----------------------------------------------------------
+cf.error.not-found.title=Page not found
+cf.error.not-found.heading=Page not found
+cf.error.not-found.message.address-typed-wrong=If you typed the web address, check it is correct.
+cf.error.not-found.message.address-pasted-wrong=If you pasted the web address, check you copied the entire address.
+cf.error.not-found.message.go-to-home-page-text1=Or go to the
+cf.error.not-found.message.go-to-home-page-text2=home page.
+cf.accounts.view-customs-account=View your customs financial accounts
+
+# Date Format
+# ----------------------------------------------------------
+
+month.1 = January
+month.2 = February
+month.3 = March
+month.4 = April
+month.5 = May
+month.6 = June
+month.7 = July
+month.8 = August
+month.9 = September
+month.10 = October
+month.11 = November
+month.12 = December
+
+#Pagination
+# ----------------------------------------------------------
+cf.pager.prev=Previous
+cf.pager.next=Next
+cf.pager.summary=Showing
+cf.pager.summary.of=of
+cf.pager.summary.to=to
+cf.pager.summary.accessibility=set of pages
+cf.pager.transactions=days of transactions
+
+
+# No transactions available
+# ----------------------------------------------------------
+
+cf.cash-account.detail.no-transactions.p1 =  You can use your cash account to pay for import tax and duty payments. Or you can authorise an agent to use it and pay on your behalf.
+cf.cash-account.detail.link.pre = Find out how to
+cf.cash-account.detail.link = use a cash account for CDS declarations
+cf.cash-account.detail.link.post = on GOV.UK
+cf.cash-account.detail.link2.pre = You''ll need to
+cf.cash-account.detail.link2 = top up
+cf.cash-account.detail.link2.post = to your cash account before you can use it.
+cf.cash-account.detail.no-transactions-with-balance.p1=There are no transactions to view. You can only view transactions for the previous 6 months.
+
+# Cash Transactions Request
+# --------------------------------------------------------------
+cf.cash-account.transactions.request.link.heading=Previous transactions
+cf.cash-account.transactions.request.link.pre=You can
+cf.cash-account.transactions.request.link=search and download previous transactions as CSV.
+cf.cash-account.transactions.request.title=Which cash account transactions do you need?
+cf.cash-account.transactions.request.legend.hidden.start=what start date do you need cash account transactions?
+cf.cash-account.transactions.request.legend.hidden.end=what end date do you need cash account transactions?
+cf.cash-account.transactions.request.heading=Which cash account transactions do you need?
+cf.cash-account.transactions.request.dan=Account:
+cf.cash-account.transactions.request.continue=Continue
+cf.cash-account.transactions.request.from=From
+cf.cash-account.transactions.request.to=To
+cf.cash-account.transactions.request.date.hint=For example, 3 2019
+date.month=Month
+date.year=Year
+cf.cash-account.transactions.request.selected.statements=Selected Statements
+cf.cash-account.requested.csv.filename=Cash_Account_Transactions_{0}-{1}.CSV
+
+cf.cash-account.transactions.request.review.heading=Request older statements
+cf.cash-account.transactions.request.review.submit=Submit your request
+cf.cash-account.transactions.request.review.response=We aim to respond to your request within 48 hours.
+cf.cash-account.transactions.request.review.send=Send request
+
+cf.cash-account.transactions.request.link.label=Back to cash account
+date.range = {0} to {1}
+cf.cash-account.transactions.result.too.many.results=Your search returned too many results
+cf.cash-account.transactions.result.between=You requested transactions between
+cf.cash-account.transactions.result.search.again=Search again with a shorter date range.
+cf.cash-account.transactions.result.no.transactions=No cash account transactions
+cf.cash-account.transactions.result.no.data=We have no data within the periods
+cf.cash-account.transactions.result.transaction=Your cash account transactions
+cf.cash-account.transactions.result.download.transactions=Please download your transactions, your search will be lost when you close the browser window.
+
+cf.form.error.start.date-too-far-in-past=The from date cannot be older than 6 years from now.
+cf.form.error.end.date-too-far-in-past=The to date cannot be older than 6 years from now.
+cf.form.error.startDate.date-earlier-than-system-start-date=The from date must be on or after October 2019
+cf.form.error.endDate.date-earlier-than-system-start-date=The to date must be on or after October 2019
+cf.form.error.start.date-number-invalid=Enter a valid from date
+cf.form.error.end.date-number-invalid=Enter a valid to date
+cf.form.error.start-future-date=The from date cannot be in the future
+cf.form.error.end-future-date=The to date cannot be in the future
+cf.form.error.start-after-end=The from date cannot be after the to date
+cf.form.error.end-before-start=The to date cannot be before the from date
+
+error.summary.title = There is a problem
+error.browser.title.prefix = Error:
+
+cf.cash-account.detail.updated-now=Updated just now
+cf.cash-account.detail.updated=Updated {0}
+
+cf.cash-account.detail.transactions= Transactions
+cf.cash-account.detail.payments-caption=Your payments for {0}
+cf.cash-account.detail.transactions-caption=Your transactions for {0}
+cf.cash-account.topup.withdrawal.detail.heading=Help with top-ups and withdrawls
+cf.cash-account.topup.withdrawal.detail.text=Top-ups can take up to one working day to show on this page. Funds are usually available to use within one hour of making the transfer from your bank. Withdrawals can take up to 15 working days for the money to reach your bank account.
+cf.cash-account.detail.available-balance=Available balance {0}

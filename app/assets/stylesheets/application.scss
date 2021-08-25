@@ -1,0 +1,18 @@
+$govuk-assets-path: "/customs/cash-account/assets/lib/govuk-frontend/govuk/assets/";
+$hmrc-assets-path: "/customs/cash-account/assets/lib/hmrc-frontend/hmrc/";
+
+@import "lib/govuk-frontend/govuk/all";
+@import "lib/hmrc-frontend/hmrc/all";
+
+@import "utils/colours";
+@import "utils/custom";
+@import "utils/shims";
+@import "language-selection";
+
+@import "components/progress-bar";
+@import "components/custom-card";
+@import "components/search-form";
+@import "components/pager";
+@import "components/recruitment_banner";
+@import "components/table";
+

@@ -1,0 +1,60 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import viewmodels.Paginated
+
+@(model: Paginated)(implicit messages: Messages)
+
+@if(!model.dataFitsOnOnePage) {
+    <nav class="govuk-pagination" id="pagination-label">
+        <p class="govuk-visually-hidden">Pagination navigation</p>
+        <ul class="govuk-pagination__list">
+            @if(!model.isFirstPage) {
+                @linkToPreviousPage
+            }
+            @for(pageNumber <- model.pageRange) {
+                @linkToPage(pageNumber)
+            }
+            @if(!model.isLastPage) {
+                @linkToNextPage
+            }
+        </ul>
+        <p class="govuk-pagination__results">@messages("cf.pager.summary") <b>@(model.firstItemOnPage+1)</b> @messages("cf.pager.summary.to")
+        <b> @(model.lastItemOnPage)</b>  @messages("cf.pager.summary.of") <b>@(model.allItems.length)</b>  @messages("cf.pager.transactions") </p>
+    </nav>
+}
+
+@linkToPreviousPage = {
+    <li class="govuk-pagination__item  govuk-pagination__item--prev">
+        <a class="govuk-pagination__link" href="@{model.urlForPage(model.currentPage - 1)}">@messages("cf.pager.prev")<span class="govuk-visually-hidden"> @messages("cf.pager.summary.accessibility")</span></a>
+    </li>
+}
+
+@linkToNextPage = {
+    <li class="govuk-pagination__item  govuk-pagination__item--next">
+        <a class="govuk-pagination__link" href="@{model.urlForPage(model.currentPage + 1)}">@messages("cf.pager.next")<span class="govuk-visually-hidden"> @messages("cf.pager.summary.accessibility")</span></a>
+    </li>
+}
+
+@linkToPage(pageNumber: Int) = {
+    @if(pageNumber == model.currentPage) {
+        <li class="govuk-pagination__item govuk-pagination__number govuk-pagination__item--active">@{pageNumber}</li>
+    } else {
+        <li class="govuk-pagination__item govuk-pagination__number">
+            <a class="govuk-pagination__link" href="@{model.urlForPage(pageNumber)}">@{pageNumber}</a>
+        </li>
+    }
+}
