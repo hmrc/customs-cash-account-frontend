@@ -19,7 +19,7 @@ package viewmodels
 import utils.SpecBase
 
 
-class CSVWriterSpec extends SpecBase {
+class CSVWritableSpec extends SpecBase {
 
   case class Foo(columnA: Option[String], columnB: Option[String], columnC: Option[String]) extends CSVWritable with FieldNames {
     override def fieldNames: Seq[String] = Seq("columnA", "columnB", "columnC")
@@ -34,41 +34,20 @@ class CSVWriterSpec extends SpecBase {
   }
 
   "CSVWriter" should {
-    "prepend header row with case class field names if requested" in {
-      val records = Seq(
-        Foo(Some("A"), Some("B"), Some("C")),
-        Foo(Some("X"), Some("Y"), Some("Z"))
-      )
-      CSVWriter.toCSVWithHeaders(records) must be(
-        """"columnA","columnB","columnC"
-          |"A","B","C"
-          |"X","Y","Z"""".stripMargin)
+    "generate a comma-separated string from a given case class" in {
+      val foo = Foo(Some("A"), Some("B"), Some("C"))
+      foo.toCSVRow must be(""""A","B","C"""")
     }
 
-    "map header names using supplied function" in {
-      val mappingFn: String => String = s => s.toUpperCase()
-
-      val records = Seq(
-        Foo(Some("a"), Some("b"), Some("c"))
-      )
-      CSVWriter.toCSVWithHeaders(records, mappingFn) must be(
-        """"COLUMNA","COLUMNB","COLUMNC"
-          |"a","b","c"""".stripMargin)
+    "omit optional fields that are None" in {
+      val foo = Foo(Some("A"), None, Some("C"))
+      foo.toCSVRow must be(""""A",,"C"""")
     }
 
-    "append footer row with text" in {
-      val records = Seq(
-        Foo(Some("A"), Some("B"), Some("C")),
-        Foo(Some("X"), Some("Y"), Some("Z"))
-      )
-      CSVWriter.toCSVWithHeaders(records, footer = Some("footer text")) must be(
-        """"columnA","columnB","columnC"
-          |"A","B","C"
-          |"X","Y","Z"
-          |
-          |
-          |"footer text"
-          |""".stripMargin)
+    "flatten nested records" in {
+      val bar = Bar(Foo(Some("A"), None, Some("C")), Baz(Foo(None, Some("B"), None), Foo(Some("X"), Some("Y"), None)))
+      bar.toCSVRow must be(""""A",,"C",,"B",,"X","Y",""")
     }
+
   }
 }
