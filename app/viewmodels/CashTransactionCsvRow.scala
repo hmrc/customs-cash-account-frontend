@@ -31,7 +31,21 @@ case class CashTransactionCsvRow(date: Option[String],
                                  excise: Option[BigDecimal],
                                  credit: Option[BigDecimal],
                                  debit: Option[BigDecimal],
-                                 balance: Option[BigDecimal])
+                                 balance: Option[BigDecimal]) extends CSVWritable with FieldNames {
+  override def fieldNames: Seq[String] = Seq(
+    "date",
+    "transactionType",
+    "movementReferenceNumber",
+    "uniqueConsignmentReference",
+    "declarantEori",
+    "vat",
+    "duty",
+    "excise",
+    "credit",
+    "debit",
+    "balance"
+  )
+}
 
 object CashTransactionCsvRow {
 
