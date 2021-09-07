@@ -17,9 +17,9 @@
 @import viewmodels.PaginatedPendingDailyStatement
 
 @import helpers.Formatters
-@import views.html.components.cash_transactions_payment_header
+@import views.components.PaymentHeader
 
-@this(paymentHeader : cash_transactions_payment_header)
+@this(govukTable: GovukTable)
 
 @(model: CashAccountViewModel, index: Int, pendingDailyStatement: PaginatedPendingDailyStatement)(implicit messages: Messages)
 @if(index == 0) {
@@ -32,34 +32,55 @@
 } else {
  <h3 class="govuk-heading-m  govuk-!-padding-top-4 govuk-!-margin-bottom-1" id="@{s"pending-heading-${pendingDailyStatement.date}"}"> @{Formatters.dateAsDayMonthAndYear(pendingDailyStatement.date)}</h3>
 }
-<table class="govuk-table hmrc-responsive-table govuk-!-margin-bottom-6" id="@{s"pending-table-${pendingDailyStatement.date}"}">
- <caption class="govuk-visually-hidden">
- @messages("cf.cash-account.detail.payments-caption", Formatters.dateAsDayMonthAndYear(pendingDailyStatement.date))
- </caption>
- @paymentHeader()
- <tbody class="govuk-table__body">
-@for(pendingTransaction <- pendingDailyStatement.declarations) {
-   <tr class="govuk-table__row">
-    <th class="govuk-table__header govuk-!-font-weight-regular" scope="row">
-     <span class="hmrc-responsive-table__heading" aria-hidden="true">@messages("cf.cash-account.detail.mrn")</span>
-     @{pendingTransaction.movementReferenceNumber}
-    </th>
-    <td class="govuk-table__cell">
-     <span class="hmrc-responsive-table__heading" aria-hidden="true">@messages("cf.cash-account.detail.ucr")</span>
-     @{pendingTransaction.declarantReference.getOrElse(" ")}
-    </td>
-    <td class="govuk-table__cell">
-     <span class="hmrc-responsive-table__heading" aria-hidden="true">
-      @messages("cf.cash-account.detail.declarant")
-      @messages("cf.cash-account.detail.eori")
-     </span>
-     @{pendingTransaction.declarantEori}
-    </td>
-    <td class="govuk-table__cell govuk-table__cell--numeric amount">
-     <span class="hmrc-responsive-table__heading" aria-hidden="true">@messages("cf.cash-account.detail.amount")</span>
-     @{Formatters.formatCurrencyAmount(pendingTransaction.amount)}
-    </td>
-   </tr>
-}
- </tbody>
-</table>
+
+@govukTable(Table(
+    rows =
+        pendingDailyStatement.declarations.map { pendingTransaction =>
+            Seq(
+                TableRow(
+                    classes = "govuk-!-font-weight-regular",
+                    content = HtmlContent(
+                        s"""
+                            <span class="hmrc-responsive-table__heading" aria-hidden="true">${messages("cf.cash-account.detail.mrn")}</span>
+                            ${pendingTransaction.movementReferenceNumber}
+                            """
+                    )
+                ),
+                TableRow(
+                    content = HtmlContent(
+                        s"""
+                            <span class="hmrc-responsive-table__heading" aria-hidden="true">${messages("cf.cash-account.detail.ucr")}</span>
+                            ${pendingTransaction.declarantReference.getOrElse(" ")}
+                            """
+                    )
+                ),
+                TableRow(
+                    content = HtmlContent(
+                        s"""
+                            <span class="hmrc-responsive-table__heading" aria-hidden="true">
+                            ${messages("cf.cash-account.detail.declarant")}
+                            ${messages("cf.cash-account.detail.eori")}
+                            </span>
+                            ${pendingTransaction.declarantEori}
+                            """
+                    )
+                ),
+                TableRow(
+                    format = Some("numeric"),
+                    classes = "amount",
+                    content = HtmlContent(
+                        s"""
+                            <span class="hmrc-responsive-table__heading" aria-hidden="true">${messages("cf.cash-account.detail.amount")}</span>
+                            ${Formatters.formatCurrencyAmount(pendingTransaction.amount)}
+                            """
+                    )
+                )
+            )
+        },
+    head = Some(PaymentHeader()),
+    captionClasses = "govuk-visually-hidden",
+    classes = "hmrc-responsive-table govuk-!-margin-bottom-6",
+    attributes = Map("id" -> s"pending-table-${pendingDailyStatement.date}"),
+    caption = Some(messages("cf.cash-account.detail.payments-caption", Formatters.dateAsDayMonthAndYear(pendingDailyStatement.date))),
+    firstCellIsHeader = true
+))

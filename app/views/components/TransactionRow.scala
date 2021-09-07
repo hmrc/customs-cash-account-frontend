@@ -21,7 +21,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.table.TableRow
 
 object TransactionRow {
 
-  def build(transactionSpan: String,
+  def apply(transactionSpan: String,
             transactionMessage: String,
             amountSpan: String,
             amount: String): Seq[TableRow] = {
@@ -30,17 +30,17 @@ object TransactionRow {
         classes = "govuk-table__cell govuk-!-font-weight-regular",
         content = HtmlContent(
           s"""
-               <span class="hmrc-responsive-table__heading" aria-hidden="true">$transactionSpan</span>
-               $transactionMessage
-               """
+           <span class="hmrc-responsive-table__heading" aria-hidden="true">$transactionSpan</span>
+           $transactionMessage
+           """
         )),
       TableRow(
         classes = "govuk-table__cell--numeric amount",
         content = HtmlContent(
           s"""
-                <span class="hmrc-responsive-table__heading amount" aria-hidden="true">$amountSpan</span>
-                $amount
-            """
+           <span class="hmrc-responsive-table__heading amount" aria-hidden="true">$amountSpan</span>
+           $amount
+           """
         ))
     )
   }

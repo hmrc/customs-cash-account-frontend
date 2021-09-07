@@ -16,10 +16,9 @@
 
 @import helpers.Formatters
 @import views.components.TransactionRow
-@import views.html.components.cash_transactions_payment_header
+@import views.components.PaymentHeader
 
-@this(paymentHeader: cash_transactions_payment_header,
-        govukTable: GovukTable)
+@this(govukTable: GovukTable)
 
 @(dailyStatement: CashDailyStatement)(implicit messages: Messages)
 
@@ -32,79 +31,45 @@
 
 @if(dailyStatement.declarations.nonEmpty) {
     @govukTable(Table(
-        rows =
-            dailyStatement.declarations.sorted.map { declaration =>
-                Seq(
-                    TableRow(
-                        classes = "govuk-!-font-weight-regular",
-                        content = HtmlContent(
-                            s"""
-                               <span class="hmrc-responsive-table__heading" aria-hidden="true">${messages("cf.cash-account.detail.mrn")}</span>
-                               ${declaration.movementReferenceNumber}
+        rows = dailyStatement.declarations.sorted.map { declaration =>
+            Seq(
+                TableRow(
+                    classes = "govuk-!-font-weight-regular",
+                    content = HtmlContent(
+                        s"""
+                            <span class="hmrc-responsive-table__heading" aria-hidden="true">${messages("cf.cash-account.detail.mrn")}</span>
+                            ${declaration.movementReferenceNumber}
                             """
-                        )
-                    ),
-                    TableRow(
-                        content = HtmlContent(
-                            s"""
-                               <span class="hmrc-responsive-table__heading" aria-hidden="true">${messages("cf.cash-account.detail.ucr")}</span>
-                               ${declaration.declarantReference.getOrElse(" ")}
+                    )
+                ),
+                TableRow(
+                    content = HtmlContent(
+                        s"""
+                            <span class="hmrc-responsive-table__heading" aria-hidden="true">${messages("cf.cash-account.detail.ucr")}</span>
+                            ${declaration.declarantReference.getOrElse(" ")}
                             """
-                        )
-                    ),
-                    TableRow(
-                        content = HtmlContent(
-                            s"""<span class="hmrc-responsive-table__heading" aria-hidden="true">
+                    )
+                ),
+                TableRow(
+                    content = HtmlContent(
+                        s"""<span class="hmrc-responsive-table__heading" aria-hidden="true">
                             ${messages("cf.cash-account.detail.declarant")}
                             ${messages("cf.cash-account.detail.eori")}
                             </span>
                             ${declaration.declarantEori}"""
-                        )
-                    ),
-                    TableRow(
-                        content = HtmlContent(
-                            s"""<span class="hmrc-responsive-table__heading" aria-hidden="true">${messages("cf.cash-account.detail.amount")}</span>
+                    )
+                ),
+                TableRow(
+                    content = HtmlContent(
+                        s"""<span class="hmrc-responsive-table__heading" aria-hidden="true">${messages("cf.cash-account.detail.amount")}</span>
                             ${Formatters.formatCurrencyAmount(declaration.amount)}
                             """
-                        )
                     )
                 )
-            }
+            )
+        }
         ,
-        head = Some(Seq(
-            HeadCell(
-                content = HtmlContent(
-                    s"""
-                    <abbr title="${messages("cf.cash-account.detail.movement-reference-number")}">
-                    ${messages("cf.cash-account.detail.mrn")}
-                    </abbr>
-                    """)
-            ),
-            HeadCell(
-                content = HtmlContent(
-                    s"""
-                    <abbr title="${messages("cf.cash-account.detail.unique-consignment-reference")}">
-                    ${messages("cf.cash-account.detail.ucr")}
-                    </abbr>
-                    """)
-            ),
-            HeadCell(
-                content = HtmlContent(
-                    s"""
-                    ${messages("cf.cash-account.detail.declarant")}
-                    <abbr title="${messages("cf.cash-account.detail.eori-definition")}">
-                    ${messages("cf.cash-account.detail.eori")}
-                    </abbr>
-                    """)
-            ),
-            HeadCell(
-                format = Some("numeric"),
-                content = HtmlContent(
-                    s"""
-                    ${messages("cf.cash-account.detail.amount")}
-                    """)
-            ),
-        )),
+        head = Some(PaymentHeader()),
         captionClasses = "govuk-visually-hidden",
         classes = "hmrc-responsive-table govuk-!-margin-bottom-6",
         attributes = Map("id" -> s"table-${dailyStatement.date}"),
@@ -116,7 +81,7 @@
 @if(dailyStatement.hasTransactions) {
     @govukTable(Table(
         rows = dailyStatement.withdrawals.map { withdrawal =>
-            TransactionRow.build(
+            TransactionRow(
                 messages("cf.cash-account.detail.transactions"),
                 s"${messages("cf.cash-account.detail.withdrawal")} ${
                     withdrawal.bankAccountNumberLastFourDigits.fold("") {
@@ -127,21 +92,21 @@
                 Formatters.formatCurrencyAmount(withdrawal.amount)
             )
         } ++ dailyStatement.topUps.map { topUp =>
-            TransactionRow.build(
+            TransactionRow(
                 messages("cf.cash-account.detail.transactions"),
                 messages("cf.cash-account.detail.top-up"),
                 messages("cf.cash-account.detail.amount"),
                 s"+${Formatters.formatCurrencyAmount(topUp.amount)}"
             )
         } ++ dailyStatement.transfersOut.map { transferOut =>
-            TransactionRow.build(
+            TransactionRow(
                 messages("cf.cash-account.detail.transactions"),
                 messages("cf.cash-account.detail.transfer-out"),
                 messages("cf.cash-account.detail.amount"),
                 Formatters.formatCurrencyAmount(transferOut.amount)
             )
         } ++ dailyStatement.transfersIn.map { transferIn =>
-            TransactionRow.build(
+            TransactionRow(
                 messages("cf.cash-account.detail.transactions"),
                 messages("cf.cash-account.detail.transfer-in"),
                 messages("cf.cash-account.detail.amount"),
