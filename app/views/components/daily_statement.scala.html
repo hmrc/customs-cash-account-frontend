@@ -15,13 +15,10 @@
  *@
 
 @import helpers.Formatters
-@import views.html.components.transaction_row
-@import views.html.components.cash_transactions_payment_header
+@import views.components.TransactionRow
+@import views.components.PaymentHeader
 
-@this(
-        transactionRow : transaction_row,
-        paymentHeader : cash_transactions_payment_header
-)
+@this(govukTable: GovukTable)
 
 @(dailyStatement: CashDailyStatement)(implicit messages: Messages)
 
@@ -32,92 +29,104 @@
     @messages("cf.cash-account.detail.closing-balance", Formatters.formatCurrencyAmount(dailyStatement.closingBalance))
 </p>
 
-@if(dailyStatement.declarations.nonEmpty){
-    <table class="govuk-table hmrc-responsive-table govuk-!-margin-bottom-6" id="@{s"table-${dailyStatement.date}"}">
-        <caption class="govuk-visually-hidden">
-        @messages("cf.cash-account.detail.payments-caption", Formatters.dateAsDayMonthAndYear(dailyStatement.date))
-        </caption>
-        @paymentHeader()
-        <tbody class="govuk-table__body">
-        @for(declaration <- dailyStatement.declarations.sorted) {
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header govuk-!-font-weight-regular" scope="row">
-                    <span class="hmrc-responsive-table__heading" aria-hidden="true">@messages("cf.cash-account.detail.mrn")</span>
-                    @{declaration.movementReferenceNumber}
-                </th>
-                <td class="govuk-table__cell">
-                    <span class="hmrc-responsive-table__heading" aria-hidden="true">@messages("cf.cash-account.detail.ucr")</span>
-                    @{declaration.declarantReference.getOrElse(" ")}
-                </td>
-                <td class="govuk-table__cell">
-                    <span class="hmrc-responsive-table__heading" aria-hidden="true">
-                        @messages("cf.cash-account.detail.declarant")
-                        @messages("cf.cash-account.detail.eori")
-                    </span>
-                    @{declaration.declarantEori}
-                </td>
-                <td class="govuk-table__cell govuk-table__cell--numeric amount">
-                    <span class="hmrc-responsive-table__heading" aria-hidden="true">@messages("cf.cash-account.detail.amount")</span>
-                    @{Formatters.formatCurrencyAmount(declaration.amount)}
-                </td>
-            </tr>
+@if(dailyStatement.declarations.nonEmpty) {
+    @govukTable(Table(
+        rows = dailyStatement.declarations.sorted.map { declaration =>
+            Seq(
+                TableRow(
+                    classes = "govuk-!-font-weight-regular",
+                    content = HtmlContent(
+                        s"""
+                            <span class="hmrc-responsive-table__heading" aria-hidden="true">${messages("cf.cash-account.detail.mrn")}</span>
+                            ${declaration.movementReferenceNumber}
+                            """
+                    )
+                ),
+                TableRow(
+                    content = HtmlContent(
+                        s"""
+                            <span class="hmrc-responsive-table__heading" aria-hidden="true">${messages("cf.cash-account.detail.ucr")}</span>
+                            ${declaration.declarantReference.getOrElse(" ")}
+                            """
+                    )
+                ),
+                TableRow(
+                    content = HtmlContent(
+                        s"""<span class="hmrc-responsive-table__heading" aria-hidden="true">
+                            ${messages("cf.cash-account.detail.declarant")}
+                            ${messages("cf.cash-account.detail.eori")}
+                            </span>
+                            ${declaration.declarantEori}"""
+                    )
+                ),
+                TableRow(
+                    content = HtmlContent(
+                        s"""<span class="hmrc-responsive-table__heading" aria-hidden="true">${messages("cf.cash-account.detail.amount")}</span>
+                            ${Formatters.formatCurrencyAmount(declaration.amount)}
+                            """
+                    )
+                )
+            )
         }
-        </tbody>
-    </table>
+        ,
+        head = Some(PaymentHeader()),
+        captionClasses = "govuk-visually-hidden",
+        classes = "hmrc-responsive-table govuk-!-margin-bottom-6",
+        attributes = Map("id" -> s"table-${dailyStatement.date}"),
+        caption = Some(messages("cf.cash-account.detail.payments-caption", Formatters.dateAsDayMonthAndYear(dailyStatement.date))),
+        firstCellIsHeader = true
+    ))
 }
 
-@if(dailyStatement.hasTransactions){
-    <table class="govuk-table hmrc-responsive-table govuk-!-margin-bottom-6" id="@{s"transaction-table-${dailyStatement.date}"}">
-        <caption class="govuk-visually-hidden">
-        @messages("cf.cash-account.detail.transactions-caption", Formatters.dateAsDayMonthAndYear(dailyStatement.date))
-        </caption>
-        <thead>
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header" scope="col">
-                @messages("cf.cash-account.detail.transactions")
-                </th>
-                <th class="govuk-table__header govuk-table__header--numeric">
-                @messages("cf.cash-account.detail.amount")
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-        @for(withdrawal <- dailyStatement.withdrawals) {
-            @transactionRow(
+@if(dailyStatement.hasTransactions) {
+    @govukTable(Table(
+        rows = dailyStatement.withdrawals.map { withdrawal =>
+            TransactionRow(
                 messages("cf.cash-account.detail.transactions"),
                 s"${messages("cf.cash-account.detail.withdrawal")} ${
-                    withdrawal.bankAccountNumberLastFourDigits.fold(""){
+                    withdrawal.bankAccountNumberLastFourDigits.fold("") {
                         suffix => messages("cf.cash-account.detail.withdrawal.account-ending", suffix)
                     }
                 }",
                 messages("cf.cash-account.detail.amount"),
                 Formatters.formatCurrencyAmount(withdrawal.amount)
             )
-        }
-        @for(topup <- dailyStatement.topUps){
-            @transactionRow(
+        } ++ dailyStatement.topUps.map { topUp =>
+            TransactionRow(
                 messages("cf.cash-account.detail.transactions"),
                 messages("cf.cash-account.detail.top-up"),
                 messages("cf.cash-account.detail.amount"),
-                s"+${Formatters.formatCurrencyAmount(topup.amount)}"
+                s"+${Formatters.formatCurrencyAmount(topUp.amount)}"
             )
-        }
-        @for(transferOut <- dailyStatement.transfersOut){
-            @transactionRow(
+        } ++ dailyStatement.transfersOut.map { transferOut =>
+            TransactionRow(
                 messages("cf.cash-account.detail.transactions"),
                 messages("cf.cash-account.detail.transfer-out"),
                 messages("cf.cash-account.detail.amount"),
                 Formatters.formatCurrencyAmount(transferOut.amount)
             )
-        }
-        @for(transferIn <- dailyStatement.transfersIn){
-            @transactionRow(
+        } ++ dailyStatement.transfersIn.map { transferIn =>
+            TransactionRow(
                 messages("cf.cash-account.detail.transactions"),
                 messages("cf.cash-account.detail.transfer-in"),
                 messages("cf.cash-account.detail.amount"),
                 s"+${Formatters.formatCurrencyAmount(transferIn.amount)}"
             )
-        }
-        </tbody>
-    </table>
+        },
+        head = Some(Seq(
+            HeadCell(
+                content = HtmlContent(messages("cf.cash-account.detail.transactions"))
+            ),
+            HeadCell(
+                format = Some("numeric"),
+                content = HtmlContent(messages("cf.cash-account.detail.amount"))
+            )
+        )),
+        captionClasses = "govuk-visually-hidden",
+        classes = "hmrc-responsive-table govuk-!-margin-bottom-6",
+        attributes = Map("id" -> s"transaction-table-${dailyStatement.date}"),
+        caption = Some(messages("cf.cash-account.detail.transactions-caption", Formatters.dateAsDayMonthAndYear(dailyStatement.date))),
+        firstCellIsHeader = true
+    ))
+
 }
