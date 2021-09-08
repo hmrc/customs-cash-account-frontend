@@ -48,7 +48,6 @@ class CashTransactionsRequestPageController @Inject()(
                                                        implicit val mcc: MessagesControllerComponents)
                                                      (implicit ec: ExecutionContext,
                                                       eh: ErrorHandler,
-                                                      messagesApi: MessagesApi,
                                                       appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
   private val logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
