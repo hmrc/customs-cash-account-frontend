@@ -45,7 +45,7 @@ class CashAccountController @Inject()(
                                        showAccountsExceededThreshold: cash_account_exceeded_threshold,
                                        noTransactionsWithBalance: cash_account_no_transactions_with_balance,
                                        cashAccountUtils: CashAccountUtils
-                                     )(implicit mcc: MessagesControllerComponents, ec: ExecutionContext, eh: ErrorHandler, messagesApi: MessagesApi, appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
+                                     )(implicit mcc: MessagesControllerComponents, ec: ExecutionContext, eh: ErrorHandler, appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
 
   private val logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
