@@ -2,7 +2,6 @@
 
 GET        /assets/*file                  controllers.Assets.versioned(path = "/public", file: Asset)
 GET        /language/:lang                controllers.LanguageSwitchController.switchToLanguage(lang: models.Language)
-->         /govuk-frontend                govuk.Routes
 ->         /hmrc-frontend                 hmrcfrontend.Routes
 
 
