@@ -46,7 +46,7 @@ $color_hmrc-grey-4: #b1b4b6;
 
       th {
         text-align: right;
-        display: flex;
+        display: table-cell;
         justify-content: space-between;
         min-width: 1px;
         padding-right: 0;
