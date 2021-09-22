@@ -31,6 +31,7 @@
             @messages("cf.not-subscribed-to-cds.detail.eori-info")
             @hmrcNewTabLink(
                 NewTabLink(
+                    language = Some(messages.lang.toString),
                     classList = Some("govuk-link"),
                     href=Some(appConfig.registerCdsUrl),
                     text=messages("cf.not-subscribed-to-cds.detail.eori-link")
@@ -43,6 +44,7 @@
             @messages("cf.not-subscribed-to-cds.detail.get-access-info")
             @hmrcNewTabLink(
                 NewTabLink(
+                    language = Some(messages.lang.toString),
                     classList = Some("govuk-link"),
                     href=Some(appConfig.subscribeCdsUrl),
                     text=messages("cf.not-subscribed-to-cds.detail.get-access-link")
@@ -61,6 +63,7 @@
             @messages("cf.not-subscribed-to-cds.detail.status-info")
             @hmrcNewTabLink(
                 NewTabLink(
+                    language = Some(messages.lang.toString),
                     classList = Some("govuk-link"),
                     href=Some(appConfig.applicationStatusCdsUrl),
                     text=messages("cf.not-subscribed-to-cds.detail.status-check-info")
