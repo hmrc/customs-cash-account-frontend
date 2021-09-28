@@ -44,4 +44,9 @@
             @messages("cf.cash-account.detail.link.post")</p>
     </div>
 
+    <h2 id="missing-documents-guidance-heading" class="govuk-heading-m govuk-!-margin-top-9">@messages("cf.cash-account.transactions.request.link.heading")</h2>
+    <p class="govuk-body govuk-!-padding-bottom-7">
+        @messages("cf.cash-account.transactions.request.link.pre") <a class="govuk-link" href="@controllers.routes.CashTransactionsRequestPageController.onPageLoad">
+    @messages("cf.cash-account.transactions.request.link")</a>
+    </p>
 }
