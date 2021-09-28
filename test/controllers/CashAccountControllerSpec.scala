@@ -111,7 +111,6 @@ class CashAccountControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(CashAccountViewModel(eori, newCashAccount))(request, messages, appConfig).toString()
-        contentAsString(result) must include regex "search and download previous transactions as CSV."
       }
     }
 
@@ -139,7 +138,6 @@ class CashAccountControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(CashAccountViewModel(eori, cashAccount))(request, messages, appConfig).toString()
-        contentAsString(result) must include regex "search and download previous transactions as CSV."
       }
     }
 
@@ -167,7 +165,6 @@ class CashAccountControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(CashAccountViewModel(eori, cashAccount))(request, messages, appConfig).toString()
-        contentAsString(result) must include regex "search and download previous transactions as CSV."
       }
     }
 
@@ -195,7 +192,6 @@ class CashAccountControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(CashAccountViewModel(eori, cashAccount))(request, messages, appConfig).toString()
-        contentAsString(result) must include regex "search and download previous transactions as CSV."
       }
     }
 
@@ -254,7 +250,6 @@ class CashAccountControllerSpec extends SpecBase {
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
         val result = route(app, request).value
-        contentAsString(result) must include regex "search and download previous transactions as CSV."
       }
     }
 
