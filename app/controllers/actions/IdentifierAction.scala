@@ -42,17 +42,12 @@ class AuthenticatedIdentifierAction @Inject()(
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    val redirectToUnauthorised = {
-      val a = routes.UnauthorisedController.onPageLoad()
-      Redirect(a)
-    }
-
     authorised().retrieve(Retrievals.credentials and Retrievals.name and Retrievals.email
       and Retrievals.affinityGroup and Retrievals.internalId and Retrievals.allEnrolments) {
       case Some(_) ~ _ ~ _ ~ Some(_) ~ Some(_) ~ allEnrolments =>
         allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber")) match {
           case Some(eori) => block(IdentifierRequest(request, eori.value))
-          case None => Future.successful(redirectToUnauthorised)
+          case None => Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
         }
     } recover {
       case _: NoActiveSession =>
