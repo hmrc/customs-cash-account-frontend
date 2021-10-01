@@ -226,3 +226,8 @@ cf.cash-account.detail.transactions-caption=Your transactions for {0}
 cf.cash-account.topup.withdrawal.detail.heading=Help with top-ups and withdrawls
 cf.cash-account.topup.withdrawal.detail.text=Top-ups can take up to one working day to show on this page. Funds are usually available to use within one hour of making the transfer from your bank. Withdrawals can take up to 15 working days for the money to reach your bank account.
 cf.cash-account.detail.available-balance=Available balance {0}
+
+cf.customs-financials-home.recruitment-banner-heading=Help us improve this service
+cf.customs-financials-home.recruitment-banner-link-text=Sign up to be a potential user research participant
+cf.customs-financials-home.recruitment-banner.close=Close
+cf.customs-financials-home.recruitment-banner.hidden-text.close=the help us improve this service banner

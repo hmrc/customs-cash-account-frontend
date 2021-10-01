@@ -53,4 +53,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val cashAccountInterval: Int = config.get[Int]("application.cash-account.updateTime.intervalMilliseconds")
   lazy val cashAccountTimeout: Int = config.get[Int]("application.cash-account.updateTime.timeoutMilliseconds")
+
+  lazy val helpMakeGovUkBetterUrl: String = config.get[String]("urls.helpMakeGovUkBetterUrl")
 }
