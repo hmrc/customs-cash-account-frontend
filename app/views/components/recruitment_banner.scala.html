@@ -1,0 +1,18 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ *@
+
+@()(implicit messages: Messages, appConfig: AppConfig)
+
+<div id="recruitment-banner" class="recruitment_banner govuk-!-margin-bottom-7">
+    <header class="recruitment_banner__heading">
+        <h2 class="govuk-heading-s recruitment_banner__title">@messages("cf.customs-financials-home.recruitment-banner-heading")</h2>
+        <a id="close-banner" class="recruitment_banner__link govuk-link" href="#">
+            @messages("cf.customs-financials-home.recruitment-banner.close")
+            <span class="govuk-visually-hidden">@messages("cf.customs-financials-home.recruitment-banner.hidden-text.close")</span>
+        </a>
+    </header>
+    <a id="recruitment-banner-external-link" class="recruitment_banner__link govuk-link" href="@appConfig.helpMakeGovUkBetterUrl">@messages("cf.customs-financials-home.recruitment-banner-link-text")</a>
+</div>
+
