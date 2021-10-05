@@ -22,6 +22,7 @@
 @import viewmodels.CashTransactionsViewModel
 @import helpers.Formatters
 @import views.html.components.pager
+@import views.html.components.recruitment_banner
 
 @this(
     main_template : Layout,
@@ -34,9 +35,11 @@
     cash_account_balance: components.cash_account_balance
 )
 
-
 @(model: CashAccountViewModel, cashTransactionsViewModel: CashTransactionsViewModel)(implicit messages:Messages, appConfig: AppConfig, request: Request[_])
     @main_template(pageTitle = Some(messages("cf.cash-account.detail.title")),headBlock = None, scriptsBlock = None, backLink = Some(appConfig.customsFinancialsFrontendHomepage), fullWidth = true, help = true) {
+
+
+        @recruitment_banner()
         @cash_account_balance(model)
 
         @h2(msg="cf.cash-account.detail.payments-heading", id=Some("payments-heading"))

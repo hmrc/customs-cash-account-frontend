@@ -221,3 +221,8 @@ cf.cash-account.topup.withdrawal.detail.heading=Help gydag ychwanegiadau a chodi
 cf.cash-account.topup.withdrawal.detail.text=Gall ychwanegiadau gymryd hyd at un diwrnod gwaith i ddangos ar y dudalen hon. Mae arian fel arfer ar gael i’w ddefnyddio cyn pen awr ar ôl gwneud y trosglwyddiad o’ch banc. Gall codiadau arian gymryd hyd at 15 diwrnod gwaith i’r arian gyrraedd eich cyfrif banc.
 cf.cash-account.detail.available-balance=Y balans sydd ar gael {0}
 cf.cash-account.detail.payments-heading=Eich taliadau a’ch trafodion ar gyfer y 6 mis diwethaf
+
+cf.customs-financials-home.recruitment-banner-heading=Helpu ni i wella’r gwasanaeth hwn
+cf.customs-financials-home.recruitment-banner-link-text=Cofrestrwch er mwyn cymryd rhan bosibl yn ein hymchwil defnyddiwr
+cf.customs-financials-home.recruitment-banner.close=Cau
+cf.customs-financials-home.recruitment-banner.hidden-text.close=Y faner ‘Helpu ni i wella’r gwasanaeth hwn’
