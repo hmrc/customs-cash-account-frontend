@@ -56,20 +56,4 @@
         <p class="govuk-body">
             @messages("cf.not-subscribed-to-cds.detail.process-application-info")
         </p>
-
-        @h2("cf.not-subscribed-to-cds.detail.already-applied-info", id = None)
-
-        <p class="govuk-body">
-            @messages("cf.not-subscribed-to-cds.detail.status-info")
-            @hmrcNewTabLink(
-                NewTabLink(
-                    language = Some(messages.lang.toString),
-                    classList = Some("govuk-link"),
-                    href=Some(appConfig.applicationStatusCdsUrl),
-                    text=messages("cf.not-subscribed-to-cds.detail.status-check-info")
-                )
-            )
-            .
-        </p>
-
     }
