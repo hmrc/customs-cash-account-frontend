@@ -115,10 +115,7 @@ cf.not-subscribed-to-cds.detail.eori-link=Economic Operator and Registration Ide
 cf.not-subscribed-to-cds.detail.get-access-info=If you already have an EORI number, you can
 cf.not-subscribed-to-cds.detail.get-access-link=get access to CDS (opens in a new window or tab)
 cf.not-subscribed-to-cds.detail.how-to-get-access-info=How to get access to CDS
-cf.not-subscribed-to-cds.detail.process-application-info=It can take up to one hour for HMRC to process your application.
-cf.not-subscribed-to-cds.detail.already-applied-info=If you''ve already applied to get access to CDS
-cf.not-subscribed-to-cds.detail.status-info=You can
-cf.not-subscribed-to-cds.detail.status-check-info=check the status of your application (opens in a new window or tab)
+cf.not-subscribed-to-cds.detail.process-application-info=It can take up to two hours for HMRC to process your application.
 
 # Page Not Found Error
 # ----------------------------------------------------------

@@ -45,7 +45,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val registerCdsUrl: String = config.get[String]("urls.cdsRegisterUrl")
   lazy val subscribeCdsUrl: String = config.get[String]("urls.cdsSubscribeUrl")
-  lazy val applicationStatusCdsUrl: String = config.get[String]("urls.applicationStatusUrl")
 
   lazy val numberOfMonthsOfCashTransactionsToShow: Int = config.get[Int]("application.cash-account.numberOfMonthsOfTransactionsToShow")
   lazy val numberOfDaysToShow: Int = config.get[Int]("application.cash-account.numberOfDaysToShow")
