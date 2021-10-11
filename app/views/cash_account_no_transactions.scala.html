@@ -15,14 +15,18 @@
  *@
 
 @import config.AppConfig
+@import views.html.components.recruitment_banner
 
 @this(
         main_template: Layout,
         h2: components.h2,
         p: components.p,
 )
+
 @(accountModel: CashAccountViewModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @main_template(pageTitle = Some(messages("cf.cash-account.detail.title")), headBlock = None, scriptsBlock = None, backLink = Some(appConfig.customsFinancialsFrontendHomepage), fullWidth = false, help = true) {
+
+    @recruitment_banner()
 
     <span class="govuk-caption-xl" id="account-number">@messages("cf.cash-account.detail.account"): @{
         accountModel.account.number
