@@ -20,8 +20,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const timestamp = new Date()
     const interval = timeContainer.getAttribute("data-update-interval")
     const timeout = timeContainer.getAttribute("data-update-timeout")
-    timeContainer.setAttribute("style", "display: inline-block")
-    timeContainer.setAttribute("aria-hidden", "false")
+    timeContainer.style.display = "inline-block"
+    timeContainer.ariaHidden = "false"
 
     const updateDOM = setInterval(() => {
       timeContainer.innerHTML = timeUpdate(timestamp)

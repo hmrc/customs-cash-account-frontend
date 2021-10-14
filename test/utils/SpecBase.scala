@@ -40,7 +40,9 @@ trait SpecBase extends AnyWordSpecLike with Matchers with MockitoSugar with Opti
   def application = new GuiceApplicationBuilder().overrides(
       bind[IdentifierAction].to[FakeIdentifierAction],
       bind[Metrics].toInstance(new FakeMetrics)
-    ).configure("auditing.enabled" -> "false")
+    ).configure(
+    "play.filters.csp.nonce.enabled" -> "false",
+    "auditing.enabled" -> "false")
 
   def fakeRequest(method: String = "", path: String = ""): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(method, path).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
