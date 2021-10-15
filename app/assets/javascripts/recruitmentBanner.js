@@ -20,13 +20,15 @@ class RecruitmentBanner {
     const id = event.target.getAttribute("id")
     if (id === "close-banner") {
       event.preventDefault()
-      this.banner.setAttribute("style", "display: none")
+      this.banner.style.display = "none"
       disableBanner()
     }
   }
 
   updateDOM() {
-    this.state.visible && this.banner !== null && this.banner.setAttribute("style", "display: block")
+    if (this.state.visible && this.banner !== null) {
+      this.banner.style.display = "block"
+    }
   }
 
 }
