@@ -18,7 +18,7 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
-import repositories.{CacheRepository, DefaultCacheRepository}
+import repositories.{CacheRepository, DefaultCacheRepository, DefaultRequestedTransactionsCache, RequestedTransactionsCache}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.play.bootstrap.auth.DefaultAuthConnector
 
@@ -29,6 +29,7 @@ class Module extends AbstractModule {
   override def configure(): Unit = {
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
     bind(classOf[CacheRepository]).to(classOf[DefaultCacheRepository]).asEagerSingleton()
+    bind(classOf[RequestedTransactionsCache]).to(classOf[DefaultRequestedTransactionsCache]).asEagerSingleton()
     bind(classOf[AuthConnector]).to(classOf[DefaultAuthConnector]).asEagerSingleton()
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
   }
