@@ -35,7 +35,7 @@
     help = true
 ) {
 
-    @formHelper(action = controllers.routes.CashTransactionsRequestPageController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.routes.RequestTransactionsController.onSubmit(), 'autoComplete -> "off") {
         @errorSummary(form.errors,errorFieldName = None)
 
         @h1("cf.cash-account.transactions.request.heading",id = None, classes = "govuk-heading-l")
