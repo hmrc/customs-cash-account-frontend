@@ -22,7 +22,7 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-    @layout(pageTitle =Some(messages("cf.error.not-found.title")), headBlock = None, scriptsBlock = None, fullWidth = false, backLink = None, help = false) {
+    @layout(pageTitle =Some(messages("cf.error.not-found.title")), fullWidth = false, backLink = None, help = false) {
 
     @h1("cf.error.not-found.heading",id = None, classes = "govuk-heading-l")
     @p(Html(messages("cf.error.not-found.message.address-typed-wrong")))

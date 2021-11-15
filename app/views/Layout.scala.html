@@ -15,64 +15,62 @@
  *@
 
 @import config.AppConfig
-@import views.FooterLinks
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.header.Header
-@import views.helpers.PageTitle
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{Tag, Text}
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukBackLink
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.phasebanner.PhaseBanner
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcTimeoutDialog
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcLayout, HmrcReportTechnicalIssueHelper}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.timeoutdialog.TimeoutDialog
+@import views.html.helper.CSPNonce
 
-@this(
-        govUkTemplate: GovukTemplate,
-        govUkLayout: GovukLayout,
-        govukFooter: GovukFooter,
-        govukHeader: HmrcHeader,
+@this(appConfig: AppConfig,
+        hmrcLayout: HmrcLayout,
         govukBackLink: GovukBackLink,
-        languageSelection: components.languageSelection,
-        phaseBanner: components.phaseBanner,
-        head: Head,
+        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+        hmrcTimeoutDialog: HmrcTimeoutDialog,
         h2: components.h2,
         p: components.p,
-        scripts: Scripts,
-        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
+        twoThirdsMainContent: TwoThirdsMainContent
+
 )
 
-
-@(pageTitle: Option[String],
-        headBlock: Option[Html],
-        scriptsBlock: Option[Html],
-        backLink: Option[String],
+@(pageTitle: Option[String] = None,
+        backLink: Option[String] = None,
+        help: Boolean = true,
         fullWidth: Boolean,
-        help: Boolean
-)(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+        deskpro: Boolean = true,
+        welshToggle: Boolean = true,
+)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-@headerBlock = {
-@govukHeader(Header(
-    homepageUrl = appConfig.govUkHomepage,
-    serviceName = Some(messages("service.name")),
-    serviceUrl = appConfig.customsFinancialsFrontendHomepage,
-    containerClasses = "govuk-width-container",
-    signOutHref = Some(routes.LogoutController.logout().url),
-    language = messages.lang.language match {
-        case "cy" => Cy
-        case _    => En
+<link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css"/>
+
+    @phaseBannerContent = {
+    @messages("feedback.before")
+        <a class='govuk-link' href='/contact/beta-feedback-unauthenticated?service=CDS-FIN'>@messages("feedback.link")</a>
+    @messages("feedback.after")
     }
-))
-}
 
+    @fullPageTitle = @{
+        pageTitle match {
+            case Some(text) => Some(s"$text - ${messages("service.name")} - GOV.UK")
+            case _ => Some(s"${messages("service.name")} - GOV.UK")
+        }
+    }
 
-@beforeContentBlock = {
-@scripts(scriptsBlock)
-@phaseBanner("beta")
-@backLink.map { href =>
-    @govukBackLink(BackLink(href = href, content = Text(messages("service.back")), attributes = Map("id" -> "back-link")))
-}
+    @additionalHead = {
+        <script @{CSPNonce.attr} src='@controllers.routes.Assets.versioned("javascripts/recruitmentBanner.js")'></script>
+    @hmrcTimeoutDialog(TimeoutDialog(
+        title = Some(messages("timeout.title")),
+        timeout = Some(appConfig.timeout),
+        countdown = Some(appConfig.countdown),
+        keepAliveUrl = Some(request.uri),
+        signOutUrl = Some(routes.LogoutController.logout().url),
+        timeoutUrl = Some(routes.LogoutController.logoutNoSurvey().url)
+    ))
+    }
 
-
-@languageSelection()
-
-}
-
-@mainContentDefault = {
-
+    @mainContent = {
     @contentBlock
 
     @if(help) {
@@ -83,35 +81,23 @@
                 @p(Html(messages("help.p2")))
             </div>
         </div>
+        }
+
+    @if(deskpro) {
+        @hmrcReportTechnicalIssueHelper()
+    }
     }
 
-    @hmrcReportTechnicalIssueHelper()
-
-}
-
-@footerDefault = {
-@govukFooter(new uk.gov.hmrc.govukfrontend.views.Aliases.Footer(meta = Some(uk.gov.hmrc.govukfrontend.views.Aliases.Meta(items = Some(FooterLinks())))))
-}
-
-@bodyEndDefault = {}
-
-@if(fullWidth) {
-    @govUkTemplate(
-        pageTitle = PageTitle.fullPageTitle(pageTitle),
-        headBlock = Some(head(headBlock)),
-        headerBlock = headerBlock,
-        beforeContentBlock = Some(beforeContentBlock),
-        footerBlock = footerDefault,
-        bodyEndBlock = Some(bodyEndDefault)
-    )(mainContentDefault)
-} else {
-    @govUkLayout(
-        pageTitle = PageTitle.fullPageTitle(pageTitle),
-        headBlock = Some(head(headBlock)),
-        headerBlock = Some(headerBlock),
-        beforeContentBlock = Some(beforeContentBlock),
-        footerBlock = Some(footerDefault),
-        bodyEndBlock = Some(bodyEndDefault)
-    )(mainContentDefault)
-}
-
+@hmrcLayout(
+    userResearchBannerUrl = Some(appConfig.helpMakeGovUkBetterUrl),
+    pageTitle = fullPageTitle,
+    serviceUrl = Some(appConfig.customsFinancialsFrontendHomepage),
+    signOutUrl = Some(routes.LogoutController.logout().url),
+    nonce = CSPNonce.get,
+    backLinkUrl = backLink,
+    additionalHeadBlock = Some(additionalHead),
+    mainContentLayout = if(fullWidth) None else Some(twoThirdsMainContent(_)),
+    phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent))),
+    isWelshTranslationAvailable = welshToggle,
+    accessibilityStatementUrl = Some("/accessibility-statement/customs-financials")
+)(mainContent)
