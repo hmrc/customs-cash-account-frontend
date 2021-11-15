@@ -25,18 +25,11 @@
             model.account.number
         }</span>
         @h1(msg="cf.cash-account.detail.heading",id = None, classes="govuk-heading-xl")
-        <p class="govuk-label govuk-label--l govuk-!-margin-bottom-0 " id="balance-available">
+        <p class="govuk-label govuk-label--l govuk-!-margin-bottom-4 " id="balance-available">
             @{
                 model.account.balances.AvailableAccountBalance.map(Formatters.formatCurrencyAmount(_))
             } @messages("cf.cash-account.detail.available")
         </p>
-        <div id="update-time"
-            class="govuk-hint govuk-!-margin-bottom-4 govuk-!-margin-top-1 hidden-time-update"
-            aria-hidden="true"
-            data-update-timeout="@{appConfig.cashAccountTimeout}"
-            data-update-interval="@{appConfig.cashAccountInterval}" >
-            @messages("cf.cash-account.detail.updated-now")
-        </div>
         <p class="govuk-body govuk-!-margin-bottom-1">
             <a class="govuk-link govuk-!-margin-right-2" href="@{
                 appConfig.cashAccountTopUpGuidanceUrl
@@ -53,6 +46,7 @@
         </p>
     </div>
 </div>
+
 <details class="govuk-details govuk-!-margin-bottom-8" data-module="govuk-details">
     <summary class="govuk-details__summary">
         <span class="govuk-details__summary-text">

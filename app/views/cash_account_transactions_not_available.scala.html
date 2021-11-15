@@ -24,7 +24,7 @@
         cash_account_balance: components.cash_account_balance
 )
 @(accountModel: CashAccountViewModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@main_template(pageTitle = Some(messages("cf.cash-account.detail.title")), headBlock = None, scriptsBlock = None, backLink = Some(appConfig.customsFinancialsFrontendHomepage), fullWidth = true,help = true) {
+@main_template(pageTitle = Some(messages("cf.cash-account.detail.title")), backLink = Some(appConfig.customsFinancialsFrontendHomepage), fullWidth = true,help = true) {
 
     @cash_account_balance(accountModel)
     <div class="govuk-inset-text govuk-!-margin-bottom-9" id="no-transactions-available">

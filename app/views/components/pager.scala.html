@@ -19,6 +19,7 @@
 @(model: Paginated)(implicit messages: Messages)
 
 @if(!model.dataFitsOnOnePage) {
+    <div class="govuk-body">
     <nav class="govuk-pagination" id="pagination-label">
         <p class="govuk-visually-hidden">Pagination navigation</p>
         <ul class="govuk-pagination__list">
@@ -35,6 +36,7 @@
         <p class="govuk-pagination__results">@messages("cf.pager.summary") <b>@(model.firstItemOnPage+1)</b> @messages("cf.pager.summary.to")
         <b> @(model.lastItemOnPage)</b>  @messages("cf.pager.summary.of") <b>@(model.allItems.length)</b>  @messages("cf.pager.transactions") </p>
     </nav>
+    </div>
 }
 
 @linkToPreviousPage = {

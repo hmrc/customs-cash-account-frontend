@@ -28,8 +28,6 @@
 
 @main_template(
     pageTitle = Some(title(form,messages("cf.cash-account.transactions.request.title"),section = None, titleMessageArgs = Seq())),
-    headBlock = None,
-    scriptsBlock = None,
     backLink = Some(controllers.routes.CashAccountController.showAccountDetails(None).url),
     fullWidth = false,
     help = true
