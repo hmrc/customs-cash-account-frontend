@@ -273,7 +273,7 @@ class CashAccountControllerSpec extends SpecBase {
           val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
           val result = route(app, request).value
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual routes.CashAccountController.showAccountUnavailable().url
+          redirectLocation(result).value mustEqual routes.CashAccountController.showAccountUnavailable.url
         }
       }
     }
@@ -289,7 +289,7 @@ class CashAccountControllerSpec extends SpecBase {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.CashAccountController.showAccountUnavailable().url)
+        val request = FakeRequest(GET, routes.CashAccountController.showAccountUnavailable.url)
         val result = route(app, request).value
         status(result) mustEqual OK
       }
@@ -305,7 +305,7 @@ class CashAccountControllerSpec extends SpecBase {
 
       running(app) {
 
-        val request = FakeRequest(GET, routes.DownloadCsvController.showUnableToDownloadCSV().url)
+        val request = FakeRequest(GET, routes.DownloadCsvController.showUnableToDownloadCSV.url)
         val result = route(app, request).value
         status(result) mustEqual OK
       }

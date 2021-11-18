@@ -26,7 +26,7 @@ class UnauthorisedControllerSpec extends SpecBase {
       val app = application.build()
 
       running(app) {
-        val result = route(app, fakeRequest("GET", routes.UnauthorisedController.onPageLoad().url)).value
+        val result = route(app, fakeRequest("GET", routes.UnauthorisedController.onPageLoad.url)).value
         status(result) mustEqual OK
       }
     }
