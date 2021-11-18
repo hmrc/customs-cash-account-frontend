@@ -151,7 +151,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
         val result = route(app, request).value
-        redirectLocation(result).value mustEqual routes.DownloadCsvController.showUnableToDownloadCSV().url
+        redirectLocation(result).value mustEqual routes.DownloadCsvController.showUnableToDownloadCSV.url
       }
     }
 

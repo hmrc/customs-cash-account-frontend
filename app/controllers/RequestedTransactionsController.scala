@@ -57,7 +57,7 @@ class RequestedTransactionsController @Inject()(resultView: cash_transactions_re
     result.merge.recover {
       case e =>
         logger.error(s"Unable to retrieve account details requested: ${e.getMessage}")
-        Redirect(routes.CashAccountController.showAccountUnavailable())
+        Redirect(routes.CashAccountController.showAccountUnavailable)
     }
   }
 
@@ -66,7 +66,7 @@ class RequestedTransactionsController @Inject()(resultView: cash_transactions_re
       case Left(errorResponse) =>
         errorResponse match {
           case NoTransactionsAvailable => Ok(noResults(new ResultsPageSummary(from, to)))
-          case TooManyTransactionsRequested => Ok(tooManyResults(new ResultsPageSummary(from, to), controllers.routes.RequestTransactionsController.onPageLoad().url))
+          case TooManyTransactionsRequested => Ok(tooManyResults(new ResultsPageSummary(from, to), controllers.routes.RequestTransactionsController.onPageLoad.url))
           case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account)))
         }
       case Right(_) =>

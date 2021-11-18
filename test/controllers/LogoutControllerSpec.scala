@@ -28,7 +28,7 @@ class LogoutControllerSpec extends SpecBase {
         .configure("feedback.url" -> "/some-continue", "feedback.source" -> "/CDS-FIN")
         .build()
       running(app) {
-        val request = FakeRequest(GET, routes.LogoutController.logout().url)
+        val request = FakeRequest(GET, routes.LogoutController.logout.url)
 
         val result = route(app, request).value
         redirectLocation(result).value mustEqual "http://localhost:9553/bas-gateway/sign-out-without-state?continue=%2Fsome-continue%2FCDS-FIN"
@@ -42,7 +42,7 @@ class LogoutControllerSpec extends SpecBase {
         .configure("feedback.url" -> "/some-continue", "feedback.source" -> "/CDS-FIN")
         .build()
       running(app) {
-        val request = FakeRequest(GET, routes.LogoutController.logoutNoSurvey().url)
+        val request = FakeRequest(GET, routes.LogoutController.logoutNoSurvey.url)
 
         val result = route(app, request).value
         redirectLocation(result).value mustEqual "http://localhost:9553/bas-gateway/sign-out-without-state"

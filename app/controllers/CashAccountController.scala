@@ -60,7 +60,7 @@ class CashAccountController @Inject()(
     result.merge.recover {
       case e =>
         logger.error(s"Unable to retrieve account details: ${e.getMessage}")
-        Redirect(routes.CashAccountController.showAccountUnavailable())
+        Redirect(routes.CashAccountController.showAccountUnavailable)
     }
   }
 
