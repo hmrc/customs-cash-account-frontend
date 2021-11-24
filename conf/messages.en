@@ -170,7 +170,7 @@ cf.cash-account.detail.no-transactions-with-balance.p1=There are no transactions
 # --------------------------------------------------------------
 cf.cash-account.transactions.request.link.heading=Previous transactions
 cf.cash-account.transactions.request.link.pre=You can
-cf.cash-account.transactions.request.link=search and download previous transactions as CSV.
+cf.cash-account.transactions.request.link=search and download previous transactions as CSV
 cf.cash-account.transactions.request.title=Which cash account transactions do you need?
 cf.cash-account.transactions.request.legend.hidden.start=what start date do you need cash account transactions?
 cf.cash-account.transactions.request.legend.hidden.end=what end date do you need cash account transactions?
@@ -194,7 +194,7 @@ cf.cash-account.transactions.request.link.label=Back to cash account
 date.range = {0} to {1}
 cf.cash-account.transactions.result.too.many.results=Your search returned too many results
 cf.cash-account.transactions.result.between=You requested transactions between
-cf.cash-account.transactions.result.search.again=Search again with a shorter date range.
+cf.cash-account.transactions.result.search.again=Search again with a shorter date range
 cf.cash-account.transactions.result.no.transactions=No cash account transactions
 cf.cash-account.transactions.result.no.data=We have no data within the periods
 cf.cash-account.transactions.result.transaction=Your cash account transactions
