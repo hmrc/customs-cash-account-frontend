@@ -6,7 +6,7 @@ A frontend component for the CDS Financials project which aims to allow the user
 | Path                                                                   | Description                                                                                       |
 | ---------------------------------------------------------------------  | ------------------------------------------------------------------------------------------------- |
 | GET  /customs-cash-account-frontend/                                   | Retrieves 6 months cash transactions on the specified CAN                                         |                
-| POST /customs-cash-account-frontend/request-historic-cash-transactions | Retrieves historic cash transactions for a specified date range on the specified CAN              |
+| POST /customs-cash-account-frontend/request-cash-transactions          | Retrieves historic cash transactions for a specified date range on the specified CAN              |
 | GET  /customs-cash-account-frontend/download-requested-csv             | Download the requested historic cash transactions for a specified date range on the specified CAN |
 | GET  /customs-cash-account-frontend/download-csv                       | Download CSV having 6 months cash transactions on the specified CAN                               |
 
@@ -30,6 +30,8 @@ The application has the following runtime dependencies:
 
 Once these services are running, you should be able to do `sbt "run 9394"` to start in `DEV` mode or
 `sbt "start -Dhttp.port=9394"` to run in `PROD` mode.
+
+The application should be run as part of the CUSTOMS_FINANCIALS_ALL profile due to it being an integral part of service.
 
 ## Running tests
 
