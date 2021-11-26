@@ -161,7 +161,7 @@ cf.cash-account.detail.no-transactions-with-balance.p1=Nid oes unrhyw drafodion 
 # --------------------------------------------------------------
 cf.cash-account.transactions.request.link.heading=Trafodion blaenorol
 cf.cash-account.transactions.request.link.pre=Mae modd
-cf.cash-account.transactions.request.link=chwiliwch am drafodion blaenorol a’u lawrlwytho ar ffurf CSV.
+cf.cash-account.transactions.request.link=chwiliwch am drafodion blaenorol a’u lawrlwytho ar ffurf CSV
 cf.cash-account.transactions.request.title=Pa drafodion cyfrif arian parod sydd eu hangen arnoch?
 cf.cash-account.transactions.request.legend.hidden.start=pa ddyddiad dechrau sydd ei angen arnoch ar gyfer trafodion cyfrif arian parod?
 cf.cash-account.transactions.request.legend.hidden.end=pa ddyddiad dod i ben sydd ei angen arnoch ar gyfer trafodion cyfrif arian parod?
@@ -185,7 +185,7 @@ cf.cash-account.transactions.request.link.label=Yn ôl i ‘Cyfrif arian parod�
 date.range = {0} i fis {1}
 cf.cash-account.transactions.result.too.many.results=Mae gormod o ganlyniadau yn sgil eich chwiliad
 cf.cash-account.transactions.result.between=Gwnaethoch gais i gael y trafodion rhwng
-cf.cash-account.transactions.result.search.again=Chwiliwch eto gydag ystod lai o ran dyddiadau.
+cf.cash-account.transactions.result.search.again=Chwiliwch eto gydag ystod lai o ran dyddiadau
 cf.cash-account.transactions.result.no.transactions=Dim trafodion cyfrif arian parod
 cf.cash-account.transactions.result.no.data=Nid oes gennym ddata o fewn y cyfnodau
 cf.cash-account.transactions.result.transaction=Eich trafodion cyfrif arian parod
