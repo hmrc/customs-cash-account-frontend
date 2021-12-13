@@ -99,14 +99,14 @@ timeout.signOut=Allgofnodi
 # Not subscribed to CDS
 # ----------------------------------------------------------
 cf.not-subscribed-to-cds.detail.title=Heb gofrestru â’r Gwasanaeth Datgan Tollau (CDS)
-cf.not-subscribed-to-cds.detail.heading=Er mwyn bwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau, mae angen i chi gael mynediad at y Gwasanaeth Datgan Tollau (CDS).
+cf.not-subscribed-to-cds.detail.heading=Er mwyn bwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau, mae angen i chi gael mynediad at y Gwasanaeth Datgan Tollau (CDS)
 cf.not-subscribed-to-cds.detail.info=CDS yw’r hyn sy’n cymryd lle system y tollau ar gyfer Trin Nwyddau a Gaiff eu Mewnforio a’u Hallforio (CHIEF). Gallwch ei ddefnyddio i reoli’ch rhyngweithiadau â’r tollau.
 cf.not-subscribed-to-cds.detail.eori-info=I gael mynediad at CDS, bydd angen
 cf.not-subscribed-to-cds.detail.eori-link=Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI) arnoch
 cf.not-subscribed-to-cds.detail.get-access-info=Os oes gennych rif EORI eisoes, mae modd
 cf.not-subscribed-to-cds.detail.get-access-link=cael mynediad at CDS yma
 cf.not-subscribed-to-cds.detail.process-application-info=Gall gymryd hyd at ddwy awr i CThEM brosesu’ch cais.
-cf.not-subscribed-to-cds.detail.how-to-get-access-info=Sut i gael mynediad at CDS.
+cf.not-subscribed-to-cds.detail.how-to-get-access-info=Sut i gael mynediad at CDS
 
 # Page Not Found Error
 # ----------------------------------------------------------
@@ -183,7 +183,7 @@ cf.cash-account.transactions.request.review.send=Anfon cais
 
 cf.cash-account.transactions.request.link.label=Yn ôl i ‘Cyfrif arian parod’
 date.range = {0} i fis {1}.
-cf.cash-account.transactions.result.too.many.results=Mae gormod o ganlyniadau yn sgil eich chwiliad.
+cf.cash-account.transactions.result.too.many.results=Mae gormod o ganlyniadau yn sgil eich chwiliad
 cf.cash-account.transactions.result.between=Gwnaethoch gais i gael y trafodion rhwng
 cf.cash-account.transactions.result.search.again=Chwiliwch eto gydag ystod lai o ran dyddiadau
 cf.cash-account.transactions.result.no.transactions=Dim trafodion cyfrif arian parod
