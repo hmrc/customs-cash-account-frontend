@@ -78,7 +78,7 @@ cf.cash-account.detail.show-mrn=Dangos MRN
 cf.cash-account.detail.show-ucr=Dangos UCR
 cf.cash-account.detail.label.ucr = Dangos UCR yn lle MRN
 cf.cash-account.detail.label.mrn = Dangos MRN yn lle UCR
-cf.cash-account.detail.unable-download-csv=Mae’n ddrwg gennym – roedd problem wrth lawrlwytho’ch ffeil CSV
+cf.cash-account.detail.unable-download-csv=Mae’n ddrwg gennym – roedd problem wrth lawrlwytho’ch ffeil CSV.
 cf.cash-account.detail.try-again-later=Rhowch gynnig arall arni yn nes ymlaen.
 cf.cash-account-detail.back-to-cash-account=Yn ôl i ‘Cyfrif arian parod’
 
@@ -92,18 +92,18 @@ unauthorised.heading=Ni allwch gael at y gwasanaeth hwn gyda’r cyfrif hwn
 # Timeout Messages
 # ----------------------------------------------------------
 timeout.title=Rydych ar fin cael eich allgofnodi
-timeout.message="Am resymau diogelwch, cewch eich allgofnodi o’r gwasanaeth hwn ymhen"
+timeout.message=Am resymau diogelwch, cewch eich allgofnodi o’r gwasanaeth hwn ymhen
 timeout.keepAlive=Parhau i fod wedi’ch mewngofnodi
 timeout.signOut=Allgofnodi
 
 # Not subscribed to CDS
 # ----------------------------------------------------------
 cf.not-subscribed-to-cds.detail.title=Heb gofrestru â’r Gwasanaeth Datgan Tollau (CDS)
-cf.not-subscribed-to-cds.detail.heading="Er mwyn bwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau, mae angen i chi gael mynediad at y Gwasanaeth Datgan Tollau (CDS)"
+cf.not-subscribed-to-cds.detail.heading=Er mwyn bwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau, mae angen i chi gael mynediad at y Gwasanaeth Datgan Tollau (CDS)
 cf.not-subscribed-to-cds.detail.info=CDS yw’r hyn sy’n cymryd lle system y tollau ar gyfer Trin Nwyddau a Gaiff eu Mewnforio a’u Hallforio (CHIEF). Gallwch ei ddefnyddio i reoli’ch rhyngweithiadau â’r tollau.
-cf.not-subscribed-to-cds.detail.eori-info="I gael mynediad at CDS, bydd angen"
+cf.not-subscribed-to-cds.detail.eori-info=I gael mynediad at CDS, bydd angen
 cf.not-subscribed-to-cds.detail.eori-link=Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI) arnoch
-cf.not-subscribed-to-cds.detail.get-access-info="Os oes gennych rif EORI eisoes, mae modd"
+cf.not-subscribed-to-cds.detail.get-access-info=Os oes gennych rif EORI eisoes, mae modd
 cf.not-subscribed-to-cds.detail.get-access-link=cael mynediad at CDS yma
 cf.not-subscribed-to-cds.detail.process-application-info=Gall gymryd hyd at ddwy awr i CThEM brosesu’ch cais.
 cf.not-subscribed-to-cds.detail.how-to-get-access-info=Sut i gael mynediad at CDS
@@ -112,8 +112,8 @@ cf.not-subscribed-to-cds.detail.how-to-get-access-info=Sut i gael mynediad at CD
 # ----------------------------------------------------------
 cf.error.not-found.title=Heb ddod o hyd i’r dudalen
 cf.error.not-found.heading=Heb ddod o hyd i’r dudalen
-cf.error.not-found.message.address-typed-wrong="Os gwnaethoch deipio’r cyfeiriad gwe, gwiriwch ei fod yn gywir."
-cf.error.not-found.message.address-pasted-wrong="Os gwnaethoch ludo’r cyfeiriad gwe, gwiriwch eich bod wedi copïo’r cyfeiriad yn llawn."
+cf.error.not-found.message.address-typed-wrong=Os gwnaethoch deipio’r cyfeiriad gwe, gwiriwch ei fod yn gywir.
+cf.error.not-found.message.address-pasted-wrong=Os gwnaethoch ludo’r cyfeiriad gwe, gwiriwch eich bod wedi copïo’r cyfeiriad yn llawn.
 cf.error.not-found.message.go-to-home-page-text1=Neu ewch i’r
 cf.error.not-found.message.go-to-home-page-text2=hafan.
 cf.accounts.view-customs-account=Bwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau
@@ -182,7 +182,7 @@ cf.cash-account.transactions.request.review.response=Ein bwriad yw ateb eich cai
 cf.cash-account.transactions.request.review.send=Anfon cais
 
 cf.cash-account.transactions.request.link.label=Yn ôl i ‘Cyfrif arian parod’
-date.range = {0} i fis {1}
+date.range = {0} i fis {1}.
 cf.cash-account.transactions.result.too.many.results=Mae gormod o ganlyniadau yn sgil eich chwiliad
 cf.cash-account.transactions.result.between=Gwnaethoch gais i gael y trafodion rhwng
 cf.cash-account.transactions.result.search.again=Chwiliwch eto gydag ystod lai o ran dyddiadau
