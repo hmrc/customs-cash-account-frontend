@@ -1,7 +1,7 @@
 
 # customs-cash-account-frontend
 
-A frontend component for the CDS Financials project which aims to allow the user to download and view cash account details
+A frontend component for the CDS Financials project which aims to allow the user to download and view cash account details 
 
 | Path                                                                   | Description                                                                                       |
 | ---------------------------------------------------------------------  | ------------------------------------------------------------------------------------------------- |
