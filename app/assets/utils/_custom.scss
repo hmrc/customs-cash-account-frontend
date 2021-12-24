@@ -195,16 +195,19 @@ th.govuk-table__cell.movement-reference-number {
 th.govuk-table__header.govuk-table__cell--numeric {
   font-weight: 700;
 }
-// .govuk-table__header {
+// .govuk-table__header 
 
-  th.govuk-table__header {
-    padding: 10px 35px 10px 0px !important;
+th.govuk-table__header {
+  padding: 10px 50px 10px 0px !important;
 
-    &:last-child {
-      padding: 10 0 10 50px !important;
-    }
+  &:last-child {
+    padding: 10 0 10 40px !important;
   }
-  
+}
+td.govuk-table__cell:nth-of-type(2) {
+  padding: 10 80 10 0px !important;
+}
+
 // }
 .govuk-table__cell.account-credited:last-child {
   border-right: 5px solid govuk-colour("light-green");
