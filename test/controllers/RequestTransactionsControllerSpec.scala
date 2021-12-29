@@ -162,8 +162,7 @@ class RequestTransactionsControllerSpec extends SpecBase {
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
         bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache)
       )
-      .configure("features.cash-account-details" -> "true",
-        "features.cash-download-transactions" -> "true",
+      .configure(
         "features.fixed-systemdate-for-tests" -> "true")
       .build()
   }

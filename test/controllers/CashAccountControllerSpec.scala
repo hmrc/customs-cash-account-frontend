@@ -46,7 +46,6 @@ class CashAccountControllerSpec extends SpecBase {
 
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true")
         .build()
 
       running(app) {
@@ -67,7 +66,6 @@ class CashAccountControllerSpec extends SpecBase {
 
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true")
         .build()
 
       val view = app.injector.instanceOf[cash_account_transactions_not_available]
@@ -97,8 +95,6 @@ class CashAccountControllerSpec extends SpecBase {
 
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true",
-          "features.cash-download-transactions" -> "true")
         .build()
 
       val view = app.injector.instanceOf[cash_account_no_transactions_with_balance]
@@ -125,8 +121,6 @@ class CashAccountControllerSpec extends SpecBase {
 
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true",
-          "features.cash-download-transactions" -> "true")
         .build()
 
       val view = app.injector.instanceOf[cash_account_no_transactions]
@@ -153,8 +147,6 @@ class CashAccountControllerSpec extends SpecBase {
 
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true",
-          "features.cash-download-transactions" -> "true")
         .build()
 
       val view = app.injector.instanceOf[cash_account_no_transactions]
@@ -181,8 +173,6 @@ class CashAccountControllerSpec extends SpecBase {
 
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true",
-          "features.cash-download-transactions" -> "true")
         .build()
 
       val view = app.injector.instanceOf[cash_account_no_transactions_with_balance]
@@ -209,7 +199,6 @@ class CashAccountControllerSpec extends SpecBase {
 
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true")
         .build()
 
       running(app) {
@@ -228,7 +217,6 @@ class CashAccountControllerSpec extends SpecBase {
 
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true")
         .build()
 
       running(app) {
@@ -247,8 +235,6 @@ class CashAccountControllerSpec extends SpecBase {
 
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true")
-        .configure("features.cash-download-transactions" -> "true")
         .build()
 
       running(app) {
@@ -266,7 +252,6 @@ class CashAccountControllerSpec extends SpecBase {
 
         val app = application
           .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-          .configure("features.cash-account-details" -> "true")
           .build()
 
         running(app) {
@@ -284,7 +269,6 @@ class CashAccountControllerSpec extends SpecBase {
     "return OK" in new Setup {
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true")
         .build()
 
       running(app) {
@@ -300,7 +284,6 @@ class CashAccountControllerSpec extends SpecBase {
     "return OK" in new Setup {
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true")
         .build()
 
       running(app) {
