@@ -44,7 +44,6 @@ class DownloadCsvControllerSpec extends SpecBase {
 
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true")
         .build()
 
       running(app) {
@@ -64,7 +63,6 @@ class DownloadCsvControllerSpec extends SpecBase {
 
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true")
         .build()
 
       running(app) {
@@ -101,7 +99,6 @@ class DownloadCsvControllerSpec extends SpecBase {
 
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true")
         .build()
 
       running(app) {
@@ -122,7 +119,6 @@ class DownloadCsvControllerSpec extends SpecBase {
 
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true")
         .build()
 
       running(app) {
@@ -145,7 +141,6 @@ class DownloadCsvControllerSpec extends SpecBase {
 
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true")
         .build()
 
       running(app) {
@@ -165,9 +160,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       val app = application
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
-        ).configure(
-        "features.cash-account-details" -> "true",
-        "features.fixed-systemdate-for-tests" -> "true"
+        ).configure("features.fixed-systemdate-for-tests" -> "true"
       ).build()
 
       running(app) {
@@ -192,9 +185,7 @@ class DownloadCsvControllerSpec extends SpecBase {
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
           bind[AuditingService].toInstance(mockAuditingservice)
-        ).configure(
-        "features.cash-account-details" -> "true",
-        "features.fixed-systemdate-for-tests" -> "true"
+        ).configure("features.fixed-systemdate-for-tests" -> "true"
       ).build()
 
       running(app) {
@@ -218,9 +209,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       val app = application
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
-        ).configure(
-        "features.cash-account-details" -> "true",
-        "features.fixed-systemdate-for-tests" -> "true"
+        ).configure("features.fixed-systemdate-for-tests" -> "true"
       ).build()
 
       running(app) {
@@ -240,9 +229,7 @@ class DownloadCsvControllerSpec extends SpecBase {
 
         val app = application
           .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-          .configure(
-            "features.cash-account-details" -> "true",
-            "application.cash-account.numberOfDaysToShow" -> "10")
+          .configure("application.cash-account.numberOfDaysToShow" -> "10")
           .build()
 
         running(app) {
@@ -270,9 +257,7 @@ class DownloadCsvControllerSpec extends SpecBase {
 
         val app = application
           .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-          .configure(
-            "features.cash-account-details" -> "true",
-            "application.cash-account.numberOfDaysToShow" -> "25")
+          .configure("application.cash-account.numberOfDaysToShow" -> "25")
           .build()
 
         running(app) {
@@ -295,7 +280,6 @@ class DownloadCsvControllerSpec extends SpecBase {
 
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .configure("features.cash-account-details" -> "true")
         .build()
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
@@ -435,9 +419,7 @@ class DownloadCsvControllerSpec extends SpecBase {
        bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
        bind[AuditingService].toInstance(mockAuditingservice)
      )
-     .configure("features.cash-account-details" -> "true",
-       "features.cash-download-transactions" -> "true",
-       "features.fixed-systemdate-for-tests" -> "true")
+     .configure("features.fixed-systemdate-for-tests" -> "true")
      .build()
  }
 

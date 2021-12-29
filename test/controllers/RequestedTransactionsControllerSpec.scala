@@ -184,9 +184,7 @@ class RequestedTransactionsControllerSpec extends SpecBase {
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
         bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache)
       )
-      .configure("features.cash-account-details" -> "true",
-        "features.cash-download-transactions" -> "true",
-        "features.fixed-systemdate-for-tests" -> "true")
+      .configure("features.fixed-systemdate-for-tests" -> "true")
       .build()
 
     val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
