@@ -198,14 +198,11 @@ th.govuk-table__header.govuk-table__cell--numeric {
 // .govuk-table__header 
 
 th.govuk-table__header {
-  padding: 10px 50px 10px 0px !important;
+  padding: 10px 35px 10px 0px !important;
 
   &:last-child {
-    padding: 10 0 10 40px !important;
+    padding: 10 0 10 50px !important;
   }
-}
-td.govuk-table__cell:nth-of-type(2) {
-  padding: 10 80 10 0px !important;
 }
 
 // }
