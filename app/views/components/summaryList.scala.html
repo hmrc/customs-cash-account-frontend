@@ -1,0 +1,35 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import viewmodels.ResultsPageSummary
+
+@this()
+
+@(summary: ResultsPageSummary)(implicit messages: Messages)
+
+<dl class="govuk-summary-list govuk-!margin-top-7 govuk-!-padding-bottom-7">
+    <div class="govuk-summary-list__row govuk-!-margin-bottom-9">
+        <dt class="govuk-summary-list__value">
+            @summary.rows.value.content.asHtml
+        </dt>
+        <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="@summary.rows.actions.head.items.head.href">
+                <span class="govuk-visually-hidden"> @summary.rows.actions.head.items.head.visuallyHiddenText</span>
+                <span> @Html(messages("cf.cash-account.detail.csv.download"))</span>
+            </a>
+        </dd>
+    </div>
+</dl>

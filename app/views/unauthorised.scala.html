@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
         h1: components.h1,
         h2: components.h2,
         p: components.p,
-        hmrcNewTabLink: HmrcNewTabLink
+        newTabLink: components.newTabLink
 )
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -27,33 +27,7 @@
     @layout(pageTitle = Some(messages("cf.not-subscribed-to-cds.detail.title")), backLink = None, fullWidth = false, help = false) {
         @h1("cf.not-subscribed-to-cds.detail.heading",id = None, classes = "govuk-heading-l")
         @h2("cf.not-subscribed-to-cds.detail.how-to-get-access-info", id = None)
-        <p class="govuk-body">
-            @messages("cf.not-subscribed-to-cds.detail.eori-info")
-            @hmrcNewTabLink(
-                NewTabLink(
-                    language = Some(messages.lang.toString),
-                    classList = Some("govuk-link"),
-                    href=Some(appConfig.registerCdsUrl),
-                    text=messages("cf.not-subscribed-to-cds.detail.eori-link")
-                )
-            )
-            .
-        </p>
-
-        <p class="govuk-body">
-            @messages("cf.not-subscribed-to-cds.detail.get-access-info")
-            @hmrcNewTabLink(
-                NewTabLink(
-                    language = Some(messages.lang.toString),
-                    classList = Some("govuk-link"),
-                    href=Some(appConfig.subscribeCdsUrl),
-                    text=messages("cf.not-subscribed-to-cds.detail.get-access-link")
-                )
-            )
-            .
-        </p>
-
-        <p class="govuk-body">
-            @messages("cf.not-subscribed-to-cds.detail.process-application-info")
-        </p>
+        @newTabLink("cf.not-subscribed-to-cds.detail.eori-link", appConfig.registerCdsUrl, preLinkMessage = Some("cf.not-subscribed-to-cds.detail.eori-info"))
+        @newTabLink("cf.not-subscribed-to-cds.detail.get-access-link", appConfig.subscribeCdsUrl, preLinkMessage = Some("cf.not-subscribed-to-cds.detail.get-access-info"))
+        @p("cf.not-subscribed-to-cds.detail.process-application-info")
     }

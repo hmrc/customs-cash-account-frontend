@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package config
+@this(govukInsetText: GovukInsetText)
 
-import play.api.test.Helpers.running
-import utils.SpecBase
+@(msg: String, id: Option[String] = None, additionalContent: Option[Html] = None)(implicit messages: Messages)
 
-class AppConfigSpec extends SpecBase {
-
-  "AppConfig" should {
-    "include the app name" in new Setup {
-      running(app) {
-        appConfig.appName mustBe ("customs-cash-account-frontend")
-      }
-    }
-  }
-
-  trait Setup {
-    val app = application.build()
-    val appConfig = app.injector.instanceOf[AppConfig]
-  }
-}
+@govukInsetText(InsetText(
+    content = HtmlContent(Html(messages(msg)) + additionalContent.map(v => s" $v").getOrElse("")),
+    id = id
+))

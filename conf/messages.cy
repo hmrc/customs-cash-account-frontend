@@ -50,10 +50,8 @@ cf.cash-account.top-up.guidance.link=Ychwanegu
 cf.cash-account.top-up.guidance.link.aria-label=Ychwanegu at eich cyfrif arian parod
 cf.cash-account.withdraw-funds.guidance.link=Codi arian
 cf.cash-account.withdraw-funds.guidance.link.aria-label=Codi arian o’ch cyfrif arian parod
-cf.cash-account.detail.download=Lawrlwytho taliadau ar ffurf
-cf.cash-account.detail.csv=CSV
-cf.cash-account.detail.csv-definition=Gwerthoedd wedi’u gwahanu gan goma. Gellir defnyddio CSV gyda’r rhan fwyaf o raglenni taenlen.
-
+cf.cash-account.detail.csv.download=<abbr title="Gwerthoedd wedi’u gwahanu gan goma. Gellir defnyddio CSV gyda’r rhan fwyaf o raglenni taenlen.">CSV</abbr>
+cf.cash-account.detail.csv=Lawrlwytho taliadau ar ffurf <abbr title="Gwerthoedd wedi’u gwahanu gan goma. Gellir defnyddio CSV gyda’r rhan fwyaf o raglenni taenlen.">CSV</abbr>
 cf.cash-account.detail.date=Dyddiad
 cf.cash-account.detail.movement-reference-number=Cyfeirnod Symud
 cf.cash-account.detail.mrn=MRN

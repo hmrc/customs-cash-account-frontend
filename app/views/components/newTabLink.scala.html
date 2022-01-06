@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package config
+@this(hmrcNewTabLink: HmrcNewTabLink)
 
-import play.api.test.Helpers.running
-import utils.SpecBase
+@(linkMessage: String, href: String, preLinkMessage: Option[String] = None)(implicit messages: Messages, appConfig: AppConfig)
 
-class AppConfigSpec extends SpecBase {
-
-  "AppConfig" should {
-    "include the app name" in new Setup {
-      running(app) {
-        appConfig.appName mustBe ("customs-cash-account-frontend")
-      }
-    }
-  }
-
-  trait Setup {
-    val app = application.build()
-    val appConfig = app.injector.instanceOf[AppConfig]
-  }
-}
+<p class="govuk-body">
+    @preLinkMessage.map(messages(_))
+    @hmrcNewTabLink(
+        NewTabLink(
+            language = Some(messages.lang.toString),
+            classList = Some("govuk-link"),
+            href=Some(href),
+            text=messages(linkMessage)
+        )
+    )
+    .
+</p>

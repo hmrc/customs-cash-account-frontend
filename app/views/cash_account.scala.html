@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,58 +15,52 @@
  *@
 
 @*
- * Copyright 2021 HM Revenue & Customs
- *
- *@
-
+* Copyright 2021 HM Revenue & Customs
+*
+*@
 @import viewmodels.CashTransactionsViewModel
 @import helpers.Formatters
 @import views.html.components.pager
 
 @this(
-    main_template : Layout,
-    h1: components.h1,
-    h2: components.h2,
-    span: components.span,
-    p: components.p,
-    pending_daily_statements: components.pending_daily_statement,
-    daily_statements: components.daily_statement,
-    cash_account_balance: components.cash_account_balance
+        main_template: Layout,
+        h1: components.h1,
+        h2: components.h2,
+        span: components.span,
+        p: components.p,
+        pending_daily_statements: components.pending_daily_statement,
+        daily_statements: components.daily_statement,
+        cash_account_balance: components.cash_account_balance,
+        link: components.link
 )
 
-@(model: CashAccountViewModel, cashTransactionsViewModel: CashTransactionsViewModel)(implicit messages:Messages, appConfig: AppConfig, request: Request[_])
-    @main_template(pageTitle = Some(messages("cf.cash-account.detail.title")), backLink = Some(appConfig.customsFinancialsFrontendHomepage), fullWidth = true, help = true) {
+@(model: CashAccountViewModel, cashTransactionsViewModel: CashTransactionsViewModel)(implicit messages: Messages, appConfig: AppConfig, request: Request[_])
 
-        @cash_account_balance(model)
+@main_template(
+    pageTitle = Some(messages("cf.cash-account.detail.title")),
+    backLink = Some(appConfig.customsFinancialsFrontendHomepage),
+    fullWidth = true,
+    help = true
+) {
+    @cash_account_balance(model)
+    @h2(msg = "cf.cash-account.detail.payments-heading", id = Some("payments-heading"))
+    @link("cf.cash-account.detail.csv", cashTransactionsViewModel.downloadUrl, linkId = Some("download-link"), pId = Some("download"))
 
-        @h2(msg="cf.cash-account.detail.payments-heading", id=Some("payments-heading"))
-
-        <p id="download" class="govuk-body govuk-!-margin-bottom-8">
-            <a id="download-link" href="@cashTransactionsViewModel.downloadUrl" class="govuk-link">
-                @messages("cf.cash-account.detail.download")
-                <abbr title="@messages("cf.cash-account.detail.csv-definition")">
-                @messages("cf.cash-account.detail.csv")
-                </abbr>
-            </a>
-        </p>
-
-       @for((transaction, index) <- cashTransactionsViewModel.visibleItems.zipWithIndex){
-           @{transaction match {
-               case e: viewmodels.PaginatedPendingDailyStatement => {
-                   pending_daily_statements(model , index, e)
-               }
-               case e: viewmodels.PaginatedDailyStatement =>{
-                    daily_statements(e.dailyStatement)
-               }
-           }
-           }
-       }
-        @pager(cashTransactionsViewModel)
-
-        @h2(msg="cf.cash-account.transactions.request.link.heading", id=Some("missing-documents-guidance-heading"))
-        <p class="govuk-body govuk-!-padding-bottom-7">
-            @messages("cf.cash-account.transactions.request.link.pre") <a class="govuk-link" href="@controllers.routes.RequestTransactionsController.onPageLoad">
-        @messages("cf.cash-account.transactions.request.link")</a>
-        </p>
-
+    @for((transaction, index) <- cashTransactionsViewModel.visibleItems.zipWithIndex) {
+        @{
+            transaction match {
+                case e: viewmodels.PaginatedPendingDailyStatement => pending_daily_statements(model, index, e)
+                case e: viewmodels.PaginatedDailyStatement => daily_statements(e.dailyStatement)
+            }
+        }
     }
+
+    @pager(cashTransactionsViewModel)
+
+    @h2(msg = "cf.cash-account.transactions.request.link.heading", id = Some("missing-documents-guidance-heading"))
+    @link(
+        "cf.cash-account.transactions.request.link",
+        controllers.routes.RequestTransactionsController.onPageLoad.url,
+        preLinkMessage = Some("cf.cash-account.transactions.request.link.pre")
+    )
+}

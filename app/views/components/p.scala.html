@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,6 @@
 
 @this()
 
-@(content: Html)(implicit messages: Messages)
+@(message: String, classes: String = "govuk-body", id: Option[String] = None)(implicit messages: Messages)
 
-<p class="govuk-body">@content</p>
+<p @{id.fold("")(id => s"id=$id")} class="@{classes}">@messages(message)</p>
