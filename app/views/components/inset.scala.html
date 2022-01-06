@@ -14,8 +14,11 @@
  * limitations under the License.
  *@
 
-@this()
+@this(govukInsetText: GovukInsetText)
 
-@(msg: String, id: Option[String] = None, classes: String)(implicit messages: Messages)
+@(msg: String, id: Option[String] = None, additionalContent: Option[Html] = None)(implicit messages: Messages)
 
-<h1 @{id.fold("")(id => s"id=$id")} class="@classes">@messages(msg)</h1>
+@govukInsetText(InsetText(
+    content = HtmlContent(Html(messages(msg)) + additionalContent.map(v => s" $v").getOrElse("")),
+    id = id
+))

@@ -17,19 +17,22 @@
 @this(
         layout: Layout,
         h1: components.h1,
-        p: components.p
+        p: components.p,
+        link: components.link
 )
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-    @layout(pageTitle =Some(messages("cf.error.not-found.title")), fullWidth = false, backLink = None, help = false) {
+    @layout(pageTitle = Some(messages("cf.error.not-found.title")), fullWidth = false, backLink = None, help = false) {
 
-    @h1("cf.error.not-found.heading",id = None, classes = "govuk-heading-l")
-    @p(Html(messages("cf.error.not-found.message.address-typed-wrong")))
-    @p(Html(messages("cf.error.not-found.message.address-pasted-wrong")))
-
-    <p class="govuk-body">@messages("cf.error.not-found.message.go-to-home-page-text1")
-        <a href="@{appConfig.customsFinancialsFrontendHomepage}" class="govuk-link govuk-link--no-visited-state">
-        @messages("cf.accounts.view-customs-account")</a> @messages("cf.error.not-found.message.go-to-home-page-text2")
-    </p>
+        @h1("cf.error.not-found.heading", id = None, classes = "govuk-heading-l")
+        @p("cf.error.not-found.message.address-typed-wrong")
+        @p("cf.error.not-found.message.address-pasted-wrong")
+        @link(
+            linkMessage = "cf.accounts.view-customs-account",
+            location = appConfig.customsFinancialsFrontendHomepage,
+            linkClass = "govuk-link govuk-link--no-visited-state",
+            preLinkMessage = Some("cf.error.not-found.message.go-to-home-page-text1"),
+            postLinkMessage = Some("cf.error.not-found.message.go-to-home-page-text2")
+        )
     }

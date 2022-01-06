@@ -18,20 +18,25 @@
 
 @this(
         main_template: Layout,
-        h2: components.h2,
-        p: components.p
+        h1: components.h1,
+        p: components.p,
+        link: components.link
 )
+
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@main_template(pageTitle = Some(messages("cf.cash-account.detail.unable-download-csv")), backLink = None, fullWidth = false, help = false) {
 
-    <h1 class="govuk-heading-l">
-        @messages("cf.cash-account.detail.unable-download-csv")
-    </h1>
+@main_template(
+    pageTitle = Some(messages("cf.cash-account.detail.unable-download-csv")),
+    backLink = None,
+    fullWidth = false,
+    help = false
+) {
 
-    <p class="govuk-body">
-        @messages("cf.cash-account.detail.try-again-later")
-    </p>
-    <p class="govuk-body">
-        <a href="@{controllers.routes.CashAccountController.showAccountDetails(None).url}" class="govuk-link govuk-link--no-visited-state">@messages("cf.cash-account-detail.back-to-cash-account")</a>
-    </p>
+    @h1("cf.cash-account.detail.unable-download-csv", classes = "govuk-heading-l")
+    @p("cf.cash-account.detail.try-again-later")
+    @link(
+        "cf.cash-account-detail.back-to-cash-account",
+        controllers.routes.CashAccountController.showAccountDetails(None).url,
+        linkClass = "govuk-link govuk-link--no-visited-state"
+    )
 }

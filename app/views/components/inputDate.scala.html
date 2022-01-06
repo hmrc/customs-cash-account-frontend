@@ -32,7 +32,7 @@
             legend = Some(
                 Legend(
                     content = HtmlContent(messages(legendContent) +
-                            legendHiddenContent.fold("")(key => span(key, true).toString())
+                            legendHiddenContent.fold("")(key => span(key, classes = Some("govuk-visually-hidden")).toString())
                     ),
                     isPageHeading = legendAsPageHeading,
                     classes = legendClasses

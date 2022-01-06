@@ -16,10 +16,6 @@
 
 @this()
 
-@(key: String, visuallyHidden: Boolean)(implicit messages: Messages)
+@(key: String, classes: Option[String] = None)(implicit messages: Messages)
 
-@if(visuallyHidden){
-    <span class="govuk-visually-hidden">@messages(key)</span>
-} else {
-    <span>@messages(key)</span>
-}
+<span @{classes.fold("")(classes => s"class=$classes")}>@messages(key)</span>

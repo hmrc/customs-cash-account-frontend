@@ -14,8 +14,19 @@
  * limitations under the License.
  *@
 
-@this()
+@this(hmrcNewTabLink: HmrcNewTabLink)
 
-@(msg: String, id: Option[String] = None, classes: String)(implicit messages: Messages)
+@(linkMessage: String, href: String, preLinkMessage: Option[String] = None)(implicit messages: Messages, appConfig: AppConfig)
 
-<h1 @{id.fold("")(id => s"id=$id")} class="@classes">@messages(msg)</h1>
+<p class="govuk-body">
+    @preLinkMessage.map(messages(_))
+    @hmrcNewTabLink(
+        NewTabLink(
+            language = Some(messages.lang.toString),
+            classList = Some("govuk-link"),
+            href=Some(href),
+            text=messages(linkMessage)
+        )
+    )
+    .
+</p>
