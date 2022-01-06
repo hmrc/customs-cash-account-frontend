@@ -195,15 +195,6 @@ th.govuk-table__cell.movement-reference-number {
 th.govuk-table__header.govuk-table__cell--numeric {
   font-weight: 700;
 }
-// .govuk-table__header 
-
-th.govuk-table__header {
-  padding: 10px 35px 10px 0px !important;
-
-  &:last-child {
-    padding: 10 0 10 50px !important;
-  }
-}
 
 // }
 .govuk-table__cell.account-credited:last-child {

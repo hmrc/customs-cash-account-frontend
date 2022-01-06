@@ -25,6 +25,7 @@ object PaymentHeader {
 
         Seq(
             HeadCell(
+                classes= "first-column-width",
                 content = HtmlContent(
                     s"""
                     <abbr title="${messages("cf.cash-account.detail.movement-reference-number")}">
@@ -33,6 +34,7 @@ object PaymentHeader {
                     """)
             ),
             HeadCell(
+                classes= "second-column-width",
                 content = HtmlContent(
                     s"""
                     <abbr title="${messages("cf.cash-account.detail.unique-consignment-reference")}">
