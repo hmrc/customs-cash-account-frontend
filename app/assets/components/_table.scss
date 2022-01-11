@@ -29,6 +29,11 @@ $color_hmrc-grey-4: #b1b4b6;
       position: relative;
       width: auto;
     }
+    
+    @media (max-width: $mobile) {
+      font-size: 16px;
+    }
+
     th.first-column-width {
       width: auto;
       @media (min-width: $mobile) {
@@ -68,6 +73,10 @@ $color_hmrc-grey-4: #b1b4b6;
           text-align: left;
           display: table-cell;
         }
+
+        @media (max-width: $mobile) {
+          font-size: 16px;
+        }
       }
 
       td {
@@ -84,6 +93,7 @@ $color_hmrc-grey-4: #b1b4b6;
 
         @media (max-width: $mobile) {
           padding-right: 0;
+          font-size: 16px;
           &:last-child {
             border-bottom: 3px solid $color_hmrc-grey-4;
           }
