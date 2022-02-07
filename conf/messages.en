@@ -122,9 +122,9 @@ cf.error.not-found.title=Page not found
 cf.error.not-found.heading=Page not found
 cf.error.not-found.message.address-typed-wrong=If you typed the web address, check it is correct.
 cf.error.not-found.message.address-pasted-wrong=If you pasted the web address, check you copied the entire address.
-cf.error.not-found.message.go-to-home-page-text1=Or go to the
-cf.error.not-found.message.go-to-home-page-text2=home page.
-cf.accounts.view-customs-account=View your customs financial accounts
+cf.error.not-found.message.go-to-home-page-text1=Or you can
+cf.error.not-found.message.go-to-home-page-text2=.
+cf.accounts.view-customs-account=view your customs financial accounts
 
 # Date Format
 # ----------------------------------------------------------
