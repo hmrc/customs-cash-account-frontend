@@ -42,7 +42,7 @@ cf.cash-account.detail.opening-balance=Balans Agor
 # Cash Account detail view
 cf.cash-account.detail.title=Cyfrif arian parod
 cf.cash-account.detail.heading=Cyfrif arian parod
-cf.cash-account.detail.account=Cyfrif
+cf.cash-account.detail.account=Cyfrif: {0}
 cf.cash-account.detail.available=ar gael
 cf.cash-account.top-up.guidance.link=Ychwanegu
 cf.cash-account.top-up.guidance.link.aria-label=Ychwanegu at eich cyfrif arian parod
@@ -76,8 +76,8 @@ cf.cash-account.detail.label.mrn = Dangos MRN yn lle UCR
 cf.cash-account.detail.unable-download-csv=Mae’n ddrwg gennym – roedd problem wrth lawrlwytho’ch ffeil CSV.
 cf.cash-account.detail.try-again-later=Rhowch gynnig arall arni yn nes ymlaen.
 cf.cash-account-detail.back-to-cash-account=Yn ôl i ‘Cyfrif arian parod’
-cf.cash-account-detail.exceeded-threshold.p1 = Mae gormod o drafodion o’r 6 mis diwethaf i’w harddangos yn olynol.
-cf.cash-account-detail.exceeded-threshold.p2 = Bwrw golwg dros drafodion blaenorol o gyfnod byrrach gan ddefnyddio’r cysylltiad chwilio isod.
+cf.cash-account-detail.exceeded-threshold = Mae gormod o drafodion o’r 6 mis diwethaf i’w harddangos yn olynol. Bwrw golwg dros drafodion blaenorol o gyfnod byrrach gan ddefnyddio’r cysylltiad chwilio isod.
+
 
 help.heading=Help a chymorth
 help.p1=Os ydych yn profi anawsterau, ffoniwch 0300 200 3705.
