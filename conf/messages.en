@@ -50,8 +50,8 @@ cf.cash-account.withdraw-funds.guidance.link=Withdraw funds
 cf.cash-account.withdraw-funds.guidance.link.aria-label=Withdraw funds from your cash account
 cf.cash-account.detail.csv.download=CSV
 cf.cash-account.detail.csv-definition=Download CSV file.
-cf.cash-account.detail.csv=Download payments and transactions as <abbr title="Comma-Separated Values. Can be used with most spreadsheet programs.">CSV</abbr>
-cf.cash-account.detail.payments-heading=Your payments and transactions for the last 6 months
+cf.cash-account.detail.csv=Download transactions as <abbr title="Comma-Separated Values. Can be used with most spreadsheet programs.">CSV</abbr>
+cf.cash-account.detail.payments-heading=Your transactions for the last 6 months
 cf.cash-account.detail.date=Date
 cf.cash-account.detail.movement-reference-number=Movement Reference Number
 cf.cash-account.detail.mrn=MRN

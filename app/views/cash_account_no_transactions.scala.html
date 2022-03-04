@@ -33,7 +33,7 @@
     fullWidth = false,
     help = true
 ) {
-    @cash_account_balance(accountModel, showBalance = false, showLinks = false, showTopUpHelp = false)
+    @cash_account_balance(accountModel, showBalance = false)
 
     @p("cf.cash-account.detail.no-transactions.p1")
 
@@ -58,7 +58,8 @@
         "cf.cash-account.transactions.request.link",
         controllers.routes.RequestTransactionsController.onPageLoad.url,
         pClass = "govuk-body govuk-!-padding-bottom-7",
-        preLinkMessage = Some("cf.cash-account.transactions.request.link.pre")
+        preLinkMessage = Some("cf.cash-account.transactions.request.link.pre"),
+        linkSentence = true
     )
 
 }

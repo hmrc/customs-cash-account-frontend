@@ -31,13 +31,11 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val loginUrl: String = config.get[String]("urls.login")
   lazy val loginContinueUrl: String = config.get[String]("urls.loginContinue")
   lazy val signOutUrl: String = config.get[String]("urls.signOut")
-
-  lazy val cashAccountTopUpGuidanceUrl = config.get[String]("urls.cashAccountTopUpGuidanceUrl")
-  lazy val cashAccountWithdrawFundsGuidanceUrl = config.get[String]("urls.cashAccountWithdrawFundsGuidanceUrl")
-  lazy val customsFinancialsFrontendHomepage = config.get[String]("urls.customsFinancialsHomepage")
-  lazy val govUkHomepage = config.get[String]("urls.govUkHome")
-  lazy val cashAccountForCdsDeclarationsUrl = config.get[String]("urls.cashAccountForCdsDeclarationsUrl")
-  lazy val feedbackService = config.getOptional[String]("feedback.url").getOrElse("/feedback") +
+  lazy val cashAccountTopUpGuidanceUrl: String = config.get[String]("urls.cashAccountTopUpGuidanceUrl")
+  lazy val customsFinancialsFrontendHomepage: String = config.get[String]("urls.customsFinancialsHomepage")
+  lazy val govUkHomepage: String = config.get[String]("urls.govUkHome")
+  lazy val cashAccountForCdsDeclarationsUrl: String = config.get[String]("urls.cashAccountForCdsDeclarationsUrl")
+  lazy val feedbackService: String = config.getOptional[String]("feedback.url").getOrElse("/feedback") +
     config.getOptional[String]("feedback.source").getOrElse("/CDS-FIN")
 
   lazy val timeout: Int = config.get[Int]("timeout.timeout")
