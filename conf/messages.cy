@@ -203,4 +203,4 @@ cf.cash-account.detail.transactions-caption=Eich trafodion ar gyfer {0}
 cf.cash-account.topup.withdrawal.detail.heading=Help gydag ychwanegiadau a chodiadau arianls
 cf.cash-account.topup.withdrawal.detail.text=Gall ychwanegiadau gymryd hyd at un diwrnod gwaith i ddangos ar y dudalen hon. Mae arian fel arfer ar gael i’w ddefnyddio cyn pen awr ar ôl gwneud y trosglwyddiad o’ch banc. Gall codiadau arian gymryd hyd at 15 diwrnod gwaith i’r arian gyrraedd eich cyfrif banc.
 cf.cash-account.detail.available-balance=Y balans sydd ar gael {0}
-cf.cash-account.detail.payments-heading=Eich taliadau a’ch trafodion ar gyfer y 6 mis diwethaf
+cf.cash-account.detail.payments-heading=Eich trafodion ar gyfer y chwe mis diwethaf

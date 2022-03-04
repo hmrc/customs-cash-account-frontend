@@ -17,7 +17,7 @@
 @import helpers.Formatters
 
 @this( h1: components.h1)
-@(model: CashAccountViewModel, showBalance: Boolean = true, showLinks: Boolean = true, showTopUpHelp: Boolean = true)(implicit messages: Messages, appConfig: AppConfig)
+@(model: CashAccountViewModel, showBalance: Boolean = true)(implicit messages: Messages, appConfig: AppConfig)
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds govuk-body govuk-!-margin-bottom-6">
@@ -30,34 +30,5 @@
                 } @messages("cf.cash-account.detail.available")
             </p>
         }
-        @if(showLinks) {
-            <p class="govuk-body govuk-!-margin-bottom-1">
-                <a class="govuk-link govuk-!-margin-right-2" href="@{
-                    appConfig.cashAccountTopUpGuidanceUrl
-                }"
-                aria-label="@messages("cf.cash-account.top-up.guidance.link.aria-label")">
-                @messages("cf.cash-account.top-up.guidance.link")
-                </a>
-                <a class="govuk-link" href="@{
-                    appConfig.cashAccountWithdrawFundsGuidanceUrl
-                }"
-                aria-label="@messages("cf.cash-account.withdraw-funds.guidance.link.aria-label")">
-                @messages("cf.cash-account.withdraw-funds.guidance.link")
-                </a>
-            </p>
-        }
     </div>
 </div>
-
-@if(showTopUpHelp) {
-    <details class="govuk-details govuk-!-margin-bottom-8" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">
-            @messages("cf.cash-account.topup.withdrawal.detail.heading")
-            </span>
-        </summary>
-        <div class="govuk-details__text">
-        @messages("cf.cash-account.topup.withdrawal.detail.text")
-        </div>
-    </details>
-}
