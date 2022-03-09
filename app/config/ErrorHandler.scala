@@ -30,6 +30,6 @@ class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, notFound: not_found, 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
     errorTemplate(pageTitle, heading, message)
 
-  def customNotFound()(implicit request: Request[_]): Html =
+  override def notFoundTemplate(implicit request: Request[_]): Html =
     notFound()
 }
