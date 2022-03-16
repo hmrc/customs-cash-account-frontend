@@ -25,7 +25,7 @@
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
     @layout(pageTitle = Some(messages("cf.not-subscribed-to-cds.detail.title")), backLink = None, fullWidth = false, help = false) {
-        @h1("cf.not-subscribed-to-cds.detail.heading",id = None, classes = "govuk-heading-l")
+        @h1("cf.not-subscribed-to-cds.detail.heading",id = None, classes = "govuk-heading-xl")
         @h2("cf.not-subscribed-to-cds.detail.how-to-get-access-info", id = None)
         @newTabLink("cf.not-subscribed-to-cds.detail.eori-link", appConfig.registerCdsUrl, preLinkMessage = Some("cf.not-subscribed-to-cds.detail.eori-info"))
         @newTabLink("cf.not-subscribed-to-cds.detail.get-access-link", appConfig.subscribeCdsUrl, preLinkMessage = Some("cf.not-subscribed-to-cds.detail.get-access-info"))

@@ -36,7 +36,7 @@
     @formHelper(action = controllers.routes.RequestTransactionsController.onSubmit(), 'autoComplete -> "off") {
         @errorSummary(form.errors,errorFieldName = None)
 
-        @h1("cf.cash-account.transactions.request.heading",id = None, classes = "govuk-heading-l")
+        @h1("cf.cash-account.transactions.request.heading",id = None, classes = "govuk-heading-xl")
 
         @inputDate(
             form,
