@@ -30,7 +30,7 @@
     fullWidth = false,
     help = true
 ) {
-    @h1("cf.cash-account.transactions.result.too.many.results", classes = "govuk-heading-xl")
+    @h1("cf.cash-account.transactions.result.too.many.results")
     @inset("cf.cash-account.transactions.result.between", additionalContent = Some(summary.rows.value.content.asHtml))
     @link("cf.cash-account.transactions.result.search.again", controllers.routes.RequestTransactionsController.onPageLoad.url)
 }
