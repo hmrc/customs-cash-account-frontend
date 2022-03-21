@@ -4,10 +4,6 @@ $hmrc-assets-path: "/customs/cash-account/assets/lib/hmrc-frontend/hmrc/";
 @import "lib/govuk-frontend/govuk/base";
 @import "lib/hmrc-frontend/hmrc/all";
 
-@import "utils/colours";
 @import "utils/custom";
-@import "utils/shims";
-
-@import "components/pager";
 @import "components/table";
 
