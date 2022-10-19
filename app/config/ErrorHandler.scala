@@ -24,10 +24,13 @@ import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.{ErrorTemplate, not_found}
 
 @Singleton
-class ErrorHandler @Inject()(errorTemplate: ErrorTemplate, notFound: not_found, val messagesApi: MessagesApi)(implicit appConfig: AppConfig)
-  extends FrontendErrorHandler {
+class ErrorHandler @Inject()(errorTemplate: ErrorTemplate,
+                             notFound: not_found,
+                             val messagesApi: MessagesApi)(implicit appConfig: AppConfig) extends FrontendErrorHandler {
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
+  override def standardErrorTemplate(pageTitle: String,
+                                     heading: String,
+                                     message: String)(implicit request: Request[_]): Html =
     errorTemplate(pageTitle, heading, message)
 
   override def notFoundTemplate(implicit request: Request[_]): Html =

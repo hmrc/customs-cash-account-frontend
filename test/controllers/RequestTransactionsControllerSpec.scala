@@ -36,7 +36,6 @@ class RequestTransactionsControllerSpec extends SpecBase {
       when(mockRequestedTransactionsCache.get(any))
         .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
 
-
       val request: FakeRequest[AnyContentAsEmpty.type] =
         fakeRequest(GET, routes.RequestTransactionsController.onPageLoad.url)
 
@@ -58,7 +57,6 @@ class RequestTransactionsControllerSpec extends SpecBase {
         status(result) mustBe OK
       }
     }
-
   }
 
   "onSubmit" should {

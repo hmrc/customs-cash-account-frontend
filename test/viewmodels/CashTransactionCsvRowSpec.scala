@@ -29,6 +29,25 @@ class CashTransactionCsvRowSpec extends SpecBase {
   val app = application.build()
   implicit val messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
+  "generate an opening balance" in {
+    val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 123.33, 0.0, Nil, Nil)
+    val expectedRow = CashTransactionCsvRow(
+      date = Some("2020-03-04"),
+      transactionType = Some("Opening balance"),
+      movementReferenceNumber = None,
+      uniqueConsignmentReference = None,
+      declarantEori = None,
+      vat = None,
+      duty = None,
+      excise = None,
+      credit = None,
+      debit = None,
+      balance = Some(123.33)
+    )
+
+    dailyStatement.toReportLayout.last must be(expectedRow)
+  }
+
   "generate a closing balance" in {
     val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 12345.67, Nil, Nil)
 
@@ -213,25 +232,6 @@ class CashTransactionCsvRowSpec extends SpecBase {
     )
 
     dailyStatement.toReportLayout(1) must be(expectedRow)
-  }
-
-  "generate an opening balance" in {
-    val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 123.33, 0.0, Nil, Nil)
-    val expectedRow = CashTransactionCsvRow(
-      date = Some("2020-03-04"),
-      transactionType = Some("Opening balance"),
-      movementReferenceNumber = None,
-      uniqueConsignmentReference = None,
-      declarantEori = None,
-      vat = None,
-      duty = None,
-      excise = None,
-      credit = None,
-      debit = None,
-      balance = Some(123.33)
-    )
-
-    dailyStatement.toReportLayout.last must be(expectedRow)
   }
 
   "order the entries correctly within each day" in {

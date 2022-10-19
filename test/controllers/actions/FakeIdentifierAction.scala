@@ -27,9 +27,7 @@ class FakeIdentifierAction @Inject()(bodyParsers: PlayBodyParsers) extends Ident
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] =
     block(IdentifierRequest(request, "exampleEori"))
 
-  override def parser: BodyParser[AnyContent] =
-    bodyParsers.default
+  override def parser: BodyParser[AnyContent] = bodyParsers.default
 
-  override protected def executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
+  override protected def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 }

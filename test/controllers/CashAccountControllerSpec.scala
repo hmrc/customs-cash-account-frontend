@@ -56,6 +56,26 @@ class CashAccountControllerSpec extends SpecBase {
       }
     }
 
+    "check view cash account details" in new Setup {
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(Right(cashTransactionResponse)))
+
+      val app = application
+        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+        .build()
+
+      running(app) {
+
+        val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
+        val result = route(app, request).value
+        status(result) mustEqual OK
+      }
+    }
+
     "display transactions unavailable if the call to ACC31 fails" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))

@@ -94,7 +94,6 @@ class SecureGCMCipherSpec extends SpecBase
         " It could be due to invalid encoding, wrong length or uninitialized")
     }
 
-
     "return an EncryptionDecryptionError if the secret key is an invalid type" in {
 
       val keyGen = KeyGenerator.getInstance("DES")
@@ -121,7 +120,6 @@ class SecureGCMCipherSpec extends SpecBase
 
       encryptedAttempt.failureReason must include("Algorithm being requested is not available in this environment")
     }
-
 
     "return an EncryptionDecryptionError if the padding is invalid" in {
       val secureGCMEncryter = new SecureGCMCipher {

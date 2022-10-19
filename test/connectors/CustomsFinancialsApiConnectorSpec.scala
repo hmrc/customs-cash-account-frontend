@@ -25,8 +25,7 @@ import play.api.inject.bind
 import play.api.test.Helpers._
 import repositories.CacheRepository
 import services.MetricsReporterService
-import uk.gov.hmrc.http.SessionId
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException}
+import uk.gov.hmrc.http.{SessionId, HeaderCarrier, HttpClient, HttpException}
 import utils.SpecBase
 
 import scala.concurrent.Future
@@ -159,8 +158,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
       val mockConfig = mock[AppConfig]
-
-
 
       when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
 
