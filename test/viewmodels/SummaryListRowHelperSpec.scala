@@ -30,5 +30,4 @@ class SummaryListRowHelperSpec extends SpecBase with SummaryListRowHelper {
       result.secondValue mustBe Some(Value(HtmlContent("something"), classes = ""))
     }
   }
-
 }

@@ -21,6 +21,7 @@ import config.AppConfig
 import java.time.LocalDate
 import models._
 import utils.SpecBase
+import CashTransactionsViewModel._
 
 class CashTransactionsViewModelSpec extends SpecBase {
 
@@ -64,14 +65,13 @@ class CashTransactionsViewModelSpec extends SpecBase {
 
   "CashDailyStatementViewModel" should {
 
-    import CashTransactionsViewModel._
-
     "calculates the overall size of the collection" in {
       val someTransactions = Seq(Transaction(123.45, Payment, None),
         Transaction(223.45, Payment, None),
         Transaction(-54.66, Withdrawal, Some("77665544")),
         Transaction(300.00, Transfer, None),
         Transaction(-300.00, Transfer, None))
+
       val someDeclarations = Seq(Declaration("mrn1", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil))
 
       val dailyStatement = CashDailyStatement(LocalDate.parse("2020-07-20"), 0.0, 0.00, someDeclarations, someTransactions)
@@ -109,6 +109,7 @@ class CashTransactionsViewModelSpec extends SpecBase {
     val cashTransactionsWithNoDailyStatement = CashTransactions(listOfPendingTransactions, Seq.empty)
 
     val model = CashTransactionsViewModel(cashTransactions, Some(1))(mockAppConfig)
+
     val modelWithNoDailyStatement = CashTransactionsViewModel(cashTransactionsWithNoDailyStatement, None)(mockAppConfig)
 
   }

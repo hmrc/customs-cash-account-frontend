@@ -18,7 +18,7 @@ package views.helpers
 
 import play.api.i18n.Messages
 
-object PageTitle {
+object PageTitle extends App{
 
   def fullPageTitle(title: Option[String])(implicit messages: Messages): Option[String] = {
      title match {
