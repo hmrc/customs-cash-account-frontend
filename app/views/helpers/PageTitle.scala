@@ -19,7 +19,6 @@ package views.helpers
 import play.api.i18n.Messages
 
 object PageTitle extends App{
-
   def fullPageTitle(title: Option[String])(implicit messages: Messages): Option[String] = {
      title match {
        case Some(text) => Some(s"$text - ${messages("service.name")} - GOV.UK")

@@ -20,6 +20,7 @@ import play.api.data.FormError
 import play.api.data.format.Formatter
 
 import scala.util.control.Exception.nonFatalCatch
+import scala.util.{Failure, Success, Try}
 
 trait Formatters {
 
@@ -58,5 +59,42 @@ trait Formatters {
 
       override def unbind(key: String, value: Int) =
         baseFormatter.unbind(key, value.toString)
+    }
+
+  private[mappings] def booleanFormatter(requiredKey: String, invalidKey: String): Formatter[Boolean] =
+    new Formatter[Boolean] {
+
+      private val baseFormatter = stringFormatter(requiredKey)
+
+      override def bind(key: String, data: Map[String, String]) =
+        baseFormatter
+          .bind(key, data)
+          .right.flatMap {
+          case "true" => Right(true)
+          case "false" => Right(false)
+          case _ => Left(Seq(FormError(key, invalidKey)))
+        }
+
+      def unbind(key: String, value: Boolean) = Map(key -> value.toString)
+    }
+
+  private[mappings] def decimalFormatter(requiredKey: String, nonNumericKey: String): Formatter[String] =
+    new Formatter[String] {
+
+      private val baseFormatter = stringFormatter(requiredKey)
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
+        baseFormatter.bind(key, data)
+          .right.map(_.replace(",", ""))
+          .right.flatMap {
+          s =>
+            Try(s.toDouble) match {
+              case Success(_) => Right(s)
+              case Failure(_) => Left(Seq(FormError(key, nonNumericKey)))
+            }
+        }
+
+      override def unbind(key: String, value: String): Map[String, String] =
+        baseFormatter.unbind(key, value)
     }
 }

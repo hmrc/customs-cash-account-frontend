@@ -16,16 +16,25 @@
 
 package forms.mappings
 
-import play.api.data.FieldMapping
 import play.api.data.Forms.of
+import play.api.data.{FieldMapping, Mapping}
 
 import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
+
+  protected def boolean(requiredKey: String = "error.required",
+                        invalidKey: String = "error.boolean"): FieldMapping[Boolean] =
+    of(booleanFormatter(requiredKey, invalidKey))
+
 
   protected def localDate(
                            invalidKey: String,
                            endOfMonth: Boolean
                          ): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, endOfMonth, Seq.empty))
+
+  protected def decimal(requiredKey: String = "error.required",
+                        nonNumericKey: String = "error.nonNumeric"): FieldMapping[String] =
+    of(decimalFormatter(requiredKey, nonNumericKey))
 }

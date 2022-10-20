@@ -21,11 +21,12 @@ import config.AppConfig
 import models.{CashAccount, _}
 import models.request.{CashDailyStatementRequest, IdentifierRequest}
 import org.mockito.ArgumentMatchers.anyString
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.inject.bind
 import play.api.test.Helpers._
 import repositories.CacheRepository
 import services.MetricsReporterService
-import uk.gov.hmrc.http.{SessionId, HeaderCarrier, HttpClient, HttpException}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, SessionId}
 import utils.SpecBase
 
 import scala.concurrent.Future

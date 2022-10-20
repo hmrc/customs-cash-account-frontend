@@ -16,24 +16,17 @@
 
 package controllers
 
-import cats.data.EitherT._
-import cats.instances.future._
 import config.{AppConfig, ErrorHandler}
-import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested}
 import controllers.actions._
 import forms.CashTransactionsRequestPageFormProvider
 import models._
-import models.request.IdentifierRequest
-import org.slf4j.LoggerFactory
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.i18n.{I18nSupport, Messages}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RequestedTransactionsCache
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import viewmodels.ResultsPageSummary
 import views.html._
 
-import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -86,6 +79,4 @@ class RequestTransactionsController @Inject()(
       case _ => None
     }
   }
-
-
 }
