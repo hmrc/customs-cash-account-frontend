@@ -79,10 +79,6 @@ cf.cash-account.detail.try-again-later=Try again later.
 cf.cash-account-detail.back-to-cash-account=Back to Cash account
 cf.cash-account-detail.exceeded-threshold = <p>There are too many transactions from the last 6 months to display consecutively.</p><p>View previous transactions from a narrower date period using the search link below.</p>
 
-help.heading = Help and support
-help.p1 = If you are having issues, phone 0300 200 3701.
-help.p2 = Open 8am to 6pm, Monday to Friday (closed bank holidays).
-
 
 # Timeout Messages
 # ----------------------------------------------------------

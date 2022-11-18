@@ -79,11 +79,6 @@ cf.cash-account-detail.back-to-cash-account=Yn ôl i ‘Cyfrif arian parod’
 cf.cash-account-detail.exceeded-threshold = <p>Mae gormod o drafodion o’r 6 mis diwethaf i’w harddangos yn olynol.</p><p>Bwrw golwg dros drafodion blaenorol o gyfnod byrrach gan ddefnyddio’r cysylltiad chwilio isod.</p>
 
 
-help.heading=Help a chymorth
-help.p1=Os ydych yn profi anawsterau, ffoniwch 0300 200 3705.
-help.p2=Ar agor rhwng 08:30 a 17:00 o ddydd Llun i ddydd Gwener (ar gau ar wyliau banc).
-
-
 # Timeout Messages
 # ----------------------------------------------------------
 timeout.title=Rydych ar fin cael eich allgofnodi
