@@ -20,23 +20,25 @@
 
 @if(!model.dataFitsOnOnePage) {
     <div class="govuk-body">
-    <nav class="govuk-pagination" id="pagination-label">
-        <p class="govuk-visually-hidden">Pagination navigation</p>
-        <ul class="govuk-pagination__list">
-            @if(!model.isFirstPage) {
-                @linkToPreviousPage
-            }
-            @for(pageNumber <- model.pageRange) {
-                @linkToPage(pageNumber)
-            }
-            @if(!model.isLastPage) {
-                @linkToNextPage
-            }
-        </ul>
-        <p class="govuk-pagination__results">@messages("cf.pager.summary") <b>@(model.firstItemOnPage+1)</b> @messages("cf.pager.summary.to")
-        <b> @(model.lastItemOnPage)</b>  @messages("cf.pager.summary.of") <b>@(model.allItems.length)</b>  @messages("cf.pager.transactions") </p>
-    </nav>
+        <nav class="govuk-pagination" id="pagination-label">
+            <p class="govuk-visually-hidden">Pagination navigation</p>
+            <ul class="govuk-pagination__list">
+                @if(!model.isFirstPage) {
+                    @linkToPreviousPage
+                }
+                @for(pageNumber <- model.pageRange) {
+                    @linkToPage(pageNumber)
+                }
+                @if(!model.isLastPage) {
+                    @linkToNextPage
+                }
+            </ul>
+            <p class="govuk-pagination__results">@messages("cf.pager.summary") <b>@(model.firstItemOnPage+1)</b> @messages("cf.pager.summary.to")
+            <b> @(model.lastItemOnPage)</b>  @messages("cf.pager.summary.of") <b>@(model.allItems.length)</b>  @messages("cf.pager.transactions") </p>
+        </nav>
     </div>
+} else {
+    <div class="govuk-!-padding-bottom-9"></div>
 }
 
 @linkToPreviousPage = {
