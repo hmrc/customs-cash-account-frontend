@@ -51,10 +51,10 @@ class AuditingService @Inject()(appConfig: AppConfig, auditConnector: AuditConne
       }
   }
 
-  def auditCsvDownload(eori: String, can: String, dateTime: LocalDateTime, from: LocalDate, to: LocalDate)(implicit hc: HeaderCarrier): Future[Unit] = {
+  def auditCsvDownload(eori: String, cashAccountNumber: String, dateTime: LocalDateTime, from: LocalDate, to: LocalDate)(implicit hc: HeaderCarrier): Future[Unit] = {
     val eventualResult = audit(
       AuditModel("DownloadCashStatement", "Download cash transactions",
-        Json.toJson(CashCsvAuditData(eori, can, dateTimeAsIso8601(dateTime), "CSV", from, to))))
+        Json.toJson(CashCsvAuditData(eori, cashAccountNumber, dateTimeAsIso8601(dateTime), "CSV", from, to))))
 
     eventualResult.map {
       case _: AuditResult.Failure => log.error("Cash CSV download auditing failed")

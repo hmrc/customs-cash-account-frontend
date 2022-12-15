@@ -24,7 +24,7 @@ import java.time.LocalDate
 case class AuditModel(auditType: String, transactionName: String, detail: JsValue)
 
 case class CashCsvAuditData(eori: EORI,
-                            can: CAN,
+                            cashAccountNumber: CAN,
                             asOfDateTime: String,
                             fileFormat: String,
                             from: LocalDate,
