@@ -29,9 +29,10 @@ import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats
 
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class DefaultCacheRepository @Inject()(mongo: MongoComponent,
                                        config: Configuration,
                                        encrypter: CashTransactionsEncrypter)(implicit executionContext: ExecutionContext)
