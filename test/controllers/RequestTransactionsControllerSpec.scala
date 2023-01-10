@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,8 @@ import utils.SpecBase
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class RequestTransactionsControllerSpec extends SpecBase {
+class
+RequestTransactionsControllerSpec extends SpecBase {
 
   "onPageLoad" should {
     "return OK when cached data present" in new Setup {
@@ -143,6 +144,17 @@ class RequestTransactionsControllerSpec extends SpecBase {
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest(POST, routes.RequestTransactionsController.onSubmit.url)
           .withFormUrlEncodedBody("start.month" -> "", "start.year" -> "2019", "end.month" -> "", "end.year" -> "2019")
+
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe BAD_REQUEST
+      }
+    }
+
+    "return when todate cannot be in the future" in new Setup {
+      val request: FakeRequest[AnyContentAsFormUrlEncoded] =
+        fakeRequest(POST, routes.RequestTransactionsController.onSubmit.url)
+          .withFormUrlEncodedBody("start.month" -> "", "start.year" -> "2022", "end.month" -> "", "end.year" -> "2023")
 
       running(app) {
         val result = route(app, request).value
