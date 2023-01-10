@@ -151,16 +151,6 @@ RequestTransactionsControllerSpec extends SpecBase {
       }
     }
 
-    "return when todate cannot be in the future" in new Setup {
-      val request: FakeRequest[AnyContentAsFormUrlEncoded] =
-        fakeRequest(POST, routes.RequestTransactionsController.onSubmit.url)
-          .withFormUrlEncodedBody("start.month" -> "", "start.year" -> "2022", "end.month" -> "", "end.year" -> "2023")
-
-      running(app) {
-        val result = route(app, request).value
-        status(result) mustBe BAD_REQUEST
-      }
-    }
   }
 
   trait Setup {

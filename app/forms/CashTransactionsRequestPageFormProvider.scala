@@ -37,7 +37,7 @@ class CashTransactionsRequestPageFormProvider @Inject()(implicit clock: Clock) e
       "end" -> localDate(
         invalidKey = "cf.form.error.end.date-number-invalid",
         endOfMonth = true
-      ).verifying(beforeCurrentMonth("cf.form.error.end-future-date"))
+      ).verifying(beforeCurrentDate("cf.form.error.end-future-date"))
         .verifying(checkDates("cf.form.error.endDate.date-earlier-than-system-start-date","cf.form.error.end.date-too-far-in-past"))
     )(CashTransactionDates.apply)(CashTransactionDates.unapply)
     )
