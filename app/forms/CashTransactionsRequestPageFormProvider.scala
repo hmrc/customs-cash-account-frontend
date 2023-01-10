@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ class CashTransactionsRequestPageFormProvider @Inject()(implicit clock: Clock) e
       "end" -> localDate(
         invalidKey = "cf.form.error.end.date-number-invalid",
         endOfMonth = true
-      ).verifying(beforeCurrentDate("cf.form.error.end-future-date"))
+      ).verifying(beforeCurrentMonth("cf.form.error.end-future-date"))
         .verifying(checkDates("cf.form.error.endDate.date-earlier-than-system-start-date","cf.form.error.end.date-too-far-in-past"))
     )(CashTransactionDates.apply)(CashTransactionDates.unapply)
     )

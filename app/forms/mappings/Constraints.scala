@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,12 @@ trait Constraints {
 
   def beforeCurrentDate(errorKey:String): Constraint[LocalDate] = Constraint {
     case request if request.isAfter(currentDate)  =>
+      Invalid(ValidationError(errorKey))
+    case _ => Valid
+  }
+
+  def beforeCurrentMonth(errorKey:String): Constraint[LocalDate] = Constraint {
+    case request if request.getMonthValue > (currentDate.getMonthValue)  =>
       Invalid(ValidationError(errorKey))
     case _ => Valid
   }
