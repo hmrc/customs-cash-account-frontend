@@ -19,7 +19,7 @@ package forms.mappings
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
 import scala.util.{Failure, Success, Try}
 
 private[mappings] class LocalDateFormatter(
@@ -30,10 +30,20 @@ private[mappings] class LocalDateFormatter(
 
   private val fieldKeys: List[String] = List("month", "year")
 
+  val currentDate: LocalDate = LocalDateTime.now().toLocalDate
+
+  private def getEndDay(month: Int, year: Int, date: LocalDate) = {
+    if(month == currentDate.getMonthValue && year == currentDate.getYear){
+      currentDate.getDayOfMonth
+    } else {
+      date.lengthOfMonth()
+    }
+  }
+
   private def toDate(key: String, month: Int, year: Int): Either[Seq[FormError], LocalDate] = {
     Try(LocalDate.of(year, month, 1)) match {
       case Success(date) =>
-        Right(LocalDate.of(year, month, if (endOfMonth) date.lengthOfMonth() else 1))
+        Right(LocalDate.of(year, month, if (endOfMonth) getEndDay(month, year, date) else 1))
       case Failure(_) =>
         Left(Seq(FormError(key, invalidKey, args)))
     }
