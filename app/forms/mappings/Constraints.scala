@@ -16,6 +16,7 @@
 
 package forms.mappings
 
+import play.api.{Logger, LoggerLike}
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import uk.gov.hmrc.time.TaxYear
 import uk.gov.hmrc.time.TaxYear.taxYearFor
@@ -27,9 +28,12 @@ trait Constraints {
   lazy val etmpStatementsDate: LocalDate = LocalDate.of(2019, 10, 1)
   lazy val currentDate: LocalDate = LocalDateTime.now().toLocalDate
   lazy val dayOfMonthThatTaxYearStartsOn = 6
+  val log: LoggerLike = Logger(this.getClass)
 
   def beforeCurrentDate(errorKey:String): Constraint[LocalDate] = Constraint {
     case request if request.isAfter(currentDate)  =>
+      log.info("entered date in constraints: "+request)
+      log.info("current date in constraints: "+currentDate)
       Invalid(ValidationError(errorKey))
     case _ => Valid
   }
