@@ -16,6 +16,7 @@
 
 package forms.mappings
 
+import play.api.{Logger, LoggerLike}
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -30,10 +31,14 @@ private[mappings] class LocalDateFormatter(
 
   private val fieldKeys: List[String] = List("month", "year")
 
+  val log: LoggerLike = Logger(this.getClass)
+
   val currentDate: LocalDate = LocalDateTime.now().toLocalDate
 
   private def getEndDay(month: Int, year: Int, date: LocalDate) = {
     if(month == currentDate.getMonthValue && year == currentDate.getYear){
+      log.info("entered month: "+month+"; entered year: "+year)
+      log.info("current month: "+currentDate.getMonthValue+"; currentyear: "+ currentDate.getYear)
       currentDate.getDayOfMonth
     } else {
       date.lengthOfMonth()
