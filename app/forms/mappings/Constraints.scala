@@ -26,7 +26,7 @@ import java.time.{Clock, LocalDate, LocalDateTime, Period}
 trait Constraints {
 
   lazy val etmpStatementsDate: LocalDate = LocalDate.of(2019, 10, 1)
-  lazy val currentDate: LocalDate = LocalDateTime.now().toLocalDate
+  val currentDate: LocalDate = LocalDateTime.now().toLocalDate
   lazy val dayOfMonthThatTaxYearStartsOn = 6
   val log: LoggerLike = Logger(this.getClass)
 
