@@ -26,9 +26,10 @@ import java.time.{Clock, LocalDate, LocalDateTime, Period}
 trait Constraints {
 
   lazy val etmpStatementsDate: LocalDate = LocalDate.of(2019, 10, 1)
-  val currentDate: LocalDate = LocalDateTime.now().toLocalDate
   lazy val dayOfMonthThatTaxYearStartsOn = 6
   val log: LoggerLike = Logger(this.getClass)
+
+  def currentDate: LocalDate = LocalDateTime.now().toLocalDate
 
   def beforeCurrentDate(errorKey:String): Constraint[LocalDate] = Constraint {
     case request if request.isAfter(currentDate)  =>
