@@ -30,9 +30,7 @@ private[mappings] class LocalDateFormatter(
                                           ) extends Formatter[LocalDate] with Formatters {
 
   private val fieldKeys: List[String] = List("month", "year")
-
   val log: LoggerLike = Logger(this.getClass)
-
   val currentDate: LocalDate = LocalDateTime.now().toLocalDate
 
   private def getEndDay(month: Int, year: Int, date: LocalDate) = {
@@ -45,12 +43,10 @@ private[mappings] class LocalDateFormatter(
     }
   }
 
-  private def toDate(key: String, month: Int, year: Int): Either[Seq[FormError], LocalDate] = {
-    Try(LocalDate.of(year, month, 1)) match {
-      case Success(date) =>
-        Right(LocalDate.of(year, month, if (endOfMonth) getEndDay(month, year, date) else 1))
-      case Failure(_) =>
-        Left(Seq(FormError(key, invalidKey, args)))
+  private def toDate(key: String, day:Int, month: Int, year: Int): Either[Seq[FormError], LocalDate] = {
+    Try(LocalDate.of(year, month, day)) match {
+      case Success(date) => Right(LocalDate.of(year, month, day))
+      case Failure(_) => Left(Seq(FormError(key, invalidKey, args)))
     }
   }
 
@@ -64,9 +60,10 @@ private[mappings] class LocalDateFormatter(
     )
 
     for {
+      day <- int.bind(s"$key.day", data).right
       month <- int.bind(s"$key.month", data).right
       year <- int.bind(s"$key.year", data).right
-      date <- toDate(key, month, year).right
+      date <- toDate(key, day, month, year).right
     } yield date
   }
 
@@ -89,6 +86,7 @@ private[mappings] class LocalDateFormatter(
 
   override def unbind(key: String, value: LocalDate): Map[String, String] =
     Map(
+      s"$key.day" -> value.getDayOfMonth.toString,
       s"$key.month" -> value.getMonthValue.toString,
       s"$key.year" -> value.getYear.toString
     )

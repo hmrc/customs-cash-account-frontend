@@ -164,13 +164,15 @@ cf.cash-account.transactions.request.continue=Continue
 cf.cash-account.transactions.request.p=You can request cash account transactions dating back to October 2019.
 cf.cash-account.transactions.request.from=From what start date do you need transactions?
 cf.cash-account.transactions.request.to=To what end date do you need transactions?
-cf.cash-account.transactions.request.date.hint=For example, 3 2019.
+cf.cash-account.transactions.request.date.hint=For example, 31 3 2020.
+cf.cash-account.transactions.request.link.label=Back to cash account
+
+date.day=Day
 date.month=Month
 date.year=Year
-cf.cash-account.requested.csv.filename=Cash_Account_Transactions_{0}-{1}.CSV
-
-cf.cash-account.transactions.request.link.label=Back to cash account
 date.range = {0} to {1}.
+
+cf.cash-account.requested.csv.filename=Cash_Account_Transactions_{0}-{1}.CSV
 cf.cash-account.transactions.result.too.many.results=Your search returned too many results
 cf.cash-account.transactions.result.between=You requested transactions between
 cf.cash-account.transactions.result.search.again=Search again with a shorter date range

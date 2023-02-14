@@ -148,7 +148,6 @@ class CashAccountControllerSpec extends SpecBase {
       val messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest("", ""))
 
       running(app) {
-
         val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
         val result = route(app, request).value
         status(result) mustEqual OK

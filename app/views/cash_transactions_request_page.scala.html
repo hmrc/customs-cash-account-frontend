@@ -35,29 +35,28 @@
 
     @formHelper(action = controllers.routes.RequestTransactionsController.onSubmit(), 'autoComplete -> "off") {
         @errorSummary(form.errors,errorFieldName = None)
-
         @h1("cf.cash-account.transactions.request.heading")
         @p("cf.cash-account.transactions.request.p")
 
-        @inputDate(
-            form,
-            messages("cf.cash-account.transactions.request.from"),
-            legendClasses ="govuk-fieldset__legend--s",
-            hintText = Some(messages("cf.cash-account.transactions.request.date.hint")),
-            id = "start",
-            legendAsPageHeading = false,
-                    legendHiddenContent = Some(s"cf.cash-account.transactions.request.legend.hidden.start")
-        )
+            @inputDate(
+                form,
+                messages("cf.cash-account.transactions.request.from"),
+                legendClasses ="govuk-fieldset__legend--s",
+                hintText = Some(messages("cf.cash-account.transactions.request.date.hint")),
+                id = "start",
+                legendAsPageHeading = false,
+                legendHiddenContent = Some(s"cf.cash-account.transactions.request.legend.hidden.start")
+            )
 
-        @inputDate(
-            form,
-            messages("cf.cash-account.transactions.request.to"),
-            legendClasses ="govuk-fieldset__legend--s",
-            hintText = Some(messages("cf.cash-account.transactions.request.date.hint")),
-            id = "end",
-            legendAsPageHeading = false,
-            legendHiddenContent = Some(s"cf.cash-account.transactions.request.legend.hidden.end")
-        )
+            @inputDate(
+                form,
+                messages("cf.cash-account.transactions.request.to"),
+                legendClasses ="govuk-fieldset__legend--s",
+                hintText = Some(messages("cf.cash-account.transactions.request.date.hint")),
+                id = "end",
+                legendAsPageHeading = false,
+                legendHiddenContent = Some(s"cf.cash-account.transactions.request.legend.hidden.end")
+            )
         
         @button(messages("cf.cash-account.transactions.request.continue"))
     }

@@ -17,7 +17,6 @@
 @this(govukDateInput: GovukDateInput,
         span: components.span)
 
-
 @(
         form: Form[_],
         legendContent: String,
@@ -41,6 +40,13 @@
         )),
         id = id,
         items = Seq(
+            InputItem(
+                id = s"$id.day",
+                classes = "govuk-input--width-2",
+                name = s"$id.day",
+                label = Some(messages("date.day")),
+                value = form(s"$id.day").value
+            ),
             InputItem(
                 id = s"$id.month",
                 classes = "govuk-input--width-2",
