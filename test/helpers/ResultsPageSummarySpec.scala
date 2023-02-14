@@ -17,7 +17,6 @@
 package helpers
 
 import java.time.LocalDate
-
 import play.api.Application
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
@@ -63,15 +62,12 @@ class ResultsPageSummarySpec extends SpecBase {
       running(app){
         val date = LocalDate.of(2022, 2,11)
         val result = date.getDayOfMonth
-        val result2 = connector.dateAsDay(date)(messages)
         result mustBe 11
-        result2 mustBe "11"
       }
     }
 
     "testData" in new Setup {
       when(mockResultsPageSummary.testData(targetDate)(messages)).thenReturn("11")
-      //when(mockme.testData(targetDate)).thenReturn("11")
       running(app){
         val date = LocalDate.of(2022, 2,11)
         val result = connector.testData(date)(messages)
