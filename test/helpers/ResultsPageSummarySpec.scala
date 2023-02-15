@@ -40,7 +40,7 @@ class ResultsPageSummarySpec extends SpecBase {
 
     "return the month when dateAsMonth is called" in new Setup {
       when(mockResultsPageSummary.dateAsMonth(targetDate)(messages)).thenReturn("March")
-      running(app){
+      running(app) {
         val date = LocalDate.of(2022, 3,9)
         val result = connector.dateAsMonth(date)(messages)
         result mustBe "March"
@@ -49,7 +49,7 @@ class ResultsPageSummarySpec extends SpecBase {
 
     "return the day of the month with leading 0 if less than 10" in new Setup {
       when(mockResultsPageSummary.dateAsDay(targetDate)).thenReturn("09")
-      running(app){
+      running(app) {
         val date = LocalDate.of(2022, 2,9)
         val result = connector.dateAsDay(date)
         result mustBe "09"
@@ -58,7 +58,7 @@ class ResultsPageSummarySpec extends SpecBase {
 
     "return the day of the month without leading 0 if equal to 10" in new Setup {
       when(mockResultsPageSummary.dateAsDay(targetDate)).thenReturn("10")
-      running(app){
+      running(app) {
         val date = LocalDate.of(2022, 2,10)
         val result = connector.dateAsDay(date)
         result mustBe "10"
@@ -67,7 +67,7 @@ class ResultsPageSummarySpec extends SpecBase {
 
     "return the day of the month without leading 0 if greater than 10" in new Setup {
       when(mockResultsPageSummary.dateAsDay(targetDate)).thenReturn("11")
-      running(app){
+      running(app) {
         val date = LocalDate.of(2022, 2,11)
         val result = connector.dateAsDay(date)
         result mustBe "11"

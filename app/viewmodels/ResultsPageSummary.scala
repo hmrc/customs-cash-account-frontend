@@ -51,7 +51,7 @@ class ResultsPageSummary(from: LocalDate, to: LocalDate)(implicit messages: Mess
 
   def dateAsDay(date: LocalDate): String = {
     if (date.getDayOfMonth >= 10) s"${date.getDayOfMonth}"
-    else s"${date.getDayOfMonth}"
+    else s"0${date.getDayOfMonth}"
   }
 
   def dateAsMonth(date: LocalDate)(implicit messages: Messages): String = {
