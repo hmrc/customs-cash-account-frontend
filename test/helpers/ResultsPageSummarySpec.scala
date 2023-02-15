@@ -30,7 +30,7 @@ class ResultsPageSummarySpec extends SpecBase {
 
   "LocalDateFormatter" should {
     "Date should format correctly" in new Setup {
-      when(mockResultsPageSummary.testData(targetDate)(messages)).thenReturn("10 Feb 20202")
+      when(mockResultsPageSummary.formatDate(targetDate)(messages)).thenReturn("10 Feb 20202")
       running(app) {
         val date = LocalDate.of(2022, 2, 10)
         val result = connector.formatDate(date)(messages)
@@ -38,38 +38,38 @@ class ResultsPageSummarySpec extends SpecBase {
       }
     }
 
+    "return the month when dateAsMonth is called" in new Setup {
+      when(mockResultsPageSummary.dateAsMonth(targetDate)(messages)).thenReturn("March")
+      running(app){
+        val date = LocalDate.of(2022, 3,9)
+        val result = connector.dateAsMonth(date)(messages)
+        result mustBe "March"
+      }
+    }
+
     "return the day of the month with leading 0 if less than 10" in new Setup {
-      when(mockResultsPageSummary.testData(targetDate)(messages)).thenReturn("09")
+      when(mockResultsPageSummary.dateAsDay(targetDate)).thenReturn("09")
       running(app){
         val date = LocalDate.of(2022, 2,9)
-        val result = connector.dateAsDay(date)(messages)
+        val result = connector.dateAsDay(date)
         result mustBe "09"
       }
     }
 
     "return the day of the month without leading 0 if equal to 10" in new Setup {
-      when(mockResultsPageSummary.testData(targetDate)(messages)).thenReturn("10")
+      when(mockResultsPageSummary.dateAsDay(targetDate)).thenReturn("10")
       running(app){
         val date = LocalDate.of(2022, 2,10)
-        val result = connector.dateAsDay(date)(messages)
+        val result = connector.dateAsDay(date)
         result mustBe "10"
       }
     }
 
     "return the day of the month without leading 0 if greater than 10" in new Setup {
-      when(mockResultsPageSummary.testData(targetDate)(messages)).thenReturn("11")
+      when(mockResultsPageSummary.dateAsDay(targetDate)).thenReturn("11")
       running(app){
         val date = LocalDate.of(2022, 2,11)
-        val result = date.getDayOfMonth
-        result mustBe 11
-      }
-    }
-
-    "testData" in new Setup {
-      when(mockResultsPageSummary.testData(targetDate)(messages)).thenReturn("11")
-      running(app){
-        val date = LocalDate.of(2022, 2,11)
-        val result = connector.testData(date)(messages)
+        val result = connector.dateAsDay(date)
         result mustBe "11"
       }
     }

@@ -49,13 +49,11 @@ class ResultsPageSummary(from: LocalDate, to: LocalDate)(implicit messages: Mess
   def formatDate(date: LocalDate)(implicit messages: Messages): String =
     s"${dateAsDay(date)} ${dateAsMonth(date)} ${date.getYear}"
 
-  def dateAsDay(date: LocalDate)(implicit messages: Messages): String = {
+  def dateAsDay(date: LocalDate): String = {
     if (date.getDayOfMonth >= 10) s"${date.getDayOfMonth}"
-    else s"0${date.getDayOfMonth}"
+    else s"${date.getDayOfMonth}"
   }
 
   def dateAsMonth(date: LocalDate)(implicit messages: Messages): String = {
     messages(s"month.${date.getMonthValue}")}
-
-  def testData(date: LocalDate)(implicit messages: Messages): String = "5"
 }
