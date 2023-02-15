@@ -35,7 +35,6 @@
 
     @formHelper(action = controllers.routes.RequestTransactionsController.onSubmit(), 'autoComplete -> "off") {
         @errorSummary(form.errors,errorFieldName = None)
-
         @h1("cf.cash-account.transactions.request.heading")
         @p("cf.cash-account.transactions.request.p")
 
@@ -46,7 +45,7 @@
             hintText = Some(messages("cf.cash-account.transactions.request.date.hint")),
             id = "start",
             legendAsPageHeading = false,
-                    legendHiddenContent = Some(s"cf.cash-account.transactions.request.legend.hidden.start")
+            legendHiddenContent = Some(s"cf.cash-account.transactions.request.legend.hidden.start")
         )
 
         @inputDate(

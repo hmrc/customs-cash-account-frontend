@@ -34,18 +34,26 @@ class ResultsPageSummary(from: LocalDate, to: LocalDate)(implicit messages: Mess
       summaryListRow(
         value = HtmlFormat.escape(
           messages("date.range",
-            dateAsMonthAndYear(dates.start),
-            dateAsMonthAndYear(dates.end))
+            formatDate(dates.start),
+            formatDate(dates.end))
         ).toString,
         secondValue = None,
         actions = Actions(items = Seq(ActionItem(
-          href = controllers.routes.DownloadCsvController.downloadRequestedCsv(None, RequestedDateRange(dates.start,dates.end)).url,
+          href = controllers.routes.DownloadCsvController.downloadRequestedCsv(
+            None, RequestedDateRange(dates.start,dates.end)).url,
           content = span(messages("cf.cash-account.detail.csv")),
           visuallyHiddenText = Some(messages("cf.cash-account.detail.csv-definition"))
         ))))
   }
 
-  def dateAsMonthAndYear(date: LocalDate)(implicit messages: Messages): String = s"${dateAsMonth(date)} ${date.getYear}"
+  def formatDate(date: LocalDate)(implicit messages: Messages): String =
+    s"${dateAsDay(date)} ${dateAsMonth(date)} ${date.getYear}"
 
-  def dateAsMonth(date: LocalDate)(implicit messages: Messages): String = messages(s"month.${date.getMonthValue}")
+  def dateAsDay(date: LocalDate): String = {
+    if (date.getDayOfMonth >= 10) s"${date.getDayOfMonth}"
+    else s"0${date.getDayOfMonth}"
+  }
+
+  def dateAsMonth(date: LocalDate)(implicit messages: Messages): String = {
+    messages(s"month.${date.getMonthValue}")}
 }

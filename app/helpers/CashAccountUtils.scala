@@ -33,7 +33,7 @@ class CashAccountUtils @Inject()(dateTimeService: DateTimeService, appConfig: Ap
   }
 
   def filenameRequestCashTransactions(from:LocalDate, to:LocalDate)(implicit messages: Messages): String = {
-    messages("cf.cash-account.requested.csv.filename", dateAsMonthAndYear(from) , dateAsMonthAndYear(to))
+    messages("cf.cash-account.requested.csv.filename", dateFormat(from) , dateFormat(to))
   }
 
   def makeHumanReadable(columnName: String)(implicit messages: Messages): String = {
@@ -42,7 +42,7 @@ class CashAccountUtils @Inject()(dateTimeService: DateTimeService, appConfig: Ap
     messages(messageKey)
   }
 
-  def dateAsMonthAndYear(date: LocalDate)(implicit messages: Messages): String = DateTimeFormatter.ofPattern("yyyyMM").format(date)
+  def dateFormat(date: LocalDate)(implicit messages: Messages): String = DateTimeFormatter.ofPattern("ddMMyyyy").format(date)
 
   def transactionDateRange(): (LocalDate, LocalDate) = {
     val to = dateTimeService.localDateTime().toLocalDate

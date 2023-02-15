@@ -164,12 +164,14 @@ cf.cash-account.transactions.request.p=Gallwch wneud cais am drafodion cyfrif ar
 cf.cash-account.transactions.request.from=O ba ddyddiad dechrau y mae angen trafodion arnoch?
 cf.cash-account.transactions.request.to=I ba ddyddiad dod i ben y mae angen trafodion arnoch?
 cf.cash-account.transactions.request.date.hint=Er enghraifft, 3 2019.
+cf.cash-account.transactions.request.link.label=Yn ôl i ‘Cyfrif arian parod’
+
+date.day=Diwrnod
 date.month=Mis
 date.year=Blwyddyn
-cf.cash-account.requested.csv.filename=Trafodion_Cyfrif_Arian_Parod_{0}-{1}.CSV
-
-cf.cash-account.transactions.request.link.label=Yn ôl i ‘Cyfrif arian parod’
 date.range = {0} i fis {1}.
+
+cf.cash-account.requested.csv.filename=Trafodion_Cyfrif_Arian_Parod_{0}-{1}.CSV
 cf.cash-account.transactions.result.too.many.results=Mae gormod o ganlyniadau yn sgil eich chwiliad
 cf.cash-account.transactions.result.between=Gwnaethoch gais i gael y trafodion rhwng
 cf.cash-account.transactions.result.search.again=Chwiliwch eto gydag ystod lai o ran dyddiadau
