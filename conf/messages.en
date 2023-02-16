@@ -170,7 +170,7 @@ cf.cash-account.transactions.request.link.label=Back to cash account
 date.day=Day
 date.month=Month
 date.year=Year
-date.range = {0} to {1}.
+date.range = {0} to {1}
 
 cf.cash-account.requested.csv.filename=Cash_Account_Transactions_{0}-{1}.CSV
 cf.cash-account.transactions.result.too.many.results=Your search returned too many results
