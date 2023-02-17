@@ -36,7 +36,7 @@ class ResultsPageSummary(from: LocalDate, to: LocalDate)(implicit messages: Mess
           messages("date.range",
             formatDate(dates.start),
             formatDate(dates.end))
-        ).toString,
+        ).toString.replace(".",""),
         secondValue = None,
         actions = Actions(items = Seq(ActionItem(
           href = controllers.routes.DownloadCsvController.downloadRequestedCsv(
