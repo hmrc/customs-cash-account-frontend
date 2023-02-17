@@ -169,7 +169,7 @@ cf.cash-account.transactions.request.link.label=Yn ôl i ‘Cyfrif arian parod�
 date.day=Diwrnod
 date.month=Mis
 date.year=Blwyddyn
-date.range = {0} i fis {1}
+date.range = {0} i fis {1}.
 
 cf.cash-account.requested.csv.filename=Trafodion_Cyfrif_Arian_Parod_{0}-{1}.CSV
 cf.cash-account.transactions.result.too.many.results=Mae gormod o ganlyniadau yn sgil eich chwiliad
