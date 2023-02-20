@@ -25,14 +25,16 @@ import helpers.CashAccountUtils
 import models._
 import models.request.IdentifierRequest
 import org.slf4j.LoggerFactory
-import play.api.i18n.{I18nSupport}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.CashTransactionsViewModel
 import views.html._
-
 import java.time.LocalDate
+import scala.concurrent._
+import apple.laf.JRSUIUtils.InternalFrame
 import javax.inject.Inject
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class CashAccountController @Inject()(
@@ -51,6 +53,7 @@ class CashAccountController @Inject()(
   private val logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
 
   def showAccountDetails(page: Option[Int]): Action[AnyContent] = authenticate.async { implicit request =>
+
     val eventualMaybeCashAccount = apiConnector.getCashAccount(request.eori)
     val result = for {
       cashAccount <- fromOptionF[Future, Result, CashAccount](eventualMaybeCashAccount, NotFound(eh.notFoundTemplate))
