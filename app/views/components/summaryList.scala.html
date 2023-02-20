@@ -18,16 +18,17 @@
 
 @this()
 
-@(summary: ResultsPageSummary)(implicit messages: Messages)
+@(summary: ResultsPageSummary, fullstop: Boolean = true)(implicit messages: Messages)
 
 <dl class="govuk-summary-list govuk-!margin-top-7 govuk-!-padding-bottom-7">
     <div class="govuk-summary-list__row govuk-!-margin-bottom-9">
         <dt class="govuk-summary-list__value">
-            @summary.rows.value.content.asHtml
+            @summary.rows(fullstop).value.content.asHtml
         </dt>
         <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="@summary.rows.actions.head.items.head.href">
-                <span class="govuk-visually-hidden"> @summary.rows.actions.head.items.head.visuallyHiddenText</span>
+            <a class="govuk-link" href="@summary.rows(fullstop).actions.head.items.head.href">
+                <span class="govuk-visually-hidden">
+                    @summary.rows(fullstop).actions.head.items.head.visuallyHiddenText</span>
                 <span> @Html(messages("cf.cash-account.detail.csv.download"))</span>
             </a>
         </dd>
