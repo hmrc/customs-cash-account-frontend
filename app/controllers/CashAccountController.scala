@@ -31,10 +31,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.CashTransactionsViewModel
 import views.html._
 import java.time.LocalDate
-import scala.concurrent._
-import apple.laf.JRSUIUtils.InternalFrame
 import javax.inject.Inject
-
 import scala.concurrent.{ExecutionContext, Future}
 
 class CashAccountController @Inject()(
