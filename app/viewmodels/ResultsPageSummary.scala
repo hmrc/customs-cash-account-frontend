@@ -21,22 +21,22 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.Aliases.ActionItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Actions
-
 import java.time.LocalDate
 
 class ResultsPageSummary(from: LocalDate, to: LocalDate)(implicit messages: Messages) extends SummaryListRowHelper {
 
-  def rows:SummaryListRow = {
-    cashTransactionsResultRow(CashTransactionDates(from, to))
+  def rows(fullstop: Boolean = true):SummaryListRow = {
+    cashTransactionsResultRow(CashTransactionDates(from, to), fullstop)
   }
 
-  def cashTransactionsResultRow(dates: CashTransactionDates): SummaryListRow = {
+  def cashTransactionsResultRow(dates: CashTransactionDates, fullstop: Boolean): SummaryListRow = {
       summaryListRow(
         value = HtmlFormat.escape(
-          messages("date.range",
-            formatDate(dates.start),
-            formatDate(dates.end))
-        ).toString.replace(".",""),
+          if(fullstop) {
+            rowResult(dates)
+          } else {
+            rowResultWithoutFullStop(dates)
+          }).toString(),
         secondValue = None,
         actions = Actions(items = Seq(ActionItem(
           href = controllers.routes.DownloadCsvController.downloadRequestedCsv(
@@ -45,6 +45,12 @@ class ResultsPageSummary(from: LocalDate, to: LocalDate)(implicit messages: Mess
           visuallyHiddenText = Some(messages("cf.cash-account.detail.csv-definition"))
         ))))
   }
+
+  def rowResult(dates: CashTransactionDates): String = {
+    messages("date.range", formatDate(dates.start),formatDate(dates.end))}
+
+  def rowResultWithoutFullStop(dates: CashTransactionDates) = {
+    messages("date.range", formatDate(dates.start),formatDate(dates.end)).replace(".","")}
 
   def formatDate(date: LocalDate)(implicit messages: Messages): String =
     s"${dateAsDay(date)} ${dateAsMonth(date)} ${date.getYear}"

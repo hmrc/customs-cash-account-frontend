@@ -31,6 +31,6 @@
     help = true
 ) {
     @h1("cf.cash-account.transactions.result.too.many.results")
-    @inset("cf.cash-account.transactions.result.between", additionalContent = Some(summary.rows.value.content.asHtml))
+    @inset("cf.cash-account.transactions.result.between", additionalContent = Some(summary.rows(true).value.content.asHtml))
     @link("cf.cash-account.transactions.result.search.again", controllers.routes.RequestTransactionsController.onPageLoad.url)
 }

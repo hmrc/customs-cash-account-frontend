@@ -30,5 +30,5 @@
     help = true
 ) {
     @h1("cf.cash-account.transactions.result.no.transactions")
-    @inset("cf.cash-account.transactions.result.no.data", additionalContent = Some(summary.rows.value.content.asHtml))
+    @inset("cf.cash-account.transactions.result.no.data", additionalContent = Some(summary.rows(true).value.content.asHtml))
 }
