@@ -184,6 +184,7 @@ cf.cash-account.transactions.result.download.transactions=You must download your
 
 cf.form.error.start.date-too-far-in-past=The from date cannot be older than 6 years from now.
 cf.form.error.end.date-too-far-in-past=The to date cannot be older than 6 years from now.
+cf.form.error.year.length = Year must include 4 numbers
 cf.form.error.startDate.date-earlier-than-system-start-date=The from date must be on or after October 2019
 cf.form.error.endDate.date-earlier-than-system-start-date=The to date must be on or after October 2019
 cf.form.error.start.date-number-invalid=Enter a valid from date
