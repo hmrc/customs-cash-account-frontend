@@ -16,12 +16,12 @@
 
 @this(govukErrorSummary: GovukErrorSummary)
 
-@(errors: Seq[FormError], errorFieldName: Option[String])(implicit messages: Messages)
+@(errors: Seq[FormError], errorFieldName: Option[String])(implicit messages: Messsages)
 
 @if(errors.nonEmpty) {
     @defining(errors.map { error =>
         ErrorLink(
-            href = Some(s"#${errorFieldName.getOrElse(s"${error.key}")}"),
+            href = Some(s"#${errorFieldName.getOrElse(s"${error.key}.month")}"),
             content = Text(messages(error.message, error.args:_*))
         )
     }) { errorLinks =>
