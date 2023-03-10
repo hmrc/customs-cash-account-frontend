@@ -16,7 +16,7 @@
 
 @this(govukErrorSummary: GovukErrorSummary)
 
-@(errors: Seq[FormError], errorFieldName: Option[String])(implicit messages: Messsages)
+@(errors: Seq[FormError], errorFieldName: Option[String])(implicit messages: Messages)
 
 @if(errors.nonEmpty) {
     @defining(errors.map { error =>
