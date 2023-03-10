@@ -61,13 +61,13 @@ class RequestedTransactionsController @Inject()(resultView: cash_transactions_re
     }
   }
 
-  private def showAccountWithTransactionDetails(account: CashAccount, from: LocalDate, to: LocalDate)(implicit req: IdentifierRequest[AnyContent]): Future[Result] = {
+  private def showAccountWithTransactionDetails(account: CashAccount, from: LocalDate, to: LocalDate)(implicit req: IdentifierRequest[AnyContent], appConfig: AppConfig): Future[Result] = {
     apiConnector.retrieveHistoricCashTransactions(account.number, from, to).map {
       case Left(errorResponse) =>
         errorResponse match {
           case NoTransactionsAvailable => Ok(noResults(new ResultsPageSummary(from, to)))
           case TooManyTransactionsRequested => Ok(tooManyResults(new ResultsPageSummary(from, to), controllers.routes.RequestTransactionsController.onPageLoad.url))
-          case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account)))
+          case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
         }
       case Right(_) =>
         Ok(resultView(new ResultsPageSummary(from, to), controllers.routes.CashAccountController.showAccountDetails(None).url))

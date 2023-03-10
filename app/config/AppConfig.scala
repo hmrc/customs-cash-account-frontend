@@ -47,6 +47,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val numberOfMonthsOfCashTransactionsToShow: Int = config.get[Int]("application.cash-account.numberOfMonthsOfTransactionsToShow")
   lazy val numberOfDaysToShow: Int = config.get[Int]("application.cash-account.numberOfDaysToShow")
   lazy val fixedTimeTesting: Boolean = config.get[Boolean]("features.fixed-systemdate-for-tests")
+  lazy val transactionsTimeoutFlag: Boolean = config.get[Boolean]("features.transactions-timeout")
 
   lazy val cashAccountInterval: Int = config.get[Int]("application.cash-account.updateTime.intervalMilliseconds")
   lazy val cashAccountTimeout: Int = config.get[Int]("application.cash-account.updateTime.timeoutMilliseconds")
