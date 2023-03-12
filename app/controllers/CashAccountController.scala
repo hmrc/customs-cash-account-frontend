@@ -64,7 +64,7 @@ class CashAccountController @Inject()(
     }
   }
 
-  private def showAccountWithTransactionDetails(account: CashAccount, from: LocalDate, to: LocalDate, page: Option[Int])(implicit req: IdentifierRequest[AnyContent]): Future[Result] = {
+  private def showAccountWithTransactionDetails(account: CashAccount, from: LocalDate, to: LocalDate, page: Option[Int])(implicit req: IdentifierRequest[AnyContent], appConfig: AppConfig): Future[Result] = {
     apiConnector.retrieveCashTransactions(account.number, from, to).map {
       case Left(errorResponse) => errorResponse match {
         case NoTransactionsAvailable =>
@@ -74,7 +74,7 @@ class CashAccountController @Inject()(
             case None => Ok(noTransactions(CashAccountViewModel(req.eori, account)))
           }
         case TooManyTransactionsRequested => Ok(showAccountsExceededThreshold(CashAccountViewModel(req.eori, account)))
-        case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account)))
+        case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
       }
       case Right(cashTransactions) =>
         if (cashTransactions.availableTransactions) {

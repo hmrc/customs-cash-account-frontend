@@ -97,7 +97,7 @@ class CashAccountControllerSpec extends SpecBase {
         val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
         val result = route(app, request).value
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(CashAccountViewModel(eori, cashAccount))(request, messages, appConfig).toString()
+        contentAsString(result) mustEqual view(CashAccountViewModel(eori, cashAccount), appConfig.transactionsTimeoutFlag)(request, messages, appConfig).toString()
 
       }
     }
