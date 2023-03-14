@@ -17,10 +17,9 @@
 package utils
 
 import java.time.{LocalDate, LocalDateTime}
-
 import org.scalatest.matchers.should.Matchers._
 import forms.mappings.Constraints
-import play.api.data.validation.Valid
+import play.api.data.validation.{Invalid, Valid, ValidationError}
 
 class ConstraintsSpec extends SpecBase with Constraints {
 
@@ -38,18 +37,35 @@ class ConstraintsSpec extends SpecBase with Constraints {
         val result = beforeCurrentMonth("error.min").apply(ld)
         result mustBe Valid
       }
-    }
 
-    "minTaxYear" must {
-      "return valid result is years are within 6" in new Setup {
+      "return valid result for current date" in new Setup {
         val result = beforeCurrentMonth("error.min").apply(ld)
         result mustBe Valid
       }
 
-      "return invalid result is years are within 6" in {
-        def oldDate: LocalDate = LocalDate.of(2008,1,1)
+      "return valid result for date in past" in {
+        def oldDate: LocalDate = LocalDate.of(2008, 1, 1)
         val result = beforeCurrentMonth("error.min").apply(oldDate)
         result mustBe Valid
+      }
+
+      "return invalid result is years are within 6" in new Setup {
+        def monthOld: LocalDate = LocalDateTime.now().minusMonths(5).toLocalDate
+        val result = beforeCurrentMonth("error.min").apply(monthOld)
+        result mustBe Invalid(List(ValidationError(List("error.min"))))
+      }
+    }
+
+    "beforeCurrentDate" must {
+      "return Valid if request before or equal to current date" in new Setup {
+        val result = beforeCurrentDate("error.min").apply(ld)
+        result mustBe Valid
+      }
+
+      "return invalid if request is after current date" in new Setup {
+        def futureMonth: LocalDate = LocalDateTime.now().plusMonths(5).toLocalDate
+        val result = beforeCurrentDate("error.min").apply(futureMonth)
+        result mustBe Invalid(List(ValidationError(List("error.min"))))
       }
     }
   }
