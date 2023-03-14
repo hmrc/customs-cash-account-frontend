@@ -31,7 +31,7 @@ trait Constraints {
   def currentDate: LocalDate = LocalDateTime.now().toLocalDate
 
   def beforeCurrentDate(errorKey:String): Constraint[LocalDate] = Constraint {
-    case request if request.isAfter(currentDate)  =>
+    case request if (request.isAfter(currentDate) && request.getYear.toString.length() == 4) =>
       log.info("entered date in constraints: "+request)
       log.info("current date in constraints: "+currentDate)
       Invalid(ValidationError(errorKey))
