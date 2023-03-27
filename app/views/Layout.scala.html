@@ -23,6 +23,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcLayout, HmrcReportTechnicalIssueHelper}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.timeoutdialog.TimeoutDialog
 @import views.html.helper.CSPNonce
+@import views.html.components.fullWidthMainContent
 
 @this(appConfig: AppConfig,
         hmrcLayout: HmrcLayout,
@@ -31,8 +32,8 @@
         hmrcTimeoutDialog: HmrcTimeoutDialog,
         h2: components.h2,
         p: components.p,
-        twoThirdsMainContent: TwoThirdsMainContent
-
+        twoThirdsMainContent: TwoThirdsMainContent,
+        fullWidthMainContent: fullWidthMainContent
 )
 
 @(pageTitle: Option[String] = None,
@@ -86,7 +87,7 @@
     nonce = CSPNonce.get,
     backLinkUrl = backLink,
     additionalHeadBlock = Some(additionalHead),
-    mainContentLayout = if(fullWidth) None else Some(twoThirdsMainContent(_)),
+    mainContentLayout = Some(if(fullWidth) fullWidthMainContent(_) else twoThirdsMainContent(_)),
     phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent))),
     isWelshTranslationAvailable = welshToggle,
     accessibilityStatementUrl = Some("/accessibility-statement/customs-financials")
