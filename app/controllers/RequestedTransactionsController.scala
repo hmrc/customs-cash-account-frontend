@@ -22,7 +22,7 @@ import config.{AppConfig, ErrorHandler}
 import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested}
 import controllers.actions.IdentifierAction
 import models.request.IdentifierRequest
-import models.{CashAccount, CashAccountViewModel}
+import models.{CashAccount, CashAccountViewModel, RequestedDateRange}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.RequestedTransactionsCache
@@ -66,11 +66,17 @@ class RequestedTransactionsController @Inject()(resultView: cash_transactions_re
       case Left(errorResponse) =>
         errorResponse match {
           case NoTransactionsAvailable => Ok(noResults(new ResultsPageSummary(from, to)))
-          case TooManyTransactionsRequested => Ok(tooManyResults(new ResultsPageSummary(from, to), controllers.routes.RequestTransactionsController.onPageLoad.url))
+          case TooManyTransactionsRequested => Redirect(routes.RequestedTransactionsController.tooManyTransactionsRequested(RequestedDateRange(from,to)))
           case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
         }
       case Right(_) =>
         Ok(resultView(new ResultsPageSummary(from, to), controllers.routes.CashAccountController.showAccountDetails(None).url))
     }
   }
+
+
+ def tooManyTransactionsRequested(dateRange: RequestedDateRange): Action[AnyContent] = identify { implicit req =>
+    Ok(tooManyResults(new ResultsPageSummary(dateRange.from, dateRange.to), controllers.routes.RequestTransactionsController.onPageLoad.url))
+  }
+
 }
