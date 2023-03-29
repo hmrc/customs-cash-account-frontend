@@ -32,7 +32,6 @@ class ResultsPageSummarySpec extends SpecBase {
     "Date should format correctly" in new Setup {
       when(mockResultsPageSummary.formatDate(targetDate)(messages)).thenReturn("10 Feb 2022")
       running(app) {
-        val date = LocalDate.of(2022, 2, 10)
         val result = connector.formatDate(targetDate)(messages)
         result mustBe "10 Feb 2022"
       }

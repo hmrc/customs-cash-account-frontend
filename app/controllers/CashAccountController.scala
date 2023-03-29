@@ -67,13 +67,12 @@ class CashAccountController @Inject()(
   private def showAccountWithTransactionDetails(account: CashAccount, from: LocalDate, to: LocalDate, page: Option[Int])(implicit req: IdentifierRequest[AnyContent], appConfig: AppConfig): Future[Result] = {
     apiConnector.retrieveCashTransactions(account.number, from, to).map {
       case Left(errorResponse) => errorResponse match {
-        case NoTransactionsAvailable =>
-          account.balances.AvailableAccountBalance match {
+        case NoTransactionsAvailable => account.balances.AvailableAccountBalance match {
             case Some(v) if v == 0 => Ok(noTransactions(CashAccountViewModel(req.eori, account)))
             case Some(_) => Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
             case None => Ok(noTransactions(CashAccountViewModel(req.eori, account)))
           }
-        case TooManyTransactionsRequested => Ok(showAccountsExceededThreshold(CashAccountViewModel(req.eori, account)))
+        case TooManyTransactionsRequested => Redirect(routes.CashAccountController.tooManyTransactions(req.eori))
         case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
       }
       case Right(cashTransactions) =>
@@ -83,6 +82,11 @@ class CashAccountController @Inject()(
           Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
         }
     }
+  }
+
+  def tooManyTransactions(eori: String):Action[AnyContent] = authenticate { implicit request =>
+    Ok(showAccountsExceededThreshold(CashAccountViewModel(
+      eori, CashAccount("","",AccountStatusOpen,CDSCashBalance(Option(1))))))
   }
 
   def showAccountUnavailable: Action[AnyContent] = authenticate { implicit req =>

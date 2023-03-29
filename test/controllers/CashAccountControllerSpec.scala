@@ -28,7 +28,6 @@ import services.AuditingService
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
 import views.html.{cash_account_no_transactions, cash_account_no_transactions_with_balance, cash_account_transactions_not_available}
-
 import java.time.LocalDate
 import scala.concurrent.Future
 import scala.util.Random
@@ -82,7 +81,6 @@ class CashAccountControllerSpec extends SpecBase {
 
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(UnknownException)))
-
 
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
@@ -215,7 +213,6 @@ class CashAccountControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(TooManyTransactionsRequested)))
 
-
       val app = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
@@ -224,8 +221,8 @@ class CashAccountControllerSpec extends SpecBase {
 
         val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
         val result = route(app, request).value
-        status(result) mustEqual OK
-        contentAsString(result) must include regex "There are too many transactions from the last 6 months to display consecutively"
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.CashAccountController.tooManyTransactions("exampleEori").url
       }
     }
 
@@ -281,7 +278,6 @@ class CashAccountControllerSpec extends SpecBase {
         }
       }
     }
-
   }
 
   "showAccountUnavailable" must {
@@ -291,7 +287,6 @@ class CashAccountControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-
         val request = FakeRequest(GET, routes.CashAccountController.showAccountUnavailable.url)
         val result = route(app, request).value
         status(result) mustEqual OK
@@ -306,7 +301,6 @@ class CashAccountControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-
         val request = FakeRequest(GET, routes.DownloadCsvController.showUnableToDownloadCSV.url)
         val result = route(app, request).value
         status(result) mustEqual OK
@@ -324,8 +318,10 @@ class CashAccountControllerSpec extends SpecBase {
     val mockAuditingservice = mock[AuditingService]
 
     val cashAccount = CashAccount(cashAccountNumber, eori, AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))
+
     val listOfPendingTransactions =
-      Seq(Declaration("pendingDeclarationID", "pendingDeclarantEORINumber", Some("pendingDeclarantReference"), LocalDate.parse("2020-07-21"), -100.00, Nil))
+      Seq(Declaration("pendingDeclarationID", "pendingDeclarantEORINumber",
+        Some("pendingDeclarantReference"), LocalDate.parse("2020-07-21"), -100.00, Nil))
 
     val fromDate = LocalDate.parse("2019-10-08")
     val toDate = LocalDate.parse("2020-04-08")
@@ -346,13 +342,9 @@ class CashAccountControllerSpec extends SpecBase {
   }
 
   def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
-
   def randomFloat: Float = Random.nextFloat()
-
   def randomLong: Long = Random.nextLong()
-
   def randomBigDecimal: BigDecimal = BigDecimal(randomFloat.toString)
-
   def randomLocalDate: LocalDate = LocalDate.now().minusMonths(Random.nextInt(36))
 
   def randomCashTransaction(howMany: Int): CashTransactions =
@@ -375,12 +367,8 @@ class CashAccountControllerSpec extends SpecBase {
   val types = Seq("Payment", "Withdrawal", "Transfer")
 
   def randomTransactions(howMany: Int): Seq[Transaction] = List.fill(howMany)(randomTransaction)
-
   def randomTransaction: Transaction = Transaction(randomBigDecimal, Transfer, None)
-
   def randomDeclarations(howMany: Int): Seq[Declaration] = List.fill(howMany)(randomDeclaration)
-
   def randomPendingDailyStatements(howMany: Int): Seq[Declaration] = List.fill(howMany)(randomDeclaration)
-
   def randomCashDailyStatements(howMany: Int): Seq[CashDailyStatement] = List.fill(howMany)(randomCashDailyStatement)
 }

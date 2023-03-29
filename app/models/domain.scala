@@ -24,7 +24,6 @@ package object domain {
   type CAN = String
   type MRN = String
 
-
   implicit def optionBindable: PathBindable[Option[LinkId]] = new PathBindable[Option[LinkId]] {
     def bind(key: String, value: String): Either[String, Option[LinkId]] =
       implicitly[PathBindable[LinkId]].
