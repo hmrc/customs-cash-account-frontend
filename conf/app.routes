@@ -9,6 +9,7 @@ GET         /request-cash-transactions        controllers.RequestTransactionsCon
 POST        /request-cash-transactions        controllers.RequestTransactionsController.onSubmit()
 
 GET         /requested-cash-transactions      controllers.RequestedTransactionsController.onPageLoad()
+GET         /too-many-requested-cash-transactions      controllers.RequestedTransactionsController.tooManyTransactionsRequested(range: models.RequestedDateRange)
 
 GET         /account-unavailable              controllers.CashAccountController.showAccountUnavailable
 GET         /not-subscribed-for-cds           controllers.UnauthorisedController.onPageLoad
