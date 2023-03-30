@@ -53,6 +53,16 @@ class ResultsPageSummarySpec extends SpecBase {
       }
     }
 
+    "return the day of the month with leading 0 if getDayOfMonth is less than 10" in new Setup {
+      val nineDate = LocalDate.of(2022, 3,9)
+      when(mockResultsPageSummary.dateAsDay(nineDate)).thenReturn("09")
+
+      running(app) {
+        val result = connector.dateAsDay(nineDate)
+        result mustBe "09"
+      }
+    }
+
     "return the day of the month without leading 0 if equal to 10" in new Setup {
       when(mockResultsPageSummary.dateAsDay(targetDate)).thenReturn("10")
       running(app) {
