@@ -123,7 +123,27 @@ class RequestedTransactionsControllerSpec extends SpecBase {
     running(app) {
       val result = route(app, request).value
       status(result) mustBe OK
-      //contentAsString(result) must include regex "Sorry, we are unable to show your transactions at this moment."
+    }
+  }
+
+  "when too many results returned for the search" in new Setup {
+    when(mockRequestedTransactionsCache.get(any))
+      .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
+
+    when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+      .thenReturn(Future.successful(Some(cashAccount)))
+
+    when(mockCustomsFinancialsApiConnector.retrieveHistoricCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+      .thenReturn(Future.successful(Left(TooManyTransactionsRequested)))
+
+    val request: FakeRequest[AnyContentAsEmpty.type] =
+      fakeRequest(GET, routes.RequestedTransactionsController.onPageLoad.url)
+
+    running(app) {
+      val result = route(app, request).value
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).value mustEqual
+        routes.RequestedTransactionsController.tooManyTransactionsRequested(RequestedDateRange(fromDate, toDate)).url
     }
   }
 
@@ -160,8 +180,8 @@ class RequestedTransactionsControllerSpec extends SpecBase {
     val listOfPendingTransactions =
       Seq(Declaration("pendingDeclarationID", "pendingDeclarantEORINumber", Some("pendingDeclarantReference"), LocalDate.parse("2020-07-21"), -100.00, Nil))
 
-    val fromDate: LocalDate = LocalDate.parse("2019-10-08")
-    val toDate: LocalDate = LocalDate.parse("2020-04-08")
+    val fromDate: LocalDate = LocalDate.parse("2023-03-30")
+    val toDate: LocalDate = LocalDate.parse("2023-03-30")
 
     val cashDailyStatements = Seq(
       CashDailyStatement(LocalDate.parse("2020-07-18"), 0.0, 1000.00,
