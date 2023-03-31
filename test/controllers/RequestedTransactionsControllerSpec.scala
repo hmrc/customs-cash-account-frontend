@@ -128,7 +128,8 @@ class RequestedTransactionsControllerSpec extends SpecBase {
 
   "when too many results returned for the search" in new Setup {
     when(mockRequestedTransactionsCache.get(any))
-      .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
+      .thenReturn(Future.successful(Some(CashTransactionDates(
+        LocalDate.of(2023,3,30), LocalDate.of(2023,3,30)))))
 
     when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
       .thenReturn(Future.successful(Some(cashAccount)))

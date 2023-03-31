@@ -22,7 +22,7 @@ import forms.mappings._
 import play.api.data.FieldMapping
 import play.api.data.format.Formats.{booleanFormat, localDateFormat, stringFormat}
 
-class MappingsSpec extends SpecBase with Mappings {
+class MappingsSpec extends SpecBase with Mappings with Formatters {
 
   "Mappings" must {
     "boolean" in {

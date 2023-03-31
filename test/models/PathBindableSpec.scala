@@ -22,9 +22,14 @@ class PathBindableSpec extends SpecBase {
 
   "optionBindable" must {
 
-    "bind a path param to optional string" in {
+    "bind a right path param to optional string" in {
       val result = domain.optionBindable.bind("key", "value")
       result.right.map { result => result mustEqual Some("value")}
+    }
+
+    "bind a left path param to optional string" in {
+      val result = domain.optionBindable.bind("key", "value")
+      result.left.map { result => result mustEqual Some("value")}
     }
 
     "unbind an optional string value to path param" in {

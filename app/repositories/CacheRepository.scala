@@ -27,7 +27,6 @@ import play.api.libs.json._
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats
-
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -73,9 +72,7 @@ class DefaultCacheRepository @Inject()(mongo: MongoComponent,
 trait CacheRepository {
 
   def get(id: String): Future[Option[CashTransactions]]
-
   def set(id: String, transactions: CashTransactions): Future[Boolean]
-
   def remove(id: String): Future[Boolean]
 }
 
