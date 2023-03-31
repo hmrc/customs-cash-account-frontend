@@ -60,6 +60,7 @@ trait Constraints {
 
     case request if minTaxYear.starts.isAfter(request.withDayOfMonth(
       dayOfMonthThatTaxYearStartsOn))  => Invalid(ValidationError(taxYearErrorKey))
+
     case _ => Valid
   }
 }

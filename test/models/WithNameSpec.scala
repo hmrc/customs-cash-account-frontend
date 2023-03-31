@@ -16,23 +16,16 @@
 
 package models
 
-import play.api.mvc.PathBindable
+import utils.SpecBase
 
-package object domain {
-  type EORI = String
-  type LinkId = String
-  type CAN = String
-  type MRN = String
+class WithNameSpec extends SpecBase {
 
-  implicit def optionBindable: PathBindable[Option[LinkId]] = new PathBindable[Option[LinkId]] {
-    def bind(key: String, value: String): Either[String, Option[LinkId]] =
-      implicitly[PathBindable[LinkId]].
-        bind(key, value).
-        fold(
-          left => Left(left),
-          right => Right(Some(right))
-        )
-
-    def unbind(key: String, value: Option[LinkId]): String = value map (_.toString) getOrElse ""
+  "withName" must {
+    "withName overrides strings" in {
+      val compare: String = "test1"
+      val name: WithName = new WithName(compare)
+      val result = name.toString
+      result mustBe compare
+    }
   }
 }

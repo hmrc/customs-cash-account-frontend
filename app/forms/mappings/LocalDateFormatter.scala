@@ -19,7 +19,6 @@ package forms.mappings
 import play.api.{Logger, LoggerLike}
 import play.api.data.FormError
 import play.api.data.format.Formatter
-
 import java.time.{LocalDate, LocalDateTime}
 import scala.util.{Failure, Success, Try}
 

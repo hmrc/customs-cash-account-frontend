@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package models
+package services
 
-import play.api.mvc.PathBindable
+import java.time.LocalDateTime
+import models.MongoDateTimeFormats
+import utils.SpecBase
 
-package object domain {
-  type EORI = String
-  type LinkId = String
-  type CAN = String
-  type MRN = String
+class MongoDateTimeFormatsSpec extends SpecBase {
 
-  implicit def optionBindable: PathBindable[Option[LinkId]] = new PathBindable[Option[LinkId]] {
-    def bind(key: String, value: String): Either[String, Option[LinkId]] =
-      implicitly[PathBindable[LinkId]].
-        bind(key, value).
-        fold(
-          left => Left(left),
-          right => Right(Some(right))
-        )
-
-    def unbind(key: String, value: Option[LinkId]): String = value map (_.toString) getOrElse ""
+  "MongoDateTimeFormats" must {
+    "localDateTimeWrite must return valid value" in {
+      val dateTime = LocalDateTime.of(2023, 1, 1, 1, 1)
+      val test = MongoDateTimeFormats.localDateTimeWrite
+      val result = test.writes(dateTime)
+      result.toString() mustBe "{\"$date\":1672534860000}"
+    }
   }
 }

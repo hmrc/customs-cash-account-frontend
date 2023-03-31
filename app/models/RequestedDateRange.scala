@@ -25,6 +25,7 @@ case class RequestedDateRange(from: LocalDate, to: LocalDate)
 object RequestedDateRange {
   implicit val binder = new RequestedDateRangeQueryStringBindable
 }
+
 class RequestedDateRangeQueryStringBindable extends QueryStringBindable[RequestedDateRange] {
   override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, RequestedDateRange]] = {
     (getParam(params, "from"), getParam(params, "to")) match {
@@ -33,9 +34,11 @@ class RequestedDateRangeQueryStringBindable extends QueryStringBindable[Requeste
       case (Left(msg), _) => Some(Left(msg))
     }
   }
+
   override def unbind(key: String, value: RequestedDateRange): String = {
     s"from=${value.from.toString}&to=${value.to.toString}"
   }
+
   private def getParam(params: Map[String, Seq[String]], paramName: String): Either[String, LocalDate] = {
     params.get(paramName).flatMap(_.headOption) match {
       case Some(value) => Try(LocalDate.parse(value)) match {

@@ -32,7 +32,6 @@ class ResultsPageSummarySpec extends SpecBase {
     "Date should format correctly" in new Setup {
       when(mockResultsPageSummary.formatDate(targetDate)(messages)).thenReturn("10 Feb 2022")
       running(app) {
-        val date = LocalDate.of(2022, 2, 10)
         val result = connector.formatDate(targetDate)(messages)
         result mustBe "10 Feb 2022"
       }
@@ -50,6 +49,16 @@ class ResultsPageSummarySpec extends SpecBase {
       when(mockResultsPageSummary.dateAsDay(targetDate)).thenReturn("09")
       running(app) {
         val result = connector.dateAsDay(targetDate)
+        result mustBe "09"
+      }
+    }
+
+    "return the day of the month with leading 0 if getDayOfMonth is less than 10" in new Setup {
+      val nineDate = LocalDate.of(2022, 3,9)
+      when(mockResultsPageSummary.dateAsDay(nineDate)).thenReturn("09")
+
+      running(app) {
+        val result = connector.dateAsDay(nineDate)
         result mustBe "09"
       }
     }
