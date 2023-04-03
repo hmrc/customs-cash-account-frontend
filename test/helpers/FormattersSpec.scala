@@ -24,7 +24,7 @@ class FormattersSpec extends SpecBase {
     "timeAsHourMinutesWithAmPm must format correctly" in {
       val date = LocalDateTime.of(2022,1,1,1,1)
       val result = Formatters.timeAsHourMinutesWithAmPm(date)
-      result mustBe "01:01 AM"
+      result mustBe "01:01 am"
     }
 
     "fileSizeFormat size of 1 returns 1KB" in {
