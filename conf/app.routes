@@ -1,22 +1,22 @@
 # microservice specific routes
 
-GET         /assets/*file                     controllers.Assets.versioned(path = "/public", file: Asset)
-->          /hmrc-frontend                    hmrcfrontend.Routes
+GET         /assets/*file                           controllers.Assets.versioned(path = "/public", file: Asset)
+->          /hmrc-frontend                          hmrcfrontend.Routes
 
-GET         /                                 controllers.CashAccountController.showAccountDetails(page: Option[Int])
-GET         /too-many-transactions            controllers.CashAccountController.tooManyTransactions(eori: String)
+GET         /                                       controllers.CashAccountController.showAccountDetails(page: Option[Int])
+GET         /too-many-transactions                  controllers.CashAccountController.tooManyTransactions()
 
-GET         /request-cash-transactions        controllers.RequestTransactionsController.onPageLoad()
-POST        /request-cash-transactions        controllers.RequestTransactionsController.onSubmit()
-GET         /requested-cash-transactions      controllers.RequestedTransactionsController.onPageLoad()
-GET         /too-many-requested-cash-transactions      controllers.RequestedTransactionsController.tooManyTransactionsRequested(range: models.RequestedDateRange)
+GET         /request-cash-transactions              controllers.RequestTransactionsController.onPageLoad()
+POST        /request-cash-transactions              controllers.RequestTransactionsController.onSubmit()
+GET         /requested-cash-transactions            controllers.RequestedTransactionsController.onPageLoad()
+GET         /too-many-requested-cash-transactions   controllers.RequestedTransactionsController.tooManyTransactionsRequested(range: models.RequestedDateRange)
 
-GET         /account-unavailable              controllers.CashAccountController.showAccountUnavailable
-GET         /not-subscribed-for-cds           controllers.UnauthorisedController.onPageLoad
+GET         /account-unavailable                    controllers.CashAccountController.showAccountUnavailable
+GET         /not-subscribed-for-cds                 controllers.UnauthorisedController.onPageLoad
 
-GET         /logout-survey                    controllers.LogoutController.logout
-GET         /logout                           controllers.LogoutController.logoutNoSurvey
+GET         /logout-survey                          controllers.LogoutController.logout
+GET         /logout                                 controllers.LogoutController.logoutNoSurvey
 
-GET         /download-requested-csv           controllers.DownloadCsvController.downloadRequestedCsv(disposition: Option[String], range: models.RequestedDateRange)
-GET         /download-csv                     controllers.DownloadCsvController.downloadCsv(disposition: Option[String])
-GET         /csv-download-error               controllers.DownloadCsvController.showUnableToDownloadCSV()
+GET         /download-requested-csv                 controllers.DownloadCsvController.downloadRequestedCsv(disposition: Option[String], range: models.RequestedDateRange)
+GET         /download-csv                           controllers.DownloadCsvController.downloadCsv(disposition: Option[String])
+GET         /csv-download-error                     controllers.DownloadCsvController.showUnableToDownloadCSV()

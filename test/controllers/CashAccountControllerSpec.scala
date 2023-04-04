@@ -222,7 +222,7 @@ class CashAccountControllerSpec extends SpecBase {
         val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
         val result = route(app, request).value
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.CashAccountController.tooManyTransactions("exampleEori").url
+        redirectLocation(result).value mustEqual routes.CashAccountController.tooManyTransactions().url
       }
     }
 
