@@ -72,7 +72,8 @@ class CashAccountController @Inject()(
             case Some(_) => Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
             case None => Ok(noTransactions(CashAccountViewModel(req.eori, account)))
           }
-        case TooManyTransactionsRequested => Redirect(routes.CashAccountController.tooManyTransactions(req.eori))
+        case TooManyTransactionsRequested => Redirect(routes.CashAccountController.tooManyTransactions())
+
         case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
       }
       case Right(cashTransactions) =>
@@ -84,9 +85,14 @@ class CashAccountController @Inject()(
     }
   }
 
-  def tooManyTransactions(eori: String):Action[AnyContent] = authenticate { implicit request =>
-    Ok(showAccountsExceededThreshold(CashAccountViewModel(
-      eori, CashAccount("","",AccountStatusOpen,CDSCashBalance(Option(1))))))
+  def tooManyTransactions(): Action[AnyContent] = authenticate.async { implicit request =>
+    apiConnector.getCashAccount(request.eori) flatMap {
+      case None => Future.successful(NotFound(eh.notFoundTemplate))
+      case Some(account) => {
+        Future.successful(Ok(showAccountsExceededThreshold(CashAccountViewModel(request.eori, CashAccount(
+          account.number, account.owner, account.status, account.balances)))))
+      }
+    }
   }
 
   def showAccountUnavailable: Action[AnyContent] = authenticate { implicit req =>
