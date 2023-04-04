@@ -60,7 +60,7 @@
     }
 
     @additionalHead = {
-        <script @{CSPNonce.attr} src='@controllers.routes.Assets.versioned("javascripts/recruitmentBanner.js")'></script>
+        <script src='@controllers.routes.Assets.versioned("javascripts/recruitmentBanner.js")'></script>
     @hmrcTimeoutDialog(TimeoutDialog(
         title = Some(messages("timeout.title")),
         timeout = Some(appConfig.timeout),
@@ -84,7 +84,6 @@
     pageTitle = fullPageTitle,
     serviceUrl = Some(appConfig.customsFinancialsFrontendHomepage),
     signOutUrl = Some(routes.LogoutController.logout.url),
-    nonce = CSPNonce.get,
     backLinkUrl = backLink,
     additionalHeadBlock = Some(additionalHead),
     mainContentLayout = Some(if(fullWidth) fullWidthMainContent(_) else twoThirdsMainContent(_)),
