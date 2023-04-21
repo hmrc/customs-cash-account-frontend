@@ -71,7 +71,7 @@
                     content = HtmlContent(
                         s"""
                             <span class="hmrc-responsive-table__heading" aria-hidden="true">${messages("cf.cash-account.detail.amount")}</span>
-                            ${Formatters.formatCurrencyAmount(pendingTransaction.amount)}
+                            &#8722;${Formatters.formatCurrencyAmount(pendingTransaction.amount)}
                             """
                     )
                 )

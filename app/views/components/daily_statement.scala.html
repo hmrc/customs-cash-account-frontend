@@ -63,7 +63,7 @@
                     classes = "govuk-table__cell--numeric amount",
                     content = HtmlContent(
                         s"""<span class="hmrc-responsive-table__heading" aria-hidden="true">${messages("cf.cash-account.detail.amount")}</span>
-                            ${Formatters.formatCurrencyAmount(declaration.amount)}
+                            &#8722;${Formatters.formatCurrencyAmount(declaration.amount)}
                             """
                     )
                 )
@@ -90,28 +90,28 @@
                     }
                 }",
                 messages("cf.cash-account.detail.amount"),
-                Formatters.formatCurrencyAmount(withdrawal.amount)
+                s"&#8722;${Formatters.formatCurrencyAmount(withdrawal.amount)}"
             )
         } ++ dailyStatement.topUps.map { topUp =>
             TransactionRow(
                 messages("cf.cash-account.detail.transactions"),
                 messages("cf.cash-account.detail.top-up"),
                 messages("cf.cash-account.detail.amount"),
-                s"+${Formatters.formatCurrencyAmount(topUp.amount)}"
+                s"&#43;${Formatters.formatCurrencyAmount(topUp.amount)}"
             )
         } ++ dailyStatement.transfersOut.map { transferOut =>
             TransactionRow(
                 messages("cf.cash-account.detail.transactions"),
                 messages("cf.cash-account.detail.transfer-out"),
                 messages("cf.cash-account.detail.amount"),
-                Formatters.formatCurrencyAmount(transferOut.amount)
+                s"&#8722;${Formatters.formatCurrencyAmount(transferOut.amount)}"
             )
         } ++ dailyStatement.transfersIn.map { transferIn =>
             TransactionRow(
                 messages("cf.cash-account.detail.transactions"),
                 messages("cf.cash-account.detail.transfer-in"),
                 messages("cf.cash-account.detail.amount"),
-                s"+${Formatters.formatCurrencyAmount(transferIn.amount)}"
+                s"&#43;${Formatters.formatCurrencyAmount(transferIn.amount)}"
             )
         },
         head = Some(Seq(
