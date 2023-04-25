@@ -180,7 +180,7 @@ cf.cash-account.transactions.result.between=You requested transactions between
 cf.cash-account.transactions.result.search.again=Search again with a shorter date range
 cf.cash-account.transactions.result.no.transactions=No cash account transactions
 cf.cash-account.transactions.result.no.data=We have no data within the periods
-cf.cash-account.transactions.result.transaction=Your cash account transactions
+cf.cash-account.transactions.result.transaction=Requested cash account transactions
 cf.cash-account.transactions.result.download.transactions=You must download your transactions CSV before you close your browser window.
 
 cf.form.error.start.date-too-far-in-past=The from date cannot be older than 6 years from now.
