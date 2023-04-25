@@ -179,7 +179,7 @@ cf.cash-account.transactions.result.between=Gwnaethoch gais i gael y trafodion r
 cf.cash-account.transactions.result.search.again=Chwiliwch eto gydag ystod lai o ran dyddiadau
 cf.cash-account.transactions.result.no.transactions=Dim trafodion cyfrif arian parod
 cf.cash-account.transactions.result.no.data=Nid oes gennym ddata o fewn y cyfnodau
-cf.cash-account.transactions.result.transaction=Eich trafodion cyfrif arian parod
+cf.cash-account.transactions.result.transaction=Y trafodion cyfrif arian parod y gofynnwyd amdanynt
 cf.cash-account.transactions.result.download.transactions=Mae’n rhaid i chi lawrlwytho’ch CSV trafodion cyn i chi gau ffenestr eich porwr.
 
 cf.form.error.start.date-too-far-in-past=Ni all y dyddiad ‘o’ fod yn fwy na 6 o flynyddoedd ers nawr.
