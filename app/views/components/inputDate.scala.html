@@ -26,6 +26,22 @@
         legendAsPageHeading: Boolean,
         legendHiddenContent: Option[String])(implicit messages: Messages)
 
+@dayError = @{
+    if(form(s"$id.day").value.contains("")){ "govuk-input--error"} else {""}
+}
+
+@monthError = @{
+    if(form(s"$id.month").value.contains("")){ "govuk-input--error"} else {""}
+}
+
+@yearError = @{
+    if(form(s"$id.year").value.contains("")){ "govuk-input--error"} else {""}
+}
+
+@allError = @{
+    if(!dayError && !monthError && !yearError && form(s"$id").hasErrors) {"govuk-input--error"} else {""}
+}
+
     @govukDateInput(DateInput(
         fieldset = Some(Fieldset(
             legend = Some(
@@ -42,21 +58,21 @@
         items = Seq(
             InputItem(
                 id = s"$id.day",
-                classes = "govuk-input--width-2",
+                classes = s"govuk-input--width-2 $dayError $allError",
                 name = s"$id.day",
                 label = Some(messages("date.day")),
                 value = form(s"$id.day").value
             ),
             InputItem(
                 id = s"$id.month",
-                classes = "govuk-input--width-2",
+                classes = s"govuk-input--width-2 $monthError $allError",
                 name = s"$id.month",
                 label = Some(messages("date.month")),
                 value = form(s"$id.month").value
             ),
             InputItem(
                 id = s"$id.year",
-                classes = "govuk-input--width-4",
+                classes = s"govuk-input--width-4 $yearError $allError",
                 name = s"$id.year",
                 label = Some(messages("date.year")),
                 value = form(s"$id.year").value
