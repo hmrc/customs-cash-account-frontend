@@ -50,7 +50,7 @@ class ConstraintsSpec extends SpecBase with Constraints {
       }
 
       "return invalid result is years are within 6" in new Setup {
-        def monthOld: LocalDate = LocalDateTime.now().minusMonths(5).toLocalDate
+        def monthOld: LocalDate = LocalDateTime.now().minusMonths(6).toLocalDate
         val result = beforeCurrentMonth("error.min").apply(monthOld)
         result mustBe Invalid(List(ValidationError(List("error.min"))))
       }
@@ -63,7 +63,7 @@ class ConstraintsSpec extends SpecBase with Constraints {
       }
 
       "return invalid if request is after current date" in new Setup {
-        def futureMonth: LocalDate = LocalDateTime.now().plusMonths(5).toLocalDate
+        def futureMonth: LocalDate = LocalDateTime.now().plusMonths(6).toLocalDate
         val result = beforeCurrentDate("error.min").apply(futureMonth)
         result mustBe Invalid(List(ValidationError(List("error.min"))))
       }
