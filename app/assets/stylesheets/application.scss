@@ -2,8 +2,6 @@ $govuk-assets-path: "/customs/cash-account/assets/lib/govuk-frontend/govuk/asset
 $hmrc-assets-path: "/customs/cash-account/assets/lib/hmrc-frontend/hmrc/";
 
 @import "lib/govuk-frontend/govuk/base";
-@import "lib/hmrc-frontend/hmrc/all";
-
 @import "utils/custom";
 @import "components/table";
 
