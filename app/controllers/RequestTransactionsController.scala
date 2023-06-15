@@ -42,21 +42,17 @@ class RequestTransactionsController @Inject()(
 
   def form: Form[CashTransactionDates] = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = identify.async {
-    implicit request =>
-      cache.get(request.eori).map {
-        case Some(value) => Ok(view(form.fill(value)))
-        case None => Ok(view(form))
-      }
+  def onPageLoad: Action[AnyContent] = identify.async {
+    implicit request => for {
+        _ <- cache.clear(request.eori)
+      } yield Ok(view(form))
   }
 
   def onSubmit(): Action[AnyContent] = identify.async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
-        value =>
-          customValidation(value, form) match {
+      form.bindFromRequest().fold(formWithErrors =>
+        Future.successful(BadRequest(view(formWithErrors))),
+        value => customValidation(value, form) match {
             case Some(formWithErrors) =>
               Future.successful(BadRequest(view(formWithErrors)))
             case None =>
@@ -67,7 +63,8 @@ class RequestTransactionsController @Inject()(
       )
   }
 
-  private def customValidation(dates: CashTransactionDates, form: Form[CashTransactionDates])(implicit messages: Messages): Option[Form[CashTransactionDates]] = {
+  private def customValidation(dates: CashTransactionDates, form: Form[CashTransactionDates])(
+    implicit messages: Messages): Option[Form[CashTransactionDates]] = {
     def populateErrors(startMessage: String, endMessage: String): Form[CashTransactionDates] = {
       form.withError("start", startMessage)
         .withError("end", endMessage).fill(dates)

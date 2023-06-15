@@ -44,12 +44,17 @@ class DefaultRequestedTransactionsCache @Inject()(mongoComponent: MongoComponent
             TimeUnit.SECONDS)
       ))) with RequestedTransactionsCache {
 
-  def get(id: String): Future[Option[CashTransactionDates]] = collection
+  override def get(id: String): Future[Option[CashTransactionDates]] = collection
       .find(equal("_id", id))
       .toSingle()
       .toFutureOption()
 
-  def set(id: String, data: CashTransactionDates): Future[Boolean] = collection.replaceOne(
+  override def clear(id: String): Future[Boolean] =
+    collection.deleteOne(equal("_id", id))
+      .toFuture()
+      .map(_.wasAcknowledged())
+
+  override def set(id: String, data: CashTransactionDates): Future[Boolean] = collection.replaceOne(
       equal("_id", id),
       data,
       ReplaceOptions().upsert(true)
@@ -58,9 +63,8 @@ class DefaultRequestedTransactionsCache @Inject()(mongoComponent: MongoComponent
 }
 
 trait RequestedTransactionsCache {
-
   def get(id: String): Future[Option[CashTransactionDates]]
-
   def set(id: String, data: CashTransactionDates): Future[Boolean]
+  def clear(id: String): Future[Boolean]
 }
 
