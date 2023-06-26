@@ -118,7 +118,7 @@ private[mappings] class LocalDateFormatter(
     (day, month, year) match {
       case (d, _, _) if d < 1 || d > 31 => s"$key.day"
       case (_, m, _) if m < 1 || m > 12 => s"$key.month"
-      case (_, _, y) if y < 1000 || y > 999999999 => s"$key.year"
+      case (_, _, y) if y < 1000 || y > 99999 => s"$key.year"
       case _ => s"$key.day"
     }
 
@@ -135,7 +135,6 @@ private[mappings] class LocalDateFormatter(
    */
   private[mappings] def formErrorKeysInCaseOfEmptyOrNonNumericValues(key: String,
                                                                      data: Map[String, String]): String = {
-
     val dayValue = data.get(s"$key.day")
     val monthValue = data.get(s"$key.month")
     val yearValue = data.get(s"$key.year")

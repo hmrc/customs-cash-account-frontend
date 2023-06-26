@@ -21,7 +21,6 @@ import play.api.data.{Form, FormError}
 
 object FormTestHelper extends Matchers {
 
-
   def error(key: String, value: String): Seq[FormError] = Seq(singleError(key, value))
 
   def singleError(key: String, value: String): FormError = FormError(key, value)
