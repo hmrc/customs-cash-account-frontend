@@ -76,12 +76,12 @@ class LocalDateFormatterSpec extends SpecBase {
     }
   }
 
-  "updateFormErrorKeysInCaseOfEmptyValues" must {
+  "formErrorKeysInCaseOfEmptyOrNonNumericValues" must {
     "return key.day as updated key when day value is empty" in new SetUp {
       val localDateFormatterWithEmptyDay = new LocalDateFormatter(invalidMsgKey, endOfMonth = false, Seq())
       val formDataWithEmptyDay: Map[String, String] = Map(s"$key.day" -> "", s"$key.month" -> "10", s"$key.year" -> "2021")
 
-      localDateFormatterWithEmptyDay.updateFormErrorKeysInCaseOfEmptyValues(
+      localDateFormatterWithEmptyDay.formErrorKeysInCaseOfEmptyOrNonNumericValues(
         key, formDataWithEmptyDay) shouldBe s"$key.day"
     }
 
@@ -89,7 +89,7 @@ class LocalDateFormatterSpec extends SpecBase {
       val localDateFormatterWithEmptyMonth = new LocalDateFormatter(invalidMsgKey, endOfMonth = false, Seq())
       val formDataWithEmptyDay: Map[String, String] = Map(s"$key.day" -> "10", s"$key.month" -> "", s"$key.year" -> "2021")
 
-      localDateFormatterWithEmptyMonth.updateFormErrorKeysInCaseOfEmptyValues(
+      localDateFormatterWithEmptyMonth.formErrorKeysInCaseOfEmptyOrNonNumericValues(
         key, formDataWithEmptyDay) shouldBe s"$key.month"
     }
 
@@ -97,7 +97,7 @@ class LocalDateFormatterSpec extends SpecBase {
       val localDateFormatterWithEmptyYear = new LocalDateFormatter(invalidMsgKey, endOfMonth = false, Seq())
       val formDataWithEmptyDay: Map[String, String] = Map(s"$key.day" -> "10", s"$key.month" -> "10", s"$key.year" -> "")
 
-      localDateFormatterWithEmptyYear.updateFormErrorKeysInCaseOfEmptyValues(
+      localDateFormatterWithEmptyYear.formErrorKeysInCaseOfEmptyOrNonNumericValues(
         key, formDataWithEmptyDay) shouldBe s"$key.year"
     }
 
@@ -105,8 +105,32 @@ class LocalDateFormatterSpec extends SpecBase {
       val localDateFormatterWithEmptyDate= new LocalDateFormatter(invalidMsgKey, endOfMonth = false, Seq())
       val formDataWithEmptyDay: Map[String, String] = Map(s"$key.day" -> "", s"$key.month" -> "", s"$key.year" -> "")
 
-      localDateFormatterWithEmptyDate.updateFormErrorKeysInCaseOfEmptyValues(
+      localDateFormatterWithEmptyDate.formErrorKeysInCaseOfEmptyOrNonNumericValues(
         key, formDataWithEmptyDay) shouldBe s"$key.day"
+    }
+
+    "return key.day as updated key when day value is not numeric" in new SetUp {
+      val localDateFormatterWithEmptyDay = new LocalDateFormatter(invalidMsgKey, endOfMonth = false, Seq())
+      val formDataWithNonNumericDay: Map[String, String] = Map(s"$key.day" -> "se", s"$key.month" -> "10", s"$key.year" -> "2021")
+
+      localDateFormatterWithEmptyDay.formErrorKeysInCaseOfEmptyOrNonNumericValues(
+        key, formDataWithNonNumericDay) shouldBe s"$key.day"
+    }
+
+    "return key.month as updated key when month value is not numeric" in new SetUp {
+      val localDateFormatterWithEmptyDay = new LocalDateFormatter(invalidMsgKey, endOfMonth = false, Seq())
+      val formDataWithNonNumericMonth: Map[String, String] = Map(s"$key.day" -> "10", s"$key.month" -> "test", s"$key.year" -> "2021")
+
+      localDateFormatterWithEmptyDay.formErrorKeysInCaseOfEmptyOrNonNumericValues(
+        key, formDataWithNonNumericMonth) shouldBe s"$key.month"
+    }
+
+    "return key.year as updated key when year value is not numeric" in new SetUp {
+      val localDateFormatterWithEmptyDay = new LocalDateFormatter(invalidMsgKey, endOfMonth = false, Seq())
+      val formDataWithNonNumericYear: Map[String, String] = Map(s"$key.day" -> "10", s"$key.month" -> "10", s"$key.year" -> "et")
+
+      localDateFormatterWithEmptyDay.formErrorKeysInCaseOfEmptyOrNonNumericValues(
+        key, formDataWithNonNumericYear) shouldBe s"$key.year"
     }
   }
 }

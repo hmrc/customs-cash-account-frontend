@@ -87,7 +87,7 @@ private[mappings] class LocalDateFormatter(
           _.map(fe => fe.copy(key = fe.key, args = args))
         }
       case _ =>
-        Left(List(FormError(updateFormErrorKeysInCaseOfEmptyValues(key, data), invalidKey, args)))
+        Left(List(FormError(formErrorKeysInCaseOfEmptyOrNonNumericValues(key, data), invalidKey, args)))
     }
   }
 
@@ -125,25 +125,25 @@ private[mappings] class LocalDateFormatter(
   /**
    * Updates the FormError key as per the given criteria
    * key is updated as below
-   * empty day - key.day
-   * empty month - key.month
-   * empty year - key.year
+   * empty day or non numeric day - key.day
+   * empty month or non numeric month - key.month
+   * empty year or non numeric year - key.year
    *
    * @param key FormError key
    * @param data Map of Form values
    * @return Updated FormError key
    */
-  private[mappings] def updateFormErrorKeysInCaseOfEmptyValues(key: String,
-                                                               data: Map[String, String]): String = {
+  private[mappings] def formErrorKeysInCaseOfEmptyOrNonNumericValues(key: String,
+                                                                     data: Map[String, String]): String = {
 
-    val dayValue: Option[String] = data.get(s"$key.day")
+    val dayValue = data.get(s"$key.day")
     val monthValue = data.get(s"$key.month")
     val yearValue = data.get(s"$key.year")
 
     (dayValue, monthValue, yearValue) match {
-      case (Some(d), _, _) if d.isEmpty => s"$key.day"
-      case (_, Some(m), _) if m.isEmpty => s"$key.month"
-      case (_, _, Some(y)) if y.isEmpty => s"$key.year"
+      case (Some(d), _, _) if d.trim.isEmpty || Try(d.trim.toInt).isFailure => s"$key.day"
+      case (_, Some(m), _) if m.trim.isEmpty || Try(m.trim.toInt).isFailure => s"$key.month"
+      case (_, _, Some(y)) if y.trim.isEmpty || Try(y.trim.toInt).isFailure => s"$key.year"
       case _ => s"$key.day"
     }
   }
