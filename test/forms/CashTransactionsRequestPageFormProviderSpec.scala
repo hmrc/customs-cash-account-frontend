@@ -18,6 +18,7 @@ package forms
 
 import forms.FormTestHelper._
 import models.CashTransactionDates
+import play.api.data.Form
 import utils.SpecBase
 
 import java.time.{Clock, LocalDate, ZoneOffset}
@@ -255,13 +256,13 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
   }
 
   trait SetUp {
-    implicit val clock = Clock.system(ZoneOffset.UTC)
-    val form = new CashTransactionsRequestPageFormProvider().apply()
+    implicit val clock: Clock = Clock.system(ZoneOffset.UTC)
+    val form: Form[CashTransactionDates] = new CashTransactionsRequestPageFormProvider().apply()
 
     val validDate: LocalDate = LocalDate.of(2021, 10,10)
-    val futureYear = LocalDate.now().getYear + 1
+    val futureYear: Int = LocalDate.now().getYear + 1
     val etmpStatementYear = 2019 // This needs to be updated should the Year value in Constraints.etmpStatementsDate is changed
-    val taxYearDateOlderThan6Years = LocalDate.now().getYear  - 7
+    val taxYearDateOlderThan6Years: Int = LocalDate.now().getYear  - 7
 
     lazy val completeValidDates: Map[String, String] =
       populateFormValueMap("start", "10", "10", "2021") ++
@@ -274,5 +275,3 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
       Map(s"$key.day" -> day, s"$key.month" -> month, s"$key.year" -> year)
   }
 }
-
-
