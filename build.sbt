@@ -1,5 +1,6 @@
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
+import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "customs-cash-account-frontend"
 
@@ -36,6 +37,7 @@ lazy val microservice = Project(appName, file("."))
     // ***************
   )
   .settings(PlayKeys.playDefaultPort := 9394)
+  .settings(publishingSettings: _*)
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
   .settings(resolvers += Resolver.jcenterRepo)
