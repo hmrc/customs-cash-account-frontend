@@ -16,12 +16,12 @@
 
 package controllers
 
-import config.{AppConfig, ErrorHandler}
+import config.{AppConfig}
 import controllers.actions._
 import forms.CashTransactionsRequestPageFormProvider
 import models._
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.{I18nSupport}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RequestedTransactionsCache
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -37,7 +37,6 @@ class RequestTransactionsController @Inject()(
                                                cache: RequestedTransactionsCache,
                                                implicit val mcc: MessagesControllerComponents)
                                              (implicit ec: ExecutionContext,
-                                              eh: ErrorHandler,
                                               appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
   def form: Form[CashTransactionDates] = formProvider()
@@ -52,7 +51,7 @@ class RequestTransactionsController @Inject()(
     implicit request =>
       form.bindFromRequest().fold(formWithErrors =>
         Future.successful(BadRequest(view(formWithErrors))),
-        value => customValidation(value, form) match {
+        value => customValidation(value, form)() match {
             case Some(formWithErrors) =>
               Future.successful(BadRequest(view(formWithErrors)))
             case None =>
@@ -63,8 +62,7 @@ class RequestTransactionsController @Inject()(
       )
   }
 
-  private def customValidation(dates: CashTransactionDates, form: Form[CashTransactionDates])(
-    implicit messages: Messages): Option[Form[CashTransactionDates]] = {
+  private def customValidation(dates: CashTransactionDates, form: Form[CashTransactionDates])(): Option[Form[CashTransactionDates]] = {
     def populateErrors(startMessage: String, endMessage: String): Form[CashTransactionDates] = {
       form.withError("start", startMessage)
         .withError("end", endMessage).fill(dates)

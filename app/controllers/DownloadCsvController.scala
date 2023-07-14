@@ -22,7 +22,7 @@ import controllers.actions.IdentifierAction
 import helpers.CashAccountUtils
 import models.RequestedDateRange
 import models.request.IdentifierRequest
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{AuditingService, DateTimeService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -47,7 +47,6 @@ class DownloadCsvController @Inject()(
                                      )(implicit ec: ExecutionContext,
                                        eh: ErrorHandler,
                                        mcc: MessagesControllerComponents,
-                                       messagesApi: MessagesApi,
                                        appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
   def downloadRequestedCsv(disposition: Option[String], dateRange: RequestedDateRange): Action[AnyContent] = identify.async { implicit request =>
@@ -59,7 +58,7 @@ class DownloadCsvController @Inject()(
 
   def downloadCsv(disposition: Option[String]): Action[AnyContent] = identify.async { implicit request =>
     val (from, to) = cashAccountUtils.transactionDateRange()
-    getAndDownloadCsv(from, to, disposition, cashAccountUtils.filenameWithDateTime)
+    getAndDownloadCsv(from, to, disposition, cashAccountUtils.filenameWithDateTime())
   }
 
   def showUnableToDownloadCSV(): Action[AnyContent] = identify { implicit req =>

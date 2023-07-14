@@ -18,7 +18,9 @@ package models
 
 import play.api.libs.json.{JsResult, JsString, JsSuccess, JsValue, Reads, Writes}
 
-sealed trait TaxGroupType
+sealed trait TaxGroupType {
+  def onWire: String
+}
 
 object TaxGroupType {
   implicit val taxGroupReads: Reads[TaxGroupType] = new Reads[TaxGroupType]{
@@ -43,14 +45,14 @@ object TaxGroupType {
   }
 }
 
-case object ImportVat extends {
-  val onWire: String = "Import VAT"
-} with TaxGroupType
+case object ImportVat extends TaxGroupType {
+  override val onWire: String = "Import VAT"
+}
 
-case object ExciseDuty extends {
+case object ExciseDuty extends TaxGroupType {
   val onWire: String = "Excise"
-} with TaxGroupType
+}
 
-case object CustomsDuty extends {
+case object CustomsDuty extends TaxGroupType {
   val onWire: String = "Customs"
-} with TaxGroupType
+}

@@ -58,7 +58,7 @@ trait Constraints {
     case request if Period.between(request, etmpStatementsDate).toTotalMonths > 0 =>
       Invalid(ValidationError(systemStartDateErrorKey))
 
-    case request if minTaxYear.starts.isAfter(request.withDayOfMonth(
+    case request if minTaxYear().starts.isAfter(request.withDayOfMonth(
       dayOfMonthThatTaxYearStartsOn))  => Invalid(ValidationError(taxYearErrorKey))
 
     case _ => Valid
