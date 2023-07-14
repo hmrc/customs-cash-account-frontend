@@ -47,7 +47,7 @@
     @h2(msg = "cf.cash-account.transactions.request.link.heading", id = Some("missing-documents-guidance-heading"))
     @link(
         "cf.cash-account.transactions.request.link",
-        controllers.routes.RequestTransactionsController.onPageLoad.url,
+        controllers.routes.RequestTransactionsController.onPageLoad().url,
         preLinkMessage = Some("cf.cash-account.transactions.request.link.pre"),
         pClass = "govuk-body govuk-!-margin-bottom-9",
         linkSentence = true
