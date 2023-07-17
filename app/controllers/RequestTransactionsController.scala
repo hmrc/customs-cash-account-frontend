@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.{AppConfig}
+import config.AppConfig
 import controllers.actions._
 import forms.CashTransactionsRequestPageFormProvider
 import models._
