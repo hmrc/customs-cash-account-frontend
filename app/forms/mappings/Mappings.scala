@@ -17,7 +17,7 @@
 package forms.mappings
 
 import play.api.data.Forms.of
-import play.api.data.{FieldMapping}
+import play.api.data.FieldMapping
 
 import java.time.LocalDate
 
