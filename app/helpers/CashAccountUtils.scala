@@ -40,7 +40,7 @@ class CashAccountUtils @Inject()(dateTimeService: DateTimeService, appConfig: Ap
     messages(messageKey)
   }
 
-  def dateFormat(date: LocalDate)(implicit messages: Messages): String = DateTimeFormatter.ofPattern("ddMMyyyy").format(date)
+  def dateFormat(date: LocalDate): String = DateTimeFormatter.ofPattern("ddMMyyyy").format(date)
 
   def transactionDateRange(): (LocalDate, LocalDate) = {
     val to = dateTimeService.localDateTime().toLocalDate
