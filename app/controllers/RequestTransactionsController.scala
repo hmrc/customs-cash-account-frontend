@@ -20,8 +20,9 @@ import config.AppConfig
 import controllers.actions._
 import forms.CashTransactionsRequestPageFormProvider
 import models._
-import play.api.data.Form
-import play.api.i18n.I18nSupport
+import org.slf4j.LoggerFactory
+import play.api.data.{Form, FormError}
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RequestedTransactionsCache
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -39,6 +40,8 @@ class RequestTransactionsController @Inject()(
                                              (implicit ec: ExecutionContext,
                                               appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
+  val log = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
+
   def form: Form[CashTransactionDates] = formProvider()
 
   def onPageLoad: Action[AnyContent] = identify.async {
@@ -49,10 +52,19 @@ class RequestTransactionsController @Inject()(
 
   def onSubmit(): Action[AnyContent] = identify.async {
     implicit request =>
-      form.bindFromRequest().fold(formWithErrors =>
-        Future.successful(BadRequest(view(formWithErrors))),
+      form.bindFromRequest().fold(formWithErrors => {
+        logMessageForAnalytics(request.eori,
+          formWithErrors.data.getOrElse("start.day", " ")+"-"+formWithErrors.data.getOrElse("start.month", " ")+"-"+formWithErrors.data.getOrElse("start.year", " "),
+          formWithErrors.data.getOrElse("end.day", " ")+"-"+formWithErrors.data.getOrElse("end.month", " ")+"-"+formWithErrors.data.getOrElse("end.year", " "),
+          formWithErrors.errors)
+        Future.successful(BadRequest(view(formWithErrors)))
+      },
         value => customValidation(value, form)() match {
             case Some(formWithErrors) =>
+              logMessageForAnalytics(request.eori,
+                formWithErrors.data.getOrElse("start.year", " ")+"-"+formWithErrors.data.getOrElse("start.month", " ")+"-"+formWithErrors.data.getOrElse("start.day", " "),
+                formWithErrors.data.getOrElse("end.year", " ")+"-"+formWithErrors.data.getOrElse("end.month", " ")+"-"+formWithErrors.data.getOrElse("end.day", " "),
+                formWithErrors.errors)
               Future.successful(BadRequest(view(formWithErrors)))
             case None =>
               cache.set(request.eori, value).map { _ =>
@@ -73,5 +85,12 @@ class RequestTransactionsController @Inject()(
         Some(populateErrors("cf.form.error.start-after-end", "cf.form.error.end-before-start"))
       case _ => None
     }
+  }
+
+  private def logMessageForAnalytics(eori: String, startDate: String, endDate: String, errors: Seq[FormError])
+                                    (implicit messages: Messages): Unit= {
+    val errorMessages = errors.map( e =>messages(e.message)).mkString(",")
+    log.info(s"Cash account, transaction request service, eori number: $eori, " +
+      s"start date: $startDate, end date: $endDate, error: $errorMessages")
   }
 }
