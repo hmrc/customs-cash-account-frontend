@@ -17,7 +17,6 @@
 package controllers
 
 import connectors.CustomsFinancialsApiConnector
-import models._
 import play.api.Application
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -78,11 +77,25 @@ RequestTransactionsControllerSpec extends SpecBase {
 
   "onSubmit" should {
 
+    "redirect to requested transactions page when valid data has been submitted" in new Setup {
+      when(mockRequestedTransactionsCache.set(any, any)).thenReturn(Future.successful(true))
+      val request: FakeRequest[AnyContentAsFormUrlEncoded] =
+        fakeRequest(POST, routes.RequestTransactionsController.onSubmit().url)
+          .withFormUrlEncodedBody("start.day" -> "1", "start.month" -> "11", "start.year" -> "2020",
+            "end.day" -> "10","end.month" -> "11", "end.year" -> "2020")
+
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.RequestedTransactionsController.onPageLoad().url
+      }
+    }
+
     "return BAD_REQUEST when the start date is earlier than system start date" in new Setup {
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
-        fakeRequest(POST, routes.RequestTransactionsController.onSubmit.url)
-          .withFormUrlEncodedBody("start.month" -> "9", "start.year" -> "2019",
-            "end.month" -> "10", "end.year" -> "2019")
+        fakeRequest(POST, routes.RequestTransactionsController.onSubmit().url)
+          .withFormUrlEncodedBody("start.day" -> "1", "start.month" -> "9", "start.year" -> "2019",
+            "end.day" -> "10","end.month" -> "10", "end.year" -> "2019")
 
       running(app) {
         val result = route(app, request).value
@@ -92,9 +105,9 @@ RequestTransactionsControllerSpec extends SpecBase {
 
     "return BAD_REQUEST when the end date is earlier than system start date" in new Setup {
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
-        fakeRequest(POST, routes.RequestTransactionsController.onSubmit.url)
-          .withFormUrlEncodedBody("start.month" -> "10", "start.year" -> "2019",
-            "end.month" -> "9", "end.year" -> "2019")
+        fakeRequest(POST, routes.RequestTransactionsController.onSubmit().url)
+          .withFormUrlEncodedBody("start.day" -> "1", "start.month" -> "10", "start.year" -> "2019",
+            "end.day" -> "1", "end.month" -> "9", "end.year" -> "2019")
 
       running(app) {
         val result = route(app, request).value
@@ -104,9 +117,9 @@ RequestTransactionsControllerSpec extends SpecBase {
 
     "return BAD_REQUEST when the start date is future date" in new Setup {
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
-        fakeRequest(POST, routes.RequestTransactionsController.onSubmit.url)
-          .withFormUrlEncodedBody("start.month" -> "10", "start.year" -> "2021",
-            "end.month" -> "9", "end.year" -> "2019")
+        fakeRequest(POST, routes.RequestTransactionsController.onSubmit().url)
+          .withFormUrlEncodedBody("start.day" -> "1", "start.month" -> "10", "start.year" -> "2021",
+            "end.day" -> "1", "end.month" -> "9", "end.year" -> "2019")
 
       running(app) {
         val result = route(app, request).value
@@ -118,9 +131,9 @@ RequestTransactionsControllerSpec extends SpecBase {
       val date: String = LocalDate.now().plusYears(2).getYear.toString
 
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
-        fakeRequest(POST, routes.RequestTransactionsController.onSubmit.url)
-          .withFormUrlEncodedBody("start.month" -> "10", "start.year" -> "2019",
-            "end.month" -> "10", "end.year" -> date)
+        fakeRequest(POST, routes.RequestTransactionsController.onSubmit().url)
+          .withFormUrlEncodedBody("start.day" -> "1", "start.month" -> "10", "start.year" -> "2019",
+            "end.day" -> "1", "end.month" -> "10", "end.year" -> date)
 
       running(app) {
         val result = route(app, request).value
@@ -130,9 +143,9 @@ RequestTransactionsControllerSpec extends SpecBase {
 
     "return BAD_REQUEST when the start date is after the end date" in new Setup {
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
-        fakeRequest(POST, routes.RequestTransactionsController.onSubmit.url)
-          .withFormUrlEncodedBody("start.month" -> "11", "start.year" -> "2019",
-            "end.month" -> "10", "end.year" -> "2019")
+        fakeRequest(POST, routes.RequestTransactionsController.onSubmit().url)
+          .withFormUrlEncodedBody("start.day" -> "1", "start.month" -> "11", "start.year" -> "2019",
+            "end.day" -> "1", "end.month" -> "10", "end.year" -> "2019")
 
       running(app) {
         val result = route(app, request).value
@@ -142,9 +155,9 @@ RequestTransactionsControllerSpec extends SpecBase {
 
     "return BAD_REQUEST when the requested data exceeds 6 years in the past" in new Setup {
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
-        fakeRequest(POST, routes.RequestTransactionsController.onSubmit.url)
-          .withFormUrlEncodedBody("start.month" -> "10", "start.year" -> "2000",
-            "end.month" -> "10", "end.year" -> "2000")
+        fakeRequest(POST, routes.RequestTransactionsController.onSubmit().url)
+          .withFormUrlEncodedBody("start.day" -> "1", "start.month" -> "10", "start.year" -> "2000",
+            "end.day" -> "1", "end.month" -> "10", "end.year" -> "2000")
 
       running(app) {
         val result = route(app, request).value
@@ -154,9 +167,9 @@ RequestTransactionsControllerSpec extends SpecBase {
 
     "return BAD_REQUEST when invalid data submitted" in new Setup {
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
-        fakeRequest(POST, routes.RequestTransactionsController.onSubmit.url)
-          .withFormUrlEncodedBody("start.invalid" -> "10", "start.year" -> "2019",
-            "end.month" -> "10", "end.year" -> "2019")
+        fakeRequest(POST, routes.RequestTransactionsController.onSubmit().url)
+          .withFormUrlEncodedBody("start.day" -> "1", "start.invalid" -> "10", "start.year" -> "2019",
+            "end.day" -> "1", "end.month" -> "10", "end.year" -> "2019")
 
       running(app) {
         val result = route(app, request).value
@@ -166,9 +179,9 @@ RequestTransactionsControllerSpec extends SpecBase {
 
     "return BAD_REQUEST when start date and end date are empty" in new Setup {
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
-        fakeRequest(POST, routes.RequestTransactionsController.onSubmit.url)
-          .withFormUrlEncodedBody("start.month" -> "", "start.year" -> "2019",
-            "end.month" -> "", "end.year" -> "2019")
+        fakeRequest(POST, routes.RequestTransactionsController.onSubmit().url)
+          .withFormUrlEncodedBody("start.day" -> "1", "start.month" -> "", "start.year" -> "2019",
+            "end.day" -> "1", "end.month" -> "", "end.year" -> "2019")
 
       running(app) {
         val result = route(app, request).value
