@@ -93,7 +93,7 @@ class RequestTransactionsController @Inject()(
       formWithErrors.data.getOrElse("end.month", " ") + "-" +
       formWithErrors.data.getOrElse("end.day", " ")
 
-    log.info(s"Cash account, transaction request service, eori number: $eori, " +
+    log.warn(s"Cash account, transaction request service, eori number: $eori, " +
       s"start date: $startDate, end date: $endDate, error: $errorMessages")
   }
 }
