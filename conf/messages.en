@@ -2,6 +2,7 @@ language.cymraeg = Cymraeg
 language.english = English
 language.change.cymraeg=Newid yr iaith ir Gymraeg
 
+site.error = Error
 
 service.name=View your customs financial accounts
 
