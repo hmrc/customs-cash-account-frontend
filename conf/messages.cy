@@ -2,6 +2,8 @@ language.cymraeg=Cymraeg
 language.english=English
 language.change.english=Change the language to English
 
+site.error = Gwall
+
 service.name=Bwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau
 
 

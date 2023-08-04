@@ -29,6 +29,8 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.CSRFTokenHelper.CSRFRequest
 import play.api.test.FakeRequest
+import play.api.Application
+import play.api.i18n.{Messages, MessagesApi}
 
 class FakeMetrics extends Metrics {
   override val defaultRegistry: MetricRegistry = new MetricRegistry
@@ -46,4 +48,7 @@ trait SpecBase extends AnyWordSpecLike with Matchers with MockitoSugar with Opti
 
   def fakeRequest(method: String = "", path: String = ""): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(method, path).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
+
+  def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(
+    fakeRequest("", ""))
 }

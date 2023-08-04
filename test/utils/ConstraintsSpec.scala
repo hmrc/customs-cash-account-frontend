@@ -50,7 +50,7 @@ class ConstraintsSpec extends SpecBase with Constraints {
       }
 
       "return invalid result is years are within 6" in new Setup {
-        def monthOld: LocalDate = LocalDateTime.now().minusMonths(7).toLocalDate
+        def monthOld: LocalDate = LocalDateTime.now().minusMonths(8).toLocalDate
         val result = beforeCurrentMonth("error.min").apply(monthOld)
         result mustBe Invalid(List(ValidationError(List("error.min"))))
       }
