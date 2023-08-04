@@ -84,6 +84,9 @@
                 .orElse(form(s"$id.day").error)
                 .orElse(form(s"$id.month").error)
                 .orElse(form(s"$id.year").error)
-                .map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*)), visuallyHiddenText = Some(messages("site.error"))))
+                .map(err => ErrorMessage(
+                    content = Text(messages(err.message, err.args: _*)),
+                    visuallyHiddenText = Some(messages("site.error"))
+                ))
         }
     ))
