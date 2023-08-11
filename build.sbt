@@ -3,7 +3,7 @@ import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
 
 val appName = "customs-cash-account-frontend"
 
-val silencerVersion = "1.7.12"
+val silencerVersion = "1.17.13"
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
