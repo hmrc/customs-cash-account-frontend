@@ -23,7 +23,7 @@ import java.time.LocalDate
 
 class CashTransactionsEncrypterSpec extends SpecBase {
 
-  private val cipher = new SecureGCMCipher
+  private val cipher = new AesGCMCrypto
   private val encrypter = new CashTransactionsEncrypter(cipher)
   private val secretKey = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
 

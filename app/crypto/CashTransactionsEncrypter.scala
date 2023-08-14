@@ -20,7 +20,7 @@ import models.{CashDailyStatement, CashTransactions, Declaration, EncryptedCashT
 
 import javax.inject.Inject
 
-class CashTransactionsEncrypter @Inject()(crypto: SecureGCMCipher){
+class CashTransactionsEncrypter @Inject()(crypto: AesGCMCrypto){
 
   def encryptCashTransactions(cashTransactions: CashTransactions, key: String): EncryptedCashTransactions = {
     EncryptedCashTransactions(
