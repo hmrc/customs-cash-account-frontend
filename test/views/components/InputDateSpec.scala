@@ -27,7 +27,6 @@ import utils.SpecBase
 import views.html.components.inputDate
 
 import java.time.Clock
-import java.time.LocalDate
 
 class InputDateSpec extends SpecBase {
   "InpuDate component" should {
