@@ -18,7 +18,6 @@ package crypto
 
 import java.security.{InvalidAlgorithmParameterException, InvalidKeyException, NoSuchAlgorithmException, SecureRandom}
 import java.util.Base64
-
 import javax.crypto._
 import javax.crypto.spec.{GCMParameterSpec, SecretKeySpec}
 import javax.inject.Inject
@@ -37,7 +36,7 @@ case class EncryptionDecryptionException(method: String, reason: String, message
   val failureMessage: String = message
 }
 
-class SecureGCMCipher @Inject()() {
+class AesGCMCrypto @Inject()() {
 
   val IV_SIZE = 96
   val TAG_BIT_LENGTH = 128
