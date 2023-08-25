@@ -28,13 +28,11 @@
         @h1("cf.not-subscribed-to-cds.detail.heading")
         @h2("cf.not-subscribed-to-cds.detail.already-subscribed-to-cds", id = Some("already-subscribed-heading"))
 
-        <p class="govuk-body">
-            @messages("cf.not-subscribed-to-cds.detail.already-subscribed-to-cds-guidance-text")
-        </p>
+        @p("cf.not-subscribed-to-cds.detail.already-subscribed-to-cds-guidance-text")
 
         @h2(messages("cf.not-subscribed-to-cds.details.subscribe-to-cds"), id = Some("subscribed-to-cds-heading"))
 
-        <p class="govuk-body">
+        <p class="govuk-body govuk-!-margin-bottom-7">
             @link(
             "cf.not-subscribed-to-cds.details.subscribe-to-cds-link-text",
             appConfig.subscribeCdsUrl,
