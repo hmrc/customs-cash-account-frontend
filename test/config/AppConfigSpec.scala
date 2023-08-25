@@ -22,8 +22,32 @@ import utils.SpecBase
 class AppConfigSpec extends SpecBase {
 
   "AppConfig" should {
-    "retrieve correct values for the provided configuration" in new Setup {
+    "contain correct values for the provided configuration" in new Setup {
       appConfig.appName mustBe "customs-cash-account-frontend"
+      appConfig.loginUrl mustBe "http://localhost:9553/bas-gateway/sign-in"
+      appConfig.loginContinueUrl mustBe "http://localhost:9394/customs/cash-account"
+      appConfig.signOutUrl mustBe "http://localhost:9553/bas-gateway/sign-out-without-state"
+
+      appConfig.cashAccountTopUpGuidanceUrl mustBe
+        "https://www.gov.uk/guidance/paying-into-your-cash-account-for-cds-declarations"
+
+      appConfig.customsFinancialsFrontendHomepage mustBe "http://localhost:9876/customs/payment-records"
+
+      appConfig.cashAccountForCdsDeclarationsUrl mustBe
+        "https://www.gov.uk/guidance/use-a-cash-account-for-cds-declarations"
+
+      appConfig.feedbackService mustBe "https://www.development.tax.service.gov.uk/feedback/CDS-FIN"
+      appConfig.timeout mustBe 900
+      appConfig.countdown mustBe 120
+      appConfig.numberOfMonthsOfCashTransactionsToShow mustBe 6
+      appConfig.numberOfDaysToShow mustBe 5
+      appConfig.fixedTimeTesting mustBe true
+      appConfig.transactionsTimeoutFlag mustBe false
+
+      appConfig.helpMakeGovUkBetterUrl mustBe
+        "https://signup.take-part-in-research.service.gov.uk?" +
+          "utm_campaign=CDSfinancials&utm_source=Other&utm_medium=other&t=HMRC&id=249"
+
       appConfig.subscribeCdsUrl mustBe
         "https://www.tax.service.gov.uk/customs-enrolment-services/cds/subscribe"
     }
