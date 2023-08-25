@@ -94,15 +94,11 @@ timeout.signOut=Allgofnodi
 # Not subscribed to CDS
 # ----------------------------------------------------------
 cf.not-subscribed-to-cds.detail.title=Heb gofrestru â’r Gwasanaeth Datgan Tollau (CDS)
-cf.not-subscribed-to-cds.detail.heading=Er mwyn bwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau, mae angen i chi gael mynediad at y Gwasanaeth Datgan Tollau (CDS)
-cf.not-subscribed-to-cds.detail.info=CDS yw’r hyn sy’n cymryd lle system y tollau ar gyfer Trin Nwyddau a Gaiff eu Mewnforio a’u Hallforio (CHIEF). Gallwch ei ddefnyddio i reoli’ch rhyngweithiadau â’r tollau.
-cf.not-subscribed-to-cds.detail.eori-info=I gael mynediad at CDS, bydd angen
-cf.not-subscribed-to-cds.detail.eori-link=Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI) arnoch
-cf.not-subscribed-to-cds.detail.get-access-info=Os oes gennych rif EORI eisoes, mae modd
-cf.not-subscribed-to-cds.detail.get-access-link=cael mynediad at CDS yma
-cf.not-subscribed-to-cds.detail.process-application-info=Gall gymryd hyd at ddwy awr i CThEM brosesu’ch cais.
-cf.not-subscribed-to-cds.detail.how-to-get-access-info=Sut i gael mynediad at CDS
-
+cf.not-subscribed-to-cds.detail.heading=I fynd yn eich blaen, mae angen i chi danysgrifio i’r Gwasanaeth Datganiadau Tollau (CDS)
+cf.not-subscribed-to-cds.detail.already-subscribed-to-cds=Os ydych eisoes wedi tanysgrifio i’r CDS
+cf.not-subscribed-to-cds.detail.already-subscribed-to-cds-guidance-text=Gwiriwch eich bod wedi mewngofnodi gyda’r Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth sy’n gysylltiedig â’ch Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI) a’ch cyfrif CDS.
+cf.not-subscribed-to-cds.details.subscribe-to-cds=Tanysgrifio i’r CDS
+cf.not-subscribed-to-cds.details.subscribe-to-cds-link-text=Tanysgrifio i’r Gwasanaeth Datganiadau Tollau.
 
 # Page Not Found Error
 # ----------------------------------------------------------

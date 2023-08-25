@@ -94,14 +94,11 @@ timeout.signOut = Sign out
 # Not subscribed to CDS
 # ----------------------------------------------------------
 cf.not-subscribed-to-cds.detail.title=Not registered with CDS
-cf.not-subscribed-to-cds.detail.heading=To continue with this you need to get access to Customs Declaration Services (CDS)
-cf.not-subscribed-to-cds.detail.eori-info=You''ll need an
-cf.not-subscribed-to-cds.detail.eori-link=Economic Operator and Registration Identification (EORI) number (opens in a new window or tab)
-cf.not-subscribed-to-cds.detail.get-access-info=If you already have an EORI number, you can
-cf.not-subscribed-to-cds.detail.get-access-link=get access to CDS (opens in a new window or tab)
-cf.not-subscribed-to-cds.detail.how-to-get-access-info=How to get access to CDS
-cf.not-subscribed-to-cds.detail.process-application-info=It can take up to two hours for HMRC to process your application.
-
+cf.not-subscribed-to-cds.detail.heading=To continue you need to subscribe to the Customs Declaration Service (CDS)
+cf.not-subscribed-to-cds.detail.already-subscribed-to-cds=If you are already subscribed to CDS
+cf.not-subscribed-to-cds.detail.already-subscribed-to-cds-guidance-text=Check that you signed in with the Government Gateway user ID that is linked to your Economic Operator and Registration Identification (EORI) number and CDS account.
+cf.not-subscribed-to-cds.details.subscribe-to-cds=Subscribe to CDS
+cf.not-subscribed-to-cds.details.subscribe-to-cds-link-text=Subscribe to the Customs Declaration Service.
 
 # Page Not Found Error
 # ----------------------------------------------------------

@@ -19,15 +19,27 @@
         h1: components.h1,
         h2: components.h2,
         p: components.p,
-        newTabLink: components.newTabLink
+        link: components.link
 )
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
     @layout(pageTitle = Some(messages("cf.not-subscribed-to-cds.detail.title")), backLink = None, fullWidth = false, help = false) {
         @h1("cf.not-subscribed-to-cds.detail.heading")
-        @h2("cf.not-subscribed-to-cds.detail.how-to-get-access-info", id = None)
-        @newTabLink("cf.not-subscribed-to-cds.detail.eori-link", appConfig.registerCdsUrl, preLinkMessage = Some("cf.not-subscribed-to-cds.detail.eori-info"))
-        @newTabLink("cf.not-subscribed-to-cds.detail.get-access-link", appConfig.subscribeCdsUrl, preLinkMessage = Some("cf.not-subscribed-to-cds.detail.get-access-info"))
-        @p("cf.not-subscribed-to-cds.detail.process-application-info")
-    }
+        @h2("cf.not-subscribed-to-cds.detail.already-subscribed-to-cds", id = Some("already-subscribed-heading"))
+
+        <p class="govuk-body">
+            @messages("cf.not-subscribed-to-cds.detail.already-subscribed-to-cds-guidance-text")
+        </p>
+
+        @h2(messages("cf.not-subscribed-to-cds.details.subscribe-to-cds"), id = Some("subscribed-to-cds-heading"))
+
+        <p class="govuk-body">
+            @link(
+            "cf.not-subscribed-to-cds.details.subscribe-to-cds-link-text",
+            appConfig.subscribeCdsUrl,
+            linkId = Some("subscribe-to-cds"),
+            pWrapped = false
+            )
+        </p>
+}

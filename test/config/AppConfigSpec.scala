@@ -16,21 +16,21 @@
 
 package config
 
-import play.api.test.Helpers.running
+import play.api.Application
 import utils.SpecBase
 
 class AppConfigSpec extends SpecBase {
 
   "AppConfig" should {
-    "include the app name" in new Setup {
-      running(app) {
-        appConfig.appName mustBe ("customs-cash-account-frontend")
-      }
+    "retrieve correct values for the provided configuration" in new Setup {
+      appConfig.appName mustBe "customs-cash-account-frontend"
+      appConfig.subscribeCdsUrl mustBe
+        "https://www.tax.service.gov.uk/customs-enrolment-services/cds/subscribe"
     }
   }
 
   trait Setup {
-    val app = application.build()
-    val appConfig = app.injector.instanceOf[AppConfig]
+    val app: Application = application.build()
+    val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   }
 }
