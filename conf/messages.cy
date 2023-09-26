@@ -153,6 +153,9 @@ cf.cash-account.detail.no-transactions-with-balance.p1=Nid oes unrhyw drafodion 
 # Cash Transactions Request
 # --------------------------------------------------------------
 cf.cash-account.transactions.request.link.heading=Trafodion blaenorol
+cf.cash-account.transactions.request.support.heading=Help a chymorth
+cf.cash-account.transactions.request.support.pre=Os oes angen help arnoch
+cf.cash-account.transactions.request.support.link=cysylltwch â’r llinell gymorth Gymraeg ar gyfer Ymholiadau TAW, Tollau ac Ecséis (yn agor tab newydd)
 cf.cash-account.transactions.request.link.pre=Mae modd
 cf.cash-account.transactions.request.link=chwiliwch am drafodion blaenorol a’u lawrlwytho ar ffurf CSV
 cf.cash-account.transactions.request.title=Pa drafodion cyfrif arian parod sydd eu hangen arnoch?

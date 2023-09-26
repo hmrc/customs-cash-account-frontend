@@ -154,6 +154,9 @@ cf.cash-account.detail.no-transactions-with-balance.p1=There are no transactions
 # Cash Transactions Request
 # --------------------------------------------------------------
 cf.cash-account.transactions.request.link.heading=Previous transactions
+cf.cash-account.transactions.request.support.heading=Help and Support
+cf.cash-account.transactions.request.support.pre=If you need help
+cf.cash-account.transactions.request.support.link=contact the HMRC accounting centre (opens in new tab)
 cf.cash-account.transactions.request.link.pre=You can
 cf.cash-account.transactions.request.link=search and download previous transactions as CSV
 cf.cash-account.transactions.request.title=Which cash account transactions do you need?
