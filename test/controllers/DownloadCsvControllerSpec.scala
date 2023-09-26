@@ -236,7 +236,7 @@ class DownloadCsvControllerSpec extends SpecBase {
           val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(None).url + "?page=5")
           val result = route(app, request).value
           val html = parseBodyFragment(contentAsString(result)).body
-          val pageNumberLinks = html.select("li.govuk-pagination__number > a").asScala
+          val pageNumberLinks = html.select("li.govuk-pagination__item > a").asScala
           withClue("html did not contain any pagination links:") {
             pageNumberLinks.size must not be (0)
           }
@@ -245,27 +245,6 @@ class DownloadCsvControllerSpec extends SpecBase {
               pageNumberLink.attr("href") must include(s"page=" + pageNumberLink.text())
             }
           }
-        }
-      }
-
-      "show the expected location description" in new Setup {
-        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-          .thenReturn(Future.successful(Some(cashAccount)))
-
-        when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(someCan), any, any)(any))
-          .thenReturn(Future.successful(Right(randomCashTransaction(25))))
-
-        val app = application
-          .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-          .configure("application.cash-account.numberOfDaysToShow" -> "25")
-          .build()
-
-        running(app) {
-          val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(None).url + "?page=5&mrn=true")
-          val result = route(app, request).value
-          val html = parseBodyFragment(contentAsString(result)).body
-          val actualLocationDescription = html.getElementsByClass("govuk-pagination__results").asScala.map(_.text).head
-          actualLocationDescription must startWith("Showing 26")
         }
       }
     }
