@@ -16,9 +16,14 @@
 
 @this(hmrcNewTabLink: HmrcNewTabLink)
 
-@(linkMessage: String, href: String, preLinkMessage: Option[String] = None)(implicit messages: Messages, appConfig: AppConfig)
+@(
+    linkMessage: String, 
+    href: String, 
+    preLinkMessage: Option[String] = None,
+    classes: String = "govuk-body"
+)(implicit messages: Messages, appConfig: AppConfig)
 
-<p class="govuk-body">
+<p class="@classes">
     @preLinkMessage.map(messages(_))
     @hmrcNewTabLink(
         NewTabLink(
