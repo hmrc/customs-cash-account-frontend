@@ -13,11 +13,11 @@ object AppDependencies {
     "uk.gov.hmrc" %% "tax-year" % "3.3.0"
   )
   val test = Seq(
-    "uk.gov.hmrc" %% "bootstrap-test-play-28" % bootstrapVersion % Test,
-    "org.jsoup" % "jsoup" % "1.16.1" % Test,
-    "com.vladsch.flexmark" % "flexmark-all" % "0.35.10" % Test,
-    "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test,
-    "org.mockito" %% "mockito-scala-scalatest" % "1.17.14" % Test,
-    "uk.gov.hmrc" %% "play-frontend-hmrc" % "7.23.0-play-28" % Test
+    "uk.gov.hmrc" %% "bootstrap-test-play-28" % bootstrapVersion,
+    "org.jsoup" % "jsoup" % "1.16.1",
+    "com.vladsch.flexmark" % "flexmark-all" % "0.35.10",
+    "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0",
+    "org.mockito" %% "mockito-scala-scalatest" % "1.17.14",
+    "uk.gov.hmrc" %% "play-frontend-hmrc" % "7.23.0-play-28"
   )
 }
