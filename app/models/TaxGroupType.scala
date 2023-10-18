@@ -35,7 +35,7 @@ object TaxGroupType {
   }
 
   implicit val taxGroupWrites: Writes[TaxGroupType] = new Writes[TaxGroupType]{
-    override def writes(o: TaxGroupType): JsString = JsString{
+    override def writes(o: TaxGroupType): JsString = JsString {
       o match {
         case ImportVat => "Import VAT"
         case ExciseDuty => "Excise"
