@@ -16,16 +16,10 @@
 
 package helpers
 
-import java.time.LocalDateTime
 import utils.SpecBase
 
 class FormattersSpec extends SpecBase {
   "Formatters" must {
-   /* "timeAsHourMinutesWithAmPm must format correctly" in {
-      val date = LocalDateTime.of(2022,1,1,1,1)
-      val result = Formatters.timeAsHourMinutesWithAmPm(date)
-      result mustBe "01:01 am"
-    }*/
 
     "fileSizeFormat size of 1 returns 1KB" in {
       val size: Long = 1

@@ -22,56 +22,54 @@ import play.api.libs.json.{JsValue, JsString, JsSuccess}
 
 class CashDailyStatementSpec extends SpecBase {
 
-  "CashDailyStatement" must {
-    "taxGroupTypeReads" must {
-      "ImportVat must read correctly as jsSuccess" in new Setup {
-        val res = CashDailyStatement.taxGroupTypeReads.reads(jsImport)
-        res mustBe JsSuccess(ImportVat)
-      }
-
-      "Excise must read correctly as jsSuccess" in new Setup {
-        val res = CashDailyStatement.taxGroupTypeReads.reads(jsExcise)
-        res mustBe JsSuccess(ExciseDuty)
-      }
-
-      "Customs must read correctly as jsSuccess" in new Setup {
-        val res = CashDailyStatement.taxGroupTypeReads.reads(jsCustoms)
-        res mustBe JsSuccess(CustomsDuty)
-      }
+  "taxGroupTypeReads" must {
+    "ImportVat must read correctly as jsSuccess" in new Setup {
+      val res = CashDailyStatement.taxGroupTypeReads.reads(jsImport)
+      res mustBe JsSuccess(ImportVat)
     }
 
-    "cashTransactionTypeReads" must {
-      "Payment must read correctly as jsSuccess" in new Setup {
-        val res = CashDailyStatement.cashTransactionTypeReads.reads(jsPayment)
-        res mustBe JsSuccess(Payment)
-      }
-
-      "Withdrawal must read correctly as jsSuccess" in new Setup {
-        val res = CashDailyStatement.cashTransactionTypeReads.reads(jsWithdrawal)
-        res mustBe JsSuccess(Withdrawal)
-      }
-
-      "Transfer must read correctly as jsSuccess" in new Setup {
-        val res = CashDailyStatement.cashTransactionTypeReads.reads(jsTransfer)
-        res mustBe JsSuccess(Transfer)
-      }
+    "Excise must read correctly as jsSuccess" in new Setup {
+      val res = CashDailyStatement.taxGroupTypeReads.reads(jsExcise)
+      res mustBe JsSuccess(ExciseDuty)
     }
 
-    "Writes" must {
-      "Payment JsString must write correctly" in new Setup {
-        val res: JsValue = CashDailyStatement.cashTransactionTypeWrites.writes(Payment)
-        res mustBe jsPayment
-      }
+    "Customs must read correctly as jsSuccess" in new Setup {
+      val res = CashDailyStatement.taxGroupTypeReads.reads(jsCustoms)
+      res mustBe JsSuccess(CustomsDuty)
+    }
+  }
 
-      "Withdrawal JsString must write correctly" in new Setup {
-        val res: JsValue = CashDailyStatement.cashTransactionTypeWrites.writes(Withdrawal)
-        res mustBe jsWithdrawal
-      }
+  "cashTransactionTypeReads" must {
+    "Payment must read correctly as jsSuccess" in new Setup {
+      val res = CashDailyStatement.cashTransactionTypeReads.reads(jsPayment)
+      res mustBe JsSuccess(Payment)
+    }
 
-      "Transfer JsString must write correctly" in new Setup {
-        val res: JsValue = CashDailyStatement.cashTransactionTypeWrites.writes(Transfer)
-        res mustBe jsTransfer
-      }
+    "Withdrawal must read correctly as jsSuccess" in new Setup {
+      val res = CashDailyStatement.cashTransactionTypeReads.reads(jsWithdrawal)
+      res mustBe JsSuccess(Withdrawal)
+    }
+
+    "Transfer must read correctly as jsSuccess" in new Setup {
+      val res = CashDailyStatement.cashTransactionTypeReads.reads(jsTransfer)
+      res mustBe JsSuccess(Transfer)
+    }
+  }
+
+  "cashTransactionTypeWrites" must {
+    "Payment JsString must write correctly" in new Setup {
+      val res: JsValue = CashDailyStatement.cashTransactionTypeWrites.writes(Payment)
+      res mustBe jsPayment
+    }
+
+    "Withdrawal JsString must write correctly" in new Setup {
+      val res: JsValue = CashDailyStatement.cashTransactionTypeWrites.writes(Withdrawal)
+      res mustBe jsWithdrawal
+    }
+
+    "Transfer JsString must write correctly" in new Setup {
+      val res: JsValue = CashDailyStatement.cashTransactionTypeWrites.writes(Transfer)
+      res mustBe jsTransfer
     }
   }
 

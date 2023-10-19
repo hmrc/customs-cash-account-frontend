@@ -44,7 +44,7 @@ class AuthActionSpec extends SpecBase {
         val app = application.build()
         val config = app.injector.instanceOf[AppConfig]
 
-        val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+        val bodyParsers = application.injector().instanceOf[BodyParsers.Default]
 
         val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new MissingBearerToken), config, bodyParsers)
         val controller = new Harness(authAction)
@@ -63,7 +63,7 @@ class AuthActionSpec extends SpecBase {
         val app = application.build()
         val config = app.injector.instanceOf[AppConfig]
 
-        val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+        val bodyParsers = application.injector().instanceOf[BodyParsers.Default]
 
         val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new BearerTokenExpired), config, bodyParsers)
         val controller = new Harness(authAction)
@@ -82,7 +82,7 @@ class AuthActionSpec extends SpecBase {
         val app = application.build()
         val config = app.injector.instanceOf[AppConfig]
 
-        val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+        val bodyParsers = application.injector().instanceOf[BodyParsers.Default]
 
         val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new InsufficientEnrolments), config, bodyParsers)
         val controller = new Harness(authAction)
@@ -101,7 +101,7 @@ class AuthActionSpec extends SpecBase {
         val app = application.build()
         val config = app.injector.instanceOf[AppConfig]
 
-        val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+        val bodyParsers = application.injector().instanceOf[BodyParsers.Default]
 
         val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new InsufficientConfidenceLevel), config, bodyParsers)
         val controller = new Harness(authAction)
@@ -120,7 +120,7 @@ class AuthActionSpec extends SpecBase {
         val app = application.build()
         val config = app.injector.instanceOf[AppConfig]
 
-        val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+        val bodyParsers = application.injector().instanceOf[BodyParsers.Default]
 
         val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedAuthProvider), config, bodyParsers)
         val controller = new Harness(authAction)
@@ -139,7 +139,7 @@ class AuthActionSpec extends SpecBase {
         val app = application.build()
         val config = app.injector.instanceOf[AppConfig]
 
-        val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+        val bodyParsers = application.injector().instanceOf[BodyParsers.Default]
 
         val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedAffinityGroup), config, bodyParsers)
         val controller = new Harness(authAction)
@@ -158,7 +158,7 @@ class AuthActionSpec extends SpecBase {
         val app = application.build()
         val config = app.injector.instanceOf[AppConfig]
 
-        val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+        val bodyParsers = application.injector().instanceOf[BodyParsers.Default]
 
         val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedCredentialRole), config, bodyParsers)
         val controller = new Harness(authAction)

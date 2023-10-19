@@ -18,33 +18,32 @@ package models
 
 import utils.SpecBase
 import models.CDSAccountStatus
-import play.api.libs.json.{JsValue, Json, JsString, JsSuccess}
+import play.api.libs.json.{JsString, JsSuccess}
 
-class CDSAccountStatusSpec extends SpecBase {
+class AccountsAndBalancesSpec extends SpecBase {
 
-  "CDSAccountStatus" must {
+  "CDSAccountStatusReads" must {
 
-    "Reads" must {
-      "AccountStatusOpen must read correctly as jsSuccess AccountStatusOpen" in new Setup {
+      "read AccountStatusOpen correctly as jsSuccess AccountStatusOpen" in new Setup {
         val res = CDSAccountStatus.CDSAccountStatusReads.reads(jsOpen)
         res mustBe JsSuccess(AccountStatusOpen)
       }
 
-      "AccountStatusSuspended must read correctly as jsSuccess AccountStatusSuspended" in new Setup {
+      "read AccountStatusSuspended correctly as jsSuccess AccountStatusSuspended" in new Setup {
         val res = CDSAccountStatus.CDSAccountStatusReads.reads(jsSuspended)
         res mustBe JsSuccess(AccountStatusSuspended)
       }
 
-      "AccountStatusClosed must read correctly as jsSuccess AccountStatusClosed" in new Setup {
+
+      "read AccountStatusClosed correctly as jsSuccess AccountStatusClosed" in new Setup {
         val res = CDSAccountStatus.CDSAccountStatusReads.reads(jsClosed)
         res mustBe JsSuccess(AccountStatusClosed)
       }
 
-      "Unknown must read correctly as jsSuccess AccountStatusOpen" in new Setup {
+      "read Unknown correctly as jsSuccess AccountStatusOpen" in new Setup {
         val res = CDSAccountStatus.CDSAccountStatusReads.reads(jsFailure)
         res mustBe JsSuccess(AccountStatusOpen)
       }
-    }
   }
 
   trait Setup {

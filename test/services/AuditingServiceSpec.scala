@@ -26,10 +26,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector._
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import utils.SpecBase
-import java.time.{LocalDate, LocalDateTime}
-
-import akka.actor.Status.Success
-import com.github.tomakehurst.wiremock.http.Response.response
+import java.time.LocalDateTime
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

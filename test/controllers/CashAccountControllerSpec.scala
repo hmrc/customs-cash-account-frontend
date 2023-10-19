@@ -301,7 +301,7 @@ class CashAccountControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-        val request = FakeRequest(GET, routes.DownloadCsvController.showUnableToDownloadCSV.url)
+        val request = FakeRequest(GET, routes.DownloadCsvController.showUnableToDownloadCSV().url)
         val result = route(app, request).value
         status(result) mustEqual OK
       }

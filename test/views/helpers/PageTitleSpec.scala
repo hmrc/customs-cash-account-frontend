@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package repositories
+package views.helpers
 
 import utils.SpecBase
 import views.helpers.PageTitle
@@ -22,13 +22,13 @@ import play.api.i18n.Messages
 import play.api.test.Helpers
 
 class PageTitleSpec extends SpecBase {
-  "PageTitle" should {
-    "pageTile should return correct string for present title" in new Setup {
+  "fullPageTitle" should {
+    "return correct string for present title" in new Setup {
       val res = PageTitle.fullPageTitle(Some("abc"))
       res mustBe Some("abc - service.name - GOV.UK")
     }
 
-    "pageTile should return correct string for no title" in new Setup {
+    "return correct string for no title" in new Setup {
       val res = PageTitle.fullPageTitle(Some(""))
       res mustBe Some(" - service.name - GOV.UK")
     }
