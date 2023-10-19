@@ -16,7 +16,7 @@ lazy val microservice = Project(appName, file("."))
       ".*javascript.*;.*Routes.*;.*GuiceInjector;" +
       ".*FeatureSwitchController;" +
       ".*ControllerConfiguration;.*LanguageSwitchController",
-    ScoverageKeys.coverageMinimum := 78,
+    ScoverageKeys.coverageMinimum := 85,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
     TwirlKeys.templateImports ++= Seq(

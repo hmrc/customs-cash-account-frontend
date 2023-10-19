@@ -37,7 +37,7 @@ RequestTransactionsControllerSpec extends SpecBase {
       when(mockRequestedTransactionsCache.clear(any)).thenReturn(Future.successful(true))
 
       val request: FakeRequest[AnyContentAsEmpty.type] =
-        fakeRequest(GET, routes.RequestTransactionsController.onPageLoad.url)
+        fakeRequest(GET, routes.RequestTransactionsController.onPageLoad().url)
 
       running(app) {
         val result = route(app, request).value
@@ -49,7 +49,7 @@ RequestTransactionsControllerSpec extends SpecBase {
       when(mockRequestedTransactionsCache.clear(any)).thenReturn(Future.successful(true))
 
       val request: FakeRequest[AnyContentAsEmpty.type] =
-        fakeRequest(GET, routes.RequestTransactionsController.onPageLoad.url)
+        fakeRequest(GET, routes.RequestTransactionsController.onPageLoad().url)
 
       running(app) {
         val result = route(app, request).value
@@ -64,7 +64,7 @@ RequestTransactionsControllerSpec extends SpecBase {
         fakeRequest(GET, routes.RequestTransactionsController.onSubmit().url)
 
       val clear: FakeRequest[AnyContentAsEmpty.type] =
-        fakeRequest(GET, routes.RequestTransactionsController.onPageLoad.url)
+        fakeRequest(GET, routes.RequestTransactionsController.onPageLoad().url)
 
       running(app) {
         val result = route(app, store).value

@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-package helpers
+package views.helpers
 
 import utils.SpecBase
+import play.api.i18n.Messages
+import play.api.test.Helpers
 
-class FormattersSpec extends SpecBase {
-  "Formatters" must {
-
-    "fileSizeFormat size of 1 returns 1KB" in {
-      val size: Long = 1
-      val result = Formatters.fileSizeFormat(size)
-      result mustBe "1KB"
+class PageTitleSpec extends SpecBase {
+  "fullPageTitle" should {
+    "return correct string for present title" in new Setup {
+      val res = PageTitle.fullPageTitle(Some("abc"))
+      res mustBe Some("abc - service.name - GOV.UK")
     }
 
-    "fileSizeFormat size of 1000000000 returns 1000.0MB" in {
-      val size: Long = 1000000000
-      val result = Formatters.fileSizeFormat(size)
-      result mustBe "1000.0MB"
+    "return correct string for no title" in new Setup {
+      val res = PageTitle.fullPageTitle(Some(""))
+      res mustBe Some(" - service.name - GOV.UK")
     }
+  }
 
-    "fileSizeFormat size of 1000 returns " in {
-      val size: Long = 100000
-      val result = Formatters.fileSizeFormat(size)
-      result mustBe "100KB"
-    }
+  trait Setup {
+    implicit val msgs: Messages = Helpers.stubMessages()
   }
 }
