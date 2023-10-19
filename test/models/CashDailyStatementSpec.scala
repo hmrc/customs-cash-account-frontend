@@ -17,7 +17,6 @@
 package models
 
 import utils.SpecBase
-import models.CashDailyStatement
 import play.api.libs.json.{JsValue, JsString, JsSuccess}
 
 class CashDailyStatementSpec extends SpecBase {

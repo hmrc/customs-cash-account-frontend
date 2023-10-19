@@ -17,7 +17,6 @@
 package views.helpers
 
 import utils.SpecBase
-import views.helpers.PageTitle
 import play.api.i18n.Messages
 import play.api.test.Helpers
 

@@ -17,7 +17,6 @@
 package models
 
 import utils.SpecBase
-import models.TaxGroupType
 import play.api.libs.json.{JsValue, JsString, JsSuccess}
 
 class TaxGroupTypeSpec extends SpecBase {

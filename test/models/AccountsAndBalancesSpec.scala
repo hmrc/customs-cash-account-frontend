@@ -17,7 +17,6 @@
 package models
 
 import utils.SpecBase
-import models.CDSAccountStatus
 import play.api.libs.json.{JsString, JsSuccess}
 
 class AccountsAndBalancesSpec extends SpecBase {
