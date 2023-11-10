@@ -29,39 +29,38 @@ class CashTransactionsEncrypterSpec extends SpecBase {
 
   trait Setup {
     val listOfPendingTransactions =
-      Seq(Declaration("pendingDeclarationID", "pendingImporterEORI",
+      Seq(Declaration("pendingDeclarationID", Some("pendingImporterEORI"),
         "pendingDeclarantEORINumber", Some("pendingDeclarantReference"),
         LocalDate.parse("2020-07-21"), -100.00, Nil))
 
     val cashDailyStatements = Seq(
       CashDailyStatement(LocalDate.parse("2020-07-18"), 0.0, 1000.00,
-        Seq(Declaration("mrn1", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil),
-          Declaration("mrn2", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -65.00, Nil)),
+        Seq(Declaration("mrn1", Some("importer EORI"), "Declarant EORI",
+          Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil),
+          Declaration("mrn2", Some("Importer EORI"), "Declarant EORI",
+            Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -65.00, Nil)),
         Seq(Transaction(45.67, Payment, None), Transaction(-76.34, Withdrawal, Some("77665544")))),
 
       CashDailyStatement(LocalDate.parse("2020-07-20"), 0.0, 1200.00,
-        Seq(Declaration("mrn3", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil),
-          Declaration("mrn4", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)),
+        Seq(Declaration("mrn3", Some("Importer EORI"), "Declarant EORI",
+          Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil),
+          Declaration("mrn4", Some("Importer EORI"), "Declarant EORI",
+          Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)),
         Seq(Transaction(67.89, Payment, None))))
 
     val cashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements)
   }
 
   "encrypt / decrypt cashTransactions" must {
-
     "encrypt cashTransactions" in new Setup {
-
       val encryptedCashTransactions = encrypter.encryptCashTransactions(cashTransactions, secretKey)
       val decryptedCashTransactions = encrypter.decryptCashTransactions(encryptedCashTransactions, secretKey)
-
       decryptedCashTransactions mustEqual cashTransactions
     }
 
     "decrypt cashTransactions" in new Setup {
-
       val encryptedCashTransactions = encrypter.encryptCashTransactions(cashTransactions, secretKey)
       val decryptedCashTransactions = encrypter.decryptCashTransactions(encryptedCashTransactions, secretKey)
-
       decryptedCashTransactions mustEqual cashTransactions
     }
   }

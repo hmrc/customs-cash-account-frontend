@@ -178,7 +178,7 @@ class RequestedTransactionsControllerSpec extends SpecBase {
       CashAccount(cashAccountNumber, eori, AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))
 
     val listOfPendingTransactions =
-      Seq(Declaration("pendingDeclarationID", "pendingImporterEORI",
+      Seq(Declaration("pendingDeclarationID", Some("pendingImporterEORI"),
         "pendingDeclarantEORINumber", Some("pendingDeclarantReference"),
         LocalDate.parse("2020-07-21"), -100.00, Nil))
 
@@ -187,16 +187,16 @@ class RequestedTransactionsControllerSpec extends SpecBase {
 
     val cashDailyStatements = Seq(
       CashDailyStatement(LocalDate.parse("2020-07-18"), 0.0, 1000.00,
-        Seq(Declaration("mrn1", "Importer EORI", "Declarant EORI",
+        Seq(Declaration("mrn1", Some("Importer EORI"), "Declarant EORI",
           Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil),
-          Declaration("mrn2", "Importer EORI", "Declarant EORI",
+          Declaration("mrn2", Some("Importer EORI"), "Declarant EORI",
             Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -65.00, Nil)),
         Seq(Transaction(45.67, Payment, None), Transaction(-76.34, Withdrawal, Some("77665544")))),
 
       CashDailyStatement(LocalDate.parse("2020-07-20"), 0.0, 1200.00,
-        Seq(Declaration("mrn3", "Importer EORI", "Declarant EORI",
+        Seq(Declaration("mrn3", Some("Importer EORI"), "Declarant EORI",
           Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil),
-          Declaration("mrn4", "Importer EORI", "Declarant EORI",
+          Declaration("mrn4", Some("Importer EORI"), "Declarant EORI",
             Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)),
         Seq(Transaction(67.89, Payment, None)))
     )

@@ -23,7 +23,7 @@ import play.api.libs.json.{Json, OFormat}
 import java.time.LocalDate
 
 case class Declaration(movementReferenceNumber: MRN,
-                       importerEori: EORI,
+                       importerEori: Option[String],
                        declarantEori: EORI,
                        declarantReference: Option[String],
                        date: LocalDate,

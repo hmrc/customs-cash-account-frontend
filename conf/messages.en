@@ -19,6 +19,7 @@ cf.cash-account.csv.date=Date (posted)
 cf.cash-account.csv.transactionType=Transaction
 cf.cash-account.csv.movementReferenceNumber=MRN
 cf.cash-account.csv.uniqueConsignmentReference = UCR
+cf.cash-account.csv.importerEori=Importer EORI
 cf.cash-account.csv.declarantEori=Declarant EORI
 cf.cash-account.csv.vat=VAT
 cf.cash-account.csv.duty=Duty
