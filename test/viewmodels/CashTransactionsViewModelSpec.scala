@@ -31,11 +31,11 @@ class CashTransactionsViewModelSpec extends SpecBase {
 
       val cashDailyStatementsSortedByDate = Seq(
         CashDailyStatement(LocalDate.parse("2020-07-20"), 600.0, 1200.00,
-          Seq(Declaration("mrn4", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil),
-            Declaration("mrn3", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)), Nil),
+          Seq(Declaration("mrn4", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil),
+            Declaration("mrn3", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)), Nil),
         CashDailyStatement(LocalDate.parse("2020-07-18"), 500.0, 1000.00,
-          Seq(Declaration("mrn2", "Declarant EORI", None, LocalDate.parse("2020-07-18"), -65.00, Nil),
-            Declaration("mrn1", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil)), Nil))
+          Seq(Declaration("mrn2", "Importer EORI", "Declarant EORI", None, LocalDate.parse("2020-07-18"), -65.00, Nil),
+            Declaration("mrn1", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil)), Nil))
 
       model.cashTransactions.cashDailyStatements.sorted mustBe cashDailyStatementsSortedByDate
     }
@@ -44,8 +44,11 @@ class CashTransactionsViewModelSpec extends SpecBase {
   "sort declarations within Cash Daily statements in ascending mrn order" in new Setup {
 
     val declarationsSortedByMRN = Seq(
-      Declaration("mrn1", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.0, Nil),
-      Declaration("mrn2", "Declarant EORI", None, LocalDate.parse("2020-07-18"), -65.0, Nil))
+      Declaration("mrn1", "Importer EORI", "Declarant EORI",
+        Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.0, Nil),
+      Declaration("mrn2", "Importer EORI", "Declarant EORI",
+        None, LocalDate.parse("2020-07-18"), -65.0, Nil)
+    )
 
     model.cashTransactions.cashDailyStatements.head.declarations.sorted mustBe declarationsSortedByMRN
   }
@@ -62,9 +65,7 @@ class CashTransactionsViewModelSpec extends SpecBase {
     modelWithNoDailyStatement.pendingTransactionsGroupedByDate.head mustBe group1
   }
 
-
   "CashDailyStatementViewModel" should {
-
     "calculates the overall size of the collection" in {
       val someTransactions = Seq(Transaction(123.45, Payment, None),
         Transaction(223.45, Payment, None),
@@ -72,7 +73,8 @@ class CashTransactionsViewModelSpec extends SpecBase {
         Transaction(300.00, Transfer, None),
         Transaction(-300.00, Transfer, None))
 
-      val someDeclarations = Seq(Declaration("mrn1", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil))
+      val someDeclarations = Seq(Declaration("mrn1", "Importer EORI",
+        "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil))
 
       val dailyStatement = CashDailyStatement(LocalDate.parse("2020-07-20"), 0.0, 0.00, someDeclarations, someTransactions)
 
@@ -83,33 +85,46 @@ class CashTransactionsViewModelSpec extends SpecBase {
   trait Setup {
     val mockAppConfig = mock[AppConfig]
     when(mockAppConfig.numberOfDaysToShow).thenReturn(5)
+
     val cashDailyStatements = Seq(
       CashDailyStatement(LocalDate.parse("2020-07-18"), 500.0, 1000.00,
-        Seq(Declaration("mrn2", "Declarant EORI", None, LocalDate.parse("2020-07-18"), -65.00, Nil),
-          Declaration("mrn1", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil)), Nil),
+        Seq(Declaration("mrn2", "Importer EORI", "Declarant EORI", None, LocalDate.parse("2020-07-18"), -65.00, Nil),
+          Declaration("mrn1", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil)), Nil),
       CashDailyStatement(LocalDate.parse("2020-07-20"), 600.0, 1200.00,
-        Seq(Declaration("mrn4", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil),
-          Declaration("mrn3", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)), Nil))
+        Seq(Declaration("mrn4", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil),
+          Declaration("mrn3", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)), Nil))
 
     val listOfPendingTransactions = Seq(
-      Declaration("pendingDeclarationID", "pendingDeclarantEORINumber", Some("pendingDeclarantReference"), LocalDate.parse("2020-08-05"), -300.00, Nil),
-      Declaration("pendingDeclarationID", "pendingDeclarantEORINumber", Some("pendingDeclarantReference"), LocalDate.parse("2020-07-21"), -100.00, Nil),
-      Declaration("pendingDeclarationID", "pendingDeclarantEORINumber", None, LocalDate.parse("2020-07-21"), -50.00, Nil),
-      Declaration("pendingDeclarationID", "pendingDeclarantEORINumber", Some("pendingDeclarantReference"), LocalDate.parse("2020-08-05"), -200.00, Nil)
+      Declaration("pendingDeclarationID", "pendingImporterEORI",
+        "pendingDeclarantEORINumber", Some("pendingDeclarantReference"),
+        LocalDate.parse("2020-08-05"), -300.00, Nil),
+
+      Declaration("pendingDeclarationID", "pendingImporterEORI",
+        "pendingDeclarantEORINumber", Some("pendingDeclarantReference"),
+        LocalDate.parse("2020-07-21"), -100.00, Nil),
+
+      Declaration("pendingDeclarationID", "pendingImporterEORI",
+        "pendingDeclarantEORINumber", None, LocalDate.parse("2020-07-21"), -50.00, Nil),
+
+      Declaration("pendingDeclarationID", "pendingImporterEORI",
+        "pendingDeclarantEORINumber", Some("pendingDeclarantReference"),
+        LocalDate.parse("2020-08-05"), -200.00, Nil)
     )
+
     val group1 = PaginatedPendingDailyStatement(LocalDate.parse("2020-08-05"),
-      Seq(Declaration("pendingDeclarationID", "pendingDeclarantEORINumber", Some("pendingDeclarantReference"), LocalDate.parse("2020-08-05"), -300.00, Nil),
-        Declaration("pendingDeclarationID", "pendingDeclarantEORINumber", Some("pendingDeclarantReference"), LocalDate.parse("2020-08-05"), -200.00, Nil)))
-    val group2 =
-      Seq(Declaration("pendingDeclarationID", "pendingDeclarantEORINumber", Some("pendingDeclarantReference"), LocalDate.parse("2020-07-21"), -100.00, Nil),
-        Declaration("pendingDeclarationID", "pendingDeclarantEORINumber", None, LocalDate.parse("2020-07-21"), -50.00, Nil))
+      Seq(Declaration("pendingDeclarationID", "pendingImporterEORI", "pendingDeclarantEORINumber",
+        Some("pendingDeclarantReference"), LocalDate.parse("2020-08-05"), -300.00, Nil),
+        Declaration("pendingDeclarationID", "pendingImporterEORI", "pendingDeclarantEORINumber",
+          Some("pendingDeclarantReference"), LocalDate.parse("2020-08-05"), -200.00, Nil)))
+
+    val group2 = Seq(Declaration("pendingDeclarationID", "pendingImporterEORI", "pendingDeclarantEORINumber",
+      Some("pendingDeclarantReference"), LocalDate.parse("2020-07-21"), -100.00, Nil),
+        Declaration("pendingDeclarationID", "pendingImporterEORI", "pendingDeclarantEORINumber",
+          None, LocalDate.parse("2020-07-21"), -50.00, Nil))
 
     val cashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements)
-
     val cashTransactionsWithNoDailyStatement = CashTransactions(listOfPendingTransactions, Seq.empty)
-
     val model = CashTransactionsViewModel(cashTransactions, Some(1))(mockAppConfig)
-
     val modelWithNoDailyStatement = CashTransactionsViewModel(cashTransactionsWithNoDailyStatement, None)(mockAppConfig)
 
   }

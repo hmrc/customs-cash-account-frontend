@@ -57,6 +57,7 @@ class CashTransactionsEncrypter @Inject()(crypto: AesGCMCrypto){
 
     EncryptedDeclaration(
       e(declaration.movementReferenceNumber),
+      e(declaration.importerEori),
       e(declaration.declarantEori),
       declaration.declarantReference.map(e),
       declaration.date,
@@ -70,6 +71,7 @@ class CashTransactionsEncrypter @Inject()(crypto: AesGCMCrypto){
 
     Declaration(
       d(encryptedDeclaration.movementReferenceNumber),
+      d(encryptedDeclaration.importerEori),
       d(encryptedDeclaration.declarantEori),
       encryptedDeclaration.declarantReference.map(d),
       encryptedDeclaration.date,

@@ -61,6 +61,12 @@ class ConstraintsSpec extends SpecBase with Constraints {
         val result = beforeCurrentMonth("error.min").apply(monthOld)
         result mustBe Invalid(List(ValidationError(List("error.min"))))
       }
+
+      "return invalid result if request is after current year" in new Setup {
+        def monthOld: LocalDate = LocalDateTime.now().plusYears(1).toLocalDate
+        val result = beforeCurrentMonth("error.min").apply(monthOld)
+        result mustBe Invalid(List(ValidationError(List("error.min"))))
+      }
     }
 
     "beforeCurrentDate" must {

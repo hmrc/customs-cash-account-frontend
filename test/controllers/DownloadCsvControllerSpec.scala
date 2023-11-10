@@ -375,20 +375,28 @@ class DownloadCsvControllerSpec extends SpecBase {
    val mockAuditingservice = mock[AuditingService]
    val mockCustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
    val cashAccount = CashAccount(cashAccountNumber, eori, AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))
+
    val listOfPendingTransactions =
-     Seq(Declaration("pendingDeclarationID", "pendingDeclarantEORINumber", Some("pendingDeclarantReference"), LocalDate.parse("2020-07-21"), -100.00, Nil))
+     Seq(Declaration("pendingDeclarationID", "pendingImporterEORI",
+       "pendingDeclarantEORINumber", Some("pendingDeclarantReference"), LocalDate.parse("2020-07-21"), -100.00, Nil))
 
    val dateRange = RequestedDateRange(LocalDate.of(2019,10,10),LocalDate.of(2019,10,10))
 
    val cashDailyStatements = Seq(
      CashDailyStatement(LocalDate.parse("2020-07-18"), 0.0, 1000.00,
-       Seq(Declaration("mrn1", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil),
-         Declaration("mrn2", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -65.00, Nil)),
+       Seq(Declaration("mrn1", "Importer EORI", "Declarant EORI",
+         Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil),
+         Declaration("mrn2", "Importer EORI", "Declarant EORI",
+           Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -65.00, Nil)),
        Seq(Transaction(45.67, Payment, None), Transaction(-76.34, Withdrawal, Some("77665544")))),
+
      CashDailyStatement(LocalDate.parse("2020-07-20"), 0.0, 1200.00,
-       Seq(Declaration("mrn3", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil),
-         Declaration("mrn4", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)),
-       Seq(Transaction(67.89, Payment, None))))
+       Seq(Declaration("mrn3", "Importer EORI", "Declarant EORI",
+         Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil),
+         Declaration("mrn4", "Importer EORI", "Declarant EORI",
+           Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)),
+       Seq(Transaction(67.89, Payment, None)))
+   )
 
    val nonFatalResponse = UpstreamErrorResponse("ServiceUnavailable", Status.SERVICE_UNAVAILABLE, Status.SERVICE_UNAVAILABLE)
    val cashTransactionResponse = CashTransactions(listOfPendingTransactions, cashDailyStatements)
@@ -418,6 +426,7 @@ class DownloadCsvControllerSpec extends SpecBase {
   def randomDeclaration: Declaration =
     Declaration(randomString(10),
       randomString(10),
+      randomString(10),
       Some(randomString(10)),
       randomLocalDate,
       randomBigDecimal, Nil)
@@ -430,15 +439,9 @@ class DownloadCsvControllerSpec extends SpecBase {
       randomTransactions(7))
 
   val types = Seq("Payment", "Withdrawal", "Transfer")
-
   def randomTransactions(howMany: Int): Seq[Transaction] = List.fill(howMany)(randomTransaction)
-
   def randomTransaction: Transaction = Transaction(randomBigDecimal, Transfer, None)
-
   def randomDeclarations(howMany: Int): Seq[Declaration] = List.fill(howMany)(randomDeclaration)
-
   def randomPendingDailyStatements(howMany: Int): Seq[Declaration] = List.fill(howMany)(randomDeclaration)
-
   def randomCashDailyStatements(howMany: Int): Seq[CashDailyStatement] = List.fill(howMany)(randomCashDailyStatement)
-
 }

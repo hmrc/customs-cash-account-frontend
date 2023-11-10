@@ -320,7 +320,7 @@ class CashAccountControllerSpec extends SpecBase {
     val cashAccount = CashAccount(cashAccountNumber, eori, AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))
 
     val listOfPendingTransactions =
-      Seq(Declaration("pendingDeclarationID", "pendingDeclarantEORINumber",
+      Seq(Declaration("pendingDeclarationID", "pendingImporterEORI", "pendingDeclarantEORINumber",
         Some("pendingDeclarantReference"), LocalDate.parse("2020-07-21"), -100.00, Nil))
 
     val fromDate = LocalDate.parse("2019-10-08")
@@ -328,12 +328,12 @@ class CashAccountControllerSpec extends SpecBase {
 
     val cashDailyStatements = Seq(
       CashDailyStatement(LocalDate.parse("2020-07-18"), 0.0, 1000.00,
-        Seq(Declaration("mrn1", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil),
-          Declaration("mrn2", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -65.00, Nil)),
+        Seq(Declaration("mrn1", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil),
+          Declaration("mrn2", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -65.00, Nil)),
         Seq(Transaction(45.67, Payment, None), Transaction(-76.34, Withdrawal, Some("77665544")))),
       CashDailyStatement(LocalDate.parse("2020-07-20"), 0.0, 1200.00,
-        Seq(Declaration("mrn3", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil),
-          Declaration("mrn4", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)),
+        Seq(Declaration("mrn3", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil),
+          Declaration("mrn4", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)),
         Seq(Transaction(67.89, Payment, None))))
 
     val nonFatalResponse = UpstreamErrorResponse("ServiceUnavailable", Status.SERVICE_UNAVAILABLE, Status.SERVICE_UNAVAILABLE)
@@ -352,6 +352,7 @@ class CashAccountControllerSpec extends SpecBase {
 
   def randomDeclaration: Declaration =
     Declaration(randomString(10),
+      randomString(10),
       randomString(10),
       Some(randomString(10)),
       randomLocalDate,

@@ -75,7 +75,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
       TaxGroup(ExciseDuty, -3.45)
     )
     val declarations = Seq(
-      Declaration("someMRN", "someEORI", None, LocalDate.of(2020, 3, 3), -1234.56, taxGroups)
+      Declaration("someMRN", "someImporterEORI", "someEORI", None, LocalDate.of(2020, 3, 3), -1234.56, taxGroups)
     )
     val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 0.0, declarations, Nil)
 
@@ -98,9 +98,9 @@ class CashTransactionCsvRowSpec extends SpecBase {
 
   "order declaration rows by ascending MRN" in {
     val declarations = Seq(
-      Declaration("someMRN2", "someEORI", None, LocalDate.of(2020, 3, 3), 1234.56, Nil),
-      Declaration("someMRN3", "someEORI", None, LocalDate.of(2020, 3, 3), 1234.56, Nil),
-      Declaration("someMRN1", "someEORI", None, LocalDate.of(2020, 3, 3), 1234.56, Nil)
+      Declaration("someMRN2", "someImporterEORI", "someEORI", None, LocalDate.of(2020, 3, 3), 1234.56, Nil),
+      Declaration("someMRN3", "someImporterEORI", "someEORI", None, LocalDate.of(2020, 3, 3), 1234.56, Nil),
+      Declaration("someMRN1", "someImporterEORI", "someEORI", None, LocalDate.of(2020, 3, 3), 1234.56, Nil)
     )
     val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 0.0, declarations, Nil)
 
@@ -113,7 +113,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
   "default vat/duty/excise to zero if not found in the declaration" in {
     val taxGroups = Nil
     val declarations = Seq(
-      Declaration("someMRN", "someEORI", None, LocalDate.of(2020, 3, 3), 1234.56, taxGroups)
+      Declaration("someMRN", "someImporterEORI", "someEORI", None, LocalDate.of(2020, 3, 3), 1234.56, taxGroups)
     )
     val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 0.0, declarations, Nil)
 
@@ -236,7 +236,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
 
   "order the entries correctly within each day" in {
     val declarations = Seq(
-      Declaration("someMRN", "someEORI", None, LocalDate.of(2020, 3, 3), 1234.56, Nil)
+      Declaration("someMRN", "someImporterEORI", "someEORI", None, LocalDate.of(2020, 3, 3), 1234.56, Nil)
     )
     val withdrawal = Transaction(-23.45, Withdrawal, None)
     val transferOut = Transaction(-23.45, Transfer, None)

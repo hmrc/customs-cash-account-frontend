@@ -21,6 +21,7 @@ import play.api.libs.json._
 case class CashTransactions(pendingTransactions: Seq[Declaration], cashDailyStatements: Seq[CashDailyStatement]){
   def availableTransactions: Boolean = pendingTransactions.nonEmpty || cashDailyStatements.nonEmpty
 }
+
 case class EncryptedCashTransactions(pendingTransactions: Seq[EncryptedDeclaration], cashDailyStatement: Seq[EncryptedDailyStatements])
 
 object EncryptedCashTransactions {
@@ -30,11 +31,3 @@ object EncryptedCashTransactions {
 object CashTransactions {
   implicit val format: OFormat[CashTransactions] = Json.format[CashTransactions]
 }
-
-
-
-
-
-
-
-

@@ -39,8 +39,8 @@ trait Constraints {
   }
 
   def beforeCurrentMonth(errorKey:String): Constraint[LocalDate] = Constraint {
-    case request if request.getMonthValue > (currentDate.getMonthValue)  =>
-      Invalid(ValidationError(errorKey))
+    case request if request.getYear > (currentDate.getYear) => Invalid(ValidationError(errorKey))
+    case request if request.getMonthValue > (currentDate.getMonthValue) => Invalid(ValidationError(errorKey))
     case _ => Valid
   }
 

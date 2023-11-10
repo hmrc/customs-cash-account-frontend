@@ -265,18 +265,21 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     )
 
     val listOfPendingTransactions =
-      Seq(Declaration("pendingDeclarationID", "pendingDeclarantEORINumber", Some("pendingDeclarantReference"), LocalDate.parse("2020-07-21"), -100.00, Nil))
+      Seq(Declaration("pendingDeclarationID", "pendingImporterEORI",
+        "pendingDeclarantEORINumber", Some("pendingDeclarantReference"),
+        LocalDate.parse("2020-07-21"), -100.00, Nil))
 
     val cashDailyStatementRequest = CashDailyStatementRequest("can", fromDate, toDate)
+
     val listOfCashDailyStatements = Seq(
       CashDailyStatement(LocalDate.parse("2020-07-18"), 500.0, 1000.00,
-        Seq(Declaration("mrn1", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil),
-          Declaration("mrn2", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -65.00, Nil)),
+        Seq(Declaration("mrn1", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil),
+          Declaration("mrn2", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -65.00, Nil)),
         Seq(Transaction(123.45, Payment, None),
           Transaction(-432.87, Withdrawal, Some("77665544")))),
       CashDailyStatement(LocalDate.parse("2020-07-20"), 600.0, 1200.00,
-        Seq(Declaration("mrn3", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil),
-          Declaration("mrn4", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)),
+        Seq(Declaration("mrn3", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil),
+          Declaration("mrn4", "Importer EORI", "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)),
         Nil)
     )
   }
