@@ -17,7 +17,6 @@
 package models.request
 
 import java.time.LocalDate
-
 import models.domain.CAN
 import play.api.libs.json.{Json, OWrites}
 

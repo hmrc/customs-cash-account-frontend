@@ -36,6 +36,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
       transactionType = Some("Opening balance"),
       movementReferenceNumber = None,
       uniqueConsignmentReference = None,
+      importerEori = None,
       declarantEori = None,
       vat = None,
       duty = None,
@@ -56,6 +57,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
       transactionType = Some("Closing balance"),
       movementReferenceNumber = None,
       uniqueConsignmentReference = None,
+      importerEori = None,
       declarantEori = None,
       vat = None,
       duty = None,
@@ -75,7 +77,8 @@ class CashTransactionCsvRowSpec extends SpecBase {
       TaxGroup(ExciseDuty, -3.45)
     )
     val declarations = Seq(
-      Declaration("someMRN", "someEORI", None, LocalDate.of(2020, 3, 3), -1234.56, taxGroups)
+      Declaration("someMRN", Some("someImporterEORI"), "someEORI",
+        None, LocalDate.of(2020, 3, 3), -1234.56, taxGroups)
     )
     val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 0.0, declarations, Nil)
 
@@ -84,6 +87,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
       movementReferenceNumber = Some("someMRN"),
       uniqueConsignmentReference = None,
       transactionType = Some("Declaration"),
+      importerEori = Some("someImporterEORI"),
       declarantEori = Some("someEORI"),
       vat = Some(1.23),
       duty = Some(2.34),
@@ -98,9 +102,12 @@ class CashTransactionCsvRowSpec extends SpecBase {
 
   "order declaration rows by ascending MRN" in {
     val declarations = Seq(
-      Declaration("someMRN2", "someEORI", None, LocalDate.of(2020, 3, 3), 1234.56, Nil),
-      Declaration("someMRN3", "someEORI", None, LocalDate.of(2020, 3, 3), 1234.56, Nil),
-      Declaration("someMRN1", "someEORI", None, LocalDate.of(2020, 3, 3), 1234.56, Nil)
+      Declaration("someMRN2", Some("someImporterEORI"), "someEORI",
+        None,LocalDate.of(2020, 3, 3), 1234.56, Nil),
+      Declaration("someMRN3", Some("someImporterEORI"), "someEORI",
+        None, LocalDate.of(2020, 3, 3), 1234.56, Nil),
+      Declaration("someMRN1", Some("someImporterEORI"), "someEORI",
+        None, LocalDate.of(2020, 3, 3), 1234.56, Nil)
     )
     val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 0.0, declarations, Nil)
 
@@ -113,8 +120,9 @@ class CashTransactionCsvRowSpec extends SpecBase {
   "default vat/duty/excise to zero if not found in the declaration" in {
     val taxGroups = Nil
     val declarations = Seq(
-      Declaration("someMRN", "someEORI", None, LocalDate.of(2020, 3, 3), 1234.56, taxGroups)
-    )
+      Declaration("someMRN", Some("someImporterEORI"), "someEORI", None,
+        LocalDate.of(2020, 3, 3), 1234.56, taxGroups))
+
     val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 0.0, declarations, Nil)
 
     val expectedRow = CashTransactionCsvRow(
@@ -122,6 +130,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
       movementReferenceNumber = Some("someMRN"),
       transactionType = Some("Declaration"),
       uniqueConsignmentReference = None,
+      importerEori = Some("someImporterEORI"),
       declarantEori = Some("someEORI"),
       vat = Some(0.0),
       duty = Some(0.0),
@@ -142,6 +151,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
       transactionType = Some("Withdrawal (to account ending 5678)"),
       movementReferenceNumber = None,
       uniqueConsignmentReference = None,
+      importerEori = None,
       declarantEori = None,
       vat = None,
       duty = None,
@@ -162,6 +172,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
       transactionType = Some("Withdrawal"),
       movementReferenceNumber = None,
       uniqueConsignmentReference = None,
+      importerEori = None,
       declarantEori = None,
       vat = None,
       duty = None,
@@ -182,6 +193,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
       transactionType = Some("Transfer to another account"),
       movementReferenceNumber = None,
       uniqueConsignmentReference = None,
+      importerEori = None,
       declarantEori = None,
       vat = None,
       duty = None,
@@ -202,6 +214,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
       transactionType = Some("Top-up"),
       movementReferenceNumber = None,
       uniqueConsignmentReference = None,
+      importerEori = None,
       declarantEori = None,
       vat = None,
       duty = None,
@@ -222,6 +235,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
       transactionType = Some("Transfer from another account"),
       movementReferenceNumber = None,
       uniqueConsignmentReference = None,
+      importerEori = None,
       declarantEori = None,
       vat = None,
       duty = None,
@@ -236,8 +250,9 @@ class CashTransactionCsvRowSpec extends SpecBase {
 
   "order the entries correctly within each day" in {
     val declarations = Seq(
-      Declaration("someMRN", "someEORI", None, LocalDate.of(2020, 3, 3), 1234.56, Nil)
-    )
+      Declaration("someMRN", Some("someImporterEORI"), "someEORI",
+        None, LocalDate.of(2020, 3, 3), 1234.56, Nil))
+
     val withdrawal = Transaction(-23.45, Withdrawal, None)
     val transferOut = Transaction(-23.45, Transfer, None)
     val topUp = Transaction(23.45, Payment, None)

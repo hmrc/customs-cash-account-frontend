@@ -23,6 +23,7 @@ import play.api.libs.json.{Json, OFormat}
 import java.time.LocalDate
 
 case class Declaration(movementReferenceNumber: MRN,
+                       importerEori: Option[String],
                        declarantEori: EORI,
                        declarantReference: Option[String],
                        date: LocalDate,
@@ -37,6 +38,7 @@ object Declaration {
 }
 
 case class EncryptedDeclaration(movementReferenceNumber: EncryptedValue,
+                                importerEori: EncryptedValue,
                                 declarantEori: EncryptedValue,
                                 declarantReference: Option[EncryptedValue],
                                 date: LocalDate,
@@ -46,6 +48,3 @@ case class EncryptedDeclaration(movementReferenceNumber: EncryptedValue,
 object EncryptedDeclaration {
   implicit val format: OFormat[EncryptedDeclaration] = Json.format[EncryptedDeclaration]
 }
-
-
-

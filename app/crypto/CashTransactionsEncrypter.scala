@@ -53,12 +53,14 @@ class CashTransactionsEncrypter @Inject()(crypto: AesGCMCrypto){
   }
 
   def encryptDeclaration(declaration: Declaration, key: String): EncryptedDeclaration = {
-    def e(field: String): EncryptedValue = crypto.encrypt(field, key)
+    def encrypt(field: String): EncryptedValue = crypto.encrypt(field, key)
+    def encryptSome(field: Option[String]): EncryptedValue = crypto.encrypt(field.getOrElse(""), key)
 
     EncryptedDeclaration(
-      e(declaration.movementReferenceNumber),
-      e(declaration.declarantEori),
-      declaration.declarantReference.map(e),
+      encrypt(declaration.movementReferenceNumber),
+      encryptSome(declaration.importerEori),
+      encrypt(declaration.declarantEori),
+      declaration.declarantReference.map(encrypt),
       declaration.date,
       declaration.amount,
       declaration.taxGroups
@@ -66,12 +68,14 @@ class CashTransactionsEncrypter @Inject()(crypto: AesGCMCrypto){
   }
 
   def decryptDeclaration(encryptedDeclaration: EncryptedDeclaration, key: String) = {
-    def d(field: EncryptedValue): String = crypto.decrypt(field, key)
+    def decrypt(field: EncryptedValue): String = crypto.decrypt(field, key)
+    def decryptSome(field: EncryptedValue): Option[String] = Some(crypto.decrypt(field, key))
 
     Declaration(
-      d(encryptedDeclaration.movementReferenceNumber),
-      d(encryptedDeclaration.declarantEori),
-      encryptedDeclaration.declarantReference.map(d),
+      decrypt(encryptedDeclaration.movementReferenceNumber),
+      decryptSome(encryptedDeclaration.importerEori),
+      decrypt(encryptedDeclaration.declarantEori),
+      encryptedDeclaration.declarantReference.map(decrypt),
       encryptedDeclaration.date,
       encryptedDeclaration.amount,
       encryptedDeclaration.taxGroups
