@@ -74,10 +74,10 @@ class DownloadCsvControllerSpec extends SpecBase {
         val actualRows = csv.split("\n").toList
         val actualHeaders = actualRows.head.split(",")
         val expectedHeaders = List(
-          "\"Date (posted)\"",
+          "\"Transaction date\"",
           "\"Transaction\"",
-          "\"MRN\"",
-          "\"UCR\"",
+          "\"Declaration MRN\"",
+          "\"Declaration UCR\"",
           "\"Importer EORI\"",
           "\"Declarant EORI\"",
           "\"VAT\"",

@@ -15,10 +15,10 @@ feedback.after = will help us to improve it.
 
 
 # Cash CSV
-cf.cash-account.csv.date=Date (posted)
+cf.cash-account.csv.date=Transaction date
 cf.cash-account.csv.transactionType=Transaction
-cf.cash-account.csv.movementReferenceNumber=MRN
-cf.cash-account.csv.uniqueConsignmentReference = UCR
+cf.cash-account.csv.movementReferenceNumber=Declaration MRN
+cf.cash-account.csv.uniqueConsignmentReference=Declaration UCR
 cf.cash-account.csv.importerEori=Importer EORI
 cf.cash-account.csv.declarantEori=Declarant EORI
 cf.cash-account.csv.vat=VAT
@@ -57,10 +57,13 @@ cf.cash-account.detail.payments-heading=Your transactions for the last 6 months
 cf.cash-account.detail.date=Date
 cf.cash-account.detail.movement-reference-number=Movement Reference Number
 cf.cash-account.detail.mrn=MRN
+cf.cash-account.detail.Declarationmrn=Declaration MRN
 cf.cash-account.detail.unique-consignment-reference=Unique Consignment Reference
 cf.cash-account.detail.ucr=UCR
+ f.cash-account.detail.Declarationucr=Declaration UCR
 cf.cash-account.detail.declarant=Declarant
 cf.cash-account.detail.eori=EORI
+cf.cash-account.detail.importerEori=Importer EORI
 cf.cash-account.detail.eori-definition=Economic Operators Registration and Identification number
 cf.cash-account.detail.amount=Amount
 cf.cash-account.detail.balance=Balance
