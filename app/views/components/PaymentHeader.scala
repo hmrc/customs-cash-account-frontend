@@ -28,36 +28,28 @@ object PaymentHeader {
         classes = "first-column-width",
         content = HtmlContent(
           s"""
-                    <abbr title="${messages("cf.cash-account.detail.movement-reference-number")}">
-                    ${messages("cf.cash-account.detail.Declarationmrn")}
-                    </abbr>
-                    """)
+              <abbr title="${messages("cf.cash-account.detail.movement-reference-number")}">
+              ${messages("cf.cash-account.detail.Declarationmrn")}
+              </abbr>
+              """)
       ),
       HeadCell(
         classes = "second-column-width",
         content = HtmlContent(
           s"""
-                    <abbr title="${messages("cf.cash-account.detail.unique-consignment-reference")}">
-                    ${messages("cf.cash-account.detail.Declarationucr")}
-                    </abbr>
-                    """)
-      ),
-
-      HeadCell(
-        classes = "second-column-width",
-        content = HtmlContent(
-          s"""
-                    <abbr title="${messages("cf.cash-account.detail.unique-consignment-reference")}">
-                    ${messages("cf.cash-account.detail.Declarationucr")}
-                    </abbr>
-                    """)
+              <abbr title="${messages("cf.cash-account.detail.unique-consignment-reference")}">
+              ${messages("cf.cash-account.detail.Declarationucr")}
+              </abbr>
+              """)
       ),
       HeadCell(
         content = HtmlContent(
           s"""
-                    ${messages("cf.cash-account.detail.importerEori")}
-                    </abbr>
-                    """)
+              ${messages("cf.cash-account.detail.declarant")}
+              <abbr title="${messages("cf.cash-account.detail.eori-definition")}">
+              ${messages("cf.cash-account.detail.eori")}
+              </abbr>
+              """)
       ),
       HeadCell(
         format = Some("numeric"),
@@ -67,8 +59,5 @@ object PaymentHeader {
                     """)
       ),
     )
-
   }
-
 }
-

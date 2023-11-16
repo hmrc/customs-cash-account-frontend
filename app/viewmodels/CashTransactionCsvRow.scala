@@ -27,12 +27,11 @@ case class CashTransactionCsvRow(date: Option[String],
                                  uniqueConsignmentReference: Option[String],
                                  importerEori: Option[String],
                                  declarantEori: Option[String],
-                                 vat: Option[BigDecimal],
                                  duty: Option[BigDecimal],
+                                 vat: Option[BigDecimal],
                                  excise: Option[BigDecimal],
                                  credit: Option[BigDecimal],
-                                 debit: Option[BigDecimal],
-                                 balance: Option[BigDecimal]) extends CSVWritable with FieldNames {
+                                 debit: Option[BigDecimal]) extends CSVWritable with FieldNames {
   override def fieldNames: Seq[String] = Seq(
     "date",
     "transactionType",
@@ -40,12 +39,11 @@ case class CashTransactionCsvRow(date: Option[String],
     "uniqueConsignmentReference",
     "importerEori",
     "declarantEori",
-    "vat",
     "duty",
+    "vat",
     "excise",
     "credit",
-    "debit",
-    "balance"
+    "debit"
   )
 }
 
@@ -60,12 +58,11 @@ object CashTransactionCsvRow {
       uniqueConsignmentReference = None,
       importerEori = None,
       declarantEori = None,
-      vat = None,
       duty = None,
+      vat = None,
       excise = None,
       credit = None,
-      debit = None,
-      balance = Some(cashDailyStatement.closingBalance)
+      debit = None
     )
 
     val declarations = cashDailyStatement.declarations.sorted.map { declaration =>
@@ -78,12 +75,11 @@ object CashTransactionCsvRow {
         uniqueConsignmentReference = declaration.declarantReference,
         importerEori = declaration.importerEori,
         declarantEori = Some(declaration.declarantEori),
-        vat = findTaxGroups(ImportVat, groups),
         duty = findTaxGroups(CustomsDuty, groups),
+        vat = findTaxGroups(ImportVat, groups),
         excise = findTaxGroups(ExciseDuty, groups),
         credit = None,
-        debit = Some(declaration.amount.abs),
-        balance = None
+        debit = Some(declaration.amount.abs)
       )
     }
 
@@ -103,12 +99,11 @@ object CashTransactionCsvRow {
         uniqueConsignmentReference = None,
         importerEori = None,
         declarantEori = None,
-        vat = None,
         duty = None,
+        vat = None,
         excise = None,
         credit = None,
-        debit = Some(withdrawal.amount.abs),
-        balance = None
+        debit = Some(withdrawal.amount.abs)
       )
     }
 
@@ -120,12 +115,11 @@ object CashTransactionCsvRow {
         uniqueConsignmentReference = None,
         importerEori = None,
         declarantEori = None,
-        vat = None,
         duty = None,
+        vat = None,
         excise = None,
         credit = None,
-        debit = Some(transfer.amount.abs),
-        balance = None
+        debit = Some(transfer.amount.abs)
       )
     }
 
@@ -137,12 +131,11 @@ object CashTransactionCsvRow {
         uniqueConsignmentReference = None,
         importerEori = None,
         declarantEori = None,
-        vat = None,
         duty = None,
+        vat = None,
         excise = None,
         credit = Some(topUp.amount),
-        debit = None,
-        balance = None
+        debit = None
       )
     }
 
@@ -154,12 +147,11 @@ object CashTransactionCsvRow {
         uniqueConsignmentReference = None,
         importerEori = None,
         declarantEori = None,
-        vat = None,
         duty = None,
+        vat = None,
         excise = None,
         credit = Some(transfer.amount),
-        debit = None,
-        balance = None
+        debit = None
       )
     }
 
@@ -170,12 +162,11 @@ object CashTransactionCsvRow {
       uniqueConsignmentReference = None,
       importerEori = None,
       declarantEori = None,
-      vat = None,
       duty = None,
+      vat = None,
       excise = None,
       credit = None,
-      debit = None,
-      balance = Some(cashDailyStatement.openingBalance)
+      debit = None
     )
 
     def toReportLayout: Seq[CashTransactionCsvRow] = {
