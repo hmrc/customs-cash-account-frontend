@@ -38,12 +38,11 @@ class CashTransactionCsvRowSpec extends SpecBase {
       uniqueConsignmentReference = None,
       importerEori = None,
       declarantEori = None,
-      vat = None,
       duty = None,
+      vat = None,
       excise = None,
       credit = None,
-      debit = None,
-      balance = Some(123.33)
+      debit = None
     )
 
     dailyStatement.toReportLayout.last must be(expectedRow)
@@ -59,12 +58,11 @@ class CashTransactionCsvRowSpec extends SpecBase {
       uniqueConsignmentReference = None,
       importerEori = None,
       declarantEori = None,
-      vat = None,
       duty = None,
+      vat = None,
       excise = None,
       credit = None,
-      debit = None,
-      balance = Some(12345.67)
+      debit = None
     )
 
     dailyStatement.toReportLayout.head must be(expectedRow)
@@ -89,12 +87,11 @@ class CashTransactionCsvRowSpec extends SpecBase {
       transactionType = Some("Declaration"),
       importerEori = Some("someImporterEORI"),
       declarantEori = Some("someEORI"),
-      vat = Some(1.23),
       duty = Some(2.34),
+      vat = Some(1.23),
       excise = Some(3.45),
       debit = Some(1234.56),
-      credit = None,
-      balance = None
+      credit = None
     )
 
     dailyStatement.toReportLayout(1) must be(expectedRow)
@@ -132,12 +129,11 @@ class CashTransactionCsvRowSpec extends SpecBase {
       uniqueConsignmentReference = None,
       importerEori = Some("someImporterEORI"),
       declarantEori = Some("someEORI"),
-      vat = Some(0.0),
       duty = Some(0.0),
+      vat = Some(0.0),
       excise = Some(0.0),
       debit = Some(1234.56),
-      credit = None,
-      balance = None
+      credit = None
     )
 
     dailyStatement.toReportLayout(1) must be(expectedRow)
@@ -153,12 +149,11 @@ class CashTransactionCsvRowSpec extends SpecBase {
       uniqueConsignmentReference = None,
       importerEori = None,
       declarantEori = None,
-      vat = None,
       duty = None,
+      vat = None,
       excise = None,
       credit = None,
-      debit = Some(23.45),
-      balance = None
+      debit = Some(23.45)
     )
 
     dailyStatement.toReportLayout(1) must be(expectedRow)
@@ -174,12 +169,11 @@ class CashTransactionCsvRowSpec extends SpecBase {
       uniqueConsignmentReference = None,
       importerEori = None,
       declarantEori = None,
-      vat = None,
       duty = None,
+      vat = None,
       excise = None,
       credit = None,
-      debit = Some(23.45),
-      balance = None
+      debit = Some(23.45)
     )
 
     dailyStatement.toReportLayout(1) must be(expectedRow)
@@ -195,12 +189,11 @@ class CashTransactionCsvRowSpec extends SpecBase {
       uniqueConsignmentReference = None,
       importerEori = None,
       declarantEori = None,
-      vat = None,
       duty = None,
+      vat = None,
       excise = None,
       credit = None,
-      debit = Some(23.45),
-      balance = None
+      debit = Some(23.45)
     )
 
     dailyStatement.toReportLayout(1) must be(expectedRow)
@@ -216,12 +209,11 @@ class CashTransactionCsvRowSpec extends SpecBase {
       uniqueConsignmentReference = None,
       importerEori = None,
       declarantEori = None,
-      vat = None,
       duty = None,
+      vat = None,
       excise = None,
       credit = Some(topUp.amount),
-      debit = None,
-      balance = None
+      debit = None
     )
 
     dailyStatement.toReportLayout(1) must be(expectedRow)
@@ -237,12 +229,11 @@ class CashTransactionCsvRowSpec extends SpecBase {
       uniqueConsignmentReference = None,
       importerEori = None,
       declarantEori = None,
-      vat = None,
       duty = None,
+      vat = None,
       excise = None,
       credit = Some(transferIn.amount),
-      debit = None,
-      balance = None
+      debit = None
     )
 
     dailyStatement.toReportLayout(1) must be(expectedRow)
