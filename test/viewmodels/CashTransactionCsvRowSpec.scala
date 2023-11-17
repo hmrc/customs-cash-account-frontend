@@ -29,55 +29,27 @@ class CashTransactionCsvRowSpec extends SpecBase {
   val app = application.build()
   implicit val messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  "generate an opening balance" in {
-    val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 123.33, 0.0, Nil, Nil)
-    val expectedRow = CashTransactionCsvRow(
-      date = Some("2020-03-04"),
-      transactionType = Some("Opening balance"),
-      movementReferenceNumber = None,
-      uniqueConsignmentReference = None,
-      importerEori = None,
-      declarantEori = None,
-      duty = None,
-      vat = None,
-      excise = None,
-      credit = None,
-      debit = None
-    )
-
-    dailyStatement.toReportLayout.last must be(expectedRow)
+  "generate an opening balance" in new Setup {
+    override val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 123.33, 0.0, Nil, Nil)
+    val openingExepectedRow = expectedRow.copy(transactionType = Some("Opening balance"))
+    dailyStatement.toReportLayout.last must be(openingExepectedRow)
   }
 
-  "generate a closing balance" in {
-    val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 12345.67, Nil, Nil)
-
-    val expectedRow = CashTransactionCsvRow(
-      date = Some("2020-03-04"),
-      transactionType = Some("Closing balance"),
-      movementReferenceNumber = None,
-      uniqueConsignmentReference = None,
-      importerEori = None,
-      declarantEori = None,
-      duty = None,
-      vat = None,
-      excise = None,
-      credit = None,
-      debit = None
-    )
-
-    dailyStatement.toReportLayout.head must be(expectedRow)
+  "generate a closing balance" in new Setup {
+    override val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 12345.67, Nil, Nil)
+    val closingExepectedRow = expectedRow.copy(transactionType = Some("Closing balance"))
+    dailyStatement.toReportLayout.head must be(closingExepectedRow)
   }
 
   "generate a declaration row" in {
     val taxGroups = Seq(
       TaxGroup(ImportVat, -1.23),
       TaxGroup(CustomsDuty, -2.34),
-      TaxGroup(ExciseDuty, -3.45)
-    )
-    val declarations = Seq(
-      Declaration("someMRN", Some("someImporterEORI"), "someEORI",
-        None, LocalDate.of(2020, 3, 3), -1234.56, taxGroups)
-    )
+      TaxGroup(ExciseDuty, -3.45))
+
+    val declarations = Seq(Declaration("someMRN", Some("someImporterEORI"),
+      "someEORI", None, LocalDate.of(2020, 3, 3), -1234.56, taxGroups))
+
     val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 0.0, declarations, Nil)
 
     val expectedRow = CashTransactionCsvRow(
@@ -104,13 +76,14 @@ class CashTransactionCsvRowSpec extends SpecBase {
       Declaration("someMRN3", Some("someImporterEORI"), "someEORI",
         None, LocalDate.of(2020, 3, 3), 1234.56, Nil),
       Declaration("someMRN1", Some("someImporterEORI"), "someEORI",
-        None, LocalDate.of(2020, 3, 3), 1234.56, Nil)
-    )
-    val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 0.0, declarations, Nil)
+        None, LocalDate.of(2020, 3, 3), 1234.56, Nil))
 
+    val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 0.0, declarations, Nil)
     val expectedMrns = Seq(Some("someMRN1"), Some("someMRN2"), Some("someMRN3"))
 
-    val actualMrns = dailyStatement.toReportLayout.filter(_.transactionType.contains("Declaration")).map(_.movementReferenceNumber)
+    val actualMrns = dailyStatement.toReportLayout.filter(
+      _.transactionType.contains("Declaration")).map(_.movementReferenceNumber)
+
     actualMrns must be(expectedMrns)
   }
 
@@ -139,118 +112,49 @@ class CashTransactionCsvRowSpec extends SpecBase {
     dailyStatement.toReportLayout(1) must be(expectedRow)
   }
 
-  "generate a withdrawal row" in {
-    val withdrawal = Transaction(-23.45, Withdrawal, Some("12345678"))
-    val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 0.0, Nil, Seq(withdrawal))
-    val expectedRow = CashTransactionCsvRow(
-      date = Some("2020-03-04"),
-      transactionType = Some("Withdrawal (to account ending 5678)"),
-      movementReferenceNumber = None,
-      uniqueConsignmentReference = None,
-      importerEori = None,
-      declarantEori = None,
-      duty = None,
-      vat = None,
-      excise = None,
-      credit = None,
-      debit = Some(23.45)
-    )
+  "generate a withdrawal row" in new Setup {
+    val withdraw = withdrawal.copy(bankAccountNumber = Some("12345678"))
+    val withdrawalStatement = dailyStatement.copy(otherTransactions = Seq(withdraw))
 
-    dailyStatement.toReportLayout(1) must be(expectedRow)
+    val withdrawalExepectedRow = expectedRow.copy(transactionType = Some(
+      "Withdrawal (to account ending 5678)"), debit = Some(23.45))
+
+    withdrawalStatement.toReportLayout(1) must be(withdrawalExepectedRow)
   }
 
-  "generate a withdrawal row when there is no bank account number" in {
-    val withdrawal = Transaction(-23.45, Withdrawal, None)
-    val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 0.0, Nil, Seq(withdrawal))
-    val expectedRow = CashTransactionCsvRow(
-      date = Some("2020-03-04"),
-      transactionType = Some("Withdrawal"),
-      movementReferenceNumber = None,
-      uniqueConsignmentReference = None,
-      importerEori = None,
-      declarantEori = None,
-      duty = None,
-      vat = None,
-      excise = None,
-      credit = None,
-      debit = Some(23.45)
-    )
-
-    dailyStatement.toReportLayout(1) must be(expectedRow)
+  "generate a withdrawal row when there is no bank account number" in new Setup {
+    val withdrawalStatement = dailyStatement.copy(otherTransactions = Seq(withdrawal))
+    val withdrawalExepectedRow = expectedRow.copy(transactionType = Some("Withdrawal"), debit = Some(23.45))
+    withdrawalStatement.toReportLayout(1) must be(withdrawalExepectedRow)
   }
 
-  "generate a transfer out row" in {
-    val transferOut = Transaction(-23.45, Transfer, None)
-    val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 0.0, Nil, Seq(transferOut))
-    val expectedRow = CashTransactionCsvRow(
-      date = Some("2020-03-04"),
-      transactionType = Some("Transfer to another account"),
-      movementReferenceNumber = None,
-      uniqueConsignmentReference = None,
-      importerEori = None,
-      declarantEori = None,
-      duty = None,
-      vat = None,
-      excise = None,
-      credit = None,
-      debit = Some(23.45)
-    )
+  "generate a transfer out row" in new Setup {
+    val transferStatement = dailyStatement.copy(otherTransactions = Seq(transferOut))
 
-    dailyStatement.toReportLayout(1) must be(expectedRow)
+    val transferExepectedRow = expectedRow.copy(transactionType = Some(
+      "Transfer to another account"), debit = Some(23.45))
+
+    transferStatement.toReportLayout(1) must be(transferExepectedRow)
   }
 
-  "generate a top-up row" in {
-    val topUp = Transaction(23.45, Payment, None)
-    val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 0.0, Nil, Seq(topUp))
-    val expectedRow = CashTransactionCsvRow(
-      date = Some("2020-03-04"),
-      transactionType = Some("Top-up"),
-      movementReferenceNumber = None,
-      uniqueConsignmentReference = None,
-      importerEori = None,
-      declarantEori = None,
-      duty = None,
-      vat = None,
-      excise = None,
-      credit = Some(topUp.amount),
-      debit = None
-    )
+  "generate a top-up row" in new Setup {
+    val topUpStatement = dailyStatement.copy(otherTransactions = Seq(topUp))
+    val topUpExepectedRow = expectedRow.copy(transactionType = Some(
+      "Top-up"), credit = Some(topUp.amount))
 
-    dailyStatement.toReportLayout(1) must be(expectedRow)
+    topUpStatement.toReportLayout(1) must be(topUpExepectedRow)
   }
 
-  "generate a transfer in row" in {
-    val transferIn = Transaction(23.45, Transfer, None)
-    val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 0.0, Nil, Seq(transferIn))
-    val expectedRow = CashTransactionCsvRow(
-      date = Some("2020-03-04"),
-      transactionType = Some("Transfer from another account"),
-      movementReferenceNumber = None,
-      uniqueConsignmentReference = None,
-      importerEori = None,
-      declarantEori = None,
-      duty = None,
-      vat = None,
-      excise = None,
-      credit = Some(transferIn.amount),
-      debit = None
-    )
+  "generate a transfer in row" in new Setup {
+    val transferExepectedRow = expectedRow.copy(transactionType = Some(
+      "Transfer from another account"), credit = Some(transferIn.amount))
 
-    dailyStatement.toReportLayout(1) must be(expectedRow)
+    dailyStatement.toReportLayout(1) must be(transferExepectedRow)
   }
 
-  "order the entries correctly within each day" in {
-    val declarations = Seq(
-      Declaration("someMRN", Some("someImporterEORI"), "someEORI",
+  "order the entries correctly within each day" in new Setup {
+    val declarations = Seq(Declaration("someMRN", Some("someImporterEORI"), "someEORI",
         None, LocalDate.of(2020, 3, 3), 1234.56, Nil))
-
-    val withdrawal = Transaction(-23.45, Withdrawal, None)
-    val transferOut = Transaction(-23.45, Transfer, None)
-    val topUp = Transaction(23.45, Payment, None)
-    val transferIn = Transaction(23.45, Transfer, None)
-
-    val otherTransactions = Seq(withdrawal, transferOut, topUp, transferIn)
-    val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 0.0, declarations, otherTransactions)
 
     val expectedTransactionTypes = Seq(
       Some("Closing balance"),
@@ -262,6 +166,30 @@ class CashTransactionCsvRowSpec extends SpecBase {
       Some("Opening balance")
     )
 
-    dailyStatement.toReportLayout.map(_.transactionType) must be(expectedTransactionTypes)
+    val orderedStatement = dailyStatement.copy(declarations = declarations,otherTransactions = otherTransactions)
+    orderedStatement.toReportLayout.map(_.transactionType) must be(expectedTransactionTypes)
+  }
+
+  trait Setup {
+    val withdrawal = Transaction(-23.45, Withdrawal, None)
+    val transferOut = Transaction(-23.45, Transfer, None)
+    val topUp = Transaction(23.45, Payment, None)
+    val transferIn = Transaction(23.45, Transfer, None)
+    val otherTransactions = Seq(withdrawal, transferOut, topUp, transferIn)
+    val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 0.0, Nil, Seq(transferIn))
+
+    val expectedRow = CashTransactionCsvRow(
+      date = Some("2020-03-04"),
+      transactionType = None,
+      movementReferenceNumber = None,
+      uniqueConsignmentReference = None,
+      importerEori = None,
+      declarantEori = None,
+      duty = None,
+      vat = None,
+      excise = None,
+      credit = None,
+      debit = None
+    )
   }
 }
