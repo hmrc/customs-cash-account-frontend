@@ -15,10 +15,11 @@ feedback.after=yn ein helpu i’w wella.
 
 
 # Cash CSV
-cf.cash-account.csv.date=Dyddiad (postio)
+cf.cash-account.csv.date=Dyddiad y trafodyn
 cf.cash-account.csv.transactionType=Trafodyn
-cf.cash-account.csv.movementReferenceNumber=MRN
-cf.cash-account.csv.uniqueConsignmentReference=UCR
+cf.cash-account.csv.movementReferenceNumber=MRN y datganiad
+cf.cash-account.csv.uniqueConsignmentReference=UCR y datganiad
+cf.cash-account.csv.importer=EORI y mewnforiwr
 cf.cash-account.csv.declarantEori=EORI y sawl sy’n datgan nwyddau
 cf.cash-account.csv.vat=TAW
 cf.cash-account.csv.duty=Tollau
@@ -56,8 +57,10 @@ cf.cash-account.detail.csv=Lawrlwythwch drafodion ar ffurf <abbr title="Gwerthoe
 cf.cash-account.detail.date=Dyddiad
 cf.cash-account.detail.movement-reference-number=Cyfeirnod Symud
 cf.cash-account.detail.mrn=MRN
+cf.cash-account.detail.Declarationmrn=MRN y datganiad
 cf.cash-account.detail.unique-consignment-reference=Cyfeirnod Unigryw y Llwyth (UCR)
 cf.cash-account.detail.ucr=UCR
+cf.cash-account.detail.Declarationucr=UCR y datganiad
 cf.cash-account.detail.declarant=EORI
 cf.cash-account.detail.eori=y sawl sy’n datgan nwyddau
 cf.cash-account.detail.eori-definition=Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd

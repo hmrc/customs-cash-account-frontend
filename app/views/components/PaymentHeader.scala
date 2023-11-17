@@ -21,46 +21,43 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{HeadCell, HtmlContent}
 
 object PaymentHeader {
 
-    def apply()(implicit messages: Messages): Seq[HeadCell] = {
+  def apply()(implicit messages: Messages): Seq[HeadCell] = {
 
-        Seq(
-            HeadCell(
-                classes= "first-column-width",
-                content = HtmlContent(
-                    s"""
-                    <abbr title="${messages("cf.cash-account.detail.movement-reference-number")}">
-                    ${messages("cf.cash-account.detail.mrn")}
-                    </abbr>
-                    """)
-            ),
-            HeadCell(
-                classes= "second-column-width",
-                content = HtmlContent(
-                    s"""
-                    <abbr title="${messages("cf.cash-account.detail.unique-consignment-reference")}">
-                    ${messages("cf.cash-account.detail.ucr")}
-                    </abbr>
-                    """)
-            ),
-            HeadCell(
-                content = HtmlContent(
-                    s"""
-                    ${messages("cf.cash-account.detail.declarant")}
-                    <abbr title="${messages("cf.cash-account.detail.eori-definition")}">
-                    ${messages("cf.cash-account.detail.eori")}
-                    </abbr>
-                    """)
-            ),
-            HeadCell(
-                format = Some("numeric"),
-                content = HtmlContent(
-                    s"""
+    Seq(
+      HeadCell(
+        classes = "first-column-width",
+        content = HtmlContent(
+          s"""
+              <abbr title="${messages("cf.cash-account.detail.movement-reference-number")}">
+              ${messages("cf.cash-account.detail.Declarationmrn")}
+              </abbr>
+              """)
+      ),
+      HeadCell(
+        classes = "second-column-width",
+        content = HtmlContent(
+          s"""
+              <abbr title="${messages("cf.cash-account.detail.unique-consignment-reference")}">
+              ${messages("cf.cash-account.detail.Declarationucr")}
+              </abbr>
+              """)
+      ),
+      HeadCell(
+        content = HtmlContent(
+          s"""
+              ${messages("cf.cash-account.detail.declarant")}
+              <abbr title="${messages("cf.cash-account.detail.eori-definition")}">
+              ${messages("cf.cash-account.detail.eori")}
+              </abbr>
+              """)
+      ),
+      HeadCell(
+        format = Some("numeric"),
+        content = HtmlContent(
+          s"""
                     ${messages("cf.cash-account.detail.amount")}
                     """)
-            ),
-        )
-
-    }
-
+      ),
+    )
+  }
 }
-
