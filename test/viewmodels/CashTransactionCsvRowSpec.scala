@@ -31,13 +31,13 @@ class CashTransactionCsvRowSpec extends SpecBase {
 
   "generate an opening balance" in new Setup {
     override val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 123.33, 0.0, Nil, Nil)
-    val openingExepectedRow = expectedRow.copy(transactionType = Some("Opening balance"))
+    val openingExepectedRow = expectedRow.copy(transactionType = Some("Opening balance"), balance = Some(123.33))
     dailyStatement.toReportLayout.last must be(openingExepectedRow)
   }
 
   "generate a closing balance" in new Setup {
     override val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 12345.67, Nil, Nil)
-    val closingExepectedRow = expectedRow.copy(transactionType = Some("Closing balance"))
+    val closingExepectedRow = expectedRow.copy(transactionType = Some("Closing balance"), balance = Some(12345.67))
     dailyStatement.toReportLayout.head must be(closingExepectedRow)
   }
 
@@ -63,7 +63,8 @@ class CashTransactionCsvRowSpec extends SpecBase {
       vat = Some(1.23),
       excise = Some(3.45),
       debit = Some(1234.56),
-      credit = None
+      credit = None,
+      balance = None
     )
 
     dailyStatement.toReportLayout(1) must be(expectedRow)
@@ -106,7 +107,8 @@ class CashTransactionCsvRowSpec extends SpecBase {
       vat = Some(0.0),
       excise = Some(0.0),
       debit = Some(1234.56),
-      credit = None
+      credit = None,
+      balance = None
     )
 
     dailyStatement.toReportLayout(1) must be(expectedRow)
@@ -189,7 +191,8 @@ class CashTransactionCsvRowSpec extends SpecBase {
       vat = None,
       excise = None,
       credit = None,
-      debit = None
+      debit = None,
+      balance = None
     )
   }
 }

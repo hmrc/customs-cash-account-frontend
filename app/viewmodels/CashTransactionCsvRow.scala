@@ -31,7 +31,8 @@ case class CashTransactionCsvRow(date: Option[String],
                                  vat: Option[BigDecimal],
                                  excise: Option[BigDecimal],
                                  credit: Option[BigDecimal],
-                                 debit: Option[BigDecimal]) extends CSVWritable with FieldNames {
+                                 debit: Option[BigDecimal],
+                                 balance: Option[BigDecimal]) extends CSVWritable with FieldNames {
   override def fieldNames: Seq[String] = Seq(
     "date",
     "transactionType",
@@ -43,7 +44,8 @@ case class CashTransactionCsvRow(date: Option[String],
     "vat",
     "excise",
     "credit",
-    "debit"
+    "debit",
+    "balance"
   )
 }
 
@@ -62,7 +64,8 @@ object CashTransactionCsvRow {
       vat = None,
       excise = None,
       credit = None,
-      debit = None
+      debit = None,
+      balance = Some(cashDailyStatement.closingBalance)
     )
 
     val declarations = cashDailyStatement.declarations.sorted.map { declaration =>
@@ -79,7 +82,8 @@ object CashTransactionCsvRow {
         vat = findTaxGroups(ImportVat, groups),
         excise = findTaxGroups(ExciseDuty, groups),
         credit = None,
-        debit = Some(declaration.amount.abs)
+        debit = Some(declaration.amount.abs),
+        balance = None
       )
     }
 
@@ -103,7 +107,8 @@ object CashTransactionCsvRow {
         vat = None,
         excise = None,
         credit = None,
-        debit = Some(withdrawal.amount.abs)
+        debit = Some(withdrawal.amount.abs),
+        balance = None
       )
     }
 
@@ -119,7 +124,8 @@ object CashTransactionCsvRow {
         vat = None,
         excise = None,
         credit = None,
-        debit = Some(transfer.amount.abs)
+        debit = Some(transfer.amount.abs),
+        balance = None
       )
     }
 
@@ -135,7 +141,8 @@ object CashTransactionCsvRow {
         vat = None,
         excise = None,
         credit = Some(topUp.amount),
-        debit = None
+        debit = None,
+        balance = None,
       )
     }
 
@@ -151,7 +158,8 @@ object CashTransactionCsvRow {
         vat = None,
         excise = None,
         credit = Some(transfer.amount),
-        debit = None
+        debit = None,
+        balance = None
       )
     }
 
@@ -166,7 +174,8 @@ object CashTransactionCsvRow {
       vat = None,
       excise = None,
       credit = None,
-      debit = None
+      debit = None,
+      balance = Some(cashDailyStatement.openingBalance)
     )
 
     def toReportLayout: Seq[CashTransactionCsvRow] = {
