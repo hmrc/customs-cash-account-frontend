@@ -29,12 +29,6 @@ class CashTransactionCsvRowSpec extends SpecBase {
   val app = application.build()
   implicit val messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  "generate an opening balance" in new Setup {
-    override val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 123.33, 0.0, Nil, Nil)
-    val openingExepectedRow = expectedRow.copy(transactionType = Some("Opening balance"), balance = Some(123.33))
-    dailyStatement.toReportLayout.last must be(openingExepectedRow)
-  }
-
   "generate a closing balance" in new Setup {
     override val dailyStatement = CashDailyStatement(LocalDate.of(2020, 3, 4), 0.0, 12345.67, Nil, Nil)
     val closingExepectedRow = expectedRow.copy(transactionType = Some("Closing balance"), balance = Some(12345.67))
@@ -164,9 +158,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
       Some("Withdrawal"),
       Some("Transfer to another account"),
       Some("Top-up"),
-      Some("Transfer from another account"),
-      Some("Opening balance")
-    )
+      Some("Transfer from another account"))
 
     val orderedStatement = dailyStatement.copy(declarations = declarations,otherTransactions = otherTransactions)
     orderedStatement.toReportLayout.map(_.transactionType) must be(expectedTransactionTypes)

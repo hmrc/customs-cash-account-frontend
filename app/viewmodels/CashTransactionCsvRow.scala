@@ -179,7 +179,7 @@ object CashTransactionCsvRow {
     )
 
     def toReportLayout: Seq[CashTransactionCsvRow] = {
-      (closingBalance +: declarations) ++ withdrawals ++ transfersOut ++ topUps ++ transfersIn :+ openingBalance
+      (closingBalance +: declarations) ++ withdrawals ++ transfersOut ++ topUps ++ transfersIn
     }
   }
 }
