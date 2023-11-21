@@ -84,7 +84,8 @@ class DownloadCsvControllerSpec extends SpecBase {
           "\"VAT\"",
           "\"Excise\"",
           "\"Credit\"",
-          "\"Debit\""
+          "\"Debit\"",
+          "\"Balance\""
         )
         actualHeaders must be(expectedHeaders)
       }
