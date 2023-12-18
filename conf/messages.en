@@ -210,3 +210,11 @@ cf.cash-account.topup.withdrawal.detail.heading=Help with top-ups and withdrawls
 cf.cash-account.topup.withdrawal.detail.text=Top-ups can take up to one working day to show on this page. Funds are usually available to use within one hour of making the transfer from your bank. Withdrawals can take up to 15 working days for the money to reach your bank account.
 cf.cash-account.detail.available-balance=Available balance {0}
 
+# Verify Your Email
+#--------------------------------------------------------------------------------------
+cf.verify.your.email.title=Verify your email address for the Customs Declaration Service
+cf.verify.your.email.heading=Verify your email address for the Customs Declaration Service
+cf.verify.your.email.p1=You need to verify the email address you use for the Customs Declaration Service.
+cf.verify.your.email.p2=Your registered email address is <strong class="bold">{0}</string>.
+cf.verify.your.email.p3=If this is not the email address you want to use, you can also change it using this service.
+cf.verify.your.email.change.button=Verify or change email address
