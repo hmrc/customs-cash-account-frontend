@@ -42,7 +42,7 @@ class VerifyYourEmailSpec extends SpecBase {
       view.text().contains(messages(app)("cf.verify.your.email.p3")) mustBe true
       view.text().contains(messages(app)("cf.verify.your.email.change.button")) mustBe true
 
-      //view.toString should include(nextPageUrl)
+      view.html() must include(nextPageUrl)
       view.text().contains(email.get) mustBe true
     }
 
