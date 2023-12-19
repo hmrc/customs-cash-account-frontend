@@ -1,0 +1,40 @@
+@import views.html.partials._
+@import views.html.templates.Layout
+@import config.FrontendAppConfig
+
+@this(
+    layout: Layout,
+    h1: components.h1,
+    h2: components.h2,
+    p: components.p,
+    button: components.button
+)
+
+@(
+    nextPage:String,
+    emailAddress: Option[String]
+)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+
+@layout(pageTitle = Some(titleNoForm("cf.undeliverable.email.title", None, Seq()))
+) {
+    @h1(msg = "cf.undeliverable.email.heading",
+        id = Some("email-heading-h1"),
+        classes = "govuk-heading-xl"
+)
+
+    @p(Html(messages("cf.undeliverable.email.p1")))
+
+    @emailAddress.map(mailId => p(Html(messages("cf.undeliverable.email.p2", mailId))))
+
+    @h2(msg = "cf.undeliverable.email.verify.heading", id = Some("email-verify-heading-h2"))
+
+    @p(Html(messages("cf.undeliverable.email.verify.text.p1")))
+
+    @h2(msg = "cf.undeliverable.email.change.heading", id = Some("email-change-heading-h2"))
+
+    @p(Html(messages("cf.undeliverable.email.change.text.p1")))
+    @p(Html(messages("cf.undeliverable.email.change.text.p2")))
+
+    @p(content = button("cf.undeliverable.email.link-text", Some(nextPage)))
+
+}
