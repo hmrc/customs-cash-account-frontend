@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import views.ViewUtils.emptyString
+package views
 
-@this(govukButton: GovukButton)
+import utils.SpecBase
+import views.ViewUtils.emptyString
 
-@(
-  msg: String,
-  href: Option[String] = None,
-  classes: String = emptyString)(implicit messages: Messages)
+class ViewUtilsSpec extends SpecBase {
 
-@govukButton(Button(content = Text(messages(msg)), href = href, classes = classes))
+  "emptyString" should {
+    "return correct value" in {
+      emptyString mustBe ""
+    }
+  }
+}

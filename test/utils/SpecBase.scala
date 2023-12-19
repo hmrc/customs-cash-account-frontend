@@ -37,7 +37,12 @@ class FakeMetrics extends Metrics {
   override val toJson: String = "{}"
 }
 
-trait SpecBase extends AnyWordSpecLike with Matchers with MockitoSugar with OptionValues with ScalaFutures with IntegrationPatience {
+trait SpecBase extends AnyWordSpecLike
+  with Matchers
+  with MockitoSugar
+  with OptionValues
+  with ScalaFutures
+  with IntegrationPatience {
 
   def application = new GuiceApplicationBuilder().overrides(
       bind[IdentifierAction].to[FakeIdentifierAction],

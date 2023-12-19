@@ -24,12 +24,20 @@
 
 @(
     nextPage: String,
-    email: Option[String] = None
+    emailAddress: Option[String] = None
 )(implicit messages: Messages, appConfig: AppConfig, request: Request[_])
 
 @main_template(
     pageTitle = Some(messages("cf.verify.your.email.title")),
     fullWidth = true
     ) {
+        @h1(msg = "cf.verify.your.email.heading")
 
+        @p(messages("cf.verify.your.email.p1"))
+
+        @emailAddress.map(emailId => p(messages("cf.verify.your.email.p2", emailId)))
+
+        @p(messages("cf.verify.your.email.p3"))
+
+        <p class="govuk-body">@button("cf.verify.your.email.change.button", Some(nextPage),"govuk-!-margin-bottom-7")</p>
 }

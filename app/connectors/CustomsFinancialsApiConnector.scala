@@ -53,52 +53,88 @@ class CustomsFinancialsApiConnector @Inject()(
     )
 
     metricsReporter.withResponseTimeLogging("customs-financials-api.get.accounts") {
-      httpClient.POST[AccountsAndBalancesRequestContainer, AccountsAndBalancesResponseContainer](accountsUrl, accountsAndBalancesRequest).map(_.toCashAccounts)
+      httpClient.POST[AccountsAndBalancesRequestContainer, AccountsAndBalancesResponseContainer](
+        accountsUrl, accountsAndBalancesRequest).map(_.toCashAccounts)
     }.map(_.find(_.owner == request.eori))
   }
 
-  def retrieveHistoricCashTransactions(can: String, from: LocalDate, to: LocalDate)(implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
+  def retrieveHistoricCashTransactions(can: String,
+                                       from: LocalDate,
+                                       to: LocalDate)(implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
-    httpClient.POST[CashDailyStatementRequest, CashTransactions](retrieveCashTransactionsUrl, cashDailyStatementRequest).map(Right(_))
+    httpClient.POST[CashDailyStatementRequest, CashTransactions](
+      retrieveCashTransactionsUrl, cashDailyStatementRequest).map(Right(_))
   }.recover {
-    case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) => logger.error(s"Entity too large to download"); Left(TooManyTransactionsRequested)
-    case UpstreamErrorResponse(_, NOT_FOUND, _, _) => logger.error(s"No data found"); Left(NoTransactionsAvailable)
-    case e => logger.error(s"Unable to retrieve cash transactions :${e.getMessage}"); Left(UnknownException)
+    case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
+      logger.error(s"Entity too large to download"); Left(TooManyTransactionsRequested)
+
+    case UpstreamErrorResponse(_, NOT_FOUND, _, _) => logger.error(s"No data found")
+      Left(NoTransactionsAvailable)
+
+    case e => logger.error(s"Unable to retrieve cash transactions :${e.getMessage}")
+      Left(UnknownException)
   }
 
 
-  def retrieveCashTransactions(can: String, from: LocalDate, to: LocalDate)(implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
+  def retrieveCashTransactions(can: String,
+                               from: LocalDate,
+                               to: LocalDate)(implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
+
     cacheRepository.get(can).flatMap {
       case Some(value) => Future.successful(Right(value))
-      case None => httpClient.POST[CashDailyStatementRequest, CashTransactions](retrieveCashTransactionsUrl, cashDailyStatementRequest).flatMap { response =>
-        cacheRepository.set(can, response).map { successfulWrite =>
-          if (!successfulWrite) {
-            logger.error("Failed to store data in the session cache defaulting to the api response")
+
+      case None =>
+        httpClient.POST[CashDailyStatementRequest, CashTransactions](
+          retrieveCashTransactionsUrl, cashDailyStatementRequest).flatMap { response =>
+
+          cacheRepository.set(can, response).map { successfulWrite =>
+            if (!successfulWrite) {
+              logger.error("Failed to store data in the session cache defaulting to the api response")
+            }
+            Right(response)
           }
-          Right(response)
         }
-      }
     }.recover {
-      case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) => logger.error(s"Entity too large to download"); Left(TooManyTransactionsRequested)
-      case UpstreamErrorResponse(_, NOT_FOUND, _, _) => logger.error(s"No data found"); Left(NoTransactionsAvailable)
-      case e => logger.error(s"Unable to retrieve cash transactions :${e.getMessage}"); Left(UnknownException)
+      case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
+        logger.error(s"Entity too large to download"); Left(TooManyTransactionsRequested)
+
+      case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
+        logger.error(s"No data found")
+        Left(NoTransactionsAvailable)
+
+      case e =>
+        logger.error(s"Unable to retrieve cash transactions :${e.getMessage}")
+        Left(UnknownException)
     }
   }
 
-  def retrieveCashTransactionsDetail(can: String, from: LocalDate, to: LocalDate)(implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
+  def retrieveCashTransactionsDetail(can: String,
+                                     from: LocalDate,
+                                     to: LocalDate)(implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
-    httpClient.POST[CashDailyStatementRequest, CashTransactions](retrieveCashTransactionsDetailUrl, cashDailyStatementRequest).map(Right(_))
+
+    httpClient.POST[CashDailyStatementRequest, CashTransactions](
+      retrieveCashTransactionsDetailUrl, cashDailyStatementRequest).map(Right(_))
   }.recover {
-    case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) => logger.error(s"Entity too large to download");Left(TooManyTransactionsRequested)
-    case UpstreamErrorResponse(_, NOT_FOUND, _, _) => logger.error(s"No data found"); Left(NoTransactionsAvailable)
-    case e => logger.error(s"Unable to download CSV :${e.getMessage}"); Left(UnknownException)
+    case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
+      logger.error(s"Entity too large to download")
+      Left(TooManyTransactionsRequested)
+
+    case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
+      logger.error(s"No data found")
+      Left(NoTransactionsAvailable)
+
+    case e =>
+      logger.error(s"Unable to download CSV :${e.getMessage}")
+      Left(UnknownException)
   }
 }
 
 sealed trait ErrorResponse
 
 case object NoTransactionsAvailable extends ErrorResponse
-case object TooManyTransactionsRequested extends ErrorResponse
-case object UnknownException extends ErrorResponse
 
+case object TooManyTransactionsRequested extends ErrorResponse
+
+case object UnknownException extends ErrorResponse
