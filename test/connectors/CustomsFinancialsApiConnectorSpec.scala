@@ -22,6 +22,7 @@ import models.email.EmailUnverifiedResponse
 import models.{CashAccount, _}
 import models.request.{CashDailyStatementRequest, IdentifierRequest}
 import org.mockito.ArgumentMatchers.anyString
+import play.api.Application
 import play.api.inject.bind
 import play.api.test.Helpers._
 import repositories.CacheRepository
@@ -41,13 +42,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when[Future[AccountsAndBalancesResponseContainer]](mockHttpClient.POST(any, any, any)(any, any, any, any))
         .thenReturn(Future.successful(traderAccounts))
 
-      val app = application
-        .overrides(
-          bind[HttpClient].toInstance(mockHttpClient)
-        ).build()
-
-      val connector = app.injector.instanceOf[CustomsFinancialsApiConnector]
-
       running(app) {
         val result = await(connector.getCashAccount(eori)(implicitly, IdentifierRequest(fakeRequest(), "12345678")))
         result.value mustEqual cashAccount
@@ -58,49 +52,48 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when[Future[AccountsAndBalancesResponseContainer]](mockHttpClient.POST(any, any, any)(any, any, any, any))
         .thenReturn(Future.successful(traderAccounts))
 
-      val mockMetricsReporterService = mock[MetricsReporterService]
       when[Future[Seq[CashAccount]]](mockMetricsReporterService.withResponseTimeLogging(any)(any)(any))
         .thenReturn(Future.successful(Seq(cashAccount)))
 
-      val app = application
+      override val app: Application = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
-          bind[MetricsReporterService].toInstance(mockMetricsReporterService)
+          httpClientAndMetricsMocks
         ).build()
-
-      val connector = app.injector.instanceOf[CustomsFinancialsApiConnector]
 
       running(app) {
         val result = await(connector.getCashAccount(eori)(implicitly, IdentifierRequest(fakeRequest(), "12345678")))
         result.value mustEqual cashAccount
-        verify(mockMetricsReporterService).withResponseTimeLogging(eqTo("customs-financials-api.get.accounts"))(any)(any)
+
+        verify(mockMetricsReporterService).withResponseTimeLogging(
+          eqTo("customs-financials-api.get.accounts"))(any)(any)
       }
     }
   }
 
   "retrieveCashTransactions" must {
-    "call the correct URL and pass through the HeaderCarrier and CAN, and return a list of cash daily statements" in new Setup {
-      val expectedUrl = "apiEndpointUrl/account/cash/transactions"
-      val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
+    "call the correct URL and pass through the HeaderCarrier and CAN, " +
+      "and return a list of cash daily statements" in new Setup {
 
-      val mockConfig = mock[AppConfig]
-      val mockCacheRepository = mock[CacheRepository]
+      val expectedUrl = "apiEndpointUrl/account/cash/transactions"
+      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
+
+      private val mockCacheRepository = mock[CacheRepository]
 
       when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
 
-      when[Future[CashTransactions]](mockHttpClient.POST(eqTo(expectedUrl), eqTo(cashDailyStatementRequest), any)(any, any, eqTo(hc), any))
+      when[Future[CashTransactions]](mockHttpClient.POST(
+        eqTo(expectedUrl),
+        eqTo(cashDailyStatementRequest),
+        any)(any, any, eqTo(hc), any))
         .thenReturn(Future.successful(successResponse))
+
       when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
       when(mockCacheRepository.set("can", successResponse)).thenReturn(Future.successful(true))
 
-      val app = application
+      override val app: Application = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
-          bind[AppConfig].toInstance(mockConfig),
-          bind[CacheRepository].toInstance(mockCacheRepository)
+          httpClientMetricsAndConfigMocks
         ).build()
-
-      val connector = app.injector.instanceOf[CustomsFinancialsApiConnector]
 
       running(app) {
         val result = await(connector.retrieveCashTransactions("can", fromDate, toDate))
@@ -108,24 +101,21 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "call the correct URL and pass through the HeaderCarrier and CAN, and return a list of cash daily statements from the cacheRepository" in new Setup {
-      val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
+    "call the correct URL and pass through the HeaderCarrier and CAN, " +
+      "and return a list of cash daily statements from the cacheRepository" in new Setup {
+      val successResponse: CashTransactions = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
-      val mockConfig = mock[AppConfig]
-      val mockCacheRepository = mock[CacheRepository]
+      private val mockCacheRepository = mock[CacheRepository]
 
       when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
 
       when(mockCacheRepository.get(anyString)).thenReturn(Future.successful(Some(successResponse)))
 
-      val app = application
+      override val app: Application = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
           bind[AppConfig].toInstance(mockConfig),
           bind[CacheRepository].toInstance(mockCacheRepository)
         ).build()
-
-      val connector = app.injector.instanceOf[CustomsFinancialsApiConnector]
 
       running(app) {
         val result = await(connector.retrieveCashTransactions("can", fromDate, toDate))
@@ -135,17 +125,15 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
     "propagate exceptions when the backend POST fails" in new Setup {
       val mockCacheRepository = mock[CacheRepository]
+
       when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
         .thenReturn(Future.failed(new HttpException("It's broken", 500)))
       when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
 
-      val app = application
+      override val app: Application = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
           bind[CacheRepository].toInstance(mockCacheRepository)
         ).build()
-
-      val connector = app.injector.instanceOf[CustomsFinancialsApiConnector]
 
       running(app) {
         val result = await(connector.retrieveCashTransactions("can", fromDate, toDate))
@@ -157,22 +145,20 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   "retrieveCashTransactionsDetail" must {
     "call the correct URL and pass through the HeaderCarrier and CAN, and return a list of cash daily statements" in new Setup {
       val expectedUrl = "apiEndpointUrl/account/cash/transactions-detail"
-      val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
-
-      val mockConfig = mock[AppConfig]
+      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
       when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
 
-      when[Future[CashTransactions]](mockHttpClient.POST(eqTo(expectedUrl), eqTo(cashDailyStatementRequest), any)(any, any, eqTo(hc), any))
+      when[Future[CashTransactions]](mockHttpClient.POST(
+        eqTo(expectedUrl),
+        eqTo(cashDailyStatementRequest),
+        any)(any, any, eqTo(hc), any))
         .thenReturn(Future.successful(successResponse))
 
-      val app = application
+      override val app = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
-          bind[AppConfig].toInstance(mockConfig)
+          httpClientAndConfigMocks
         ).build()
-
-      val connector = app.injector.instanceOf[CustomsFinancialsApiConnector]
 
       running(app) {
         val result = await(connector.retrieveCashTransactionsDetail("can", fromDate, toDate))
@@ -183,13 +169,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     "propagate exceptions when the backend POST fails" in new Setup {
       when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
         .thenReturn(Future.failed(new HttpException("It's broken", 500)))
-
-      val app = application
-        .overrides(
-          bind[HttpClient].toInstance(mockHttpClient)
-        ).build()
-
-      val connector = app.injector.instanceOf[CustomsFinancialsApiConnector]
 
       running(app) {
         val result = await(connector.retrieveCashTransactions("can", fromDate, toDate))
@@ -203,20 +182,18 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
       val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
-      val mockConfig = mock[AppConfig]
-
       when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
 
-      when[Future[CashTransactions]](mockHttpClient.POST(eqTo(expectedUrl), eqTo(cashDailyStatementRequest), any)(any, any, eqTo(hc), any))
+      when[Future[CashTransactions]](mockHttpClient.POST(
+        eqTo(expectedUrl),
+        eqTo(cashDailyStatementRequest),
+        any)(any, any, eqTo(hc), any))
         .thenReturn(Future.successful(successResponse))
 
-      val app = application
+      override val app = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
-          bind[AppConfig].toInstance(mockConfig)
+          httpClientAndConfigMocks
         ).build()
-
-      val connector = app.injector.instanceOf[CustomsFinancialsApiConnector]
 
       running(app) {
         val result = await(connector.retrieveHistoricCashTransactions("can", fromDate, toDate))
@@ -227,13 +204,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     "propagate exceptions when the backend POST fails" in new Setup {
       when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
         .thenReturn(Future.failed(new HttpException("It's broken", 500)))
-
-      val app = application
-        .overrides(
-          bind[HttpClient].toInstance(mockHttpClient)
-        ).build()
-
-      val connector = app.injector.instanceOf[CustomsFinancialsApiConnector]
 
       running(app) {
         val result = await(connector.retrieveHistoricCashTransactions("can", fromDate, toDate))
@@ -248,31 +218,17 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when(mockHttpClient.GET[EmailUnverifiedResponse](
         eqTo(customFinancialsApiUrl), any, any)(any, any, any)).thenReturn(Future.successful(emailUnverifiedRes))
 
-      private val app = application
-        .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
-        ).build()
-
-      private val connector = app.injector.instanceOf[CustomsFinancialsApiConnector]
-
       connector.retrieveUnverifiedEmail().map {
         _ mustBe emailUnverifiedRes
       }
     }
 
-    "return EmailUnverifiedResponse with None for unverified email if there is error while" +
+    "return EmailUnverifiedResponse with None for unverified email if there is an error while" +
       " fetching response from api" in new Setup {
 
       when(mockHttpClient.GET[EmailUnverifiedResponse](
         eqTo(customFinancialsApiUrl), any, any)(any, any, any))
         .thenReturn(Future.failed(new RuntimeException("error occurred")))
-
-      private val app = application
-        .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
-        ).build()
-
-      private val connector = app.injector.instanceOf[CustomsFinancialsApiConnector]
 
       connector.retrieveUnverifiedEmail().map {
         _.unVerifiedEmail mustBe empty
@@ -283,12 +239,31 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   trait Setup {
     private val traderEori = "12345678"
     private val cashAccountNumber = "987654"
+
     val sessionId: SessionId = SessionId("session_1234")
     implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
+
     val mockHttpClient: HttpClient = mock[HttpClient]
+    val mockMetricsReporterService = mock[MetricsReporterService]
+    val mockConfig = mock[AppConfig]
+
+    val httpClientMetricsAndConfigMocks = Seq(
+      bind[HttpClient].toInstance(mockHttpClient),
+      bind[MetricsReporterService].toInstance(mockMetricsReporterService),
+      bind[AppConfig].toInstance(mockConfig))
+
+    val httpClientAndMetricsMocks = Seq(
+      bind[HttpClient].toInstance(mockHttpClient),
+      bind[MetricsReporterService].toInstance(mockMetricsReporterService)
+    )
+
+    val httpClientAndConfigMocks = Seq(
+      bind[HttpClient].toInstance(mockHttpClient),
+      bind[AppConfig].toInstance(mockConfig)
+    )
 
     val cdsCashAccount: CdsCashAccount = CdsCashAccount(
-      Account(cashAccountNumber, "", traderEori, Some(AccountStatusOpen), false, Some(false)),
+      Account(cashAccountNumber, emptyString, traderEori, Some(AccountStatusOpen), false, Some(false)),
       Some("999.99"))
 
     val cashAccount: CashAccount = cdsCashAccount.toDomain()
@@ -299,7 +274,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
     val traderAccounts: AccountsAndBalancesResponseContainer = AccountsAndBalancesResponseContainer(
       AccountsAndBalancesResponse(
-        Some(AccountResponseCommon("", Some(""), "", None)),
+        Some(AccountResponseCommon(emptyString, Some(emptyString), emptyString, None)),
         AccountResponseDetail(
           Some("987654"),
           None,
@@ -339,5 +314,12 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     val emailId = "test@test.com"
     val emailUnverifiedRes: EmailUnverifiedResponse = EmailUnverifiedResponse(Some(emailId))
     val customFinancialsApiUrl = "http://localhost:9878/customs-financials-api/subscriptions/unverified-email-display"
+
+    val app: Application = application
+      .overrides(
+        bind[HttpClient].toInstance(mockHttpClient)
+      ).build()
+
+    val connector: CustomsFinancialsApiConnector = app.injector.instanceOf[CustomsFinancialsApiConnector]
   }
 }

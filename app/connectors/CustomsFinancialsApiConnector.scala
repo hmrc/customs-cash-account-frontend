@@ -20,7 +20,7 @@ import config.AppConfig
 import models.CashDailyStatement._
 import models.email.EmailUnverifiedResponse
 import models.request.{CashDailyStatementRequest, IdentifierRequest}
-import models.{AccountsAndBalancesRequest, AccountsAndBalancesRequestContainer, AccountsAndBalancesResponseContainer, AccountsRequestCommon, AccountsRequestDetail, CashAccount, CashTransactions}
+import models._
 import org.slf4j.LoggerFactory
 import play.api.http.Status.{NOT_FOUND, REQUEST_ENTITY_TOO_LARGE}
 import play.api.mvc.AnyContent
@@ -138,7 +138,7 @@ class CustomsFinancialsApiConnector @Inject()(
   def retrieveUnverifiedEmail()(implicit hc: HeaderCarrier): Future[EmailUnverifiedResponse] = {
     val unverifiedEmailDisplayApiUrl = s"$baseUrl/subscriptions/unverified-email-display"
 
-    httpClient.GET[EmailUnverifiedResponse](unverifiedEmailDisplayApiUrl).recover{
+    httpClient.GET[EmailUnverifiedResponse](unverifiedEmailDisplayApiUrl).recover {
       case _ =>
         logger.error(s"Error occurred while calling API $unverifiedEmailDisplayApiUrl")
         EmailUnverifiedResponse(None)
