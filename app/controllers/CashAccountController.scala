@@ -20,7 +20,7 @@ import cats.data.EitherT._
 import cats.instances.future._
 import config.{AppConfig, ErrorHandler}
 import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested}
-import controllers.actions.IdentifierAction
+import controllers.actions.{EmailAction, IdentifierAction}
 import helpers.CashAccountUtils
 import models._
 import models.request.IdentifierRequest
@@ -30,12 +30,14 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.CashTransactionsViewModel
 import views.html._
+
 import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CashAccountController @Inject()(
                                        authenticate: IdentifierAction,
+                                       verifyEmail: EmailAction,
                                        apiConnector: CustomsFinancialsApiConnector,
                                        showAccountsView: cash_account,
                                        unavailable: cash_account_not_available,
@@ -49,7 +51,7 @@ class CashAccountController @Inject()(
 
   private val logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
 
-  def showAccountDetails(page: Option[Int]): Action[AnyContent] = authenticate.async { implicit request =>
+  def showAccountDetails(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
 
     val eventualMaybeCashAccount = apiConnector.getCashAccount(request.eori)
     val result = for {

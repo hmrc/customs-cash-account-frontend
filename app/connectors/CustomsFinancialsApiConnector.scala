@@ -19,7 +19,7 @@ package connectors
 import config.AppConfig
 import models.CashDailyStatement._
 import models.request.{CashDailyStatementRequest, IdentifierRequest}
-import models.{AccountsAndBalancesRequest, AccountsAndBalancesRequestContainer, AccountsAndBalancesResponseContainer, AccountsRequestCommon, AccountsRequestDetail, CashAccount, CashTransactions}
+import models._
 import org.slf4j.LoggerFactory
 import play.api.http.Status.{NOT_FOUND, REQUEST_ENTITY_TOO_LARGE}
 import play.api.mvc.AnyContent
@@ -94,6 +94,9 @@ class CustomsFinancialsApiConnector @Inject()(
     case UpstreamErrorResponse(_, NOT_FOUND, _, _) => logger.error(s"No data found"); Left(NoTransactionsAvailable)
     case e => logger.error(s"Unable to download CSV :${e.getMessage}"); Left(UnknownException)
   }
+
+  def verifiedEmail(implicit hc: HeaderCarrier): Future[EmailVerifiedResponse] =
+    httpClient.GET[EmailVerifiedResponse](appConfig.customsFinancialsApi + "/subscriptions/email-display")
 }
 
 sealed trait ErrorResponse
