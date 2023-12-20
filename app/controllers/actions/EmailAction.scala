@@ -19,6 +19,7 @@ package controllers.actions
 import connectors.CustomsDataStoreConnector
 import models.request.IdentifierRequest
 import models.{EmailResponses, UndeliverableEmail}
+import org.slf4j.LoggerFactory
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
@@ -34,14 +35,17 @@ class EmailAction @Inject() (dataStoreConnector: CustomsDataStoreConnector)
                              val messagesApi: MessagesApi)
   extends ActionFilter[IdentifierRequest] with I18nSupport {
 
+  private val logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
+
   def filter[A](request: IdentifierRequest[A]): Future[Option[Result]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     dataStoreConnector.getEmail(request.eori).map {
       case Left(value) => checkEmailResponseAndRedirect(value)
       case Right(_) => None
-    }.recover { case _ =>
+    }.recover { case err =>
+        logger.error(s"Unable to retrieve email from ETMP: ${err.getMessage}")
         None
-      }
+      } //This will allow users to access the service if ETMP return an error via SUB09
   }
 
   private def checkEmailResponseAndRedirect(value: EmailResponses): Option[Result] = {
