@@ -16,9 +16,10 @@
 
 package config
 
-import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
@@ -26,6 +27,13 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val customsFinancialsApi: String = servicesConfig.baseUrl("customs-financials-api") +
     config.getOptional[String]("customs-financials-api.context").getOrElse("/customs-financials-api")
+
+  lazy val customsDataStore: String = servicesConfig.baseUrl("customs-data-store") +
+    config.getOptional[String]("customs-data-store.context").getOrElse("/customs-data-store")
+
+  lazy val emailFrontendUrl: String = servicesConfig.baseUrl("customs-email-frontend") +
+    config.getOptional[String]("customs-email-frontend.context").getOrElse("manage-email-cds") +
+    config.get[String]("microservice.services.customs-email-frontend.url")
 
   lazy val appName: String = config.get[String]("appName")
   lazy val loginUrl: String = config.get[String]("urls.login")

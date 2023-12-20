@@ -1,0 +1,50 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+
+@this(
+     h1: components.h1,
+     h2: components.h2,
+     p: components.p,
+     p1: components.p1,
+     button: components.button,
+     layout: Layout
+)
+@(
+   nextPage: String,
+   emailAddress: Option[String] = None
+ )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(pageTitle = Some(messages("cf.undeliverable.email.title")), fullWidth = false, help = true){
+
+    @h1(msg = "cf.undeliverable.email.heading", id = Some("email-heading-h1"),classes = "govuk-heading-xl")
+
+    @p("cf.undeliverable.email.p1")
+
+    @emailAddress.map(mailId => p(messages("cf.undeliverable.email.p2", mailId)))
+
+    @h2(msg = "cf.undeliverable.email.verify.heading", id = Some("email-verify-heading-h2"))
+
+    @p("cf.undeliverable.email.verify.text.p1")
+
+    @h2(msg = "cf.undeliverable.email.change.heading", id = Some("email-change-heading-h2"))
+
+    @p("cf.undeliverable.email.change.text.p1")
+    @p("cf.undeliverable.email.change.text.p2")
+
+    @p1(content = button("cf.undeliverable.email.link-text", Some(nextPage)))
+}

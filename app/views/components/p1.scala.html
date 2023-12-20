@@ -14,8 +14,8 @@
  * limitations under the License.
  *@
 
-@this(govukButton: GovukButton)
+@this()
 
-@(msg: String, href: Option[String] = None)(implicit messages: Messages)
+@(content: Html, id: Option[String] = None, classes: Option[String] = None, link: Option[Html] = None, tabLink: Option[Html] = None)(implicit messages: Messages)
 
-@govukButton(Button(content = Text(messages(msg)), href = href))
+<p @{id.fold("")(id => s"id=$id")}  class="@{classes.fold("govuk-body")(classes => s"$classes")}">@content @link @tabLink</p>
