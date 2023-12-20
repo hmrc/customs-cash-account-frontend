@@ -38,6 +38,30 @@ class CustomsDataStoreConnectorSpec extends SpecBase {
                 result mustBe Right(Email("some@email.com"))
             }
         }
+
+
+
+        "return unverifiedEmail when the request is successful and email address is not present in the response" in new Setup {
+        val emailResponse: EmailResponse = EmailResponse(None, None, None)
+
+            when[Future[EmailResponse]](mockHttpClient.GET(any, any, any)(any, any, any))
+                .thenReturn(Future.successful(emailResponse))
+
+            running(app) {
+                val result = await(connector.getEmail("someEori"))
+                result mustBe Left(UnverifiedEmail)
+            }
+        }
+
+        "return no email when a NOT_FOUND response is returned" in new Setup {
+            when[Future[EmailResponse]](mockHttpClient.GET(any, any, any)(any, any, any))
+                .thenReturn(Future.failed(UpstreamErrorResponse("Not Found", 404, 404)))
+
+            running(app) {
+                val result = await(connector.getEmail("someEori"))
+                result mustBe Left(UnverifiedEmail)
+            }
+        }
     }
 
     trait Setup {
@@ -52,7 +76,4 @@ class CustomsDataStoreConnectorSpec extends SpecBase {
 
     }
 }
-
-
-
 
