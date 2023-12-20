@@ -96,7 +96,7 @@ class CustomsFinancialsApiConnector @Inject()(
   }
 
   def verifiedEmail(implicit hc: HeaderCarrier): Future[EmailVerifiedResponse] =
-    httpClient.GET[EmailVerifiedResponse](appConfig.customsFinancialsApi + "/subscriptions/email-display")
+    httpClient.GET[EmailVerifiedResponse](s"${appConfig.customsFinancialsApi}/subscriptions/email-display")
 }
 
 sealed trait ErrorResponse

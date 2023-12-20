@@ -35,7 +35,7 @@
 
     @p("cf.undeliverable.email.p1")
 
-    @emailAddress.map(mailId => p(messages("cf.undeliverable.email.p2", mailId)))
+    @emailAddress.map(mailId => p1(Html(messages("cf.undeliverable.email.p2", mailId))))
 
     @h2(msg = "cf.undeliverable.email.verify.heading", id = Some("email-verify-heading-h2"))
 
