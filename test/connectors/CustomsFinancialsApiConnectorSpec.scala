@@ -18,6 +18,7 @@ package connectors
 
 import java.time.LocalDate
 import config.AppConfig
+import models.email.EmailUnverifiedResponse
 import models.{CashAccount, _}
 import models.request.{CashDailyStatementRequest, IdentifierRequest}
 import org.mockito.ArgumentMatchers.anyString
@@ -27,6 +28,8 @@ import repositories.CacheRepository
 import services.MetricsReporterService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, SessionId}
 import utils.SpecBase
+
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CustomsFinancialsApiConnectorSpec extends SpecBase {
@@ -239,21 +242,62 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
   }
 
+  "retrieveUnverifiedEmail" must {
+    "return EmailUnverifiedResponse with unverified email value" in new Setup {
+
+      when(mockHttpClient.GET[EmailUnverifiedResponse](
+        eqTo(customFinancialsApiUrl), any, any)(any, any, any)).thenReturn(Future.successful(emailUnverifiedRes))
+
+      private val app = application
+        .overrides(
+          bind[HttpClient].toInstance(mockHttpClient),
+        ).build()
+
+      private val connector = app.injector.instanceOf[CustomsFinancialsApiConnector]
+
+      connector.retrieveUnverifiedEmail().map {
+        _ mustBe emailUnverifiedRes
+      }
+    }
+
+    "return EmailUnverifiedResponse with None for unverified email if there is error while" +
+      " fetching response from api" in new Setup {
+
+      when(mockHttpClient.GET[EmailUnverifiedResponse](
+        eqTo(customFinancialsApiUrl), any, any)(any, any, any))
+        .thenReturn(Future.failed(new RuntimeException("error occurred")))
+
+      private val app = application
+        .overrides(
+          bind[HttpClient].toInstance(mockHttpClient),
+        ).build()
+
+      private val connector = app.injector.instanceOf[CustomsFinancialsApiConnector]
+
+      connector.retrieveUnverifiedEmail().map {
+        _.unVerifiedEmail mustBe empty
+      }
+    }
+  }
+
   trait Setup {
     private val traderEori = "12345678"
     private val cashAccountNumber = "987654"
-    val sessionId = SessionId("session_1234")
+    val sessionId: SessionId = SessionId("session_1234")
     implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
-    val mockHttpClient = mock[HttpClient]
+    val mockHttpClient: HttpClient = mock[HttpClient]
 
-    val cdsCashAccount = CdsCashAccount(Account(cashAccountNumber, "", traderEori, Some(AccountStatusOpen), false, Some(false)), Some("999.99"))
-    val cashAccount = cdsCashAccount.toDomain()
+    val cdsCashAccount: CdsCashAccount = CdsCashAccount(
+      Account(cashAccountNumber, "", traderEori, Some(AccountStatusOpen), false, Some(false)),
+      Some("999.99"))
 
-    val fromDate = LocalDate.parse("2019-10-08")
-    val toDate = LocalDate.parse("2020-04-08")
+    val cashAccount: CashAccount = cdsCashAccount.toDomain()
 
+    val fromDate: LocalDate = LocalDate.parse("2019-10-08")
+    val toDate: LocalDate = LocalDate.parse("2020-04-08")
     val eori = "123456789"
-    val traderAccounts = AccountsAndBalancesResponseContainer(
+
+    val traderAccounts: AccountsAndBalancesResponseContainer = AccountsAndBalancesResponseContainer(
       AccountsAndBalancesResponse(
         Some(AccountResponseCommon("", Some(""), "", None)),
         AccountResponseDetail(
@@ -264,14 +308,19 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       )
     )
 
-    val listOfPendingTransactions =
-      Seq(Declaration("pendingDeclarationID", Some("pendingImporterEORI"),
-        "pendingDeclarantEORINumber", Some("pendingDeclarantReference"),
-        LocalDate.parse("2020-07-21"), -100.00, Nil))
+    val listOfPendingTransactions: Seq[Declaration] = Seq(
+      Declaration("pendingDeclarationID",
+        Some("pendingImporterEORI"),
+        "pendingDeclarantEORINumber",
+        Some("pendingDeclarantReference"),
+        LocalDate.parse("2020-07-21"),
+        -100.00,
+        Nil)
+    )
 
-    val cashDailyStatementRequest = CashDailyStatementRequest("can", fromDate, toDate)
+    val cashDailyStatementRequest: CashDailyStatementRequest = CashDailyStatementRequest("can", fromDate, toDate)
 
-    val listOfCashDailyStatements = Seq(
+    val listOfCashDailyStatements: Seq[CashDailyStatement] = Seq(
 
       CashDailyStatement(LocalDate.parse("2020-07-18"), 500.0, 1000.00,
         Seq(Declaration("mrn1", Some("Importer EORI"), "Declarant EORI",
@@ -286,5 +335,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
           Declaration("mrn4", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
             LocalDate.parse("2020-07-20"), -30.00, Nil)), Nil)
     )
+
+    val emailId = "test@test.com"
+    val emailUnverifiedRes: EmailUnverifiedResponse = EmailUnverifiedResponse(Some(emailId))
+    val customFinancialsApiUrl = "http://localhost:9878/customs-financials-api/subscriptions/unverified-email-display"
   }
 }
