@@ -50,6 +50,8 @@ class AppConfigSpec extends SpecBase {
 
       appConfig.subscribeCdsUrl mustBe
         "https://www.tax.service.gov.uk/customs-enrolment-services/cds/subscribe"
+
+      appConfig.customsDataStore mustBe "http://localhost:9893/customs-data-store"
     }
   }
 
