@@ -19,13 +19,18 @@
     h1: components.h1,
     h2: components.h2,
     p: components.p,
+    p1: components.p1,
     button: components.button
 )
 
 @(
     nextPage: String,
     emailAddress: Option[String] = None
-)(implicit messages: Messages, appConfig: AppConfig, request: Request[_])
+)(
+    implicit messages: Messages,
+    appConfig: AppConfig,
+    request: Request[_]
+)
 
 @main_template(
     pageTitle = Some(messages("cf.verify.your.email.title")),
@@ -39,5 +44,5 @@
 
         @p(messages("cf.verify.your.email.p3"))
 
-        <p class="govuk-body">@button("cf.verify.your.email.change.button", Some(nextPage),"govuk-!-margin-bottom-7")</p>
+        @p1(content = button("cf.verify.your.email.change.button", Some(nextPage)))
 }
