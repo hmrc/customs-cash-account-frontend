@@ -123,6 +123,6 @@ class DataStoreConnectorSpec extends SpecBase {
 
     implicit val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-    val connector: DataStoreConnector = app.injector.instanceOf[DataStoreConnector]
+    val connector: CustomsDataStoreConnector = app.injector.instanceOf[CustomsDataStoreConnector]
   }
 }

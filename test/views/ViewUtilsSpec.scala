@@ -17,7 +17,6 @@
 package views
 
 import utils.SpecBase
-import views.ViewUtils.emptyString
 
 class ViewUtilsSpec extends SpecBase {
 

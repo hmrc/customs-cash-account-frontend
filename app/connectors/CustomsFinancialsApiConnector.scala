@@ -18,7 +18,7 @@ package connectors
 
 import config.AppConfig
 import models.CashDailyStatement._
-import models.email.EmailUnverifiedResponse
+import models.email.{EmailUnverifiedResponse, EmailVerifiedResponse}
 import models.request.{CashDailyStatementRequest, IdentifierRequest}
 import models._
 import org.slf4j.LoggerFactory
@@ -131,11 +131,21 @@ class CustomsFinancialsApiConnector @Inject()(
       Left(UnknownException)
   }
 
+  def verifiedEmail(implicit hc: HeaderCarrier): Future[EmailVerifiedResponse] = {
+    val emailDisplayApiUrl = s"$baseUrl/subscriptions/email-display"
+
+    httpClient.GET[EmailVerifiedResponse](emailDisplayApiUrl).recover{
+      case _ =>
+        logger.error(s"Error occurred while calling API $emailDisplayApiUrl")
+        EmailVerifiedResponse(None)
+    }
+  }
+
   /**
    * Retrieves unverified email from customs-financials-api using below route
    * /customs-financials-api/subscriptions/unverified-email-display
    */
-  def retrieveUnverifiedEmail()(implicit hc: HeaderCarrier): Future[EmailUnverifiedResponse] = {
+  def retrieveUnverifiedEmail(implicit hc: HeaderCarrier): Future[EmailUnverifiedResponse] = {
     val unverifiedEmailDisplayApiUrl = s"$baseUrl/subscriptions/unverified-email-display"
 
     httpClient.GET[EmailUnverifiedResponse](unverifiedEmailDisplayApiUrl).recover {

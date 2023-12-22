@@ -29,8 +29,8 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DataStoreConnector @Inject()(http: HttpClient,
-                                   metricsReporter: MetricsReporterService)(implicit appConfig: AppConfig,
+class CustomsDataStoreConnector @Inject()(http: HttpClient,
+                                          metricsReporter: MetricsReporterService)(implicit appConfig: AppConfig,
                                                                             ec: ExecutionContext) {
 
   private val log = Logger(this.getClass)

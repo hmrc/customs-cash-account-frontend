@@ -11,6 +11,9 @@ POST        /request-cash-transactions              controllers.RequestTransacti
 GET         /requested-cash-transactions            controllers.RequestedTransactionsController.onPageLoad()
 GET         /too-many-requested-cash-transactions   controllers.RequestedTransactionsController.tooManyTransactionsRequested(range: models.RequestedDateRange)
 
+GET         /verify-your-email                      controllers.EmailController.showUnverified()
+GET         /undeliverable-email                    controllers.EmailController.showUndeliverable()
+
 GET         /account-unavailable                    controllers.CashAccountController.showAccountUnavailable
 GET         /not-subscribed-for-cds                 controllers.UnauthorisedController.onPageLoad
 

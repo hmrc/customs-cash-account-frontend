@@ -35,7 +35,6 @@ import scala.concurrent.Future
 
 class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
-
   "getAccounts" must {
 
     "return all accounts available to the given EORI from the API service" in new Setup {
@@ -97,7 +96,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(app) {
         val result = await(connector.retrieveCashTransactions("can", fromDate, toDate))
-        result mustEqual Right(successResponse)
+        result mustBe Right(successResponse)
       }
     }
 
@@ -119,7 +118,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(app) {
         val result = await(connector.retrieveCashTransactions("can", fromDate, toDate))
-        result mustEqual Right(successResponse)
+        result mustBe Right(successResponse)
       }
     }
 
@@ -137,7 +136,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(app) {
         val result = await(connector.retrieveCashTransactions("can", fromDate, toDate))
-        result mustEqual Left(UnknownException)
+        result mustBe Left(UnknownException)
       }
     }
   }
@@ -162,7 +161,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(app) {
         val result = await(connector.retrieveCashTransactionsDetail("can", fromDate, toDate))
-        result mustEqual Right(successResponse)
+        result mustBe Right(successResponse)
       }
     }
 
@@ -172,7 +171,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(app) {
         val result = await(connector.retrieveCashTransactions("can", fromDate, toDate))
-        result mustEqual Left(UnknownException)
+        result mustBe Left(UnknownException)
       }
     }
   }
@@ -197,7 +196,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(app) {
         val result = await(connector.retrieveHistoricCashTransactions("can", fromDate, toDate))
-        result mustEqual Right(successResponse)
+        result mustBe Right(successResponse)
       }
     }
 
@@ -207,7 +206,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(app) {
         val result = await(connector.retrieveHistoricCashTransactions("can", fromDate, toDate))
-        result mustEqual Left(UnknownException)
+        result mustBe Left(UnknownException)
       }
     }
   }
@@ -218,7 +217,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when(mockHttpClient.GET[EmailUnverifiedResponse](
         eqTo(customFinancialsApiUrl), any, any)(any, any, any)).thenReturn(Future.successful(emailUnverifiedRes))
 
-      connector.retrieveUnverifiedEmail().map {
+      connector.retrieveUnverifiedEmail.map {
         _ mustBe emailUnverifiedRes
       }
     }
@@ -230,7 +229,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         eqTo(customFinancialsApiUrl), any, any)(any, any, any))
         .thenReturn(Future.failed(new RuntimeException("error occurred")))
 
-      connector.retrieveUnverifiedEmail().map {
+      connector.retrieveUnverifiedEmail.map {
         _.unVerifiedEmail mustBe empty
       }
     }

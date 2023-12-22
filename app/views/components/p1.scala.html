@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models.request
+@this()
 
-import play.api.mvc.{Request, WrappedRequest}
+@(
+  content: Html,
+  id: Option[String] = None,
+  classes: Option[String] = None,
+  link: Option[Html] = None,
+  tabLink: Option[Html] = None
+)(
+  implicit messages: Messages
+)
 
-trait RequestWithEori[A] extends Request[A]
-
-final case class IdentifierRequest[A](request: Request[A], eori: String)
-  extends WrappedRequest[A](request)
-    with RequestWithEori[A]
+<p @{id.fold("")(id => s"id=$id")}  class="@{classes.fold("govuk-body")(classes => s"$classes")}">@content @link @tabLink</p>
