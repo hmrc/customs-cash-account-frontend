@@ -16,10 +16,9 @@
 
 package connectors
 
-import java.time.LocalDate
 import config.AppConfig
+import models._
 import models.email.EmailUnverifiedResponse
-import models.{CashAccount, _}
 import models.request.{CashDailyStatementRequest, IdentifierRequest}
 import org.mockito.ArgumentMatchers.anyString
 import play.api.Application
@@ -30,6 +29,7 @@ import services.MetricsReporterService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, SessionId}
 import utils.SpecBase
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -41,8 +41,8 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when[Future[AccountsAndBalancesResponseContainer]](mockHttpClient.POST(any, any, any)(any, any, any, any))
         .thenReturn(Future.successful(traderAccounts))
 
-      running(app) {
-        val result = await(connector.getCashAccount(eori)(implicitly, IdentifierRequest(fakeRequest(), "12345678")))
+      running(appWithHttpClient) {
+        val result = await(connector().getCashAccount(eori)(implicitly, IdentifierRequest(fakeRequest(), "12345678")))
         result.value mustEqual cashAccount
       }
     }
@@ -54,13 +54,16 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when[Future[Seq[CashAccount]]](mockMetricsReporterService.withResponseTimeLogging(any)(any)(any))
         .thenReturn(Future.successful(Seq(cashAccount)))
 
-      override val app: Application = application
+      val appWithMocks: Application = application
         .overrides(
-          httpClientAndMetricsMocks
+          bind[HttpClient].toInstance(mockHttpClient),
+          bind[MetricsReporterService].toInstance(mockMetricsReporterService)
         ).build()
 
-      running(app) {
-        val result = await(connector.getCashAccount(eori)(implicitly, IdentifierRequest(fakeRequest(), "12345678")))
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).getCashAccount(eori)(implicitly,
+          IdentifierRequest(fakeRequest(), "12345678")))
+
         result.value mustEqual cashAccount
 
         verify(mockMetricsReporterService).withResponseTimeLogging(
@@ -76,8 +79,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
-      private val mockCacheRepository = mock[CacheRepository]
-
       when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
 
       when[Future[CashTransactions]](mockHttpClient.POST(
@@ -89,13 +90,16 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
       when(mockCacheRepository.set("can", successResponse)).thenReturn(Future.successful(true))
 
-      override val app: Application = application
+      val appWithMocks: Application = application
         .overrides(
-          httpClientMetricsAndConfigMocks
+          bind[HttpClient].toInstance(mockHttpClient),
+          bind[MetricsReporterService].toInstance(mockMetricsReporterService),
+          bind[AppConfig].toInstance(mockConfig),
+          bind[CacheRepository].toInstance(mockCacheRepository)
         ).build()
 
-      running(app) {
-        val result = await(connector.retrieveCashTransactions("can", fromDate, toDate))
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).retrieveCashTransactions("can", fromDate, toDate))
         result mustBe Right(successResponse)
       }
     }
@@ -104,38 +108,36 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       "and return a list of cash daily statements from the cacheRepository" in new Setup {
       val successResponse: CashTransactions = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
-      private val mockCacheRepository = mock[CacheRepository]
-
       when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
 
       when(mockCacheRepository.get(anyString)).thenReturn(Future.successful(Some(successResponse)))
 
-      override val app: Application = application
+      val appWithMocks: Application = application
         .overrides(
           bind[AppConfig].toInstance(mockConfig),
           bind[CacheRepository].toInstance(mockCacheRepository)
         ).build()
 
-      running(app) {
-        val result = await(connector.retrieveCashTransactions("can", fromDate, toDate))
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).retrieveCashTransactions("can", fromDate, toDate))
         result mustBe Right(successResponse)
       }
     }
 
     "propagate exceptions when the backend POST fails" in new Setup {
-      val mockCacheRepository = mock[CacheRepository]
 
       when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
         .thenReturn(Future.failed(new HttpException("It's broken", 500)))
       when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
 
-      override val app: Application = application
+      val appWithMocks: Application = application
         .overrides(
+          bind[HttpClient].toInstance(mockHttpClient),
           bind[CacheRepository].toInstance(mockCacheRepository)
         ).build()
 
-      running(app) {
-        val result = await(connector.retrieveCashTransactions("can", fromDate, toDate))
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).retrieveCashTransactions("can", fromDate, toDate))
         result mustBe Left(UnknownException)
       }
     }
@@ -154,23 +156,32 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         any)(any, any, eqTo(hc), any))
         .thenReturn(Future.successful(successResponse))
 
-      override val app = application
+      val appWithMocks: Application = application
         .overrides(
-          httpClientAndConfigMocks
+          bind[HttpClient].toInstance(mockHttpClient),
+          bind[AppConfig].toInstance(mockConfig)
         ).build()
 
-      running(app) {
-        val result = await(connector.retrieveCashTransactionsDetail("can", fromDate, toDate))
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).retrieveCashTransactionsDetail("can", fromDate, toDate))
         result mustBe Right(successResponse)
       }
     }
 
     "propagate exceptions when the backend POST fails" in new Setup {
+      when(mockCacheRepository.get(any)).thenReturn(Future.successful(None))
+
       when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
         .thenReturn(Future.failed(new HttpException("It's broken", 500)))
 
-      running(app) {
-        val result = await(connector.retrieveCashTransactions("can", fromDate, toDate))
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClient].toInstance(mockHttpClient),
+          bind[CacheRepository].toInstance(mockCacheRepository)
+        ).build()
+
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).retrieveCashTransactions("can", fromDate, toDate))
         result mustBe Left(UnknownException)
       }
     }
@@ -179,7 +190,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   "retrieveHistoricCashTransactions" must {
     "return a list of requested cash daily statements" in new Setup {
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
-      val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
+      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
       when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
 
@@ -189,13 +200,14 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         any)(any, any, eqTo(hc), any))
         .thenReturn(Future.successful(successResponse))
 
-      override val app = application
+      val appWithMocks: Application = application
         .overrides(
-          httpClientAndConfigMocks
+          bind[HttpClient].toInstance(mockHttpClient),
+          bind[AppConfig].toInstance(mockConfig)
         ).build()
 
-      running(app) {
-        val result = await(connector.retrieveHistoricCashTransactions("can", fromDate, toDate))
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).retrieveHistoricCashTransactions("can", fromDate, toDate))
         result mustBe Right(successResponse)
       }
     }
@@ -204,8 +216,8 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
         .thenReturn(Future.failed(new HttpException("It's broken", 500)))
 
-      running(app) {
-        val result = await(connector.retrieveHistoricCashTransactions("can", fromDate, toDate))
+      running(appWithHttpClient) {
+        val result = await(connector().retrieveHistoricCashTransactions("can", fromDate, toDate))
         result mustBe Left(UnknownException)
       }
     }
@@ -217,7 +229,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when(mockHttpClient.GET[EmailUnverifiedResponse](
         eqTo(customFinancialsApiUrl), any, any)(any, any, any)).thenReturn(Future.successful(emailUnverifiedRes))
 
-      connector.retrieveUnverifiedEmail.map {
+      connector().retrieveUnverifiedEmail.map {
         _ mustBe emailUnverifiedRes
       }
     }
@@ -229,7 +241,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         eqTo(customFinancialsApiUrl), any, any)(any, any, any))
         .thenReturn(Future.failed(new RuntimeException("error occurred")))
 
-      connector.retrieveUnverifiedEmail.map {
+      connector().retrieveUnverifiedEmail.map {
         _.unVerifiedEmail mustBe empty
       }
     }
@@ -243,23 +255,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
 
     val mockHttpClient: HttpClient = mock[HttpClient]
-    val mockMetricsReporterService = mock[MetricsReporterService]
-    val mockConfig = mock[AppConfig]
-
-    val httpClientMetricsAndConfigMocks = Seq(
-      bind[HttpClient].toInstance(mockHttpClient),
-      bind[MetricsReporterService].toInstance(mockMetricsReporterService),
-      bind[AppConfig].toInstance(mockConfig))
-
-    val httpClientAndMetricsMocks = Seq(
-      bind[HttpClient].toInstance(mockHttpClient),
-      bind[MetricsReporterService].toInstance(mockMetricsReporterService)
-    )
-
-    val httpClientAndConfigMocks = Seq(
-      bind[HttpClient].toInstance(mockHttpClient),
-      bind[AppConfig].toInstance(mockConfig)
-    )
+    val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
+    val mockConfig: AppConfig = mock[AppConfig]
+    val mockCacheRepository: CacheRepository = mock[CacheRepository]
 
     val cdsCashAccount: CdsCashAccount = CdsCashAccount(
       Account(cashAccountNumber, emptyString, traderEori, Some(AccountStatusOpen), false, Some(false)),
@@ -294,14 +292,19 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
     val cashDailyStatementRequest: CashDailyStatementRequest = CashDailyStatementRequest("can", fromDate, toDate)
 
-    val listOfCashDailyStatements: Seq[CashDailyStatement] = Seq(
+    private val otherTransactions =
+      Seq(Transaction(123.45, Payment, None), Transaction(-432.87, Withdrawal, Some("77665544")))
 
-      CashDailyStatement(LocalDate.parse("2020-07-18"), 500.0, 1000.00,
-        Seq(Declaration("mrn1", Some("Importer EORI"), "Declarant EORI",
-          Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil),
-          Declaration("mrn2", Some("Importer EORI"), "Declarant EORI",
-            Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -65.00, Nil)),
-        Seq(Transaction(123.45, Payment, None), Transaction(-432.87, Withdrawal, Some("77665544")))),
+    val listOfCashDailyStatements: Seq[CashDailyStatement] = Seq(
+      CashDailyStatement(
+        LocalDate.parse("2020-07-18"),
+        500.0,
+        1000.00,
+        Seq(Declaration("mrn1", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
+          LocalDate.parse("2020-07-18"), -84.00, Nil),
+          Declaration("mrn2", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
+            LocalDate.parse("2020-07-18"), -65.00, Nil)),
+        otherTransactions),
 
       CashDailyStatement(LocalDate.parse("2020-07-20"), 600.0, 1200.00,
         Seq(Declaration("mrn3", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
@@ -314,11 +317,12 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     val emailUnverifiedRes: EmailUnverifiedResponse = EmailUnverifiedResponse(Some(emailId))
     val customFinancialsApiUrl = "http://localhost:9878/customs-financials-api/subscriptions/unverified-email-display"
 
-    val app: Application = application
+    val appWithHttpClient: Application = application
       .overrides(
         bind[HttpClient].toInstance(mockHttpClient)
       ).build()
 
-    val connector: CustomsFinancialsApiConnector = app.injector.instanceOf[CustomsFinancialsApiConnector]
+    def connector(app: Application = appWithHttpClient): CustomsFinancialsApiConnector =
+      app.injector.instanceOf[CustomsFinancialsApiConnector]
   }
 }

@@ -47,7 +47,8 @@ class CustomsFinancialsApiConnector @Inject()(
   private val retrieveCashTransactionsUrl = s"$baseUrl/account/cash/transactions"
   private val retrieveCashTransactionsDetailUrl = s"$baseUrl/account/cash/transactions-detail"
 
-  def getCashAccount(eori: String)(implicit hc: HeaderCarrier, request: IdentifierRequest[AnyContent]): Future[Option[CashAccount]] = {
+  def getCashAccount(eori: String)(implicit hc: HeaderCarrier,
+                                   request: IdentifierRequest[AnyContent]): Future[Option[CashAccount]] = {
     val requestDetail = AccountsRequestDetail(eori, None, None, None)
     val accountsAndBalancesRequest = AccountsAndBalancesRequestContainer(
       AccountsAndBalancesRequest(AccountsRequestCommon.generate, requestDetail)
