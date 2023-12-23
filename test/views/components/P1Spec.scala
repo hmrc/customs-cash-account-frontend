@@ -29,10 +29,10 @@ class P1Spec extends SpecBase {
   "component" should {
     "display correct contents" when {
       "it contains all the parameters' value" in new Setup {
-        p1Component.getElementById(id.get).text() mustBe
+        p1Component.getElementById(id).text() mustBe
           s"${content.body}$space${link.get.body}$space${tabLink.get.body}"
 
-        p1Component.getElementsByClass(classes.get).size() mustBe 1
+        p1Component.getElementsByClass(classes).size() mustBe 1
       }
 
       "it contains only content" in new Setup {
@@ -40,7 +40,9 @@ class P1Spec extends SpecBase {
         p1ComponentWithContentOnly.getElementsByClass("govuk-body").size mustBe 1
       }
 
-      "it contains content and id" in new Setup {
+      "it contains content, id and classes only" in new Setup {
+        p1ComponentWithContentIdAndClasses.getElementById(id).text() mustBe content.body
+        p1ComponentWithContentIdAndClasses.getElementsByClass(classes).text() mustBe content.body
       }
     }
   }
@@ -48,8 +50,8 @@ class P1Spec extends SpecBase {
   trait Setup {
     val space = " "
     val content: Html = Html("test_content")
-    val id: Option[String] = Some("test_id")
-    val classes: Option[String] = Some("govuk-!-margin-bottom-7")
+    val id: String = "test_id"
+    val classes: String = "govuk-!-margin-bottom-7"
     val link: Option[Html] = Some(Html("test_Link"))
     val tabLink: Option[Html] = Some(Html("tab_link"))
 
@@ -57,7 +59,12 @@ class P1Spec extends SpecBase {
 
     implicit val msgs: Messages = messages(app)
 
-    val p1Component: Document = Jsoup.parse(app.injector.instanceOf[p1].apply(content, id, classes, link, tabLink).body)
+    val p1Component: Document =
+      Jsoup.parse(app.injector.instanceOf[p1].apply(content, Some(id), Some(classes), link, tabLink).body)
+
     val p1ComponentWithContentOnly: Document = Jsoup.parse(app.injector.instanceOf[p1].apply(content).body)
+
+    val p1ComponentWithContentIdAndClasses: Document =
+      Jsoup.parse(app.injector.instanceOf[p1].apply(content, Some(id), Some(classes)).body)
   }
 }
