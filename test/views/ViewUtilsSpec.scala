@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package views
 
-@(
-  message: String,
-  classes: String = "govuk-body",
-  id: Option[String] = None,
-  bold: Boolean = false
-)(
-  implicit messages: Messages
-)
+import utils.SpecBase
 
-<p @{id.fold("")(id => s"id=$id")} class="@classes @if(bold){govuk-!-font-weight-bold}">@{Html(messages(message))}</p>
+class ViewUtilsSpec extends SpecBase {
+
+  "emptyString" should {
+    "return correct value" in {
+      emptyString mustBe ""
+    }
+  }
+}

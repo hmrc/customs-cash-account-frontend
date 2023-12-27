@@ -21,6 +21,7 @@ import play.api.i18n.Messages
 
 object ViewUtils {
 
+  val emptyString = ""
   def title(form: Form[_], titleStr: String, section: Option[String], titleMessageArgs: Seq[String])
            (implicit messages: Messages): String = {
     titleNoForm(s"${errorPrefix(form)} ${messages(titleStr, titleMessageArgs: _*)}", section, titleMessageArgs)

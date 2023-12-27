@@ -14,8 +14,13 @@
  * limitations under the License.
  *@
 
+@import views.ViewUtils.emptyString
+
 @this(govukButton: GovukButton)
 
-@(msg: String)(implicit messages: Messages)
+@(
+  msg: String,
+  href: Option[String] = None,
+  classes: String = emptyString)(implicit messages: Messages)
 
-@govukButton(Button(content = Text(messages(msg))))
+@govukButton(Button(content = Text(messages(msg)), href = href, classes = classes))

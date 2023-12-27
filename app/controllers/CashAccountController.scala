@@ -20,7 +20,7 @@ import cats.data.EitherT._
 import cats.instances.future._
 import config.{AppConfig, ErrorHandler}
 import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested}
-import controllers.actions.IdentifierAction
+import controllers.actions.{EmailAction, IdentifierAction}
 import helpers.CashAccountUtils
 import models._
 import models.request.IdentifierRequest
@@ -30,12 +30,14 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.CashTransactionsViewModel
 import views.html._
+
 import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CashAccountController @Inject()(
                                        authenticate: IdentifierAction,
+                                       verifyEmail: EmailAction,
                                        apiConnector: CustomsFinancialsApiConnector,
                                        showAccountsView: cash_account,
                                        unavailable: cash_account_not_available,
@@ -44,12 +46,16 @@ class CashAccountController @Inject()(
                                        showAccountsExceededThreshold: cash_account_exceeded_threshold,
                                        noTransactionsWithBalance: cash_account_no_transactions_with_balance,
                                        cashAccountUtils: CashAccountUtils
-                                     )(implicit mcc: MessagesControllerComponents, ec: ExecutionContext, eh: ErrorHandler, appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
+                                     )(implicit mcc: MessagesControllerComponents,
+                                       ec: ExecutionContext,
+                                       eh: ErrorHandler,
+                                       appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
 
   private val logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
 
-  def showAccountDetails(page: Option[Int]): Action[AnyContent] = authenticate.async { implicit request =>
+  def showAccountDetails(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async {
+    implicit request =>
 
     val eventualMaybeCashAccount = apiConnector.getCashAccount(request.eori)
     val result = for {
@@ -64,7 +70,11 @@ class CashAccountController @Inject()(
     }
   }
 
-  private def showAccountWithTransactionDetails(account: CashAccount, from: LocalDate, to: LocalDate, page: Option[Int])(implicit req: IdentifierRequest[AnyContent], appConfig: AppConfig): Future[Result] = {
+  private def showAccountWithTransactionDetails(account: CashAccount,
+                                                from: LocalDate,
+                                                to: LocalDate,
+                                                page: Option[Int])(implicit req: IdentifierRequest[AnyContent],
+                                                                   appConfig: AppConfig): Future[Result] = {
     apiConnector.retrieveCashTransactions(account.number, from, to).map {
       case Left(errorResponse) => errorResponse match {
         case NoTransactionsAvailable => account.balances.AvailableAccountBalance match {

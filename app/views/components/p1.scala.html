@@ -17,12 +17,13 @@
 @this()
 
 @(
-  message: String,
-  classes: String = "govuk-body",
+  content: Html,
   id: Option[String] = None,
-  bold: Boolean = false
+  classes: Option[String] = None,
+  link: Option[Html] = None,
+  tabLink: Option[Html] = None
 )(
   implicit messages: Messages
 )
 
-<p @{id.fold("")(id => s"id=$id")} class="@classes @if(bold){govuk-!-font-weight-bold}">@{Html(messages(message))}</p>
+<p @{id.fold("")(id => s"id=$id")}  class="@{classes.fold("govuk-body")(classes => s"$classes")}">@content @link @tabLink</p>

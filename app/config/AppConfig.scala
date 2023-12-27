@@ -27,6 +27,17 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val customsFinancialsApi: String = servicesConfig.baseUrl("customs-financials-api") +
     config.getOptional[String]("customs-financials-api.context").getOrElse("/customs-financials-api")
 
+  lazy val customsDataStore: String = s"${servicesConfig.baseUrl("customs-data-store")}${
+    config.getOptional[String](
+      "microservice.services.customs-data-store.context").getOrElse("/customs-data-store")
+  }"
+
+  lazy val emailFrontendUrl: String = s"${servicesConfig.baseUrl("customs-email-frontend")}${
+    config.getOptional[String]("customs-email-frontend.context").getOrElse("/manage-email-cds")
+  }${
+    config.get[String]("microservice.services.customs-email-frontend.url")
+  }"
+
   lazy val appName: String = config.get[String]("appName")
   lazy val loginUrl: String = config.get[String]("urls.login")
   lazy val loginContinueUrl: String = config.get[String]("urls.loginContinue")

@@ -24,31 +24,43 @@ import org.scalatest.OptionValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+import play.api.Application
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.CSRFTokenHelper.CSRFRequest
 import play.api.test.FakeRequest
-import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
 class FakeMetrics extends Metrics {
   override val defaultRegistry: MetricRegistry = new MetricRegistry
   override val toJson: String = "{}"
 }
 
-trait SpecBase extends AnyWordSpecLike with Matchers with MockitoSugar with OptionValues with ScalaFutures with IntegrationPatience {
+trait SpecBase extends AnyWordSpecLike
+  with Matchers
+  with MockitoSugar
+  with OptionValues
+  with ScalaFutures
+  with IntegrationPatience {
 
-  def application = new GuiceApplicationBuilder().overrides(
-      bind[IdentifierAction].to[FakeIdentifierAction],
-      bind[Metrics].toInstance(new FakeMetrics)
-    ).configure(
+  val emptyString = ""
+  val sessionId: SessionId = SessionId("session_1234")
+
+  def application: GuiceApplicationBuilder = new GuiceApplicationBuilder().overrides(
+    bind[IdentifierAction].to[FakeIdentifierAction],
+    bind[Metrics].toInstance(new FakeMetrics)
+  ).configure(
     "play.filters.csp.nonce.enabled" -> "false",
     "auditing.enabled" -> "false")
 
-  def fakeRequest(method: String = "", path: String = ""): FakeRequest[AnyContentAsEmpty.type] =
+  def fakeRequest(method: String = emptyString,
+                  path: String = emptyString): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(method, path).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(
-    fakeRequest("", ""))
+    fakeRequest(emptyString, emptyString))
+
+  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
 }

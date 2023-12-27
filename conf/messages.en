@@ -113,6 +113,28 @@ cf.error.not-found.message.address-pasted-wrong=If you pasted the web address, c
 cf.error.not-found.message.go-to-home-page-text1=Or you can
 cf.accounts.view-customs-account=view your customs financial accounts
 
+# Undeliverable Email Address
+# ----------------------------------------------------------
+cf.undeliverable.email.title=There''s a problem with your email address for the Customs Declaration Service
+cf.undeliverable.email.heading=There''s a problem with your email address for the Customs Declaration Service
+cf.undeliverable.email.p1=We tried to send you an email but it could not be delivered.
+cf.undeliverable.email.p2=Your registered email address is <strong class="bold">{0}</strong>.
+
+cf.undeliverable.email.verify.heading=Verify your email address
+cf.undeliverable.email.verify.text.p1=If this email address is correct, you will need to verify it to continue using the Customs Declaration Service.
+cf.undeliverable.email.change.heading=Change your email address
+cf.undeliverable.email.change.text.p1=If this email address is not correct, you can change it here.
+cf.undeliverable.email.change.text.p2=The Customs Declaration Service uses one email address for various customs-related services. If you change it, take care that other people in your company will still have access to the messages they need.
+cf.undeliverable.email.link-text=Verify or change email address
+
+# Verify Your Email
+#--------------------------------------------------------------------------------------
+cf.verify.your.email.title=Verify your email address for the Customs Declaration Service
+cf.verify.your.email.heading=Verify your email address for the Customs Declaration Service
+cf.verify.your.email.p1=You need to verify the email address you use for the Customs Declaration Service.
+cf.verify.your.email.p2=Your registered email address is <strong class="bold">{0}</strong>.
+cf.verify.your.email.p3=If this is not the email address you want to use, you can also change it using this service.
+cf.verify.your.email.change.button=Verify or change email address
 
 # Date Format
 # ----------------------------------------------------------
@@ -209,4 +231,3 @@ cf.cash-account.detail.transactions-caption=Your transactions for {0}
 cf.cash-account.topup.withdrawal.detail.heading=Help with top-ups and withdrawls
 cf.cash-account.topup.withdrawal.detail.text=Top-ups can take up to one working day to show on this page. Funds are usually available to use within one hour of making the transfer from your bank. Withdrawals can take up to 15 working days for the money to reach your bank account.
 cf.cash-account.detail.available-balance=Available balance {0}
-
