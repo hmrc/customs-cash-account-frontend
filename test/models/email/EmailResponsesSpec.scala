@@ -66,6 +66,36 @@ class EmailResponsesSpec extends SpecBase {
     }
   }
 
+  "EmailVerifiedResponse.Reads" must {
+    "generate correct EmailVerifiedResponse object" in new Setup {
+
+      import EmailVerifiedResponse.format
+
+      Json.fromJson(Json.parse(emailVerifiedResponse)) mustBe JsSuccess(emailVerifiedResponseOb)
+    }
+  }
+
+  "EmailVerifiedResponse.Writes" must {
+    "generate correct JsValue for EmailVerifiedResponse object" in new Setup {
+      Json.toJson(emailVerifiedResponseOb) mustBe Json.parse(emailVerifiedResponse)
+    }
+  }
+
+  "EmailUnverifiedResponse.Reads" must {
+    "generate correct EmailUnverifiedResponse object" in new Setup {
+
+      import EmailUnverifiedResponse.format
+
+      Json.fromJson(Json.parse(emailUnverifiedResponse)) mustBe JsSuccess(emailUnverifiedResponseOb)
+    }
+  }
+
+  "EmailUnverifiedResponse.Writes" must {
+    "generate correct JsValue for EmailUnverifiedResponse object" in new Setup {
+      Json.toJson(emailUnverifiedResponseOb) mustBe Json.parse(emailUnverifiedResponse)
+    }
+  }
+
   trait Setup {
     val sampleResponseForUndeliverableInfo: String =
       """{
@@ -133,5 +163,17 @@ class EmailResponsesSpec extends SpecBase {
     val emailResponseOb: EmailResponse = EmailResponse(address = Some("john.doe@example.com"),
       timestamp = Some("2023-12-15T23:25:25.000Z"),
       undeliverable = Some(undelInfoOb))
+
+    val emailAddress = "someemail@mail.com"
+
+    val emailUnverifiedResponse: String = """{"unVerifiedEmail":"someemail@mail.com"}""".stripMargin
+
+    val emailUnverifiedResponseOb: EmailUnverifiedResponse =
+      EmailUnverifiedResponse(unVerifiedEmail = Some(emailAddress))
+
+    val emailVerifiedResponse: String = """{"verifiedEmail":"someemail@mail.com"}""".stripMargin
+
+    val emailVerifiedResponseOb: EmailVerifiedResponse =
+      EmailVerifiedResponse(verifiedEmail = Some(emailAddress))
   }
 }
