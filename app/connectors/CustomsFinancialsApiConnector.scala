@@ -68,12 +68,15 @@ class CustomsFinancialsApiConnector @Inject()(
       retrieveCashTransactionsUrl, cashDailyStatementRequest).map(Right(_))
   }.recover {
     case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
-      logger.error(s"Entity too large to download"); Left(TooManyTransactionsRequested)
+      logger.error(s"Entity too large to download")
+      Left(TooManyTransactionsRequested)
 
-    case UpstreamErrorResponse(_, NOT_FOUND, _, _) => logger.error(s"No data found")
+    case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
+      logger.error(s"No data found")
       Left(NoTransactionsAvailable)
 
-    case e => logger.error(s"Unable to retrieve cash transactions :${e.getMessage}")
+    case e =>
+      logger.error(s"Unable to retrieve cash transactions :${e.getMessage}")
       Left(UnknownException)
   }
 
@@ -99,7 +102,8 @@ class CustomsFinancialsApiConnector @Inject()(
         }
     }.recover {
       case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
-        logger.error(s"Entity too large to download"); Left(TooManyTransactionsRequested)
+        logger.error(s"Entity too large to download")
+        Left(TooManyTransactionsRequested)
 
       case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
         logger.error(s"No data found")
