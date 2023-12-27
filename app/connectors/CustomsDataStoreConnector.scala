@@ -31,8 +31,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CustomsDataStoreConnector @Inject()(http: HttpClient,
-                                          metricsReporter: MetricsReporterService)(implicit appConfig: AppConfig,
-                                                                            ec: ExecutionContext) {
+                                          metricsReporter: MetricsReporterService)(
+                                           implicit appConfig: AppConfig, ec: ExecutionContext) {
 
   private val log = Logger(this.getClass)
 

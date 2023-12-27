@@ -53,3 +53,15 @@ case class EmailResponse(address: Option[String],
 object EmailResponse {
   implicit val format: OFormat[EmailResponse] = Json.format[EmailResponse]
 }
+
+case class EmailVerifiedResponse(verifiedEmail: Option[String])
+
+object EmailVerifiedResponse {
+  implicit val format: OFormat[EmailVerifiedResponse] = Json.format[EmailVerifiedResponse]
+}
+
+case class EmailUnverifiedResponse(unVerifiedEmail: Option[String])
+
+object EmailUnverifiedResponse {
+  implicit val format: OFormat[EmailUnverifiedResponse] = Json.format[EmailUnverifiedResponse]
+}
