@@ -88,7 +88,9 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
 
   private def shouldContainCashAccountBalanceSection(accNumber: CAN)(implicit view: Document): Assertion = {
     view.getElementById("account-number").text() mustBe messages("cf.cash-account.detail.account", accNumber)
+
     view.getElementsByTag("h1").text() mustBe messages("cf.cash-account.detail.heading")
+
     view.getElementById("balance-available").text().contains(
       s"£100.00 ${messages("cf.cash-account.detail.available")}"
     ) mustBe true
@@ -112,7 +114,9 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
     val linkElement: String = view.getElementsByClass("govuk-!-margin-bottom-9").html()
 
     linkElement.contains(messages("cf.cash-account.transactions.request.link")) mustBe true
+
     linkElement.contains(messages("cf.cash-account.transactions.request.link.pre")) mustBe true
+
     linkElement.contains(controllers.routes.RequestTransactionsController.onPageLoad().url) mustBe true
   }
 

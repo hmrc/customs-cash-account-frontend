@@ -87,7 +87,9 @@ class CashAccountExceededThresholdSpec extends ViewTestHelper {
     val linkElement: String = view.getElementsByClass("govuk-!-margin-bottom-9").html()
 
     linkElement.contains(messages("cf.cash-account.transactions.request.link")) mustBe true
+
     linkElement.contains(messages("cf.cash-account.transactions.request.link.pre")) mustBe true
+
     linkElement.contains(controllers.routes.RequestTransactionsController.onPageLoad().url) mustBe true
   }
 }
