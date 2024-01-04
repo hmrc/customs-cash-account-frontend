@@ -40,11 +40,11 @@ class CashAccountTransactionsNotAvailableSpec extends SpecBase {
 
         assertPageTitle(view, msgs)
         assertBackLinkUrl(view, config)
-        assertCashAccountBalanceSection(view, msgs, model.account.number)
-        assertNoTransactionAvailableSection(view, msgs)
-        assertH2Element(view, msgs)
-        assertLinkElement(view, msgs)
-        assertUnavailabilityOfPaymentSection(view, msgs)
+        shouldContainCashAccountBalanceSection(view, msgs, model.account.number)
+        shouldContainNoTransactionAvailableSection(view, msgs)
+        shouldContainH2Element(view, msgs)
+        shouldContainLinkElement(view, msgs)
+        checkUnavailabilityOfPaymentSection(view, msgs)
       }
     }
 
@@ -55,9 +55,9 @@ class CashAccountTransactionsNotAvailableSpec extends SpecBase {
 
         assertPageTitle(view, msgs)
         assertBackLinkUrl(view, config)
-        assertCashAccountBalanceSection(view, msgs, model.account.number)
-        assertPaymentSection(view, msgs)
-        assertUnavailabilityOfTransactionTimeOutSection(view, msgs)
+        shouldContainCashAccountBalanceSection(view, msgs, model.account.number)
+        shouldContainPaymentSection(view, msgs)
+        checkUnavailabilityOfTransactionTimeOutSection(view, msgs)
       }
     }
   }
@@ -95,7 +95,7 @@ class CashAccountTransactionsNotAvailableSpec extends SpecBase {
                                 config: AppConfig): Assertion =
     view.html().contains(config.customsFinancialsFrontendHomepage) mustBe true
 
-  private def assertCashAccountBalanceSection(view: Document,
+  private def shouldContainCashAccountBalanceSection(view: Document,
                                               msgs: Messages,
                                               accNumber: CAN): Assertion = {
     view.getElementById("account-number").text() mustBe msgs("cf.cash-account.detail.account", accNumber)
@@ -105,7 +105,7 @@ class CashAccountTransactionsNotAvailableSpec extends SpecBase {
     ) mustBe true
   }
 
-  private def assertNoTransactionAvailableSection(view: Document,
+  private def shouldContainNoTransactionAvailableSection(view: Document,
                                                   msgs: Messages): Assertion = {
     val noTransactionAvailableSection: String = view.getElementById("no-transactions-available").text()
 
@@ -116,12 +116,12 @@ class CashAccountTransactionsNotAvailableSpec extends SpecBase {
       msgs("cf.cash-account.detail.transactions-not-available.second")) mustBe true
   }
 
-  private def assertH2Element(view: Document,
+  private def shouldContainH2Element(view: Document,
                               msgs: Messages): Assertion =
     view.getElementById("missing-documents-guidance-heading").text() mustBe
       msgs("cf.cash-account.transactions.request.link.heading")
 
-  private def assertLinkElement(view: Document,
+  private def shouldContainLinkElement(view: Document,
                                 msgs: Messages): Assertion = {
     val linkElement: String = view.getElementsByClass("govuk-!-margin-bottom-9").html()
 
@@ -130,11 +130,11 @@ class CashAccountTransactionsNotAvailableSpec extends SpecBase {
     linkElement.contains(controllers.routes.RequestTransactionsController.onPageLoad().url) mustBe true
   }
 
-  private def assertUnavailabilityOfPaymentSection(view: Document,
+  private def checkUnavailabilityOfPaymentSection(view: Document,
                                                    msgs: Messages): Assertion =
     view.text().contains(msgs("cf.cash-account.detail.transactions-not-available")) mustBe false
 
-  private def assertUnavailabilityOfTransactionTimeOutSection(view: Document,
+  private def checkUnavailabilityOfTransactionTimeOutSection(view: Document,
                                                               msgs: Messages): Assertion = {
     view.getElementById("no-transactions-available").text().contains(
       msgs("cf.cash-account.detail.transactions-not-available.first")) mustBe false
@@ -143,7 +143,7 @@ class CashAccountTransactionsNotAvailableSpec extends SpecBase {
       msgs("cf.cash-account.detail.transactions-not-available.second")) mustBe false
   }
 
-  private def assertPaymentSection(view: Document,
+  private def shouldContainPaymentSection(view: Document,
                                    msgs: Messages): Assertion =
     view.text().contains(msgs("cf.cash-account.detail.transactions-not-available")) mustBe true
 
