@@ -16,58 +16,57 @@
 
 package views
 
-import config.AppConfig
 import models.domain.CAN
 import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
-import play.api.Application
-import play.api.i18n.Messages
-import play.api.mvc.AnyContentAsEmpty
-import play.api.test.FakeRequest
-import utils.SpecBase
 import views.html.cash_account_transactions_not_available
 
-class CashAccountTransactionsNotAvailableSpec extends SpecBase {
+class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
 
   "view" should {
 
     "display transactionsTimeout section" when {
 
       "transactionsTimeout is true" in new Setup {
-        val view: Document = viewDoc(model, transactionsTimeout = true)
+        implicit val view: Document = viewDoc(model, transactionsTimeout = true)
 
-        assertPageTitle(view, msgs)
-        assertBackLinkUrl(view, config)
-        shouldContainCashAccountBalanceSection(view, msgs, model.account.number)
-        shouldContainNoTransactionAvailableSection(view, msgs)
-        shouldContainH2Element(view, msgs)
-        shouldContainLinkElement(view, msgs)
-        checkUnavailabilityOfPaymentSection(view, msgs)
+        titleShouldBeCorrect(view, "cf.cash-account.detail.title")
+
+        shouldContainBackLinkUrl(view, appConfig.customsFinancialsFrontendHomepage)
+
+        shouldContainCashAccountBalanceSection(model.account.number)
+
+        shouldContainNoTransactionAvailableSection
+
+        shouldContainH2Element
+
+        shouldContainLinkElement
+
+        checkUnavailabilityOfPaymentSection
       }
     }
 
     "display unable to show payment section" when {
 
       "transactionsTimeout is false" in new Setup {
-        val view: Document = viewDoc(model, transactionsTimeout = false)
+        implicit val view: Document = viewDoc(model, transactionsTimeout = false)
 
-        assertPageTitle(view, msgs)
-        assertBackLinkUrl(view, config)
-        shouldContainCashAccountBalanceSection(view, msgs, model.account.number)
-        shouldContainPaymentSection(view, msgs)
-        checkUnavailabilityOfTransactionTimeOutSection(view, msgs)
+        titleShouldBeCorrect(view, "cf.cash-account.detail.title")
+
+        shouldContainBackLinkUrl(view, appConfig.customsFinancialsFrontendHomepage)
+
+        shouldContainCashAccountBalanceSection(model.account.number)
+
+        shouldContainPaymentSection
+
+        checkUnavailabilityOfTransactionTimeOutSection
       }
     }
   }
 
   trait Setup {
-    val app: Application = application.build()
-
-    implicit val msgs: Messages = messages(app)
-    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
-    implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "test_path")
 
     val eori = "test_eori"
     val accNumber = "1234567"
@@ -87,64 +86,48 @@ class CashAccountTransactionsNotAvailableSpec extends SpecBase {
       ).body)
   }
 
-  private def assertPageTitle(view: Document,
-                              msgs: Messages): Assertion =
-    view.title() mustBe s"${msgs("cf.cash-account.detail.title")} - ${msgs("service.name")} - GOV.UK"
-
-  private def assertBackLinkUrl(view: Document,
-                                config: AppConfig): Assertion =
-    view.html().contains(config.customsFinancialsFrontendHomepage) mustBe true
-
-  private def shouldContainCashAccountBalanceSection(view: Document,
-                                              msgs: Messages,
-                                              accNumber: CAN): Assertion = {
-    view.getElementById("account-number").text() mustBe msgs("cf.cash-account.detail.account", accNumber)
-    view.getElementsByTag("h1").text() mustBe msgs("cf.cash-account.detail.heading")
+  private def shouldContainCashAccountBalanceSection(accNumber: CAN)(implicit view: Document): Assertion = {
+    view.getElementById("account-number").text() mustBe messages("cf.cash-account.detail.account", accNumber)
+    view.getElementsByTag("h1").text() mustBe messages("cf.cash-account.detail.heading")
     view.getElementById("balance-available").text().contains(
-      s"£100.00 ${msgs("cf.cash-account.detail.available")}"
+      s"£100.00 ${messages("cf.cash-account.detail.available")}"
     ) mustBe true
   }
 
-  private def shouldContainNoTransactionAvailableSection(view: Document,
-                                                  msgs: Messages): Assertion = {
+  private def shouldContainNoTransactionAvailableSection(implicit view: Document): Assertion = {
     val noTransactionAvailableSection: String = view.getElementById("no-transactions-available").text()
 
     noTransactionAvailableSection.contains(
-      msgs("cf.cash-account.detail.transactions-not-available.first")) mustBe true
+      messages("cf.cash-account.detail.transactions-not-available.first")) mustBe true
 
     noTransactionAvailableSection.contains(
-      msgs("cf.cash-account.detail.transactions-not-available.second")) mustBe true
+      messages("cf.cash-account.detail.transactions-not-available.second")) mustBe true
   }
 
-  private def shouldContainH2Element(view: Document,
-                              msgs: Messages): Assertion =
+  private def shouldContainH2Element(implicit view: Document): Assertion =
     view.getElementById("missing-documents-guidance-heading").text() mustBe
-      msgs("cf.cash-account.transactions.request.link.heading")
+      messages("cf.cash-account.transactions.request.link.heading")
 
-  private def shouldContainLinkElement(view: Document,
-                                msgs: Messages): Assertion = {
+  private def shouldContainLinkElement(implicit view: Document): Assertion = {
     val linkElement: String = view.getElementsByClass("govuk-!-margin-bottom-9").html()
 
-    linkElement.contains(msgs("cf.cash-account.transactions.request.link")) mustBe true
-    linkElement.contains(msgs("cf.cash-account.transactions.request.link.pre")) mustBe true
+    linkElement.contains(messages("cf.cash-account.transactions.request.link")) mustBe true
+    linkElement.contains(messages("cf.cash-account.transactions.request.link.pre")) mustBe true
     linkElement.contains(controllers.routes.RequestTransactionsController.onPageLoad().url) mustBe true
   }
 
-  private def checkUnavailabilityOfPaymentSection(view: Document,
-                                                   msgs: Messages): Assertion =
-    view.text().contains(msgs("cf.cash-account.detail.transactions-not-available")) mustBe false
+  private def checkUnavailabilityOfPaymentSection(implicit view: Document): Assertion =
+    view.text().contains(messages("cf.cash-account.detail.transactions-not-available")) mustBe false
 
-  private def checkUnavailabilityOfTransactionTimeOutSection(view: Document,
-                                                              msgs: Messages): Assertion = {
+  private def checkUnavailabilityOfTransactionTimeOutSection(implicit view: Document): Assertion = {
     view.getElementById("no-transactions-available").text().contains(
-      msgs("cf.cash-account.detail.transactions-not-available.first")) mustBe false
+      messages("cf.cash-account.detail.transactions-not-available.first")) mustBe false
 
     view.getElementById("no-transactions-available").text().contains(
-      msgs("cf.cash-account.detail.transactions-not-available.second")) mustBe false
+      messages("cf.cash-account.detail.transactions-not-available.second")) mustBe false
   }
 
-  private def shouldContainPaymentSection(view: Document,
-                                   msgs: Messages): Assertion =
-    view.text().contains(msgs("cf.cash-account.detail.transactions-not-available")) mustBe true
+  private def shouldContainPaymentSection(implicit view: Document): Assertion =
+    view.text().contains(messages("cf.cash-account.detail.transactions-not-available")) mustBe true
 
 }
