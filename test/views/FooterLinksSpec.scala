@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 
-package models
+package views
 
+import config.AppConfig
+import play.api.Application
+import play.api.i18n.Messages
 import utils.SpecBase
 
-class PathBindableSpec extends SpecBase {
+class FooterLinksSpec extends SpecBase {
 
-  "optionBindable" must {
-
-    "bind a right path param to optional string" in {
-      val result = domain.optionBindable.bind("key", "value")
-      result.map { result => result mustBe Some("value")}
+  "apply" should {
+    "return correct list of FooterItems" when {
+      "matching message key is present for FooterItems" in new Setup {
+        FooterLinks()(msgs, config).size mustBe 4
+      }
     }
+  }
 
-    "bind a left path param to optional string" in {
-      val result = domain.optionBindable.bind("key", "value")
-      result.left.map { result => result mustBe Some("value")}
-    }
 
-    "unbind an optional string value to path param" in {
-      val result = domain.optionBindable.unbind("key", Some("value"))
-      result mustBe "value"
-    }
+  trait Setup {
+    val app: Application = application.build()
+
+    implicit val msgs: Messages = messages(app)
+    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
   }
 }
