@@ -91,8 +91,6 @@ class InputDateSpec extends SpecBase {
 
         val html: Document = Jsoup.parse(output.toString)
 
-        println(html)
-
         html.getElementsByTag("h1").text() must include(headline)
         html.getElementById(s"$id.day").attr(id) must include("01")
         html.getElementById(s"$id.month").attr(id) must include("01")
