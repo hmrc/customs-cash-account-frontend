@@ -209,7 +209,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(appWithMocks) {
         connector(appWithMocks).retrieveCashTransactions("can", fromDate, toDate).map {
-           _ mustBe Left(NoTransactionsAvailable)
+          _ mustBe Left(NoTransactionsAvailable)
         }
       }
     }
@@ -251,9 +251,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         ).build()
 
       running(appWithMocks) {
-       connector(appWithMocks).retrieveCashTransactionsDetail("can", fromDate, toDate).map {
-         _ mustBe Left(UnknownException)
-       }
+        connector(appWithMocks).retrieveCashTransactionsDetail("can", fromDate, toDate).map {
+          _ mustBe Left(UnknownException)
+        }
       }
     }
 
@@ -333,7 +333,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(appWithHttpClient) {
         connector().retrieveHistoricCashTransactions("can", fromDate, toDate).map {
-          _ mustBe  Left(TooManyTransactionsRequested)
+          _ mustBe Left(TooManyTransactionsRequested)
         }
       }
     }
@@ -380,7 +380,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when(mockHttpClient.GET[EmailVerifiedResponse](any, any, any)(any, any, any))
         .thenReturn(Future.successful(emailVerifiedRes))
 
-      connector().verifiedEmail.map{
+      connector().verifiedEmail.map {
         _ mustBe emailVerifiedRes
       }
     }
