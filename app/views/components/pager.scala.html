@@ -16,6 +16,8 @@
 
 @import viewmodels.Paginated
 
+@this()
+
 @(model: Paginated)(implicit messages: Messages)
 
 @if(!model.dataFitsOnOnePage) {
