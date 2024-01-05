@@ -40,5 +40,6 @@ trait ViewTestHelper extends SpecBase {
                                url: String): Assertion =
     view.html().contains(url) mustBe true
 
-  // more common assertions to be added
+  // TODO: more common assertions to be added (should be done to increase the re-usability and
+  //  consistency in test classes)
 }
