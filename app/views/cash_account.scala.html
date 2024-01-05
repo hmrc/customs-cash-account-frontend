@@ -19,7 +19,6 @@
 *
 *@
 @import viewmodels.CashTransactionsViewModel
-@import views.html.components.pager
 
 @this(
         main_template: Layout,
@@ -31,7 +30,8 @@
         daily_statements: components.daily_statement,
         cash_account_balance: components.cash_account_balance,
         link: components.link,
-        newTabLink: components.newTabLink
+        newTabLink: components.newTabLink,
+        pager: components.pager
 )
 
 @(model: CashAccountViewModel, cashTransactionsViewModel: CashTransactionsViewModel)(implicit messages: Messages, appConfig: AppConfig, request: Request[_])

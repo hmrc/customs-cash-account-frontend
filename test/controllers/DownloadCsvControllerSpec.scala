@@ -17,8 +17,9 @@
 package controllers
 
 import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested, UnknownException}
-import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions, Declaration, Payment, RequestedDateRange, Transaction, Transfer, Withdrawal}
+import models._
 import org.jsoup.Jsoup.parseBodyFragment
+import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -29,8 +30,8 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.SpecBase
 
 import java.time.LocalDate
-import scala.collection.JavaConverters.asScalaBufferConverter
 import scala.concurrent.Future
+import scala.jdk.CollectionConverters.ListHasAsScala
 import scala.util.Random
 
 class DownloadCsvControllerSpec extends SpecBase {
@@ -228,7 +229,7 @@ class DownloadCsvControllerSpec extends SpecBase {
         when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(someCan), any, any)(any))
           .thenReturn(Future.successful(Right(randomCashTransaction(25))))
 
-        val app = application
+        val app: Application = application
           .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
           .configure("application.cash-account.numberOfDaysToShow" -> "10")
           .build()
@@ -238,9 +239,11 @@ class DownloadCsvControllerSpec extends SpecBase {
           val result = route(app, request).value
           val html = parseBodyFragment(contentAsString(result)).body
           val pageNumberLinks = html.select("li.govuk-pagination__item > a").asScala
+
           withClue("html did not contain any pagination links:") {
             pageNumberLinks.size must not be (0)
           }
+
           pageNumberLinks.map { pageNumberLink =>
             withClue(s"page number link $pageNumberLink must include page number") {
               pageNumberLink.attr("href") must include(s"page=" + pageNumberLink.text())

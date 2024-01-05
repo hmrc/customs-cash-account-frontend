@@ -26,7 +26,14 @@
         link: components.link
 )
 
-@(accountModel: CashAccountViewModel, transactionsTimeout: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(
+    accountModel: CashAccountViewModel,
+    transactionsTimeout: Boolean
+)(
+    implicit request: Request[_],
+    messages: Messages,
+    appConfig: AppConfig
+)
 
 @main_template(
     pageTitle = Some(messages("cf.cash-account.detail.title")),
@@ -36,23 +43,23 @@
 ) {
     @cash_account_balance(accountModel)
 
-
     @if(transactionsTimeout) {
-    <div class="govuk-inset-text" id="no-transactions-available">
-        @messages("cf.cash-account.detail.transactions-not-available.first")
-        <br> <br>
-        @messages("cf.cash-account.detail.transactions-not-available.second")
-    </div>
+        <div class="govuk-inset-text" id="no-transactions-available">
+            @messages("cf.cash-account.detail.transactions-not-available.first")
+            <br> <br>
+            @messages("cf.cash-account.detail.transactions-not-available.second")
+        </div>
 
-    @h2(msg = "cf.cash-account.transactions.request.link.heading", id = Some("missing-documents-guidance-heading"))
-    @link(
-        "cf.cash-account.transactions.request.link",
-        controllers.routes.RequestTransactionsController.onPageLoad().url,
-        preLinkMessage = Some("cf.cash-account.transactions.request.link.pre"),
-        pClass = "govuk-body govuk-!-margin-bottom-9",
-        linkSentence = true
-    )
-} else {
-@inset("cf.cash-account.detail.transactions-not-available", id = Some("no-transactions-available"))
-}
+        @h2(msg = "cf.cash-account.transactions.request.link.heading", id = Some("missing-documents-guidance-heading"))
+        
+        @link(
+            "cf.cash-account.transactions.request.link",
+            controllers.routes.RequestTransactionsController.onPageLoad().url,
+            preLinkMessage = Some("cf.cash-account.transactions.request.link.pre"),
+            pClass = "govuk-body govuk-!-margin-bottom-9",
+            linkSentence = true
+        )
+    } else {
+        @inset("cf.cash-account.detail.transactions-not-available", id = Some("no-transactions-available"))
+    }
 }

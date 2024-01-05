@@ -18,15 +18,16 @@ package connectors
 
 import config.AppConfig
 import models._
-import models.email.EmailUnverifiedResponse
+import models.email.{EmailUnverifiedResponse, EmailVerifiedResponse}
 import models.request.{CashDailyStatementRequest, IdentifierRequest}
 import org.mockito.ArgumentMatchers.anyString
 import play.api.Application
+import play.api.http.Status.{NOT_FOUND, REQUEST_ENTITY_TOO_LARGE}
 import play.api.inject.bind
 import play.api.test.Helpers._
 import repositories.CacheRepository
 import services.MetricsReporterService
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, SessionId}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, InternalServerException, SessionId, UpstreamErrorResponse}
 import utils.SpecBase
 
 import java.time.LocalDate
@@ -104,6 +105,38 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
+    "log the error when failed to store data in the session cache call after getting response from the API " +
+      "call" in new Setup {
+
+      val expectedUrl = "apiEndpointUrl/account/cash/transactions"
+      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
+
+      when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
+
+      when[Future[CashTransactions]](mockHttpClient.POST(
+        eqTo(expectedUrl),
+        eqTo(cashDailyStatementRequest),
+        any)(any, any, eqTo(hc), any))
+        .thenReturn(Future.successful(successResponse))
+
+      when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
+      when(mockCacheRepository.set("can", successResponse)).thenReturn(Future.successful(false))
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClient].toInstance(mockHttpClient),
+          bind[MetricsReporterService].toInstance(mockMetricsReporterService),
+          bind[AppConfig].toInstance(mockConfig),
+          bind[CacheRepository].toInstance(mockCacheRepository)
+        ).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).retrieveCashTransactions("can", fromDate, toDate).map {
+          _ mustBe Right(successResponse)
+        }
+      }
+    }
+
     "call the correct URL and pass through the HeaderCarrier and CAN, " +
       "and return a list of cash daily statements from the cacheRepository" in new Setup {
       val successResponse: CashTransactions = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
@@ -141,6 +174,45 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         result mustBe Left(UnknownException)
       }
     }
+
+
+    "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" in new Setup {
+      when(mockCacheRepository.get(any)).thenReturn(Future.successful(None))
+
+      when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", REQUEST_ENTITY_TOO_LARGE)))
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClient].toInstance(mockHttpClient),
+          bind[CacheRepository].toInstance(mockCacheRepository)
+        ).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).retrieveCashTransactions("can", fromDate, toDate).map {
+          _ mustBe Left(TooManyTransactionsRequested)
+        }
+      }
+    }
+
+    "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
+      when(mockCacheRepository.get(any)).thenReturn(Future.successful(None))
+
+      when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClient].toInstance(mockHttpClient),
+          bind[CacheRepository].toInstance(mockCacheRepository)
+        ).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).retrieveCashTransactions("can", fromDate, toDate).map {
+          _ mustBe Left(NoTransactionsAvailable)
+        }
+      }
+    }
   }
 
   "retrieveCashTransactionsDetail" must {
@@ -169,20 +241,53 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "propagate exceptions when the backend POST fails" in new Setup {
-      when(mockCacheRepository.get(any)).thenReturn(Future.successful(None))
 
       when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
         .thenReturn(Future.failed(new HttpException("It's broken", 500)))
 
       val appWithMocks: Application = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
-          bind[CacheRepository].toInstance(mockCacheRepository)
+          bind[HttpClient].toInstance(mockHttpClient)
         ).build()
 
       running(appWithMocks) {
-        val result = await(connector(appWithMocks).retrieveCashTransactions("can", fromDate, toDate))
-        result mustBe Left(UnknownException)
+        connector(appWithMocks).retrieveCashTransactionsDetail("can", fromDate, toDate).map {
+          _ mustBe Left(UnknownException)
+        }
+      }
+    }
+
+    "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" in new Setup {
+
+      when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", REQUEST_ENTITY_TOO_LARGE)))
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClient].toInstance(mockHttpClient)
+        ).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).retrieveCashTransactionsDetail("can", fromDate, toDate).map {
+          _ mustBe Left(TooManyTransactionsRequested)
+        }
+      }
+    }
+
+    "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
+
+      when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClient].toInstance(mockHttpClient)
+        ).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).retrieveCashTransactionsDetail("can", fromDate, toDate).map {
+          _ mustBe Left(NoTransactionsAvailable)
+        }
       }
     }
   }
@@ -221,6 +326,28 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         result mustBe Left(UnknownException)
       }
     }
+
+    "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" in new Setup {
+      when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", REQUEST_ENTITY_TOO_LARGE)))
+
+      running(appWithHttpClient) {
+        connector().retrieveHistoricCashTransactions("can", fromDate, toDate).map {
+          _ mustBe Left(TooManyTransactionsRequested)
+        }
+      }
+    }
+
+    "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
+      when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
+
+      running(appWithHttpClient) {
+        connector().retrieveHistoricCashTransactions("can", fromDate, toDate).map {
+          _ mustBe Left(NoTransactionsAvailable)
+        }
+      }
+    }
   }
 
   "retrieveUnverifiedEmail" must {
@@ -243,6 +370,27 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       connector().retrieveUnverifiedEmail.map {
         _.unVerifiedEmail mustBe empty
+      }
+    }
+  }
+
+  "verifiedEmail" must {
+    "return verified email when email-display api call is successful" in new Setup {
+
+      when(mockHttpClient.GET[EmailVerifiedResponse](any, any, any)(any, any, any))
+        .thenReturn(Future.successful(emailVerifiedRes))
+
+      connector().verifiedEmail.map {
+        _ mustBe emailVerifiedRes
+      }
+    }
+
+    "return none for verified email when exception occurs while calling email-display api" in new Setup {
+      when(mockHttpClient.GET[EmailVerifiedResponse](any, any, any)(any, any, any))
+        .thenReturn(Future.failed(new InternalServerException("error occurred")))
+
+      connector().verifiedEmail.map {
+        _.verifiedEmail mustBe empty
       }
     }
   }
@@ -315,7 +463,10 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
     val emailId = "test@test.com"
     val emailUnverifiedRes: EmailUnverifiedResponse = EmailUnverifiedResponse(Some(emailId))
+    val emailVerifiedRes: EmailVerifiedResponse = EmailVerifiedResponse(Some(emailId))
+
     val customFinancialsApiUrl = "http://localhost:9878/customs-financials-api/subscriptions/unverified-email-display"
+    val verifyEmailApiUrl = "http://localhost:9878/customs-financials-api/subscriptions/email-display"
 
     val appWithHttpClient: Application = application
       .overrides(
