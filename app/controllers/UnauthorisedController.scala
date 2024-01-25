@@ -26,7 +26,8 @@ import views.html.unauthorised
 class UnauthorisedController @Inject()(
                                         controllerComponents: MessagesControllerComponents,
                                         unauthorisedView: unauthorised
-                                      )(implicit val appConfig: AppConfig) extends FrontendController(controllerComponents) with I18nSupport {
+                                      )(implicit val appConfig: AppConfig) extends
+  FrontendController(controllerComponents) with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action { implicit request =>
     Ok(unauthorisedView())

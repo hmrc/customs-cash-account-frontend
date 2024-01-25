@@ -16,15 +16,15 @@
 
 package helpers
 
-import java.time.LocalDate
 import play.api.Application
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.running
 import utils.SpecBase
 import viewmodels.ResultsPageSummary
 
+import java.time.LocalDate
 
 class ResultsPageSummarySpec extends SpecBase {
 
@@ -54,7 +54,9 @@ class ResultsPageSummarySpec extends SpecBase {
     }
 
     "return the day of the month with leading 0 if getDayOfMonth is less than 10" in new Setup {
-      val nineDate = LocalDate.of(2022, 3,9)
+      override val day = 9
+      val nineDate: LocalDate = LocalDate.of(year, month, day)
+//      val nineDate = LocalDate.of(2022, 3,9)
       when(mockResultsPageSummary.dateAsDay(nineDate)).thenReturn("09")
 
       running(app) {
@@ -81,7 +83,10 @@ class ResultsPageSummarySpec extends SpecBase {
   }
 
   trait Setup {
-    val targetDate = LocalDate.of(2022, 3,11)
+    val day = 11
+    val month = 3
+    val year = 2022
+    val targetDate: LocalDate = LocalDate.of(year, month, day)
     val mockResultsPageSummary: ResultsPageSummary = mock[ResultsPageSummary]
 
     val app: Application = application
@@ -91,7 +96,7 @@ class ResultsPageSummarySpec extends SpecBase {
       .configure()
       .build()
 
-    implicit val messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
-    val connector = app.injector.instanceOf[ResultsPageSummary]
+    implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+    val connector: ResultsPageSummary = app.injector.instanceOf[ResultsPageSummary]
   }
 }

@@ -23,14 +23,14 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.{Cipher, IllegalBlockSizeException, KeyGenerator, NoSuchPaddingException}
 import java.security.InvalidAlgorithmParameterException
 
-class AesGCMCryptoSpec extends SpecBase
-{
-  private val encrypter      = new AesGCMCrypto
-  private val secretKey      = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
-  private val secretKey2     = "cXo7u0HuJK8B/52xLwW7eQ=="
-  private val textToEncrypt  = "textNotEncrypted"
-  private val encryptedText  = EncryptedValue("sTe+0SVx5j5y509Nq8tIyflvnsRMfMC5Ae03fNUEarI=",
-    "RosGoD7PB/RGTz9uYEvU86zB/LxuWRUGQ2ay9PYbqWBKgy1Jy+j+REmx+cp74VhtvTrfFttQv4ArHUc/1tMyl3fGz3/cr8Tm1BHzanv659kI2MJqMynltIsY9fqdDpmO")
+class AesGCMCryptoSpec extends SpecBase {
+  private val encrypter = new AesGCMCrypto
+  private val secretKey = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
+  private val secretKey2 = "cXo7u0HuJK8B/52xLwW7eQ=="
+  private val textToEncrypt = "textNotEncrypted"
+  private val encryptedText = EncryptedValue("sTe+0SVx5j5y509Nq8tIyflvnsRMfMC5Ae03fNUEarI=",
+    "RosGoD7PB/RGTz9uYEvU86zB/LxuWRUGQ2ay9PYbqWBKgy1Jy+j+" +
+      "REmx+cp74VhtvTrfFttQv4ArHUc/1tMyl3fGz3/cr8Tm1BHzanv659kI2MJqMynltIsY9fqdDpmO")
 
   "encrypt" must {
 
@@ -43,7 +43,7 @@ class AesGCMCryptoSpec extends SpecBase
   "decrypt" must {
 
     "must decrypt text when the same associatedText, nonce and secretKey were used to encrypt it" in {
-      val decryptedText  = encrypter.decrypt(encryptedText, secretKey)
+      val decryptedText = encrypter.decrypt(encryptedText, secretKey)
       decryptedText mustEqual textToEncrypt
     }
 
@@ -101,9 +101,10 @@ class AesGCMCryptoSpec extends SpecBase
       val secureGCMEncryter = new AesGCMCrypto {
         override val ALGORITHM_KEY: String = "DES"
       }
+      val tLen: Int = 96
       val encryptedAttempt = intercept[EncryptionDecryptionException](
         secureGCMEncryter.generateCipherText(textToEncrypt,
-          new GCMParameterSpec(96, "hjdfbhvbhvbvjvjfvb".getBytes), key)
+          new GCMParameterSpec(tLen, "hjdfbhvbhvbvjvjfvb".getBytes), key)
       )
 
       encryptedAttempt.failureReason must include("Key being used is not valid." +
@@ -166,7 +167,7 @@ class AesGCMCryptoSpec extends SpecBase
     }
 
     "return an EncryptionDecryptionError if a IllegalBlockSizeException is thrown" in {
-      val secureGCMEncryter = new AesGCMCrypto{
+      val secureGCMEncryter = new AesGCMCrypto {
         override def getCipherInstance: Cipher = throw new IllegalBlockSizeException()
       }
       val encryptedAttempt = intercept[EncryptionDecryptionException](

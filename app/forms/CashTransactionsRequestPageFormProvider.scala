@@ -29,16 +29,14 @@ class CashTransactionsRequestPageFormProvider @Inject()(implicit clock: Clock) e
   def apply(): Form[CashTransactionDates] = {
     Form(mapping(
       "start" -> localDate(
-        invalidKey = "cf.form.error.start.date-number-invalid",
-        endOfMonth = false
+        invalidKey = "cf.form.error.start.date-number-invalid"
       ).verifying(beforeCurrentDate("cf.form.error.start-future-date"))
        .verifying(checkDates("cf.form.error.startDate.date-earlier-than-system-start-date",
          "cf.form.error.start.date-too-far-in-past",
          "cf.form.error.year.length")),
 
       "end" -> localDate(
-        invalidKey = "cf.form.error.end.date-number-invalid",
-        endOfMonth = true
+        invalidKey = "cf.form.error.end.date-number-invalid"
       ).verifying(beforeCurrentDate("cf.form.error.end-future-date"))
         .verifying(checkDates("cf.form.error.endDate.date-earlier-than-system-start-date",
           "cf.form.error.end.date-too-far-in-past",

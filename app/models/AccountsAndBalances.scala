@@ -27,7 +27,7 @@ import scala.util.Random
 case class AccountsAndBalancesResponseContainer(accountsAndBalancesResponse: AccountsAndBalancesResponse) {
   def toCashAccounts: Seq[CashAccount] = {
     List(
-      accountsAndBalancesResponse.responseDetail.cdsCashAccount.map(_.map(_.toDomain()))
+      accountsAndBalancesResponse.responseDetail.cdsCashAccount.map(_.map(_.toDomain))
     ).flatten.flatten
   }
 }
@@ -71,7 +71,7 @@ case class AccountResponseDetail(EORINo: Option[String],
 
 
 case class CdsCashAccount(account: Account, availableAccountBalance: Option[String]) {
-  def toDomain(): CashAccount = {
+  def toDomain: CashAccount = {
     val balance = CDSCashBalance(availableAccountBalance.map(BigDecimal(_)))
     CashAccount(account.number, account.owner, account.accountStatus.getOrElse(AccountStatusOpen), balance)
   }
@@ -101,7 +101,8 @@ object CDSAccountStatus {
   }
 }
 
-case class Account(number: String, `type`: String, owner: String, accountStatus: Option[CDSAccountStatus], viewBalanceIsGranted: Boolean, isleOfManFlag: Option[Boolean])
+case class Account(number: String, `type`: String, owner: String, accountStatus: Option[CDSAccountStatus],
+                   viewBalanceIsGranted: Boolean, isleOfManFlag: Option[Boolean])
 
 case class Limits(periodGuaranteeLimit: String, periodAccountLimit: String)
 
@@ -109,25 +110,33 @@ case class DefermentBalances(periodAvailableGuaranteeBalance: String, periodAvai
 
 object AccountsAndBalancesResponseContainer {
 
-  implicit val returnParametersReads = Json.reads[ReturnParameters]
+  implicit val returnParametersReads: Reads[ReturnParameters] = Json.reads[ReturnParameters]
 
-  implicit val accountReads = Json.reads[Account]
-  implicit val limitsReads = Json.reads[Limits]
-  implicit val balancesReads = Json.reads[DefermentBalances]
-  implicit val cashAccountReads = Json.reads[CdsCashAccount]
+  implicit val accountReads: Reads[Account] = Json.reads[Account]
+  implicit val limitsReads: Reads[Limits] = Json.reads[Limits]
+  implicit val balancesReads: Reads[DefermentBalances] = Json.reads[DefermentBalances]
+  implicit val cashAccountReads: Reads[CdsCashAccount] = Json.reads[CdsCashAccount]
 
-  implicit val accountResponseDetailReads = Json.reads[AccountResponseDetail]
-  implicit val accountResponseCommonReads = Json.reads[AccountResponseCommon]
-  implicit val accountsAndBalancesResponseReads = Json.reads[AccountsAndBalancesResponse]
-  implicit val accountsAndBalancesResponseContainerReads = Json.reads[AccountsAndBalancesResponseContainer]
+  implicit val accountResponseDetailReads: Reads[AccountResponseDetail] = Json.reads[AccountResponseDetail]
+  implicit val accountResponseCommonReads: Reads[AccountResponseCommon] = Json.reads[AccountResponseCommon]
+
+  implicit val accountsAndBalancesResponseReads: Reads[AccountsAndBalancesResponse] =
+    Json.reads[AccountsAndBalancesResponse]
+
+  implicit val accountsAndBalancesResponseContainerReads: Reads[AccountsAndBalancesResponseContainer] =
+    Json.reads[AccountsAndBalancesResponseContainer]
 
 }
 
 object AccountsAndBalancesRequestContainer {
 
-  implicit val accountsRequestCommonFormat = Json.format[AccountsRequestCommon]
-  implicit val accountsRequestDetailFormat = Json.format[AccountsRequestDetail]
-  implicit val accountsAndBalancesRequestFormat = Json.format[AccountsAndBalancesRequest]
-  implicit val accountsAndBalancesRequestContainerFormat = Json.format[AccountsAndBalancesRequestContainer]
+  implicit val accountsRequestCommonFormat: OFormat[AccountsRequestCommon] = Json.format[AccountsRequestCommon]
+  implicit val accountsRequestDetailFormat: OFormat[AccountsRequestDetail] = Json.format[AccountsRequestDetail]
+
+  implicit val accountsAndBalancesRequestFormat: OFormat[AccountsAndBalancesRequest] =
+    Json.format[AccountsAndBalancesRequest]
+
+  implicit val accountsAndBalancesRequestContainerFormat: OFormat[AccountsAndBalancesRequestContainer] =
+    Json.format[AccountsAndBalancesRequestContainer]
 
 }

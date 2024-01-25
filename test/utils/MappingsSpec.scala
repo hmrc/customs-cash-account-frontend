@@ -33,13 +33,13 @@ class MappingsSpec extends SpecBase with Mappings with Formatters {
 
     "localDate - end of month is true" in {
       val map = FieldMapping[LocalDate]("",List.empty)
-      val test = localDate("",true)
+      val test = localDate("")
       test mustBe map
     }
 
     "localDate - end of month is false" in {
       val map = FieldMapping[LocalDate]("",List.empty)
-      val test = localDate("",false)
+      val test = localDate("")
       test mustBe map
     }
 

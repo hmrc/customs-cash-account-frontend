@@ -30,7 +30,7 @@ object FormTestHelper extends Matchers {
       formWithErrors => {
         formWithErrors.errors mustBe expectedErrors
       },
-      form => {
+      _ => {
         fail("Expected a validation error when binding the form, but it was bound successfully.")
       }
     )

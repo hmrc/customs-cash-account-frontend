@@ -16,9 +16,9 @@
 
 package viewmodels
 
-import utils.SpecBase
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Actions
+import utils.SpecBase
 
 class SummaryListRowHelperSpec extends SpecBase with SummaryListRowHelper {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package utils
 
-sealed trait CashTransactionType
+class UtilsSpec extends SpecBase {
+  "Comma" should {
+    "return correct value" in {
+      Utils.comma mustBe ","
+    }
+  }
 
-case object Payment extends CashTransactionType
-
-case object Withdrawal extends CashTransactionType
-
-case object Transfer extends CashTransactionType
+  "Empty string" should {
+    "return correct value" in {
+      Utils.emptyString mustBe ""
+    }
+  }
+}

@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json.{JsResult, JsString, JsSuccess, JsValue, Json, OFormat, Reads, Writes}
+import play.api.libs.json._
 
 import java.time.LocalDate
 
@@ -28,15 +28,18 @@ case class CashDailyStatement(date: LocalDate,
                              ) extends Ordered[CashDailyStatement] {
   override def compare(that: CashDailyStatement): Int = that.date.compareTo(date)
 
-  val withdrawals:Seq[Transaction] = otherTransactions.filter(_.transactionType == Withdrawal)
-  val topUps:Seq[Transaction] = otherTransactions.filter(_.transactionType == Payment)
+  val withdrawals: Seq[Transaction] = otherTransactions.filter(_.transactionType == Withdrawal)
+  val topUps: Seq[Transaction] = otherTransactions.filter(_.transactionType == Payment)
   val transfersOut: Seq[Transaction] = otherTransactions.filter { transaction =>
     transaction.transactionType == Transfer && transaction.amount < 0
   }
+
   val transfersIn: Seq[Transaction] = otherTransactions.filter { transaction =>
     transaction.transactionType == Transfer && transaction.amount > 0
   }
-  val hasTransactions = withdrawals.nonEmpty || topUps.nonEmpty || transfersOut.nonEmpty || transfersIn.nonEmpty
+
+  val hasTransactions: Boolean =
+    withdrawals.nonEmpty || topUps.nonEmpty || transfersOut.nonEmpty || transfersIn.nonEmpty
 }
 
 

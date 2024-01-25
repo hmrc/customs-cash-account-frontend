@@ -62,7 +62,8 @@ class CustomsFinancialsApiConnector @Inject()(
 
   def retrieveHistoricCashTransactions(can: String,
                                        from: LocalDate,
-                                       to: LocalDate)(implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
+                                       to: LocalDate)(
+                                        implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
     httpClient.POST[CashDailyStatementRequest, CashTransactions](
       retrieveCashTransactionsUrl, cashDailyStatementRequest).map(Right(_))
@@ -80,10 +81,10 @@ class CustomsFinancialsApiConnector @Inject()(
       Left(UnknownException)
   }
 
-
   def retrieveCashTransactions(can: String,
                                from: LocalDate,
-                               to: LocalDate)(implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
+                               to: LocalDate)(
+                                implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
     cacheRepository.get(can).flatMap {
@@ -117,7 +118,8 @@ class CustomsFinancialsApiConnector @Inject()(
 
   def retrieveCashTransactionsDetail(can: String,
                                      from: LocalDate,
-                                     to: LocalDate)(implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
+                                     to: LocalDate)(
+                                      implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
     httpClient.POST[CashDailyStatementRequest, CashTransactions](
@@ -139,17 +141,13 @@ class CustomsFinancialsApiConnector @Inject()(
   def verifiedEmail(implicit hc: HeaderCarrier): Future[EmailVerifiedResponse] = {
     val emailDisplayApiUrl = s"$baseUrl/subscriptions/email-display"
 
-    httpClient.GET[EmailVerifiedResponse](emailDisplayApiUrl).recover{
+    httpClient.GET[EmailVerifiedResponse](emailDisplayApiUrl).recover {
       case _ =>
         logger.error(s"Error occurred while calling API $emailDisplayApiUrl")
         EmailVerifiedResponse(None)
     }
   }
 
-  /**
-   * Retrieves unverified email from customs-financials-api using below route
-   * /customs-financials-api/subscriptions/unverified-email-display
-   */
   def retrieveUnverifiedEmail(implicit hc: HeaderCarrier): Future[EmailUnverifiedResponse] = {
     val unverifiedEmailDisplayApiUrl = s"$baseUrl/subscriptions/unverified-email-display"
 

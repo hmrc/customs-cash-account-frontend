@@ -49,12 +49,14 @@ class DownloadCsvController @Inject()(
                                        mcc: MessagesControllerComponents,
                                        appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
-  def downloadRequestedCsv(disposition: Option[String], dateRange: RequestedDateRange): Action[AnyContent] = identify.async { implicit request =>
-    Try(dateRange) match {
-      case Failure(_) => Future.successful(BadRequest)
-      case Success(value) => getAndDownloadCsv(value.from, value.to, disposition, cashAccountUtils.filenameRequestCashTransactions(value.from, value.to))
+  def downloadRequestedCsv(disposition: Option[String], dateRange: RequestedDateRange): Action[AnyContent] =
+    identify.async { implicit request =>
+      Try(dateRange) match {
+        case Failure(_) => Future.successful(BadRequest)
+        case Success(value) => getAndDownloadCsv(value.from, value.to, disposition,
+          cashAccountUtils.filenameRequestCashTransactions(value.from, value.to))
+      }
     }
-  }
 
   def downloadCsv(disposition: Option[String]): Action[AnyContent] = identify.async { implicit request =>
     val (from, to) = cashAccountUtils.transactionDateRange()
@@ -65,28 +67,34 @@ class DownloadCsvController @Inject()(
     Ok(unableToDownloadCSV())
   }
 
-  private def getAndDownloadCsv(from: LocalDate, to: LocalDate, disposition: Option[String], filename: String)(implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
+  private def getAndDownloadCsv(from: LocalDate, to: LocalDate, disposition: Option[String], filename: String)(
+    implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
     apiConnector.getCashAccount(request.eori) flatMap {
       case None => Future.successful(NotFound(eh.notFoundTemplate))
       case Some(cashAccount) => {
         for {
           cashTransactions <- apiConnector.retrieveCashTransactionsDetail(cashAccount.number, from, to)
           result = cashTransactions match {
+
             case Left(errorResponse) => errorResponse match {
               case TooManyTransactionsRequested =>
-                Ok(tooManyResults(new ResultsPageSummary(from, to), controllers.routes.CashAccountController.showAccountDetails(None).url))
+                Ok(tooManyResults(new ResultsPageSummary(from, to),
+                  controllers.routes.CashAccountController.showAccountDetails(None).url))
               case NoTransactionsAvailable =>
                 Ok(noResults(new ResultsPageSummary(from, to)))
               case _ =>
                 Redirect(routes.DownloadCsvController.showUnableToDownloadCSV())
             }
+
             case Right(transactions) => {
-              auditingService.auditCsvDownload(request.eori, cashAccount.number, dateTimeService.utcDateTime(), from, to)
+              auditingService.auditCsvDownload(
+                request.eori, cashAccount.number, dateTimeService.utcDateTime(), from, to)
               val csvContent = CSVWriter.toCSVWithHeaders(
                 rows = transactions.cashDailyStatements.sorted.flatMap(_.toReportLayout),
                 mappingFn = cashAccountUtils.makeHumanReadable,
                 footer = None)
-              val contentHeaders = "Content-Disposition" -> s"${disposition.getOrElse("attachment")}; filename=${filename}"
+              val contentHeaders = "Content-Disposition" ->
+                s"${disposition.getOrElse("attachment")}; filename=${filename}"
               Ok(csvContent).withHeaders(contentHeaders)
             }
           }
@@ -95,5 +103,3 @@ class DownloadCsvController @Inject()(
     }
   }
 }
-
-

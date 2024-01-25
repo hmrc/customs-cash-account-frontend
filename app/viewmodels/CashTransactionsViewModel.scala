@@ -17,12 +17,13 @@
 package viewmodels
 
 import config.AppConfig
+import models.{CashDailyStatement, CashTransactions}
 
 import java.time.LocalDate
 import java.time.chrono.ChronoLocalDate
-import models.{CashDailyStatement, CashTransactions}
 
-case class CashTransactionsViewModel(cashTransactions: CashTransactions, page: Option[Int])(implicit appConfig: AppConfig) extends Paginated {
+case class CashTransactionsViewModel(cashTransactions: CashTransactions, page: Option[Int])(
+  implicit appConfig: AppConfig) extends Paginated {
 
   implicit val localDateOrdering: Ordering[LocalDate] = Ordering.by(identity[ChronoLocalDate])
 
@@ -37,17 +38,17 @@ case class CashTransactionsViewModel(cashTransactions: CashTransactions, page: O
     }
   }
 
-  override val allItems: Seq[PaginatedTransactions] = pendingTransactionsGroupedByDate ++ cashTransactions.cashDailyStatements.sorted.map(PaginatedDailyStatement)
+  override val allItems: Seq[PaginatedTransactions] =
+    pendingTransactionsGroupedByDate ++ cashTransactions.cashDailyStatements.sorted.map(PaginatedDailyStatement)
   override val itemsPerPage: Int = appConfig.numberOfDaysToShow
   override val requestedPage: Int = page.getOrElse(1)
   override val urlForPage: Int => String = e => controllers.routes.CashAccountController.showAccountDetails(Some(e)).url
 }
 
-
 object CashTransactionsViewModel {
 
   implicit class CashDailyStatementViewModel(cashDailyStatement: CashDailyStatement) {
-    val numberOfBalanceRows = 2
+    private val numberOfBalanceRows = 2
     val size: Int = cashDailyStatement.declarations.size +
       cashDailyStatement.topUps.size +
       cashDailyStatement.withdrawals.size +

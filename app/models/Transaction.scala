@@ -17,5 +17,9 @@
 package models
 
 case class Transaction(amount: BigDecimal, transactionType: CashTransactionType, bankAccountNumber: Option[String]) {
-  val bankAccountNumberLastFourDigits: Option[String] = bankAccountNumber.map(_.takeRight(4))
+
+  private val bankAccountNumberDigits: Int = 4
+
+  val bankAccountNumberLastFourDigits: Option[String] = bankAccountNumber.map(_.takeRight(bankAccountNumberDigits))
+
 }

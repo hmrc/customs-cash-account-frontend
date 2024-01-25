@@ -44,7 +44,8 @@ class RequestedTransactionsController @Inject()(resultView: cash_transactions_re
                                                 identify: IdentifierAction,
                                                 eh: ErrorHandler,
                                                 cache: RequestedTransactionsCache,
-                                                mcc: MessagesControllerComponents)(implicit executionContext: ExecutionContext, appConfig: AppConfig)
+                                                mcc: MessagesControllerComponents)(
+                                                 implicit executionContext: ExecutionContext, appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport with Logging {
 
   def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
@@ -61,20 +62,26 @@ class RequestedTransactionsController @Inject()(resultView: cash_transactions_re
     }
   }
 
-  private def showAccountWithTransactionDetails(account: CashAccount, from: LocalDate, to: LocalDate)(implicit req: IdentifierRequest[AnyContent], appConfig: AppConfig): Future[Result] = {
+  private def showAccountWithTransactionDetails(account: CashAccount, from: LocalDate, to: LocalDate)(
+    implicit req: IdentifierRequest[AnyContent], appConfig: AppConfig): Future[Result] = {
     apiConnector.retrieveHistoricCashTransactions(account.number, from, to).map {
       case Left(errorResponse) =>
         errorResponse match {
           case NoTransactionsAvailable => Ok(noResults(new ResultsPageSummary(from, to)))
-          case TooManyTransactionsRequested => Redirect(routes.RequestedTransactionsController.tooManyTransactionsRequested(RequestedDateRange(from,to)))
-          case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
+
+          case TooManyTransactionsRequested => Redirect(
+            routes.RequestedTransactionsController.tooManyTransactionsRequested(RequestedDateRange(from, to)))
+
+          case _ => Ok(
+            transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
         }
-      case Right(_) =>
-        Ok(resultView(new ResultsPageSummary(from, to), controllers.routes.CashAccountController.showAccountDetails(None).url))
+
+      case Right(_) => Ok(resultView(new ResultsPageSummary(from, to),
+        controllers.routes.CashAccountController.showAccountDetails(None).url))
     }
   }
 
- def tooManyTransactionsRequested(dateRange: RequestedDateRange): Action[AnyContent] = identify { implicit req =>
+  def tooManyTransactionsRequested(dateRange: RequestedDateRange): Action[AnyContent] = identify { implicit req =>
     Ok(tooManyResults(new ResultsPageSummary(dateRange.from, dateRange.to), controllers.routes.RequestTransactionsController.onPageLoad().url))
   }
 }

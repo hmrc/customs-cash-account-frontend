@@ -1,17 +1,21 @@
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
 
 val appName = "customs-cash-account-frontend"
 
 val silencerVersion = "1.17.13"
+val scala2_13_8 = "2.13.8"
+
+val testDirectory = "test"
+val scalaStyleConfigFile = "scalastyle-config.xml"
+val testScalaStyleConfigFile = "test-scalastyle-config.xml"
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
-    majorVersion                     := 0,
-    scalaVersion                     := "2.13.8",
-    libraryDependencies              ++= AppDependencies.compile ++ AppDependencies.test,
+    majorVersion := 0,
+    scalaVersion := scala2_13_8,
+    libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;" +
       ".*javascript.*;.*Routes.*;.*GuiceInjector;" +
       ".*FeatureSwitchController;" +
@@ -26,17 +30,31 @@ lazy val microservice = Project(appName, file("."))
       "uk.gov.hmrc.hmrcfrontend.views.html.components._",
       "views.ViewUtils._"
     ),
-    // ***************
-    // Use the silencer plugin to suppress warnings
-    // You may turn it on for `views` too to suppress warnings from unused imports in compiled twirl templates, but this will hide other warnings.
-    scalacOptions += "-P:silencer:pathFilters=routes",
+
+    scalacOptions ++= Seq(
+      "-P:silencer:pathFilters=routes",
+      "-P:silencer:pathFilters=target/.*",
+      "-Wunused:imports",
+      "-Wunused:params",
+      "-Wunused:patvars",
+      "-Wunused:implicits",
+      "-Wunused:explicits",
+      "-Wunused:privates"),
+    Test / scalacOptions ++= Seq(
+      "-Wunused:imports",
+      "-Wunused:params",
+      "-Wunused:patvars",
+      "-Wunused:implicits",
+      "-Wunused:explicits",
+      "-Wunused:privates"),
     libraryDependencies ++= Seq(
       compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full),
       "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full
     )
-    // ***************
   )
   .settings(PlayKeys.playDefaultPort := 9394)
   .configs(IntegrationTest)
-  .settings(integrationTestSettings() *)
   .settings(resolvers += Resolver.jcenterRepo)
+
+lazy val scalastyleSettings = Seq(scalastyleConfig := baseDirectory.value / scalaStyleConfigFile,
+  (Test / scalastyleConfig) := baseDirectory.value / testDirectory / testScalaStyleConfigFile)

@@ -21,7 +21,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, Value}
 
 trait SummaryListRowHelper {
-
   def summaryListRow(
                       value: String,
                       secondValue: Option[String],

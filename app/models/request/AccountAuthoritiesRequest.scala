@@ -22,5 +22,6 @@ import play.api.libs.json.{Json, OWrites}
 case class AccountAuthoritiesRequest(eori: EORI)
 
 object AccountAuthoritiesRequest {
-  implicit val AccountAuthoritiesRequestWrites: OWrites[AccountAuthoritiesRequest] = Json.writes[AccountAuthoritiesRequest]
+  implicit val AccountAuthoritiesRequestWrites: OWrites[AccountAuthoritiesRequest] =
+    Json.writes[AccountAuthoritiesRequest]
 }

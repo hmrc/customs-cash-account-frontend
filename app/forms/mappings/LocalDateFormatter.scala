@@ -25,24 +25,12 @@ import scala.util.{Failure, Success, Try}
 
 private[mappings] class LocalDateFormatter(
                                             invalidKey: String,
-                                            endOfMonth: Boolean,
                                             args: Seq[String]
                                           ) extends Formatter[LocalDate] with Formatters {
 
   private val fieldKeys: List[String] = List("month", "year")
   val log: LoggerLike = Logger(this.getClass)
   val currentDate: LocalDate = LocalDateTime.now().toLocalDate
-
-/**  TODO: May need to uncomment in future
-   private def getEndDay(month: Int, year: Int, date: LocalDate): Int = {
-    if (month == currentDate.getMonthValue && year == currentDate.getYear) {
-      log.info("entered month: " + month + "; entered year: " + year)
-      log.info("current month: " + currentDate.getMonthValue + "; currentyear: " + currentDate.getYear)
-      currentDate.getDayOfMonth
-    } else {
-      date.lengthOfMonth()
-    }
-  } **/
 
   private def toDate(key: String,
                      day: Int,
@@ -99,19 +87,6 @@ private[mappings] class LocalDateFormatter(
       s"$key.year" -> value.getYear.toString
     )
 
-  /**
-   * Updates the FormError key as per valid day, month and year criteria
-   * key is updated as below
-   * invalid day - key.day
-   * invalid month - key.month
-   * invalid year - key.year
-   *
-   * @param key Input form key
-   * @param day Day value of the input date
-   * @param month Month value of the input date
-   * @param year Year value of the input date
-   * @return Updated form key
-   */
   private[mappings] def updateFormErrorKeys(key: String,
                                             day: Int,
                                             month: Int,
@@ -123,17 +98,6 @@ private[mappings] class LocalDateFormatter(
       case _ => s"$key.day"
     }
 
-  /**
-   * Updates the FormError key as per the given criteria
-   * key is updated as below
-   * empty day or non numeric day - key.day
-   * empty month or non numeric month - key.month
-   * empty year or non numeric year - key.year
-   *
-   * @param key FormError key
-   * @param data Map of Form values
-   * @return Updated FormError key
-   */
   private[mappings] def formErrorKeysInCaseOfEmptyOrNonNumericValues(key: String,
                                                                      data: Map[String, String]): String = {
     val dayValue = data.get(s"$key.day")
