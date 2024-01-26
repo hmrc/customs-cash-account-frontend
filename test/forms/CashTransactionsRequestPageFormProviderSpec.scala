@@ -298,7 +298,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
     val day = 10
     val validDate: LocalDate = LocalDate.of(year, month, day)
     val futureYear: Int = LocalDate.now().getYear + 1
-    val etmpStatementYear = 2019 // This needs to be updated should the Year value in Constraints.etmpStatementsDate is changed
+    val etmpStatementYear = 2019
     val taxYearDateOlderThan6Years: Int = LocalDate.now().getYear - 7
 
     lazy val completeValidDates: Map[String, String] =

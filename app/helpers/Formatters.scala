@@ -28,7 +28,9 @@ import java.util.Locale
 object Formatters {
 
   def dateAsMonth(date: LocalDate)(implicit messages: Messages): String = messages(s"month.${date.getMonthValue}")
-  def dateAsDayMonthAndYear(date: LocalDate)(implicit messages: Messages): String = s"${date.getDayOfMonth} ${dateAsMonth(date)} ${date.getYear}"
+
+  def dateAsDayMonthAndYear(date: LocalDate)(implicit messages: Messages): String =
+    s"${date.getDayOfMonth} ${dateAsMonth(date)} ${date.getYear}"
 
   def dateTimeAsIso8601(dateTime: LocalDateTime): String = {
     s"${DateTimeFormatter.ISO_DATE_TIME.format(dateTime.truncatedTo(ChronoUnit.SECONDS))}Z"

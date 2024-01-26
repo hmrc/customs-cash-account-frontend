@@ -47,18 +47,27 @@ object AccountsRequestCommon {
     AccountsRequestCommon(isoLocalDateTime, acknowledgmentRef, regime)
   }
 
-  private def generateStringOfRandomDigits(length: Int) = {
-    (1 to length).map(_ => Random.nextInt(10)).mkString // scalastyle:ignore magic.number
+  private def generateStringOfRandomDigits(length: Int): String = {
+    val maxRandomLength = 10
+
+    (1 to length).map(_ => Random.nextInt(maxRandomLength)).mkString
   }
 }
 
-case class AccountsRequestDetail(EORINo: String, accountType: Option[String], accountNumber: Option[String], referenceDate: Option[String])
+case class AccountsRequestDetail(EORINo: String,
+                                 accountType: Option[String],
+                                 accountNumber: Option[String],
+                                 referenceDate: Option[String])
 
 case class AccountsAndBalancesRequest(requestCommon: AccountsRequestCommon, requestDetail: AccountsRequestDetail)
 
-case class AccountsAndBalancesResponse(responseCommon: Option[AccountResponseCommon], responseDetail: AccountResponseDetail)
+case class AccountsAndBalancesResponse(responseCommon: Option[AccountResponseCommon],
+                                       responseDetail: AccountResponseDetail)
 
-case class AccountResponseCommon(status: String, statusText: Option[String], processingDate: String, returnParameters: Option[Seq[ReturnParameters]])
+case class AccountResponseCommon(status: String,
+                                 statusText: Option[String],
+                                 processingDate: String,
+                                 returnParameters: Option[Seq[ReturnParameters]])
 
 case class ReturnParameters(paramName: String, paramValue: String)
 
@@ -89,7 +98,7 @@ object CDSAccountStatus {
 
   val logger: LoggerLike = Logger(this.getClass)
 
-  implicit val CDSAccountStatusReads = new Reads[CDSAccountStatus] {
+  implicit val CDSAccountStatusReads: Reads[CDSAccountStatus] = new Reads[CDSAccountStatus] {
     override def reads(json: JsValue): JsResult[CDSAccountStatus] = {
       json.as[String] match {
         case status if status.equalsIgnoreCase("Open") => JsSuccess(AccountStatusOpen)

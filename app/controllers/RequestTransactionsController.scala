@@ -20,7 +20,7 @@ import config.AppConfig
 import controllers.actions._
 import forms.CashTransactionsRequestPageFormProvider
 import models._
-import org.slf4j.LoggerFactory
+import org.slf4j.{Logger, LoggerFactory}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,12 +40,13 @@ class RequestTransactionsController @Inject()(
                                              (implicit ec: ExecutionContext,
                                               appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
-  val log = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
+  val log: Logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
 
   def form: Form[CashTransactionDates] = formProvider()
 
   def onPageLoad: Action[AnyContent] = identify.async {
-    implicit request => for {
+    implicit request =>
+      for {
         _ <- cache.clear(request.eori)
       } yield Ok(view(form))
   }
@@ -57,18 +58,19 @@ class RequestTransactionsController @Inject()(
         Future.successful(BadRequest(view(formWithErrors)))
       },
         value => customValidation(value, form)() match {
-            case Some(formWithErrors) =>
-              logMessageForAnalytics(request.eori, formWithErrors)
-              Future.successful(BadRequest(view(formWithErrors)))
-            case None =>
-              cache.set(request.eori, value).map { _ =>
-                Redirect(routes.RequestedTransactionsController.onPageLoad())
-              }
-          }
+          case Some(formWithErrors) =>
+            logMessageForAnalytics(request.eori, formWithErrors)
+            Future.successful(BadRequest(view(formWithErrors)))
+          case None =>
+            cache.set(request.eori, value).map { _ =>
+              Redirect(routes.RequestedTransactionsController.onPageLoad())
+            }
+        }
       )
   }
 
-  private def customValidation(dates: CashTransactionDates, form: Form[CashTransactionDates])(): Option[Form[CashTransactionDates]] = {
+  private def customValidation(dates: CashTransactionDates,
+                               form: Form[CashTransactionDates])(): Option[Form[CashTransactionDates]] = {
     def populateErrors(startMessage: String, endMessage: String): Form[CashTransactionDates] = {
       form.withError("start", startMessage)
         .withError("end", endMessage).fill(dates)
@@ -82,7 +84,7 @@ class RequestTransactionsController @Inject()(
   }
 
   private def logMessageForAnalytics(eori: String, formWithErrors: Form[CashTransactionDates])
-                                    (implicit messages: Messages): Unit= {
+                                    (implicit messages: Messages): Unit = {
     val errorMessages = formWithErrors.errors.map(e => messages(e.message)).mkString(",")
 
     val startDate = formWithErrors.data.getOrElse("start.year", " ") + "-" +

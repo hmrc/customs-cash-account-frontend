@@ -23,7 +23,6 @@ import utils.SpecBase
 class FormattersTest extends SpecBase {
   implicit val messages: Messages = Helpers.stubMessages()
 
-
   "CurrencyFormatters.formatCurrencyAmount" should {
     "format a number to the given number of decimals" in {
       Formatters.formatCurrencyAmount(amount = 999.6565) must be ("£999.66")

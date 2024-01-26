@@ -19,4 +19,5 @@ package utils
 object Utils {
   val comma: String = ","
   val emptyString: String = ""
+  val period: String = "."
 }

@@ -34,7 +34,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DefaultCacheRepository @Inject()(mongo: MongoComponent,
                                        config: Configuration,
-                                       encrypter: CashTransactionsEncrypter)(implicit executionContext: ExecutionContext)
+                                       encrypter: CashTransactionsEncrypter)(
+  implicit executionContext: ExecutionContext)
   extends PlayMongoRepository[CashTransactionsMongo](
     collectionName = "cash-account-cache",
     mongoComponent = mongo,
@@ -52,12 +53,14 @@ class DefaultCacheRepository @Inject()(mongo: MongoComponent,
   override def get(id: String): Future[Option[CashTransactions]] = {
     for{
       result <- collection.find(equal("_id", id)).toSingle().toFutureOption()
-      account = result.map(cashAccountMongo => encrypter.decryptCashTransactions(cashAccountMongo.transactions, encryptionKey))
+      account = result.map(cashAccountMongo =>
+        encrypter.decryptCashTransactions(cashAccountMongo.transactions, encryptionKey))
     } yield account
   }
 
   override def set(id: String, transactions: CashTransactions): Future[Boolean] = {
-    val record: CashTransactionsMongo = CashTransactionsMongo(encrypter.encryptCashTransactions(transactions, encryptionKey), DateTime.now)
+    val record: CashTransactionsMongo = CashTransactionsMongo(
+      encrypter.encryptCashTransactions(transactions, encryptionKey), DateTime.now)
 
     collection.replaceOne(equal("_id", id),
       record,

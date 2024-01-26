@@ -28,4 +28,10 @@ class UtilsSpec extends SpecBase {
       Utils.emptyString mustBe ""
     }
   }
+
+  "Period" should {
+    "return correct value" in {
+      Utils.period mustBe "."
+    }
+  }
 }

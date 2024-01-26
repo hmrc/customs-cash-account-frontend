@@ -39,7 +39,8 @@ class AuditingService @Inject()(appConfig: AppConfig, auditConnector: AuditConne
 
   val log: LoggerLike = Logger(this.getClass)
 
-  private val referrer: HeaderCarrier => String = _.headers(Seq(HeaderNames.REFERER)).headOption.map(_._2).getOrElse("-")
+  private val referrer: HeaderCarrier =>
+    String = _.headers(Seq(HeaderNames.REFERER)).headOption.map(_._2).getOrElse("-")
 
   def audit(auditModel: AuditModel)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val dataEvent = toExtendedDataEvent(appConfig.appName, auditModel, referrer(hc))

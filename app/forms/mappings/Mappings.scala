@@ -16,8 +16,8 @@
 
 package forms.mappings
 
-import play.api.data.Forms.of
 import play.api.data.FieldMapping
+import play.api.data.Forms.of
 
 import java.time.LocalDate
 
@@ -29,7 +29,7 @@ trait Mappings extends Formatters with Constraints {
 
 
   protected def localDate(
-                           invalidKey: String,
+                           invalidKey: String
                          ): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, Seq.empty))
 

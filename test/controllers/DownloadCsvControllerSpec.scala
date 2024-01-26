@@ -280,7 +280,9 @@ class DownloadCsvControllerSpec extends SpecBase {
 
   "downloadRequestedCSV" must {
     "return OK" in new Setup {
-      when(mockAuditingService.auditCsvDownload(any, any, any, any, any)(any)).thenReturn(Future.successful(AuditResult.Success))
+      when(mockAuditingService.auditCsvDownload(any, any, any, any, any)(any))
+        .thenReturn(Future.successful(AuditResult.Success))
+
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
@@ -288,7 +290,9 @@ class DownloadCsvControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
       running(newApp) {
-        val request = FakeRequest(GET, routes.DownloadCsvController.downloadRequestedCsv(Some("attachment"), dateRange).url)
+        val request = FakeRequest(GET, routes.DownloadCsvController.downloadRequestedCsv(
+          Some("attachment"), dateRange).url)
+
         val result = route(newApp, request).value
         status(result) mustEqual OK
       }

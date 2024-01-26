@@ -28,7 +28,6 @@ import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
-
 import scala.concurrent.{ExecutionContext, Future}
 
 trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
@@ -36,9 +35,9 @@ trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with
 class AuthenticatedIdentifierAction @Inject()(
                                                override val authConnector: AuthConnector,
                                                config: AppConfig,
-                                               val parser: BodyParsers.Default
-                                             )
-                                             (implicit val executionContext: ExecutionContext) extends IdentifierAction with AuthorisedFunctions {
+                                               val parser: BodyParsers.Default)(
+                                               implicit val executionContext: ExecutionContext)
+  extends IdentifierAction with AuthorisedFunctions {
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
@@ -49,6 +48,7 @@ class AuthenticatedIdentifierAction @Inject()(
           case Some(eori) => block(IdentifierRequest(request, eori.value))
           case None => Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
         }
+      case _ => throw InsufficientEnrolments()
     } recover {
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue_url" -> Seq(config.loginContinueUrl)))

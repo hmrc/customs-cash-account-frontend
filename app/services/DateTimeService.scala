@@ -23,12 +23,18 @@ import javax.inject.Inject
 
 class DateTimeService @Inject()(appConfig: AppConfig) {
 
-  def getTimeStamp: OffsetDateTime = OffsetDateTime.ofInstant( Instant.now() , ZoneOffset.UTC)
+  def getTimeStamp: OffsetDateTime = OffsetDateTime.ofInstant(Instant.now(), ZoneOffset.UTC)
 
   def systemDateTime(zoneId: ZoneId): LocalDateTime = {
 
+    val year = 2027
+    val month = 12
+    val day = 20
+    val hour = 12
+    val minute = 30
+
     if (appConfig.fixedTimeTesting) {
-      LocalDateTime.of(LocalDate.of(2027, 12, 20), LocalTime.of(12,30)) // scalastyle:ignore
+      LocalDateTime.of(LocalDate.of(year, month, day), LocalTime.of(hour, minute))
     }
     else {
       LocalDateTime.now(zoneId)

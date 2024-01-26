@@ -31,7 +31,8 @@ class LogoutControllerSpec extends SpecBase {
         val request = FakeRequest(GET, routes.LogoutController.logout.url)
 
         val result = route(app, request).value
-        redirectLocation(result).value mustEqual "http://localhost:9553/bas-gateway/sign-out-without-state?continue=%2Fsome-continue%2FCDS-FIN"
+        redirectLocation(result).value mustEqual "http://localhost:9553/bas-gateway/sign-out-without-state?" +
+          "continue=%2Fsome-continue%2FCDS-FIN"
       }
     }
   }

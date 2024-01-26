@@ -20,7 +20,9 @@ object CSVWriter {
 
   private def quote(string: String): String = s""""$string""""
 
-  def toCSVWithHeaders(rows: Seq[CSVWritable with FieldNames], mappingFn: String => String = identity, footer: Option[String] = None): String = {
+  def toCSVWithHeaders(rows: Seq[CSVWritable with FieldNames],
+                       mappingFn: String => String = identity,
+                       footer: Option[String] = None): String = {
     val mapAndQuote: String => String = mappingFn andThen quote
     val headers: String = rows.headOption.map(_.fieldNames.map(mapAndQuote).mkString(",") + "\n").getOrElse("")
     val formattedFooter: String = footer.fold("")(text => s"""\n\n\n"$text"\n""")
@@ -29,4 +31,3 @@ object CSVWriter {
   }
 
 }
-

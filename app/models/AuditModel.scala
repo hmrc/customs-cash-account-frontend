@@ -33,4 +33,3 @@ case class CashCsvAuditData(eori: EORI,
 object CashCsvAuditData {
   implicit val cashCsvAuditDataWrites: Writes[CashCsvAuditData] = Json.writes[CashCsvAuditData]
 }
-

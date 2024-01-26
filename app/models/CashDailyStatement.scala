@@ -42,7 +42,6 @@ case class CashDailyStatement(date: LocalDate,
     withdrawals.nonEmpty || topUps.nonEmpty || transfersOut.nonEmpty || transfersIn.nonEmpty
 }
 
-
 case class EncryptedDailyStatements(date: LocalDate,
                                     openingBalance: BigDecimal,
                                     closingBalance: BigDecimal,
@@ -60,7 +59,6 @@ object EncryptedDailyStatements {
   implicit val cashDailyStatementReads: OFormat[CashDailyStatement] = CashDailyStatement.cashDailyStatementReads
   implicit val format: OFormat[EncryptedDailyStatements] = Json.format[EncryptedDailyStatements]
 }
-
 
 object CashDailyStatement {
   implicit val taxGroupTypeReads: Reads[TaxGroupType] = new Reads[TaxGroupType] {

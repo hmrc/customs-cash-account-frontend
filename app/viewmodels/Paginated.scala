@@ -20,25 +20,9 @@ import models.{CashDailyStatement, Declaration}
 
 import java.time.LocalDate
 
-/**
-  * This Paginated trait should be mixed into any ViewModels that require pagination.
-  * Views that require pagination can then simply include
-  *   '@pager(viewModel)'
-  * to render the paginator controls, and use viewModel.visibleItems to reference the items visible on the current page.
-  *
-  * It will always display FixedWidth number of links plus Previous and Next buttons if they are applicable
-  * -if you are on the 1st page, you will see pages: 1,2,3,4,5,Next   (here you can jump 5 pages ahead)
-  * -if you are on the 6th page, you will see pages: Prev,4,5,6,7,8,Next  (here you can jump just 2 pages back or forward)
-  * -if you are on the last page (e.g. 9) you will see: Prev,5,6,7,8,9  (here you can jump 5 pages back)
-  *
-  */
-
-
 sealed trait PaginatedTransactions
 case class PaginatedDailyStatement(dailyStatement: CashDailyStatement) extends PaginatedTransactions
 case class PaginatedPendingDailyStatement(date: LocalDate, declarations: Seq[Declaration]) extends PaginatedTransactions
-
-
 
 trait Paginated {
 
@@ -52,10 +36,9 @@ trait Paginated {
   private val lookAhead = FixedWidth / 2
   private lazy val totalNumberOfItems: Int = allItems.length
 
-
   private lazy val lastPage = totalNumberOfItems % itemsPerPage match {
     case 0 => totalNumberOfItems / itemsPerPage
-    case _ => totalNumberOfItems / itemsPerPage + 1  //We need an additional page for the remainder items
+    case _ => totalNumberOfItems / itemsPerPage + 1
   }
 
   lazy val currentPage: Int = requestedPage.max(FirstPage).min(lastPage)
@@ -65,9 +48,8 @@ trait Paginated {
 
   lazy val dataFitsOnOnePage: Boolean = totalNumberOfItems <= itemsPerPage
 
-  lazy val firstItemOnPage: Int = (currentPage - 1) * itemsPerPage
-  lazy val lastItemOnPage: Int = totalNumberOfItems.min(currentPage * itemsPerPage)
-
+  private lazy val firstItemOnPage: Int = (currentPage - 1) * itemsPerPage
+  private lazy val lastItemOnPage: Int = totalNumberOfItems.min(currentPage * itemsPerPage)
 
   lazy val visibleItems: Seq[PaginatedTransactions] = allItems.slice(firstItemOnPage, lastItemOnPage)
 

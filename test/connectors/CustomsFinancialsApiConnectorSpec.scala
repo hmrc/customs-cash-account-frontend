@@ -218,7 +218,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   }
 
   "retrieveCashTransactionsDetail" must {
-    "call the correct URL and pass through the HeaderCarrier and CAN, and return a list of cash daily statements" in new Setup {
+    "call the correct URL and pass through the HeaderCarrier and CAN," +
+      " and return a list of cash daily statements" in new Setup {
+
       val expectedUrl = "apiEndpointUrl/account/cash/transactions-detail"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 

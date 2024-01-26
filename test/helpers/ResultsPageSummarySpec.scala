@@ -18,9 +18,7 @@ package helpers
 
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers.running
 import utils.SpecBase
 import viewmodels.ResultsPageSummary
 
@@ -29,74 +27,59 @@ import java.time.LocalDate
 class ResultsPageSummarySpec extends SpecBase {
 
   "LocalDateFormatter" should {
+
     "Date should format correctly" in new Setup {
-      when(mockResultsPageSummary.formatDate(targetDate)(messages)).thenReturn("10 Feb 2022")
-      running(app) {
-        val result = connector.formatDate(targetDate)(messages)
-        result mustBe "10 Feb 2022"
-      }
+      val result: String = resultPageSummary.formatDate(toDate)
+
+      result mustBe "10 March 2022"
     }
 
     "return the month when dateAsMonth is called" in new Setup {
-      when(mockResultsPageSummary.dateAsMonth(targetDate)(messages)).thenReturn("March")
-      running(app) {
-        val result = connector.dateAsMonth(targetDate)(messages)
-        result mustBe "March"
-      }
+      val result: String = resultPageSummary.dateAsMonth(toDate)
+
+      result mustBe "March"
     }
 
-    "return the day of the month with leading 0 if less than 10" in new Setup {
-      when(mockResultsPageSummary.dateAsDay(targetDate)).thenReturn("09")
-      running(app) {
-        val result = connector.dateAsDay(targetDate)
-        result mustBe "09"
-      }
-    }
+    "return the day of the month with leading 0 if day of the month is less than 10" in new Setup {
+      val dateWithDay9th: LocalDate = LocalDate.of(year, month, day9th)
 
-    "return the day of the month with leading 0 if getDayOfMonth is less than 10" in new Setup {
-      override val day = 9
-      val nineDate: LocalDate = LocalDate.of(year, month, day)
-//      val nineDate = LocalDate.of(2022, 3,9)
-      when(mockResultsPageSummary.dateAsDay(nineDate)).thenReturn("09")
+      val result: String = resultPageSummary.dateAsDay(dateWithDay9th)
 
-      running(app) {
-        val result = connector.dateAsDay(nineDate)
-        result mustBe "09"
-      }
+      result mustBe "09"
     }
 
     "return the day of the month without leading 0 if equal to 10" in new Setup {
-      when(mockResultsPageSummary.dateAsDay(targetDate)).thenReturn("10")
-      running(app) {
-        val result = connector.dateAsDay(targetDate)
-        result mustBe "10"
-      }
+      val dateWithDay10th: LocalDate = LocalDate.of(year, month, day10th)
+
+      val result: String = resultPageSummary.dateAsDay(dateWithDay10th)
+
+      result mustBe "10"
     }
 
     "return the day of the month without leading 0 if greater than 10" in new Setup {
-      when(mockResultsPageSummary.dateAsDay(targetDate)).thenReturn("11")
-      running(app) {
-        val result = connector.dateAsDay(targetDate)
-        result mustBe "11"
-      }
+      val dateWithDay11th: LocalDate = LocalDate.of(year, month, day11th)
+
+      val result: String = resultPageSummary.dateAsDay(dateWithDay11th)
+
+      result mustBe "11"
     }
   }
 
   trait Setup {
-    val day = 11
+    val day9th = 9
+    val day8th = 8
+    val day10th = 10
+    val day11th = 11
+
     val month = 3
     val year = 2022
-    val targetDate: LocalDate = LocalDate.of(year, month, day)
-    val mockResultsPageSummary: ResultsPageSummary = mock[ResultsPageSummary]
 
-    val app: Application = application
-      .overrides(
-        bind[ResultsPageSummary].toInstance(mockResultsPageSummary)
-      )
-      .configure()
-      .build()
+    val fromDate: LocalDate = LocalDate.of(year, month, day8th)
+    val toDate: LocalDate = LocalDate.of(year, month, day10th)
+
+    val app: Application = application.build()
 
     implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
-    val connector: ResultsPageSummary = app.injector.instanceOf[ResultsPageSummary]
+    val resultPageSummary: ResultsPageSummary = new ResultsPageSummary(fromDate, toDate)
   }
 }

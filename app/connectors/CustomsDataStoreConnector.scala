@@ -18,13 +18,13 @@ package connectors
 
 import config.AppConfig
 import models.domain.EORI
-import models.email.{EmailResponse, EmailResponses, UnverifiedEmail, UndeliverableEmail}
+import models.email.{EmailResponse, EmailResponses, UndeliverableEmail, UnverifiedEmail}
 import play.api.Logger
 import play.api.http.Status.NOT_FOUND
 import services.MetricsReporterService
 import uk.gov.hmrc.auth.core.retrieve.Email
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

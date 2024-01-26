@@ -82,6 +82,7 @@ class RequestedTransactionsController @Inject()(resultView: cash_transactions_re
   }
 
   def tooManyTransactionsRequested(dateRange: RequestedDateRange): Action[AnyContent] = identify { implicit req =>
-    Ok(tooManyResults(new ResultsPageSummary(dateRange.from, dateRange.to), controllers.routes.RequestTransactionsController.onPageLoad().url))
+    Ok(tooManyResults(new ResultsPageSummary(dateRange.from, dateRange.to),
+      controllers.routes.RequestTransactionsController.onPageLoad().url))
   }
 }

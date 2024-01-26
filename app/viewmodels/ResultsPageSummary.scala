@@ -21,6 +21,8 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.Aliases.ActionItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Actions
+import utils.Utils.{emptyString, period}
+
 import java.time.LocalDate
 
 class ResultsPageSummary(from: LocalDate, to: LocalDate)(implicit messages: Messages) extends SummaryListRowHelper {
@@ -29,10 +31,10 @@ class ResultsPageSummary(from: LocalDate, to: LocalDate)(implicit messages: Mess
     cashTransactionsResultRow(CashTransactionDates(from, to), fullStop)
   }
 
-  private def cashTransactionsResultRow(dates: CashTransactionDates, fullstop: Boolean): SummaryListRow = {
+  private def cashTransactionsResultRow(dates: CashTransactionDates, fullStop: Boolean): SummaryListRow = {
     summaryListRow(
       value = HtmlFormat.escape(
-        if (fullstop) {
+        if (fullStop) {
           rowResult(dates)
         } else {
           rowResultWithoutFullStop(dates)
@@ -51,7 +53,7 @@ class ResultsPageSummary(from: LocalDate, to: LocalDate)(implicit messages: Mess
   }
 
   private def rowResultWithoutFullStop(dates: CashTransactionDates): String = {
-    messages("date.range", formatDate(dates.start), formatDate(dates.end)).replace(".", "")
+    messages("date.range", formatDate(dates.start), formatDate(dates.end)).replace(period, emptyString)
   }
 
   def formatDate(date: LocalDate)(implicit messages: Messages): String =

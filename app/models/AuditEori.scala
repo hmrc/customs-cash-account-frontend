@@ -21,7 +21,6 @@ import play.api.libs.json.{Json, OFormat}
 
 case class AuditEori(eori: EORI, isHistoric: Boolean)
 
-
 object AuditEori {
   implicit val format: OFormat[AuditEori] = Json.format[AuditEori]
 }

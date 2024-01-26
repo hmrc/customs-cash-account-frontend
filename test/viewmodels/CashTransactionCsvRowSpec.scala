@@ -32,10 +32,6 @@ class CashTransactionCsvRowSpec extends SpecBase {
 
   "generate a closing balance" in new Setup {
 
-    override val year = 2020
-    override val month = 3
-    override val day = 4
-
     override val dailyStatement: CashDailyStatement = CashDailyStatement(
       LocalDate.of(year, month, day), 0.0, 12345.67, Nil, Nil)
 
@@ -140,6 +136,8 @@ class CashTransactionCsvRowSpec extends SpecBase {
     val withdrawalExpectedRow: CashTransactionCsvRow = expectedRow.copy(transactionType = Some(
       "Withdrawal (to account ending 5678)"), debit = Some(23.45))
 
+    println("________  withdrawalStatement " + withdrawalStatement.toReportLayout(1))
+    println("________  withdrawalExpectedRow " + withdrawalExpectedRow)
     withdrawalStatement.toReportLayout(1) must be(withdrawalExpectedRow)
   }
 
@@ -177,12 +175,9 @@ class CashTransactionCsvRowSpec extends SpecBase {
   }
 
   "order the entries correctly within each day" in new Setup {
-    override val year = 2020
-    override val month = 3
-    override val day = 3
 
     val declarations: Seq[Declaration] = Seq(Declaration("someMRN", Some("someImporterEORI"), "someEORI",
-      None, LocalDate.of(year, month, day), 1234.56, Nil))
+      None, LocalDate.of(year, month, day3rd), 1234.56, Nil))
 
     val expectedTransactionTypes: Seq[Some[String]] = Seq(
       Some("Closing balance"),
@@ -206,6 +201,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
     val year = 2020
     val month = 3
     val day = 4
+    val day3rd = 3
     val dailyStatement: CashDailyStatement = CashDailyStatement(
       LocalDate.of(year, month, day), 0.0, 0.0, Nil, Seq(transferIn))
 

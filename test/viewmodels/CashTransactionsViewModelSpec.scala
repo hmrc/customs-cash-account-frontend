@@ -81,7 +81,8 @@ class CashTransactionsViewModelSpec extends SpecBase {
       val someDeclarations = Seq(Declaration("mrn1", Some("Importer EORI"),
         "Declarant EORI", Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil))
 
-      val dailyStatement = CashDailyStatement(LocalDate.parse("2020-07-20"), 0.0, 0.00, someDeclarations, someTransactions)
+      val dailyStatement = CashDailyStatement(
+        LocalDate.parse("2020-07-20"), 0.0, 0.00, someDeclarations, someTransactions)
 
       dailyStatement.size mustBe 8
     }

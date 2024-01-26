@@ -23,5 +23,6 @@ import play.api.libs.json.{Json, OWrites}
 case class CashDailyStatementRequest(can: CAN, from: LocalDate, to: LocalDate)
 
 object CashDailyStatementRequest {
-  implicit val CashDailyStatementRequestWrites: OWrites[CashDailyStatementRequest] = Json.writes[CashDailyStatementRequest]
+  implicit val CashDailyStatementRequestWrites: OWrites[CashDailyStatementRequest] =
+    Json.writes[CashDailyStatementRequest]
 }

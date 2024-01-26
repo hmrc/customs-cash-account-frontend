@@ -18,7 +18,6 @@ package models
 
 import models.domain.CAN
 
-
 trait Balances
 
 case class CDSCashBalance(AvailableAccountBalance: Option[BigDecimal]) extends Balances

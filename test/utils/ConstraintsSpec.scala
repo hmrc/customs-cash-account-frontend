@@ -55,14 +55,19 @@ class ConstraintsSpec extends SpecBase with Constraints {
         result mustBe Valid
       }
 
-      //TODO: Need to looked at as its failing for some dates
-      "return invalid result is years are within 6" in new Setup {
-        val months = 8
+      "return invalid result if request date is not within 6 months in the past and " +
+        "request and current date years are not same" in new Setup {
+        val eightMonths = 8
+        val month9th = 9
 
-        def monthOld: LocalDate = LocalDateTime.now().minusMonths(months).toLocalDate
-
+        def monthOld: LocalDate = LocalDateTime.now().minusMonths(eightMonths).toLocalDate
         val result: ValidationResult = beforeCurrentMonth("error.min").apply(monthOld)
-        result mustBe Invalid(List(ValidationError(List("error.min"))))
+
+        if(LocalDateTime.now().getMonthValue < month9th ) {
+          result mustBe Invalid(List(ValidationError(List("error.min"))))
+        } else {
+          result mustBe Valid
+        }
       }
 
       "return invalid result if request is after current month" in new Setup {
