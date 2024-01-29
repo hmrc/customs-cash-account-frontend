@@ -27,13 +27,10 @@ import java.time.LocalDate
 
 class CashTransactionCsvRowSpec extends SpecBase {
 
-  val app: Application = application.build()
-  implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
-
   "generate a closing balance" in new Setup {
 
-    override val dailyStatement: CashDailyStatement = CashDailyStatement(
-      LocalDate.of(year, month, day), 0.0, 12345.67, Nil, Nil)
+    override val dailyStatement: CashDailyStatement =
+      CashDailyStatement(LocalDate.of(year2020, month3, day4), amountZero, 12345.67, Nil, Nil)
 
     val closingExpectedRow: CashTransactionCsvRow = expectedRow.copy(
       transactionType = Some("Closing balance"), balance = Some(12345.67))
@@ -41,23 +38,20 @@ class CashTransactionCsvRowSpec extends SpecBase {
     dailyStatement.toReportLayout.head must be(closingExpectedRow)
   }
 
-  "generate a declaration row" in {
+  "generate a declaration row" in new Setup {
 
-    val year = 2020
-    val month = 3
-    val day = 4
-
-    val taxGroups = Seq(
+    val taxGroups: Seq[TaxGroup] = Seq(
       TaxGroup(ImportVat, -1.23),
       TaxGroup(CustomsDuty, -2.34),
       TaxGroup(ExciseDuty, -3.45))
 
-    val declarations = Seq(Declaration("someMRN", Some("someImporterEORI"),
-      "someEORI", None, LocalDate.of(year, month, day), -1234.56, taxGroups))
+    val declarations: Seq[Declaration] =
+      Seq(Declaration("someMRN", Some("someImporterEORI"), "someEORI", None, dateWithDay4, -1234.56, taxGroups))
 
-    val dailyStatement = CashDailyStatement(LocalDate.of(year, month, day), 0.0, 0.0, declarations, Nil)
+    override val dailyStatement: CashDailyStatement =
+      CashDailyStatement(dateWithDay4, amountZero, amountZero, declarations, Nil)
 
-    val expectedRow = CashTransactionCsvRow(
+    override val expectedRow: CashTransactionCsvRow = CashTransactionCsvRow(
       date = Some("2020-03-04"),
       movementReferenceNumber = Some("someMRN"),
       uniqueConsignmentReference = None,
@@ -75,52 +69,42 @@ class CashTransactionCsvRowSpec extends SpecBase {
     dailyStatement.toReportLayout(1) must be(expectedRow)
   }
 
-  "order declaration rows by ascending MRN" in {
+  "order declaration rows by ascending MRN" in new Setup {
 
-    val year = 2020
-    val month = 3
-    val day = 3
-    val day1 = 4
+    val declarations: Seq[Declaration] = Seq(
+      Declaration("someMRN2", Some("someImporterEORI"), "someEORI", None, dateWithDay3, 1234.56, Nil),
+      Declaration("someMRN3", Some("someImporterEORI"), "someEORI", None, dateWithDay3, 1234.56, Nil),
+      Declaration("someMRN1", Some("someImporterEORI"), "someEORI", None, dateWithDay3, 1234.56, Nil))
 
-    val declarations = Seq(
-      Declaration("someMRN2", Some("someImporterEORI"), "someEORI",
-        None, LocalDate.of(year, month, day), 1234.56, Nil),
-      Declaration("someMRN3", Some("someImporterEORI"), "someEORI",
-        None, LocalDate.of(year, month, day), 1234.56, Nil),
-      Declaration("someMRN1", Some("someImporterEORI"), "someEORI",
-        None, LocalDate.of(year, month, day), 1234.56, Nil))
+    override val dailyStatement: CashDailyStatement =
+      CashDailyStatement(dateWithDay4, amountZero, amountZero, declarations, Nil)
 
-    val dailyStatement = CashDailyStatement(LocalDate.of(year, month, day1), 0.0, 0.0, declarations, Nil)
-    val expectedMrns = Seq(Some("someMRN1"), Some("someMRN2"), Some("someMRN3"))
+    val expectedMrns: Seq[Some[String]] = Seq(Some("someMRN1"), Some("someMRN2"), Some("someMRN3"))
 
-    val actualMrns = dailyStatement.toReportLayout.filter(
-      _.transactionType.contains("Declaration")).map(_.movementReferenceNumber)
+    val actualMrns: Seq[Option[String]] =
+      dailyStatement.toReportLayout.filter(_.transactionType.contains("Declaration")).map(_.movementReferenceNumber)
 
     actualMrns must be(expectedMrns)
   }
 
-  "default vat/duty/excise to zero if not found in the declaration" in {
-    val year = 2020
-    val month = 3
-    val day = 3
-    val day1 = 4
+  "default vat/duty/excise to zero if not found in the declaration" in new Setup {
     val taxGroups = Nil
-    val declarations = Seq(
-      Declaration("someMRN", Some("someImporterEORI"), "someEORI", None,
-        LocalDate.of(year, month, day), 1234.56, taxGroups))
+    val declarations: Seq[Declaration] = Seq(
+      Declaration("someMRN", Some("someImporterEORI"), "someEORI", None, dateWithDay3, 1234.56, taxGroups))
 
-    val dailyStatement = CashDailyStatement(LocalDate.of(year, month, day1), 0.0, 0.0, declarations, Nil)
+    override val dailyStatement: CashDailyStatement =
+      CashDailyStatement(dateWithDay4, amountZero, amountZero, declarations, Nil)
 
-    val expectedRow = CashTransactionCsvRow(
+    override val expectedRow: CashTransactionCsvRow = CashTransactionCsvRow(
       date = Some("2020-03-04"),
       movementReferenceNumber = Some("someMRN"),
       transactionType = Some("Declaration"),
       uniqueConsignmentReference = None,
       importerEori = Some("someImporterEORI"),
       declarantEori = Some("someEORI"),
-      duty = Some(0.0),
-      vat = Some(0.0),
-      excise = Some(0.0),
+      duty = Some(amountZero),
+      vat = Some(amountZero),
+      excise = Some(amountZero),
       debit = Some(1234.56),
       credit = None,
       balance = None
@@ -175,7 +159,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
   "order the entries correctly within each day" in new Setup {
 
     val declarations: Seq[Declaration] = Seq(Declaration("someMRN", Some("someImporterEORI"), "someEORI",
-      None, LocalDate.of(year, month, day3rd), 1234.56, Nil))
+      None, LocalDate.of(year2020, month3, day3), 1234.56, Nil))
 
     val expectedTransactionTypes: Seq[Some[String]] = Seq(
       Some("Closing balance"),
@@ -197,12 +181,20 @@ class CashTransactionCsvRowSpec extends SpecBase {
     val topUp: Transaction = Transaction(23.45, Payment, None)
     val transferIn: Transaction = Transaction(23.45, Transfer, None)
     val otherTransactions: Seq[Transaction] = Seq(withdrawal, transferOut, topUp, transferIn)
-    val year = 2020
-    val month = 3
-    val day = 4
-    val day3rd = 3
-    val dailyStatement: CashDailyStatement = CashDailyStatement(
-      LocalDate.of(year, month, day), 0.0, 0.0, Nil, Seq(transferIn))
+
+    val amountZero = 0.0
+
+    val year2020 = 2020
+    val month3 = 3
+    val day4 = 4
+    val day3 = 3
+
+    val dateWithDay3: LocalDate = LocalDate.of(year2020, month3, day3)
+    val dateWithDay4: LocalDate = LocalDate.of(year2020, month3, day4)
+    val dateForDailyStatement: LocalDate = LocalDate.of(year2020, month3, day4)
+
+    val dailyStatement: CashDailyStatement =
+      CashDailyStatement(dateForDailyStatement, amountZero, amountZero, Nil, Seq(transferIn))
 
     val expectedRow: CashTransactionCsvRow = CashTransactionCsvRow(
       date = Some("2020-03-04"),
@@ -218,5 +210,9 @@ class CashTransactionCsvRowSpec extends SpecBase {
       debit = None,
       balance = None
     )
+
+    val app: Application = application.build()
+
+    implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
   }
 }

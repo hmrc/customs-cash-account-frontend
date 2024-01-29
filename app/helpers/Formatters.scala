@@ -26,6 +26,10 @@ import java.util.Locale
 
 object Formatters {
 
+  val yyyyMMddDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+  val yyyyMMddHHmmssDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
+  val ddMMyyyyDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyyyy")
+
   def dateAsMonth(date: LocalDate)(implicit messages: Messages): String = messages(s"month.${date.getMonthValue}")
 
   def dateAsDayMonthAndYear(date: LocalDate)(implicit messages: Messages): String =
