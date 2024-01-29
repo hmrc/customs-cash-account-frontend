@@ -49,7 +49,8 @@ class DownloadCsvController @Inject()(
                                        mcc: MessagesControllerComponents,
                                        appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
-  def downloadRequestedCsv(disposition: Option[String], dateRange: RequestedDateRange): Action[AnyContent] =
+  def downloadRequestedCsv(disposition: Option[String],
+                           dateRange: RequestedDateRange): Action[AnyContent] =
     identify.async { implicit request =>
       Try(dateRange) match {
         case Failure(_) => Future.successful(BadRequest)
@@ -67,8 +68,10 @@ class DownloadCsvController @Inject()(
     Ok(unableToDownloadCSV())
   }
 
-  private def getAndDownloadCsv(from: LocalDate, to: LocalDate, disposition: Option[String], filename: String)(
-    implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
+  private def getAndDownloadCsv(from: LocalDate,
+                                to: LocalDate,
+                                disposition: Option[String],
+                                filename: String)(implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
     apiConnector.getCashAccount(request.eori) flatMap {
       case None => Future.successful(NotFound(eh.notFoundTemplate))
       case Some(cashAccount) => {

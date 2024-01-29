@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json._
 
-case class CashTransactions(pendingTransactions: Seq[Declaration], cashDailyStatements: Seq[CashDailyStatement]){
+case class CashTransactions(pendingTransactions: Seq[Declaration], cashDailyStatements: Seq[CashDailyStatement]) {
   def availableTransactions: Boolean = pendingTransactions.nonEmpty || cashDailyStatements.nonEmpty
 }
 

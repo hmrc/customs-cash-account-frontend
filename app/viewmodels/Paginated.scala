@@ -21,7 +21,9 @@ import models.{CashDailyStatement, Declaration}
 import java.time.LocalDate
 
 sealed trait PaginatedTransactions
+
 case class PaginatedDailyStatement(dailyStatement: CashDailyStatement) extends PaginatedTransactions
+
 case class PaginatedPendingDailyStatement(date: LocalDate, declarations: Seq[Declaration]) extends PaginatedTransactions
 
 trait Paginated {

@@ -21,8 +21,11 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds govuk-body govuk-!-margin-bottom-6">
-        <h2 class="govuk-caption-xl" id="account-number">@messages("cf.cash-account.detail.account", model.account.number)</h2>
+        <h2 class="govuk-caption-xl" id="account-number">@messages("cf.cash-account.detail.account", model.account.number)
+        </h2>
+
         @h1(msg="cf.cash-account.detail.heading")
+
         @if(showBalance) {
             <p class="govuk-label govuk-label--l govuk-!-margin-bottom-4 " id="balance-available">
                 @{

@@ -28,18 +28,21 @@ trait Constraints {
   private val date = 1
   private val month = 10
   private val year = 2019
+  private val validYearLength = 4
 
   private lazy val etmpStatementsDate: LocalDate = LocalDate.of(year, month, date)
   private lazy val dayOfMonthThatTaxYearStartsOn = 6
+
   val log: LoggerLike = Logger(this.getClass)
 
   def currentDate: LocalDate = LocalDateTime.now().toLocalDate
 
   def beforeCurrentDate(errorKey: String): Constraint[LocalDate] = Constraint {
-    case request if request.isAfter(currentDate) && request.getYear.toString.length() == 4 =>
+    case request if request.isAfter(currentDate) && request.getYear.toString.length() == validYearLength =>
       log.info("entered date in constraints: " + request)
       log.info("current date in constraints: " + currentDate)
       Invalid(ValidationError(errorKey))
+
     case _ => Valid
   }
 
@@ -52,13 +55,15 @@ trait Constraints {
   private def minTaxYear()(implicit clock: Clock): TaxYear = {
     lazy val currentDate: LocalDate = LocalDateTime.now(clock).toLocalDate
     val maximumNumberOfYears = 6
+
     taxYearFor(currentDate).back(maximumNumberOfYears)
   }
 
-  def checkDates(systemStartDateErrorKey: String, taxYearErrorKey: String,
+  def checkDates(systemStartDateErrorKey: String,
+                 taxYearErrorKey: String,
                  invalidLength: String)(implicit clock: Clock): Constraint[LocalDate] = Constraint {
 
-    case request if request.getYear.toString.length() != 4 => Invalid(invalidLength)
+    case request if request.getYear.toString.length() != validYearLength => Invalid(invalidLength)
 
     case request if Period.between(request, etmpStatementsDate).toTotalMonths > 0 =>
       Invalid(ValidationError(systemStartDateErrorKey))

@@ -16,6 +16,9 @@
 
 @this()
 
-@(key: String, classes: Option[String] = None)(implicit messages: Messages)
+@(
+  key: String,
+  classes: Option[String] = None
+)(implicit messages: Messages)
 
 <span @{classes.fold("")(classes => s"class=$classes")}>@messages(key)</span>

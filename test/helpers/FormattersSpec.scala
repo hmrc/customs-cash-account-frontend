@@ -19,22 +19,26 @@ package helpers
 import utils.SpecBase
 
 class FormattersSpec extends SpecBase {
+
   "Formatters" must {
 
     "fileSizeFormat size of 1 returns 1KB" in {
       val size: Long = 1
+
       val result = Formatters.fileSizeFormat(size)
       result mustBe "1KB"
     }
 
     "fileSizeFormat size of 1000000000 returns 1000.0MB" in {
       val size: Long = 1000000000
+
       val result = Formatters.fileSizeFormat(size)
       result mustBe "1000.0MB"
     }
 
     "fileSizeFormat size of 1000 returns " in {
       val size: Long = 100000
+
       val result = Formatters.fileSizeFormat(size)
       result mustBe "100KB"
     }

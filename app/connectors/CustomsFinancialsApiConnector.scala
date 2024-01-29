@@ -62,8 +62,8 @@ class CustomsFinancialsApiConnector @Inject()(
 
   def retrieveHistoricCashTransactions(can: String,
                                        from: LocalDate,
-                                       to: LocalDate)(
-                                        implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
+                                       to: LocalDate)
+                                      (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
     httpClient.POST[CashDailyStatementRequest, CashTransactions](
       retrieveCashTransactionsUrl, cashDailyStatementRequest).map(Right(_))
@@ -83,8 +83,8 @@ class CustomsFinancialsApiConnector @Inject()(
 
   def retrieveCashTransactions(can: String,
                                from: LocalDate,
-                               to: LocalDate)(
-                                implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
+                               to: LocalDate)
+                              (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
     cacheRepository.get(can).flatMap {
@@ -118,8 +118,8 @@ class CustomsFinancialsApiConnector @Inject()(
 
   def retrieveCashTransactionsDetail(can: String,
                                      from: LocalDate,
-                                     to: LocalDate)(
-                                      implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
+                                     to: LocalDate)
+                                    (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
     httpClient.POST[CashDailyStatementRequest, CashTransactions](

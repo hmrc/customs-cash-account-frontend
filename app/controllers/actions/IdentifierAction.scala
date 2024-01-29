@@ -30,7 +30,9 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
+trait IdentifierAction
+  extends ActionBuilder[IdentifierRequest, AnyContent]
+    with ActionFunction[Request, IdentifierRequest]
 
 class AuthenticatedIdentifierAction @Inject()(
                                                override val authConnector: AuthConnector,
@@ -41,13 +43,19 @@ class AuthenticatedIdentifierAction @Inject()(
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised().retrieve(Retrievals.credentials and Retrievals.name and Retrievals.email
-      and Retrievals.affinityGroup and Retrievals.internalId and Retrievals.allEnrolments) {
+    authorised().retrieve(
+      Retrievals.credentials
+      and Retrievals.name
+      and Retrievals.email
+      and Retrievals.affinityGroup
+      and Retrievals.internalId
+      and Retrievals.allEnrolments) {
       case Some(_) ~ _ ~ _ ~ Some(_) ~ Some(_) ~ allEnrolments =>
         allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber")) match {
           case Some(eori) => block(IdentifierRequest(request, eori.value))
           case None => Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
         }
+
       case _ => throw InsufficientEnrolments()
     } recover {
       case _: NoActiveSession =>

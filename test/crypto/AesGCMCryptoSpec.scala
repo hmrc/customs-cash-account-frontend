@@ -28,6 +28,7 @@ class AesGCMCryptoSpec extends SpecBase {
   private val secretKey = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
   private val secretKey2 = "cXo7u0HuJK8B/52xLwW7eQ=="
   private val textToEncrypt = "textNotEncrypted"
+
   private val encryptedText = EncryptedValue("sTe+0SVx5j5y509Nq8tIyflvnsRMfMC5Ae03fNUEarI=",
     "RosGoD7PB/RGTz9uYEvU86zB/LxuWRUGQ2ay9PYbqWBKgy1Jy+j+" +
       "REmx+cp74VhtvTrfFttQv4ArHUc/1tMyl3fGz3/cr8Tm1BHzanv659kI2MJqMynltIsY9fqdDpmO")
@@ -79,7 +80,7 @@ class AesGCMCryptoSpec extends SpecBase {
 
     "must return an EncryptionDecryptionException if the key is empty" in {
       val decryptAttempt = intercept[EncryptionDecryptionException](
-        encrypter.decrypt(encryptedText, "")
+        encrypter.decrypt(encryptedText, emptyString)
       )
 
       decryptAttempt.failureReason must include("The key provided is invalid")

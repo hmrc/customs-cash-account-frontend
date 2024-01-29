@@ -24,6 +24,7 @@ import java.time.LocalDate
 
 class LocalDateFormatterSpec extends SpecBase {
   "bind" must {
+
     "return the correct LocalDate when the supplied data is valid" in new SetUp {
 
       val year = 2022
@@ -90,6 +91,7 @@ class LocalDateFormatterSpec extends SpecBase {
   }
 
   "formErrorKeysInCaseOfEmptyOrNonNumericValues" must {
+
     "return key.day as updated key when day value is empty" in new SetUp {
       val localDateFormatterWithEmptyDay = new LocalDateFormatter(invalidMsgKey, Seq())
 

@@ -40,6 +40,7 @@ case class CashTransactionsViewModel(cashTransactions: CashTransactions, page: O
 
   override val allItems: Seq[PaginatedTransactions] =
     pendingTransactionsGroupedByDate ++ cashTransactions.cashDailyStatements.sorted.map(PaginatedDailyStatement)
+
   override val itemsPerPage: Int = appConfig.numberOfDaysToShow
   override val requestedPage: Int = page.getOrElse(1)
   override val urlForPage: Int => String = e => controllers.routes.CashAccountController.showAccountDetails(Some(e)).url
@@ -49,6 +50,7 @@ object CashTransactionsViewModel {
 
   implicit class CashDailyStatementViewModel(cashDailyStatement: CashDailyStatement) {
     private val numberOfBalanceRows = 2
+
     val size: Int = cashDailyStatement.declarations.size +
       cashDailyStatement.topUps.size +
       cashDailyStatement.withdrawals.size +

@@ -45,7 +45,8 @@ class ResultsPageSummary(from: LocalDate, to: LocalDate)(implicit messages: Mess
           None, RequestedDateRange(dates.start, dates.end)).url,
         content = span(messages("cf.cash-account.detail.csv")),
         visuallyHiddenText = Some(messages("cf.cash-account.detail.csv-definition"))
-      ))))
+      )))
+    )
   }
 
   private def rowResult(dates: CashTransactionDates): String = {
@@ -60,7 +61,9 @@ class ResultsPageSummary(from: LocalDate, to: LocalDate)(implicit messages: Mess
     s"${dateAsDay(date)} ${dateAsMonth(date)} ${date.getYear}"
 
   def dateAsDay(date: LocalDate): String = {
-    if (date.getDayOfMonth >= 10) {
+    val dayTenth = 10
+
+    if (date.getDayOfMonth >= dayTenth) {
       s"${date.getDayOfMonth}"
     }
     else {

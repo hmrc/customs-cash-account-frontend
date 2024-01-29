@@ -45,9 +45,9 @@ class DefaultRequestedTransactionsCache @Inject()(mongoComponent: MongoComponent
       ))) with RequestedTransactionsCache {
 
   override def get(id: String): Future[Option[CashTransactionDates]] = collection
-      .find(equal("_id", id))
-      .toSingle()
-      .toFutureOption()
+    .find(equal("_id", id))
+    .toSingle()
+    .toFutureOption()
 
   override def clear(id: String): Future[Boolean] =
     collection.deleteOne(equal("_id", id))
@@ -55,15 +55,17 @@ class DefaultRequestedTransactionsCache @Inject()(mongoComponent: MongoComponent
       .map(_.wasAcknowledged())
 
   override def set(id: String, data: CashTransactionDates): Future[Boolean] = collection.replaceOne(
-      equal("_id", id),
-      data,
-      ReplaceOptions().upsert(true)
-    ).toFuture()
-      .map(_.wasAcknowledged())
+    equal("_id", id),
+    data,
+    ReplaceOptions().upsert(true)
+  ).toFuture()
+    .map(_.wasAcknowledged())
 }
 
 trait RequestedTransactionsCache {
   def get(id: String): Future[Option[CashTransactionDates]]
+
   def set(id: String, data: CashTransactionDates): Future[Boolean]
+
   def clear(id: String): Future[Boolean]
 }

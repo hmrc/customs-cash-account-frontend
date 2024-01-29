@@ -27,6 +27,7 @@ class ConstraintsSpec extends SpecBase with Constraints {
   "Constraints" should {
 
     "currentDate" must {
+
       "current date should return a local date time" in new Setup {
         val target: LocalDate = currentDate
         ld mustBe target
@@ -34,6 +35,7 @@ class ConstraintsSpec extends SpecBase with Constraints {
     }
 
     "beforeCurrentMonth" must {
+
       "return Valid if request is equal to current month" in new Setup {
         val result: ValidationResult = beforeCurrentMonth("error.min").apply(ld)
         result mustBe Valid
@@ -61,9 +63,10 @@ class ConstraintsSpec extends SpecBase with Constraints {
         val month9th = 9
 
         def monthOld: LocalDate = LocalDateTime.now().minusMonths(eightMonths).toLocalDate
+
         val result: ValidationResult = beforeCurrentMonth("error.min").apply(monthOld)
 
-        if(LocalDateTime.now().getMonthValue < month9th ) {
+        if (LocalDateTime.now().getMonthValue < month9th) {
           result mustBe Invalid(List(ValidationError(List("error.min"))))
         } else {
           result mustBe Valid
@@ -88,6 +91,7 @@ class ConstraintsSpec extends SpecBase with Constraints {
     "beforeCurrentDate" must {
       "return Valid if request before or equal to current date" in new Setup {
         val result: ValidationResult = beforeCurrentDate("error.min").apply(ld)
+
         result mustBe Valid
       }
 

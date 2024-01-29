@@ -24,8 +24,11 @@ import utils.SpecBase
 import views.html.components.p
 
 class PSpec extends SpecBase {
+
   "component" should {
+
     "display correct contents" when {
+
       "only message key has been provided" in new Setup {
         pComponent.text() mustBe msgs(msgKey)
         pComponent.getElementsByClass(defaultClass).text() mustBe msgs(msgKey)

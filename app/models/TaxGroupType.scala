@@ -23,7 +23,7 @@ sealed trait TaxGroupType {
 }
 
 object TaxGroupType {
-  implicit val taxGroupReads: Reads[TaxGroupType] = new Reads[TaxGroupType]{
+  implicit val taxGroupReads: Reads[TaxGroupType] = new Reads[TaxGroupType] {
     override def reads(json: JsValue): JsResult[TaxGroupType] = {
       json.as[String] match {
         case "Import VAT" => JsSuccess(ImportVat)
@@ -34,7 +34,7 @@ object TaxGroupType {
     }
   }
 
-  implicit val taxGroupWrites: Writes[TaxGroupType] = new Writes[TaxGroupType]{
+  implicit val taxGroupWrites: Writes[TaxGroupType] = new Writes[TaxGroupType] {
     override def writes(o: TaxGroupType): JsString = JsString {
       o match {
         case ImportVat => "Import VAT"

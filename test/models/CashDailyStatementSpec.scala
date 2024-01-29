@@ -22,6 +22,7 @@ import play.api.libs.json.{JsResult, JsString, JsSuccess, JsValue}
 class CashDailyStatementSpec extends SpecBase {
 
   "taxGroupTypeReads" must {
+
     "read ImportVat correctly as jsSuccess ImportVat" in new Setup {
       val res: JsResult[TaxGroupType] = CashDailyStatement.taxGroupTypeReads.reads(jsImport)
       res mustBe JsSuccess(ImportVat)
@@ -39,6 +40,7 @@ class CashDailyStatementSpec extends SpecBase {
   }
 
   "cashTransactionTypeReads" must {
+
     "read Payment correctly as jsSuccess Payment" in new Setup {
       val res: JsResult[CashTransactionType] = CashDailyStatement.cashTransactionTypeReads.reads(jsPayment)
       res mustBe JsSuccess(Payment)
@@ -56,6 +58,7 @@ class CashDailyStatementSpec extends SpecBase {
   }
 
   "cashTransactionTypeWrites" must {
+
     "write Payment correctly as JsString Payment" in new Setup {
       val res: JsValue = CashDailyStatement.cashTransactionTypeWrites.writes(Payment)
       res mustBe jsPayment

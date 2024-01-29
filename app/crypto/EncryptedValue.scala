@@ -33,7 +33,6 @@ object EncryptedValue {
 
 case class EncryptionDecryptionException(method: String, reason: String, message: String) extends RuntimeException {
   val failureReason = s"$reason for $method"
-  val failureMessage: String = message
 }
 
 class AesGCMCrypto @Inject()() {
@@ -77,7 +76,7 @@ class AesGCMCrypto @Inject()() {
     new SecretKeySpec(decodedKey, 0, decodedKey.length, ALGORITHM_KEY)
   } match {
     case Success(secretKey) => secretKey
-    case Failure(ex) => throw new EncryptionDecryptionException(method, "The key provided is invalid", ex.getMessage)
+    case Failure(ex) => throw EncryptionDecryptionException(method, "The key provided is invalid", ex.getMessage)
   }
 
   def generateCipherText(valueToEncrypt: String, gcmParameterSpec: GCMParameterSpec, secretKey: SecretKey): String = {

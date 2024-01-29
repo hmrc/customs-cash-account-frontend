@@ -25,7 +25,9 @@ object FormTestHelper extends Matchers {
 
   def singleError(key: String, value: String): FormError = FormError(key, value)
 
-  def checkForError(form: Form[_], data: Map[String, String], expectedErrors: Seq[FormError]): Unit = {
+  def checkForError(form: Form[_],
+                    data: Map[String, String],
+                    expectedErrors: Seq[FormError]): Unit = {
     form.bind(data).fold(
       formWithErrors => {
         formWithErrors.errors mustBe expectedErrors

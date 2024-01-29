@@ -17,7 +17,5 @@
 package viewmodels
 
 trait FieldNames {
-
   def fieldNames: Seq[String]
-
 }

@@ -73,11 +73,7 @@ case class ReturnParameters(paramName: String, paramValue: String)
 
 case class AccountResponseDetail(EORINo: Option[String],
                                  referenceDate: Option[String],
-                                 cdsCashAccount: Option[Seq[CdsCashAccount]]) {
-
-  val totalNumberOfAccounts: Int = cdsCashAccount.map(_.size).getOrElse(0)
-}
-
+                                 cdsCashAccount: Option[Seq[CdsCashAccount]])
 
 case class CdsCashAccount(account: Account, availableAccountBalance: Option[String]) {
   def toDomain: CashAccount = {
@@ -110,8 +106,12 @@ object CDSAccountStatus {
   }
 }
 
-case class Account(number: String, `type`: String, owner: String, accountStatus: Option[CDSAccountStatus],
-                   viewBalanceIsGranted: Boolean, isleOfManFlag: Option[Boolean])
+case class Account(number: String,
+                   `type`: String,
+                   owner: String,
+                   accountStatus: Option[CDSAccountStatus],
+                   viewBalanceIsGranted: Boolean,
+                   isleOfManFlag: Option[Boolean])
 
 case class Limits(periodGuaranteeLimit: String, periodAccountLimit: String)
 

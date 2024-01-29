@@ -33,11 +33,10 @@
 
 @if(pWrapped){
  <p @{pId.fold("")(id => s"id=$id")} class="@pClass">
-  @preLinkMessage.map(m => messages(m))
-  @link
-  @postLinkMessage.map(m => messages(m))
+      @preLinkMessage.map(m => messages(m))
+      @link
+      @postLinkMessage.map(m => messages(m))
  </p>
 } else {
- @link
+     @link
 }
-

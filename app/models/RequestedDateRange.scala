@@ -23,7 +23,7 @@ import java.time.LocalDate
 
 case class RequestedDateRange(from: LocalDate, to: LocalDate)
 object RequestedDateRange {
-  implicit val binder = new RequestedDateRangeQueryStringBindable
+  implicit val binder: RequestedDateRangeQueryStringBindable = new RequestedDateRangeQueryStringBindable
 }
 
 class RequestedDateRangeQueryStringBindable extends QueryStringBindable[RequestedDateRange] {

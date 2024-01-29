@@ -16,22 +16,36 @@
 
 package utils
 
+import utils.Utils._
+
 class UtilsSpec extends SpecBase {
   "Comma" should {
     "return correct value" in {
-      Utils.comma mustBe ","
+      comma mustBe ","
     }
   }
 
   "Empty string" should {
     "return correct value" in {
-      Utils.emptyString mustBe ""
+      emptyString mustBe ""
     }
   }
 
   "Period" should {
     "return correct value" in {
-      Utils.period mustBe "."
+      period mustBe "."
+    }
+  }
+
+  "hyphen" should {
+    "return correct value" in {
+      hyphen mustBe "-"
+    }
+  }
+
+  "singleSpace" should {
+    "return correct value" in {
+      singleSpace mustBe " "
     }
   }
 }

@@ -136,8 +136,6 @@ class CashTransactionCsvRowSpec extends SpecBase {
     val withdrawalExpectedRow: CashTransactionCsvRow = expectedRow.copy(transactionType = Some(
       "Withdrawal (to account ending 5678)"), debit = Some(23.45))
 
-    println("________  withdrawalStatement " + withdrawalStatement.toReportLayout(1))
-    println("________  withdrawalExpectedRow " + withdrawalExpectedRow)
     withdrawalStatement.toReportLayout(1) must be(withdrawalExpectedRow)
   }
 
@@ -189,6 +187,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
 
     val orderedStatement: CashDailyStatement = dailyStatement.copy(
       declarations = declarations, otherTransactions = otherTransactions)
+
     orderedStatement.toReportLayout.map(_.transactionType) must be(expectedTransactionTypes)
   }
 

@@ -52,6 +52,7 @@ class CashTransactionsEncrypterSpec extends SpecBase {
   }
 
   "encrypt / decrypt cashTransactions" must {
+
     "encrypt cashTransactions" in new Setup {
       val encryptedCashTransactions: EncryptedCashTransactions =
         encrypter.encryptCashTransactions(cashTransactions, secretKey)

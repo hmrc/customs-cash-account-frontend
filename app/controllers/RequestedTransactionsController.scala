@@ -28,7 +28,10 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.RequestedTransactionsCache
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.ResultsPageSummary
-import views.html.{cash_account_transactions_not_available, cash_transactions_no_result, cash_transactions_result_page, cash_transactions_too_many_results}
+import views.html.{
+  cash_account_transactions_not_available, cash_transactions_no_result, cash_transactions_result_page,
+  cash_transactions_too_many_results
+}
 import cats.implicits._
 import play.api.Logging
 
@@ -44,8 +47,8 @@ class RequestedTransactionsController @Inject()(resultView: cash_transactions_re
                                                 identify: IdentifierAction,
                                                 eh: ErrorHandler,
                                                 cache: RequestedTransactionsCache,
-                                                mcc: MessagesControllerComponents)(
-                                                 implicit executionContext: ExecutionContext, appConfig: AppConfig)
+                                                mcc: MessagesControllerComponents)
+                                               (implicit executionContext: ExecutionContext, appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport with Logging {
 
   def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
@@ -62,8 +65,11 @@ class RequestedTransactionsController @Inject()(resultView: cash_transactions_re
     }
   }
 
-  private def showAccountWithTransactionDetails(account: CashAccount, from: LocalDate, to: LocalDate)(
-    implicit req: IdentifierRequest[AnyContent], appConfig: AppConfig): Future[Result] = {
+  private def showAccountWithTransactionDetails(account: CashAccount,
+                                                from: LocalDate,
+                                                to: LocalDate)
+                                               (implicit req: IdentifierRequest[AnyContent],
+                                                appConfig: AppConfig): Future[Result] = {
     apiConnector.retrieveHistoricCashTransactions(account.number, from, to).map {
       case Left(errorResponse) =>
         errorResponse match {
@@ -72,17 +78,27 @@ class RequestedTransactionsController @Inject()(resultView: cash_transactions_re
           case TooManyTransactionsRequested => Redirect(
             routes.RequestedTransactionsController.tooManyTransactionsRequested(RequestedDateRange(from, to)))
 
-          case _ => Ok(
-            transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
+          case _ =>
+            Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
         }
 
-      case Right(_) => Ok(resultView(new ResultsPageSummary(from, to),
-        controllers.routes.CashAccountController.showAccountDetails(None).url))
+      case Right(_) =>
+        Ok(
+          resultView(
+            new ResultsPageSummary(from, to),
+            controllers.routes.CashAccountController.showAccountDetails(None).url)
+        )
     }
   }
 
-  def tooManyTransactionsRequested(dateRange: RequestedDateRange): Action[AnyContent] = identify { implicit req =>
-    Ok(tooManyResults(new ResultsPageSummary(dateRange.from, dateRange.to),
-      controllers.routes.RequestTransactionsController.onPageLoad().url))
-  }
+  def tooManyTransactionsRequested(dateRange: RequestedDateRange): Action[AnyContent] =
+    identify {
+      implicit req =>
+
+        Ok(
+          tooManyResults(
+            new ResultsPageSummary(dateRange.from, dateRange.to),
+            controllers.routes.RequestTransactionsController.onPageLoad().url)
+        )
+    }
 }

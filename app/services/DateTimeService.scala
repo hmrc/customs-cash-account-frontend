@@ -23,6 +23,7 @@ import javax.inject.Inject
 
 class DateTimeService @Inject()(appConfig: AppConfig) {
 
+  private val defaultTimeZone = "Europe/London"
   def getTimeStamp: OffsetDateTime = OffsetDateTime.ofInstant(Instant.now(), ZoneOffset.UTC)
 
   def systemDateTime(zoneId: ZoneId): LocalDateTime = {
@@ -46,6 +47,6 @@ class DateTimeService @Inject()(appConfig: AppConfig) {
   }
 
   def localDateTime(): LocalDateTime = {
-    systemDateTime(ZoneId.of("Europe/London"))
+    systemDateTime(ZoneId.of(defaultTimeZone))
   }
 }

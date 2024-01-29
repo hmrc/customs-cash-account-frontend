@@ -37,6 +37,7 @@ import scala.util.Random
 
 class DownloadCsvControllerSpec extends SpecBase {
   "downloadCSV" must {
+
     "return OK with the user's CSV of cash transactions" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))

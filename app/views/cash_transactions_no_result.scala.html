@@ -18,8 +18,8 @@
 
 @this(
     main_template: Layout,
-        h1: components.h1,
-        inset: components.inset
+    h1: components.h1,
+    inset: components.inset
 )
 
 @(summary: ResultsPageSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -30,5 +30,6 @@
     help = true
 ) {
     @h1("cf.cash-account.transactions.result.no.transactions")
+
     @inset("cf.cash-account.transactions.result.no.data", additionalContent = Some(summary.rows(true).value.content.asHtml))
 }

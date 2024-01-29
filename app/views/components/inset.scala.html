@@ -16,7 +16,11 @@
 
 @this(govukInsetText: GovukInsetText)
 
-@(msg: String, id: Option[String] = None, additionalContent: Option[Html] = None)(implicit messages: Messages)
+@(
+  msg: String,
+  id: Option[String] = None,
+  additionalContent: Option[Html] = None
+)(implicit messages: Messages)
 
 @govukInsetText(InsetText(
     content = HtmlContent(Html(messages(msg)) + additionalContent.map(v => s" $v").getOrElse("")),

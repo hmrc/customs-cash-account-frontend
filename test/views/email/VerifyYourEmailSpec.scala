@@ -29,6 +29,7 @@ import views.html.email.verify_your_email
 class VerifyYourEmailSpec extends SpecBase {
 
   "view" should {
+
     "display correct guidance and text" in new Setup {
 
       view.title() mustBe

@@ -22,6 +22,7 @@ import utils.SpecBase
 class AppConfigSpec extends SpecBase {
 
   "AppConfig" should {
+
     "contain correct values for the provided configuration" in new Setup {
       appConfig.appName mustBe "customs-cash-account-frontend"
       appConfig.loginUrl mustBe "http://localhost:9553/bas-gateway/sign-in"

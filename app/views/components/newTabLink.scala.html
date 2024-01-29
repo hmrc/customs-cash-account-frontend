@@ -21,10 +21,14 @@
     href: String, 
     preLinkMessage: Option[String] = None,
     classes: String = "govuk-body"
-)(implicit messages: Messages, appConfig: AppConfig)
+)(
+    implicit messages: Messages,
+    appConfig: AppConfig
+)
 
 <p class="@classes">
     @preLinkMessage.map(messages(_))
+
     @hmrcNewTabLink(
         NewTabLink(
             language = Some(messages.lang.toString),

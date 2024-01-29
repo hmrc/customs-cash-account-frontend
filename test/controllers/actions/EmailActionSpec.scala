@@ -33,6 +33,7 @@ import scala.concurrent.Future
 class EmailActionSpec extends SpecBase {
 
   "filter" should {
+
     "let requests with validated email through" in new Setup {
       running(app) {
         when(mockDataStoreConnector.getEmail(any)(any)).
@@ -47,7 +48,7 @@ class EmailActionSpec extends SpecBase {
     "let request through, when getEmail throws service unavailable exception" in new Setup {
       running(app) {
         when(mockDataStoreConnector.getEmail(any)(any)).
-          thenReturn(Future.failed(new ServiceUnavailableException("")))
+          thenReturn(Future.failed(new ServiceUnavailableException(emptyString)))
 
         emailAction.filter(authenticatedRequest).map {
           _ mustBe None

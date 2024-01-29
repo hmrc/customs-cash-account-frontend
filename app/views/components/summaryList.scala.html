@@ -18,13 +18,19 @@
 
 @this()
 
-@(summary: ResultsPageSummary, fullstop: Boolean = true)(implicit messages: Messages)
+@(
+    summary: ResultsPageSummary,
+    fullstop: Boolean = true
+)(
+    implicit messages: Messages
+)
 
 <dl class="govuk-summary-list govuk-!margin-top-7 govuk-!-padding-bottom-7">
     <div class="govuk-summary-list__row govuk-!-margin-bottom-9">
         <dt class="govuk-summary-list__value">
             @summary.rows(fullstop).value.content.asHtml
         </dt>
+
         <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="@summary.rows(fullstop).actions.head.items.head.href">
                 <span class="govuk-visually-hidden">

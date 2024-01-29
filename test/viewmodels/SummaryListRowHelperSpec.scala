@@ -23,8 +23,10 @@ import utils.SpecBase
 class SummaryListRowHelperSpec extends SpecBase with SummaryListRowHelper {
 
   "summaryListRow" should {
+
     "correctly return a summary list row" in {
       val result = summaryListRow("something", Some("something"), Actions())
+
       result.actions mustBe Some(Actions())
       result.value mustBe Value(HtmlContent("something"))
       result.secondValue mustBe Some(Value(HtmlContent("something"), classes = ""))

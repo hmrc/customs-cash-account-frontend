@@ -39,7 +39,4 @@ trait ViewTestHelper extends SpecBase {
   def shouldContainBackLinkUrl(view: Document,
                                url: String): Assertion =
     view.html().contains(url) mustBe true
-
-  // TODO: more common assertions to be added (should be done to increase the re-usability and
-  //  consistency in test classes)
 }

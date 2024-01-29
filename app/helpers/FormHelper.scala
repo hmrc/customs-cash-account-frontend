@@ -31,14 +31,21 @@ object FormHelper {
     val endDateMsgKeyList = List(futureEndDateMsgKey, etmpEndDateMsgKey, taxYearEndDateMsgKey)
 
     if ((key.equals("start") || key.equals("end"))) {
-      if (startDateMsgKeyList.contains(errorMsg) || endDateMsgKeyList.contains(errorMsg)) {
-        s"$key.day"
-      }
-      else {
-        s"$key.year"
-      }
+      retrieveKeyForErrorMsg(key, errorMsg, startDateMsgKeyList, endDateMsgKeyList)
     } else {
       key
+    }
+  }
+
+  private def retrieveKeyForErrorMsg(key: String,
+                                     errorMsg: String,
+                                     startDateMsgKeyList: List[String],
+                                     endDateMsgKeyList: List[String]): String = {
+    if (startDateMsgKeyList.contains(errorMsg) || endDateMsgKeyList.contains(errorMsg)) {
+      s"$key.day"
+    }
+    else {
+      s"$key.year"
     }
   }
 }

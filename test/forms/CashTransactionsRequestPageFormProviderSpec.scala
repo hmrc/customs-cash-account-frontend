@@ -34,7 +34,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
       }
 
       "the day of start date is blank " in new SetUp {
-        val startDate: Map[String, String] = populateFormValueMap("start", "", "10", "2021")
+        val startDate: Map[String, String] = populateFormValueMap("start", emptyString, "10", "2021")
         val validEndDate: Map[String, String] = populateFormValueMap("end", "10", "10", "2021")
         val formData: Map[String, String] = startDate ++ validEndDate
 
@@ -44,7 +44,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
       }
 
       "the month of start date is blank " in new SetUp {
-        val startDate: Map[String, String] = populateFormValueMap("start", "10", "", "2021")
+        val startDate: Map[String, String] = populateFormValueMap("start", "10", emptyString, "2021")
         val validEndDate: Map[String, String] = populateFormValueMap("end", "10", "10", "2021")
         val formData: Map[String, String] = startDate ++ validEndDate
 
@@ -54,7 +54,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
       }
 
       "the year of start date is blank " in new SetUp {
-        val startDate: Map[String, String] = populateFormValueMap("start", "10", "10", "")
+        val startDate: Map[String, String] = populateFormValueMap("start", "10", "10", emptyString)
         val validEndDate: Map[String, String] = populateFormValueMap("end", "10", "10", "2021")
         val formData: Map[String, String] = startDate ++ validEndDate
 
@@ -161,7 +161,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
         val validStartDate: Map[String, String] =
           populateFormValueMap("start", "10", "10", "2021")
 
-        val endDate: Map[String, String] = populateFormValueMap("end", "", "10", "2021")
+        val endDate: Map[String, String] = populateFormValueMap("end", emptyString, "10", "2021")
         val formData: Map[String, String] = validStartDate ++ endDate
 
         val expectedErrors: Seq[FormError] = error("end.day", "cf.form.error.end.date-number-invalid")
@@ -173,7 +173,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
         val validStartDate: Map[String, String] =
           populateFormValueMap("start", "10", "10", "2021")
 
-        val endDate: Map[String, String] = populateFormValueMap("end", "10", "", "2021")
+        val endDate: Map[String, String] = populateFormValueMap("end", "10", emptyString, "2021")
         val formData: Map[String, String] = validStartDate ++ endDate
 
         val expectedErrors: Seq[FormError] = error("end.month", "cf.form.error.end.date-number-invalid")
@@ -185,7 +185,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
         val validStartDate: Map[String, String] =
           populateFormValueMap("start", "10", "10", "2021")
 
-        val endDate: Map[String, String] = populateFormValueMap("end", "10", "10", "")
+        val endDate: Map[String, String] = populateFormValueMap("end", "10", "10", emptyString)
         val formData: Map[String, String] = validStartDate ++ endDate
 
         val expectedErrors: Seq[FormError] = error("end.year", "cf.form.error.end.date-number-invalid")

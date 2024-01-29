@@ -103,7 +103,6 @@ class RequestedTransactionsControllerSpec extends SpecBase {
     running(app) {
       val result = route(app, request).value
       status(result) mustBe SEE_OTHER
-      //contentAsString(result) must include regex "Your search returned too many results"
     }
   }
 
@@ -130,6 +129,7 @@ class RequestedTransactionsControllerSpec extends SpecBase {
     val day = 30
     val month = 3
     val year = 2023
+
     when(mockRequestedTransactionsCache.get(any))
       .thenReturn(Future.successful(Some(CashTransactionDates(
         LocalDate.of(year, month, day), LocalDate.of(year, month, day)))))

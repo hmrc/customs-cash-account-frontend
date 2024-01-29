@@ -82,6 +82,7 @@ class CashAccountController @Inject()(
           case Some(_) => Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
           case None => Ok(noTransactions(CashAccountViewModel(req.eori, account)))
         }
+
         case TooManyTransactionsRequested => Redirect(routes.CashAccountController.tooManyTransactions())
 
         case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account),

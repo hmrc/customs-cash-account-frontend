@@ -21,9 +21,11 @@ import play.api.test.Helpers
 import utils.SpecBase
 
 class DateFormatSpec extends SpecBase {
+
   implicit val messages: Messages = Helpers.stubMessages()
 
   "CurrencyFormatters.formatCurrencyAmount" should {
+
     "format a number to the given number of decimals" in {
       Formatters.formatCurrencyAmount(amount = 999.6565) must be ("£999.66")
     }

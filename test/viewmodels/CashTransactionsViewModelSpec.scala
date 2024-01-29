@@ -71,6 +71,7 @@ class CashTransactionsViewModelSpec extends SpecBase {
   }
 
   "CashDailyStatementViewModel" should {
+
     "calculates the overall size of the collection" in {
       val someTransactions = Seq(Transaction(123.45, Payment, None),
         Transaction(223.45, Payment, None),
@@ -91,6 +92,7 @@ class CashTransactionsViewModelSpec extends SpecBase {
   trait Setup {
     val mockAppConfig: AppConfig = mock[AppConfig]
     val expectedValue: Int = 5
+
     when(mockAppConfig.numberOfDaysToShow).thenReturn(expectedValue)
 
     val cashDailyStatements: Seq[CashDailyStatement] = Seq(
@@ -138,6 +140,7 @@ class CashTransactionsViewModelSpec extends SpecBase {
     val cashTransactions: CashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements)
     val cashTransactionsWithNoDailyStatement: CashTransactions = CashTransactions(listOfPendingTransactions, Seq.empty)
     val model: CashTransactionsViewModel = CashTransactionsViewModel(cashTransactions, Some(1))(mockAppConfig)
+
     val modelWithNoDailyStatement: CashTransactionsViewModel =
       CashTransactionsViewModel(cashTransactionsWithNoDailyStatement, None)(mockAppConfig)
 

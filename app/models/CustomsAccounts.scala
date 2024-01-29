@@ -25,5 +25,4 @@ case class CDSCashBalance(AvailableAccountBalance: Option[BigDecimal]) extends B
 case class CashAccount(number: CAN,
                        owner: String,
                        status: CDSAccountStatus,
-                       balances: CDSCashBalance
-                      )
+                       balances: CDSCashBalance)

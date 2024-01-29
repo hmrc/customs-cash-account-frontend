@@ -95,9 +95,10 @@ class AuditingServiceSpec extends SpecBase {
   trait Setup {
     implicit val hc: HeaderCarrier = HeaderCarrier()
 
+    val oneDay = 1
     val now: LocalDateTime = LocalDateTime.now()
-    val today: LocalDate = now.toLocalDate()
-    val tomorrow: LocalDate = today.plusDays(1)
+    val today: LocalDate = now.toLocalDate
+    val tomorrow: LocalDate = today.plusDays(oneDay)
 
     val expectedAuditSource = "customs-cash-account-frontend"
 

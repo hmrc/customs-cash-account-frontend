@@ -22,6 +22,7 @@ import utils.SpecBase
 class UnauthorisedControllerSpec extends SpecBase {
 
   "onPageLoad" must {
+
     "return OK" in {
       val app = application.build()
 

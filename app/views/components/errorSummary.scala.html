@@ -16,10 +16,14 @@
 
 @this(govukErrorSummary: GovukErrorSummary)
 
-@(errors: Seq[FormError],
-errorFieldName: Option[String],
-isErrorKeyUpdateEnabled: Boolean = false,
-updateFormErrorKeyForTheMessage:Option[(String, String) => String] = None)(implicit messages: Messages)
+@(
+    errors: Seq[FormError],
+    errorFieldName: Option[String],
+    isErrorKeyUpdateEnabled: Boolean = false,
+    updateFormErrorKeyForTheMessage:Option[(String, String) => String] = None
+)(
+    implicit messages: Messages
+)
 
 @if(errors.nonEmpty) {
     @defining(errors.map { error =>

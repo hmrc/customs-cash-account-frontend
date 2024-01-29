@@ -30,6 +30,7 @@ case class CashDailyStatement(date: LocalDate,
 
   val withdrawals: Seq[Transaction] = otherTransactions.filter(_.transactionType == Withdrawal)
   val topUps: Seq[Transaction] = otherTransactions.filter(_.transactionType == Payment)
+
   val transfersOut: Seq[Transaction] = otherTransactions.filter { transaction =>
     transaction.transactionType == Transfer && transaction.amount < 0
   }

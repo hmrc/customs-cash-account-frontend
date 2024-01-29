@@ -24,7 +24,6 @@ import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime}
 import java.util.Locale
 
-
 object Formatters {
 
   def dateAsMonth(date: LocalDate)(implicit messages: Messages): String = messages(s"month.${date.getMonthValue}")
@@ -50,9 +49,9 @@ object Formatters {
   def formatCurrencyAmount(amount: BigDecimal): String = {
     val maxDecimalPlaces: Int = 2
     val numberFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.UK)
+
     numberFormat.setMaximumFractionDigits(maxDecimalPlaces)
     numberFormat.setMinimumFractionDigits(maxDecimalPlaces)
     numberFormat.format(amount.abs)
   }
 }
-

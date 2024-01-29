@@ -38,6 +38,7 @@ import scala.util.Random
 class CashAccountControllerSpec extends SpecBase {
 
   "show account details" must {
+
     "return OK" in new Setup {
 
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
@@ -93,7 +94,7 @@ class CashAccountControllerSpec extends SpecBase {
         app.injector.instanceOf[cash_account_transactions_not_available]
 
       val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-      val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest("", ""))
+      val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
       running(app) {
 
@@ -127,7 +128,7 @@ class CashAccountControllerSpec extends SpecBase {
         app.injector.instanceOf[cash_account_no_transactions_with_balance]
 
       val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-      val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest("", ""))
+      val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
       running(app) {
 
@@ -157,7 +158,7 @@ class CashAccountControllerSpec extends SpecBase {
 
       val view: cash_account_no_transactions = app.injector.instanceOf[cash_account_no_transactions]
       val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-      val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest("", ""))
+      val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
@@ -186,7 +187,7 @@ class CashAccountControllerSpec extends SpecBase {
 
       val view: cash_account_no_transactions = app.injector.instanceOf[cash_account_no_transactions]
       val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-      val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest("", ""))
+      val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
       running(app) {
 
@@ -218,7 +219,7 @@ class CashAccountControllerSpec extends SpecBase {
         app.injector.instanceOf[cash_account_no_transactions_with_balance]
 
       val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-      val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest("", ""))
+      val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
       running(app) {
 

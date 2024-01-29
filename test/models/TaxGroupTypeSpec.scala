@@ -21,23 +21,28 @@ import play.api.libs.json.{JsResult, JsString, JsSuccess, JsValue}
 
 class TaxGroupTypeSpec extends SpecBase {
   "taxGroupReads" must {
+
     "read ImportVat correctly as JsSuccess ImportVat" in new Setup {
       val res: JsResult[TaxGroupType] = TaxGroupType.taxGroupReads.reads(jsImport)
+
       res mustBe JsSuccess(ImportVat)
     }
 
     "read ExciseDuty correctly as JsSuccess ExciseDuty" in new Setup {
       val res: JsResult[TaxGroupType] = TaxGroupType.taxGroupReads.reads(jsExcise)
+
       res mustBe JsSuccess(ExciseDuty)
     }
 
     "read CustomsDuty correctly as JsSuccess CustomsDuty" in new Setup {
       val res: JsResult[TaxGroupType] = TaxGroupType.taxGroupReads.reads(jsCustoms)
+
       res mustBe JsSuccess(CustomsDuty)
     }
 
     "thrown Unknown correctly as Unknown Tax Group Type Error" in new Setup {
       val res: RuntimeException = intercept[RuntimeException](TaxGroupType.taxGroupReads.reads(JsString("")))
+
       res.getMessage mustBe ("Unknown Tax Group Type")
     }
   }
@@ -46,16 +51,19 @@ class TaxGroupTypeSpec extends SpecBase {
 
     "write ImportVat correctly as JsString ImportVat" in new Setup {
       val res: JsValue = TaxGroupType.taxGroupWrites.writes(ImportVat)
+
       res mustBe jsImport
     }
 
     "write ExciseDuty correctly as JsString ExciseDuty" in new Setup {
       val res: JsValue = TaxGroupType.taxGroupWrites.writes(ExciseDuty)
+
       res mustBe jsExcise
     }
 
     "write CustomsDuty correctly as JsString CustomsDuty" in new Setup {
       val res: JsValue = TaxGroupType.taxGroupWrites.writes(CustomsDuty)
+
       res mustBe jsCustoms
     }
   }

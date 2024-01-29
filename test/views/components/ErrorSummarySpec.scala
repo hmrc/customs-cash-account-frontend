@@ -31,7 +31,9 @@ import utils.SpecBase
 import views.html.components.errorSummary
 
 class ErrorSummarySpec extends SpecBase {
+
   "ErrorSummary component" must {
+
     "show correct error with unchanged key when isErrorKeyUpdateEnabled is false" in new SetUp {
       val errorSum: ErrorSummary = ErrorSummary(
         errorList = Seq(ErrorLink(Some("#start"), content = Text(msgs("cf.form.error.start.date-number-invalid")))),
