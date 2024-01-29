@@ -30,7 +30,8 @@ class CashAccountUtils @Inject()(dateTimeService: DateTimeService, appConfig: Ap
     messages("cf.cash-account.csv.filename", formattedTime)
   }
 
-  def filenameRequestCashTransactions(from: LocalDate, to: LocalDate)(implicit messages: Messages): String = {
+  def filenameRequestCashTransactions(from: LocalDate,
+                                      to: LocalDate)(implicit messages: Messages): String = {
     messages("cf.cash-account.requested.csv.filename", dateFormat(from), dateFormat(to))
   }
 

@@ -147,5 +147,4 @@ object AccountsAndBalancesRequestContainer {
 
   implicit val accountsAndBalancesRequestContainerFormat: OFormat[AccountsAndBalancesRequestContainer] =
     Json.format[AccountsAndBalancesRequestContainer]
-
 }

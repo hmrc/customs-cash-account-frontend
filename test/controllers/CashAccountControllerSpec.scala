@@ -393,6 +393,7 @@ class CashAccountControllerSpec extends SpecBase {
   }
 
   "showUnableToDownloadCSV" must {
+
     "return OK" in new Setup {
       val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
