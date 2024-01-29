@@ -163,25 +163,6 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
 
         checkForError(form, formData, expectedErrors)
       }
-
-      /**
-       * Below has been ignored as of now cause below condition is not occurring because
-       * ETMP Statement check is overriding this . Need to be checked with Business Team
-       */
-
-      "start date is not of a valid tax year" ignore new SetUp {
-        val startDate: Map[String, String] =
-          populateFormValueMap(startKey, day10AsString, month10AsString, taxYearDateOlderThan6Years.toString)
-
-        val validEndDate: Map[String, String] =
-          populateFormValueMap(endKey, day10AsString, month10AsString, year2021AsString)
-
-        val formData: Map[String, String] = startDate ++ validEndDate
-
-        val expectedErrors: Seq[FormError] = error(startKey, "cf.form.error.start.date-too-far-in-past")
-
-        checkForError(form, formData, expectedErrors)
-      }
     }
 
     "populate CashTransactionDates form correctly (or with correct error) for input end date" when {
@@ -316,25 +297,6 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
         val formData: Map[String, String] = validStartDate ++ endDate
 
         val expectedErrors: Seq[FormError] = error(endKey, "cf.form.error.endDate.date-earlier-than-system-start-date")
-
-        checkForError(form, formData, expectedErrors)
-      }
-
-      /**
-       * Below has been ignored as of now cause below condition is not occurring because
-       * ETMP Statement check is overriding this . Need to be checked with Business Team
-       */
-
-      "end date is not of a valid tax year" ignore new SetUp {
-        val validStartDate: Map[String, String] =
-          populateFormValueMap(startKey, day10AsString, month10AsString, year2021AsString)
-
-        val endDate: Map[String, String] =
-          populateFormValueMap(endKey, day10AsString, month10AsString, taxYearDateOlderThan6Years.toString)
-
-        val formData: Map[String, String] = validStartDate ++ endDate
-
-        val expectedErrors: Seq[FormError] = error(endKey, "cf.form.error.end.date-too-far-in-past")
 
         checkForError(form, formData, expectedErrors)
       }
