@@ -62,13 +62,11 @@ object EncryptedDailyStatements {
 }
 
 object CashDailyStatement {
-  implicit val taxGroupTypeReads: Reads[TaxGroupType] = new Reads[TaxGroupType] {
-    override def reads(json: JsValue): JsResult[TaxGroupType] = {
-      json.as[String] match {
-        case incomingValue if incomingValue.equalsIgnoreCase(ImportVat.onWire) => JsSuccess(ImportVat)
-        case incomingValue if incomingValue.equalsIgnoreCase(ExciseDuty.onWire) => JsSuccess(ExciseDuty)
-        case incomingValue if incomingValue.equalsIgnoreCase(CustomsDuty.onWire) => JsSuccess(CustomsDuty)
-      }
+  implicit val taxGroupTypeReads: Reads[TaxGroupType] = (json: JsValue) => {
+    json.as[String] match {
+      case incomingValue if incomingValue.equalsIgnoreCase(ImportVat.onWire) => JsSuccess(ImportVat)
+      case incomingValue if incomingValue.equalsIgnoreCase(ExciseDuty.onWire) => JsSuccess(ExciseDuty)
+      case incomingValue if incomingValue.equalsIgnoreCase(CustomsDuty.onWire) => JsSuccess(CustomsDuty)
     }
   }
 
@@ -76,25 +74,21 @@ object CashDailyStatement {
 
   implicit val declarationReads: Reads[Declaration] = Json.reads[Declaration]
 
-  implicit val cashTransactionTypeReads: Reads[CashTransactionType] = new Reads[CashTransactionType] {
-    override def reads(json: JsValue): JsResult[CashTransactionType] = {
-      json.as[String] match {
-        case status if status.equalsIgnoreCase("Payment") => JsSuccess(Payment)
-        case status if status.equalsIgnoreCase("Withdrawal") => JsSuccess(Withdrawal)
-        case status if status.equalsIgnoreCase("Transfer") => JsSuccess(Transfer)
-      }
+  implicit val cashTransactionTypeReads: Reads[CashTransactionType] = (json: JsValue) => {
+    json.as[String] match {
+      case status if status.equalsIgnoreCase("Payment") => JsSuccess(Payment)
+      case status if status.equalsIgnoreCase("Withdrawal") => JsSuccess(Withdrawal)
+      case status if status.equalsIgnoreCase("Transfer") => JsSuccess(Transfer)
     }
   }
 
-  implicit val cashTransactionTypeWrites: Writes[CashTransactionType] = new Writes[CashTransactionType] {
-    override def writes(o: CashTransactionType): JsString = JsString(
-      o match {
-        case Payment => "Payment"
-        case Withdrawal => "Withdrawal"
-        case Transfer => "Transfer"
-      }
-    )
-  }
+  implicit val cashTransactionTypeWrites: Writes[CashTransactionType] = (o: CashTransactionType) => JsString(
+    o match {
+      case Payment => "Payment"
+      case Withdrawal => "Withdrawal"
+      case Transfer => "Transfer"
+    }
+  )
 
   implicit val transactionReads: OFormat[Transaction] = Json.format[Transaction]
   implicit val cashDailyStatementReads: OFormat[CashDailyStatement] = Json.format[CashDailyStatement]

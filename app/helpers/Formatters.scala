@@ -39,11 +39,6 @@ object Formatters {
     s"${DateTimeFormatter.ISO_DATE_TIME.format(dateTime.truncatedTo(ChronoUnit.SECONDS))}Z"
   }
 
-  def timeAsHourMinutesWithAmPm(dateTime: LocalDateTime): String = {
-    val formatter = DateTimeFormatter.ofPattern("hh:mm a")
-    dateTime.format(formatter)
-  }
-
   def fileSizeFormat(size: Long): String = size match {
     case kb if 1000 until 1000000 contains kb => s"${kb / 1000}KB"
     case mb if mb >= 1000000 => f"${mb / 1000000.0}%.1fMB"

@@ -74,7 +74,7 @@ class DownloadCsvController @Inject()(
                                 filename: String)(implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
     apiConnector.getCashAccount(request.eori) flatMap {
       case None => Future.successful(NotFound(eh.notFoundTemplate))
-      case Some(cashAccount) => {
+      case Some(cashAccount) =>
         for {
           cashTransactions <- apiConnector.retrieveCashTransactionsDetail(cashAccount.number, from, to)
           result = cashTransactions match {
@@ -89,7 +89,7 @@ class DownloadCsvController @Inject()(
                 Redirect(routes.DownloadCsvController.showUnableToDownloadCSV())
             }
 
-            case Right(transactions) => {
+            case Right(transactions) =>
               auditingService.auditCsvDownload(
                 request.eori, cashAccount.number, dateTimeService.utcDateTime(), from, to)
               val csvContent = CSVWriter.toCSVWithHeaders(
@@ -97,12 +97,10 @@ class DownloadCsvController @Inject()(
                 mappingFn = cashAccountUtils.makeHumanReadable,
                 footer = None)
               val contentHeaders = "Content-Disposition" ->
-                s"${disposition.getOrElse("attachment")}; filename=${filename}"
+                s"${disposition.getOrElse("attachment")}; filename=$filename"
               Ok(csvContent).withHeaders(contentHeaders)
-            }
           }
         } yield result
-      }
     }
   }
 }

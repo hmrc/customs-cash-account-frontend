@@ -94,14 +94,12 @@ object CDSAccountStatus {
 
   val logger: LoggerLike = Logger(this.getClass)
 
-  implicit val CDSAccountStatusReads: Reads[CDSAccountStatus] = new Reads[CDSAccountStatus] {
-    override def reads(json: JsValue): JsResult[CDSAccountStatus] = {
-      json.as[String] match {
-        case status if status.equalsIgnoreCase("Open") => JsSuccess(AccountStatusOpen)
-        case status if status.equalsIgnoreCase("Suspended") => JsSuccess(AccountStatusSuspended)
-        case status if status.equalsIgnoreCase("Closed") => JsSuccess(AccountStatusClosed)
-        case unknown => logger.warn(s"Invalid account status: $unknown"); JsSuccess(AccountStatusOpen)
-      }
+  implicit val CDSAccountStatusReads: Reads[CDSAccountStatus] = (json: JsValue) => {
+    json.as[String] match {
+      case status if status.equalsIgnoreCase("Open") => JsSuccess(AccountStatusOpen)
+      case status if status.equalsIgnoreCase("Suspended") => JsSuccess(AccountStatusSuspended)
+      case status if status.equalsIgnoreCase("Closed") => JsSuccess(AccountStatusClosed)
+      case unknown => logger.warn(s"Invalid account status: $unknown"); JsSuccess(AccountStatusOpen)
     }
   }
 }

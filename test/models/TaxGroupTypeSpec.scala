@@ -43,7 +43,7 @@ class TaxGroupTypeSpec extends SpecBase {
     "thrown Unknown correctly as Unknown Tax Group Type Error" in new Setup {
       val res: RuntimeException = intercept[RuntimeException](TaxGroupType.taxGroupReads.reads(JsString("")))
 
-      res.getMessage mustBe ("Unknown Tax Group Type")
+      res.getMessage mustBe "Unknown Tax Group Type"
     }
   }
 

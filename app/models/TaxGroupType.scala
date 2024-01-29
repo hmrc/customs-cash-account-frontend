@@ -16,31 +16,27 @@
 
 package models
 
-import play.api.libs.json.{JsResult, JsString, JsSuccess, JsValue, Reads, Writes}
+import play.api.libs.json._
 
 sealed trait TaxGroupType {
   def onWire: String
 }
 
 object TaxGroupType {
-  implicit val taxGroupReads: Reads[TaxGroupType] = new Reads[TaxGroupType] {
-    override def reads(json: JsValue): JsResult[TaxGroupType] = {
-      json.as[String] match {
-        case "Import VAT" => JsSuccess(ImportVat)
-        case "Excise" => JsSuccess(ExciseDuty)
-        case "Customs" => JsSuccess(CustomsDuty)
-        case _ => throw new RuntimeException("Unknown Tax Group Type")
-      }
+  implicit val taxGroupReads: Reads[TaxGroupType] = (json: JsValue) => {
+    json.as[String] match {
+      case "Import VAT" => JsSuccess(ImportVat)
+      case "Excise" => JsSuccess(ExciseDuty)
+      case "Customs" => JsSuccess(CustomsDuty)
+      case _ => throw new RuntimeException("Unknown Tax Group Type")
     }
   }
 
-  implicit val taxGroupWrites: Writes[TaxGroupType] = new Writes[TaxGroupType] {
-    override def writes(o: TaxGroupType): JsString = JsString {
-      o match {
-        case ImportVat => "Import VAT"
-        case ExciseDuty => "Excise"
-        case CustomsDuty => "Customs"
-      }
+  implicit val taxGroupWrites: Writes[TaxGroupType] = (o: TaxGroupType) => JsString {
+    o match {
+      case ImportVat => "Import VAT"
+      case ExciseDuty => "Excise"
+      case CustomsDuty => "Customs"
     }
   }
 }

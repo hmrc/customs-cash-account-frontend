@@ -246,7 +246,7 @@ class DownloadCsvControllerSpec extends SpecBase {
           val pageNumberLinks = html.select("li.govuk-pagination__item > a").asScala
 
           withClue("html did not contain any pagination links:") {
-            pageNumberLinks.size must not be (0)
+            pageNumberLinks.size must not be 0
           }
 
           pageNumberLinks.map { pageNumberLink =>

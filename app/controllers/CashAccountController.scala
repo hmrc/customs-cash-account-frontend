@@ -101,10 +101,9 @@ class CashAccountController @Inject()(
   def tooManyTransactions(): Action[AnyContent] = authenticate.async { implicit request =>
     apiConnector.getCashAccount(request.eori) flatMap {
       case None => Future.successful(NotFound(eh.notFoundTemplate))
-      case Some(account) => {
+      case Some(account) =>
         Future.successful(Ok(showAccountsExceededThreshold(CashAccountViewModel(request.eori, CashAccount(
           account.number, account.owner, account.status, account.balances)))))
-      }
     }
   }
 

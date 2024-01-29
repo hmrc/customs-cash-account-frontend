@@ -30,7 +30,7 @@ object FormHelper {
     val startDateMsgKeyList = List(futureStartDateMsgKey, etmpStartDateMsgKey, taxYearStartDateMsgKey)
     val endDateMsgKeyList = List(futureEndDateMsgKey, etmpEndDateMsgKey, taxYearEndDateMsgKey)
 
-    if ((key.equals("start") || key.equals("end"))) {
+    if (key.equals("start") || key.equals("end")) {
       retrieveKeyForErrorMsg(key, errorMsg, startDateMsgKeyList, endDateMsgKeyList)
     } else {
       key
