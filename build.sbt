@@ -1,20 +1,38 @@
 import scoverage.ScoverageKeys
+import uk.gov.hmrc.DefaultBuildSettings.{targetJvm, itSettings}
 
 val appName = "customs-cash-account-frontend"
 
 val silencerVersion = "1.17.13"
+val bootstrapVersion = "7.22.0"
 val scala2_13_8 = "2.13.8"
 
 val testDirectory = "test"
 val scalaStyleConfigFile = "scalastyle-config.xml"
 val testScalaStyleConfigFile = "test-scalastyle-config.xml"
 
+Global / lintUnusedKeysOnLoad := false
+
+ThisBuild / majorVersion := 0
+ThisBuild / scalaVersion := scala2_13_8
+
+lazy val scalastyleSettings = Seq(scalastyleConfig := baseDirectory.value / scalaStyleConfigFile,
+  (Test / scalastyleConfig) := baseDirectory.value / testDirectory / testScalaStyleConfigFile)
+
+lazy val it = project
+  .enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test")
+  .settings(itSettings())
+  .settings(libraryDependencies ++= Seq("uk.gov.hmrc" %% "bootstrap-test-play-28" % bootstrapVersion % Test))
+
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
+  .settings(scalastyleSettings)
   .settings(
-    majorVersion := 0,
-    scalaVersion := scala2_13_8,
+    targetJvm := "jvm-11",
+    update / evictionWarningOptions :=
+      EvictionWarningOptions.default.withWarnScalaVersionEviction(true),
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;" +
       ".*javascript.*;.*Routes.*;.*GuiceInjector;" +
@@ -30,7 +48,6 @@ lazy val microservice = Project(appName, file("."))
       "uk.gov.hmrc.hmrcfrontend.views.html.components._",
       "views.ViewUtils._"
     ),
-
     scalacOptions ++= Seq(
       "-P:silencer:pathFilters=routes",
       "-P:silencer:pathFilters=target/.*",
@@ -55,6 +72,3 @@ lazy val microservice = Project(appName, file("."))
   .settings(PlayKeys.playDefaultPort := 9394)
   .configs(IntegrationTest)
   .settings(resolvers += Resolver.jcenterRepo)
-
-lazy val scalastyleSettings = Seq(scalastyleConfig := baseDirectory.value / scalaStyleConfigFile,
-  (Test / scalastyleConfig) := baseDirectory.value / testDirectory / testScalaStyleConfigFile)
