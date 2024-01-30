@@ -21,7 +21,14 @@
 
 @this(govukTable: GovukTable)
 
-@(model: CashAccountViewModel, index: Int, pendingDailyStatement: PaginatedPendingDailyStatement)(implicit messages: Messages)
+@(
+    model: CashAccountViewModel,
+    index: Int,
+    pendingDailyStatement: PaginatedPendingDailyStatement
+)(
+    implicit messages: Messages
+)
+
 @if(index == 0) {
  <h3 class="govuk-heading-m  govuk-!-padding-top-4 govuk-!-margin-bottom-1" id="@{s"pending-heading-${pendingDailyStatement.date}"}" aria-describedby="@{s"pending-detail-${pendingDailyStatement.date}"}"> @{Formatters.dateAsDayMonthAndYear(pendingDailyStatement.date)}</h3>
  <p class="govuk-body govuk-!-margin-bottom-2" id="@{

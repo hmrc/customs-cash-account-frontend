@@ -25,4 +25,3 @@ case class CashTransactionDates(start: LocalDate, end: LocalDate)
 object CashTransactionDates {
   implicit val format: OFormat[CashTransactionDates] = Json.format[CashTransactionDates]
 }
-

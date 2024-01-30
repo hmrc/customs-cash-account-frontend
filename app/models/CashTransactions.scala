@@ -18,11 +18,12 @@ package models
 
 import play.api.libs.json._
 
-case class CashTransactions(pendingTransactions: Seq[Declaration], cashDailyStatements: Seq[CashDailyStatement]){
+case class CashTransactions(pendingTransactions: Seq[Declaration], cashDailyStatements: Seq[CashDailyStatement]) {
   def availableTransactions: Boolean = pendingTransactions.nonEmpty || cashDailyStatements.nonEmpty
 }
 
-case class EncryptedCashTransactions(pendingTransactions: Seq[EncryptedDeclaration], cashDailyStatement: Seq[EncryptedDailyStatements])
+case class EncryptedCashTransactions(pendingTransactions: Seq[EncryptedDeclaration],
+                                     cashDailyStatement: Seq[EncryptedDailyStatements])
 
 object EncryptedCashTransactions {
   implicit val format: OFormat[EncryptedCashTransactions] = Json.format[EncryptedCashTransactions]

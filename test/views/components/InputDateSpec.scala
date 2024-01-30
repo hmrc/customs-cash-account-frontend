@@ -28,6 +28,7 @@ import views.html.components.inputDate
 import java.time.Clock
 
 class InputDateSpec extends SpecBase {
+
   "InpuDate component" should {
 
     "render correctly with no errors" in new Setup {

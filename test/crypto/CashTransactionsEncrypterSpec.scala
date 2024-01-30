@@ -16,7 +16,7 @@
 
 package crypto
 
-import models.{CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Withdrawal}
+import models._
 import utils.SpecBase
 
 import java.time.LocalDate
@@ -28,12 +28,12 @@ class CashTransactionsEncrypterSpec extends SpecBase {
   private val secretKey = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
 
   trait Setup {
-    val listOfPendingTransactions =
+    val listOfPendingTransactions: Seq[Declaration] =
       Seq(Declaration("pendingDeclarationID", Some("pendingImporterEORI"),
         "pendingDeclarantEORINumber", Some("pendingDeclarantReference"),
         LocalDate.parse("2020-07-21"), -100.00, Nil))
 
-    val cashDailyStatements = Seq(
+    val cashDailyStatements: Seq[CashDailyStatement] = Seq(
       CashDailyStatement(LocalDate.parse("2020-07-18"), 0.0, 1000.00,
         Seq(Declaration("mrn1", Some("importer EORI"), "Declarant EORI",
           Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil),
@@ -45,22 +45,29 @@ class CashTransactionsEncrypterSpec extends SpecBase {
         Seq(Declaration("mrn3", Some("Importer EORI"), "Declarant EORI",
           Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil),
           Declaration("mrn4", Some("Importer EORI"), "Declarant EORI",
-          Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)),
+            Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)),
         Seq(Transaction(67.89, Payment, None))))
 
-    val cashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements)
+    val cashTransactions: CashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements)
   }
 
   "encrypt / decrypt cashTransactions" must {
+
     "encrypt cashTransactions" in new Setup {
-      val encryptedCashTransactions = encrypter.encryptCashTransactions(cashTransactions, secretKey)
-      val decryptedCashTransactions = encrypter.decryptCashTransactions(encryptedCashTransactions, secretKey)
+      val encryptedCashTransactions: EncryptedCashTransactions =
+        encrypter.encryptCashTransactions(cashTransactions, secretKey)
+
+      val decryptedCashTransactions: CashTransactions =
+        encrypter.decryptCashTransactions(encryptedCashTransactions, secretKey)
       decryptedCashTransactions mustEqual cashTransactions
     }
 
     "decrypt cashTransactions" in new Setup {
-      val encryptedCashTransactions = encrypter.encryptCashTransactions(cashTransactions, secretKey)
-      val decryptedCashTransactions = encrypter.decryptCashTransactions(encryptedCashTransactions, secretKey)
+      val encryptedCashTransactions: EncryptedCashTransactions =
+        encrypter.encryptCashTransactions(cashTransactions, secretKey)
+
+      val decryptedCashTransactions: CashTransactions =
+        encrypter.decryptCashTransactions(encryptedCashTransactions, secretKey)
       decryptedCashTransactions mustEqual cashTransactions
     }
   }

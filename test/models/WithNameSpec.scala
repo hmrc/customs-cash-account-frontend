@@ -21,10 +21,12 @@ import utils.SpecBase
 class WithNameSpec extends SpecBase {
 
   "withName" must {
+
     "withName overrides strings" in {
       val compare: String = "test1"
       val name: WithName = new WithName(compare)
       val result = name.toString
+
       result mustBe compare
     }
   }

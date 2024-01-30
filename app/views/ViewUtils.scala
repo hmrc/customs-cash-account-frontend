@@ -22,15 +22,23 @@ import play.api.i18n.Messages
 object ViewUtils {
 
   val emptyString = ""
-  def title(form: Form[_], titleStr: String, section: Option[String], titleMessageArgs: Seq[String])
-           (implicit messages: Messages): String = {
-    titleNoForm(s"${errorPrefix(form)} ${messages(titleStr, titleMessageArgs: _*)}", section, titleMessageArgs)
+
+  def title(form: Form[_],
+            titleStr: String,
+            section: Option[String],
+            titleMessageArgs: Seq[String])(implicit messages: Messages): String = {
+
+    titleNoForm(s"${errorPrefix(form)} ${messages(titleStr, titleMessageArgs: _*)}",
+      section,
+      titleMessageArgs)
   }
 
-  def titleNoForm(title: String, section: Option[String], titleMessageArgs: Seq[String])(implicit messages: Messages): String =
-    s"${messages(title, titleMessageArgs: _*)}${section.fold("")(v => s"- ${messages(v)}")}"
+  def titleNoForm(title: String,
+                  section: Option[String],
+                  titleMessageArgs: Seq[String])(implicit messages: Messages): String =
+    s"${messages(title, titleMessageArgs: _*)}${section.fold(emptyString)(v => s"- ${messages(v)}")}"
 
-  def errorPrefix(form: Form[_])(implicit messages: Messages): String = {
+  private def errorPrefix(form: Form[_])(implicit messages: Messages): String = {
     if (form.hasErrors || form.hasGlobalErrors) messages("error.browser.title.prefix") else ""
   }
 }

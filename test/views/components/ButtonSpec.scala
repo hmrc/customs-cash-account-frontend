@@ -26,7 +26,9 @@ import views.html.components.button
 class ButtonSpec extends SpecBase {
 
   "component" should {
+
     "display correct contents" when {
+
       "it contains msg, href and classes value" in new Setup {
         private val btnComponentAsText = buttonComponent.text()
 

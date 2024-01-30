@@ -24,19 +24,19 @@ import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime}
 import java.util.Locale
 
-
 object Formatters {
 
+  val yyyyMMddDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+  val yyyyMMddHHmmssDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
+  val ddMMyyyyDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyyyy")
+
   def dateAsMonth(date: LocalDate)(implicit messages: Messages): String = messages(s"month.${date.getMonthValue}")
-  def dateAsDayMonthAndYear(date: LocalDate)(implicit messages: Messages): String = s"${date.getDayOfMonth} ${dateAsMonth(date)} ${date.getYear}"
+
+  def dateAsDayMonthAndYear(date: LocalDate)(implicit messages: Messages): String =
+    s"${date.getDayOfMonth} ${dateAsMonth(date)} ${date.getYear}"
 
   def dateTimeAsIso8601(dateTime: LocalDateTime): String = {
     s"${DateTimeFormatter.ISO_DATE_TIME.format(dateTime.truncatedTo(ChronoUnit.SECONDS))}Z"
-  }
-
-  def timeAsHourMinutesWithAmPm(dateTime: LocalDateTime): String = {
-    val formatter = DateTimeFormatter.ofPattern("hh:mm a")
-    dateTime.format(formatter)
   }
 
   def fileSizeFormat(size: Long): String = size match {
@@ -48,9 +48,9 @@ object Formatters {
   def formatCurrencyAmount(amount: BigDecimal): String = {
     val maxDecimalPlaces: Int = 2
     val numberFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.UK)
+
     numberFormat.setMaximumFractionDigits(maxDecimalPlaces)
     numberFormat.setMinimumFractionDigits(maxDecimalPlaces)
     numberFormat.format(amount.abs)
   }
 }
-

@@ -16,36 +16,43 @@
 
 package helpers
 
-import play.api.i18n.MessagesApi
+import play.api.Application
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import services.DateTimeService
 import utils.SpecBase
+
 import java.time.{LocalDate, LocalDateTime}
 
 class CashAccountUtilsSpec extends SpecBase {
-  val mockDateTimeService = mock[DateTimeService]
+  val mockDateTimeService: DateTimeService = mock[DateTimeService]
+
   when(mockDateTimeService.localDateTime()).thenReturn(LocalDateTime.parse("2020-04-19T09:30:59"))
 
-  val app = application
+  val app: Application = application
     .overrides(
       bind[DateTimeService].toInstance(mockDateTimeService)
-    )
-    .build()
-  implicit val messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
-  val cashAccountUtils = app.injector.instanceOf[CashAccountUtils]
+    ).build()
+
+  implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+  val cashAccountUtils: CashAccountUtils = app.injector.instanceOf[CashAccountUtils]
 
   "filenameWithDateTime" should {
+
     "return a correctly formatted filename" in {
       val result = cashAccountUtils.filenameWithDateTime()(messages)
+
       result must be("Cash_Account_Transactions_20200419093059.CSV")
     }
   }
 
   "filenameRequestCashTransactions" should {
+
     "return a correctly formatted filename for the given dates" in {
       val fromDate = LocalDate.parse("2020-11-06")
       val toDate = LocalDate.parse("2020-12-12")
+
       val result = cashAccountUtils.filenameRequestCashTransactions(fromDate, toDate)(messages)
       result must be("Cash_Account_Transactions_06112020-12122020.CSV")
     }

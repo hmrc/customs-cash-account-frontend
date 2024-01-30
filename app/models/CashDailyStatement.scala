@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json.{JsResult, JsString, JsSuccess, JsValue, Json, OFormat, Reads, Writes}
+import play.api.libs.json._
 
 import java.time.LocalDate
 
@@ -28,17 +28,20 @@ case class CashDailyStatement(date: LocalDate,
                              ) extends Ordered[CashDailyStatement] {
   override def compare(that: CashDailyStatement): Int = that.date.compareTo(date)
 
-  val withdrawals:Seq[Transaction] = otherTransactions.filter(_.transactionType == Withdrawal)
-  val topUps:Seq[Transaction] = otherTransactions.filter(_.transactionType == Payment)
+  val withdrawals: Seq[Transaction] = otherTransactions.filter(_.transactionType == Withdrawal)
+  val topUps: Seq[Transaction] = otherTransactions.filter(_.transactionType == Payment)
+
   val transfersOut: Seq[Transaction] = otherTransactions.filter { transaction =>
     transaction.transactionType == Transfer && transaction.amount < 0
   }
+
   val transfersIn: Seq[Transaction] = otherTransactions.filter { transaction =>
     transaction.transactionType == Transfer && transaction.amount > 0
   }
-  val hasTransactions = withdrawals.nonEmpty || topUps.nonEmpty || transfersOut.nonEmpty || transfersIn.nonEmpty
-}
 
+  val hasTransactions: Boolean =
+    withdrawals.nonEmpty || topUps.nonEmpty || transfersOut.nonEmpty || transfersIn.nonEmpty
+}
 
 case class EncryptedDailyStatements(date: LocalDate,
                                     openingBalance: BigDecimal,
@@ -58,15 +61,12 @@ object EncryptedDailyStatements {
   implicit val format: OFormat[EncryptedDailyStatements] = Json.format[EncryptedDailyStatements]
 }
 
-
 object CashDailyStatement {
-  implicit val taxGroupTypeReads: Reads[TaxGroupType] = new Reads[TaxGroupType] {
-    override def reads(json: JsValue): JsResult[TaxGroupType] = {
-      json.as[String] match {
-        case incomingValue if incomingValue.equalsIgnoreCase(ImportVat.onWire) => JsSuccess(ImportVat)
-        case incomingValue if incomingValue.equalsIgnoreCase(ExciseDuty.onWire) => JsSuccess(ExciseDuty)
-        case incomingValue if incomingValue.equalsIgnoreCase(CustomsDuty.onWire) => JsSuccess(CustomsDuty)
-      }
+  implicit val taxGroupTypeReads: Reads[TaxGroupType] = (json: JsValue) => {
+    json.as[String] match {
+      case incomingValue if incomingValue.equalsIgnoreCase(ImportVat.onWire) => JsSuccess(ImportVat)
+      case incomingValue if incomingValue.equalsIgnoreCase(ExciseDuty.onWire) => JsSuccess(ExciseDuty)
+      case incomingValue if incomingValue.equalsIgnoreCase(CustomsDuty.onWire) => JsSuccess(CustomsDuty)
     }
   }
 
@@ -74,25 +74,21 @@ object CashDailyStatement {
 
   implicit val declarationReads: Reads[Declaration] = Json.reads[Declaration]
 
-  implicit val cashTransactionTypeReads: Reads[CashTransactionType] = new Reads[CashTransactionType] {
-    override def reads(json: JsValue): JsResult[CashTransactionType] = {
-      json.as[String] match {
-        case status if status.equalsIgnoreCase("Payment") => JsSuccess(Payment)
-        case status if status.equalsIgnoreCase("Withdrawal") => JsSuccess(Withdrawal)
-        case status if status.equalsIgnoreCase("Transfer") => JsSuccess(Transfer)
-      }
+  implicit val cashTransactionTypeReads: Reads[CashTransactionType] = (json: JsValue) => {
+    json.as[String] match {
+      case status if status.equalsIgnoreCase("Payment") => JsSuccess(Payment)
+      case status if status.equalsIgnoreCase("Withdrawal") => JsSuccess(Withdrawal)
+      case status if status.equalsIgnoreCase("Transfer") => JsSuccess(Transfer)
     }
   }
 
-  implicit val cashTransactionTypeWrites: Writes[CashTransactionType] = new Writes[CashTransactionType] {
-    override def writes(o: CashTransactionType): JsString = JsString(
-      o match {
-        case Payment => "Payment"
-        case Withdrawal => "Withdrawal"
-        case Transfer => "Transfer"
-      }
-    )
-  }
+  implicit val cashTransactionTypeWrites: Writes[CashTransactionType] = (o: CashTransactionType) => JsString(
+    o match {
+      case Payment => "Payment"
+      case Withdrawal => "Withdrawal"
+      case Transfer => "Transfer"
+    }
+  )
 
   implicit val transactionReads: OFormat[Transaction] = Json.format[Transaction]
   implicit val cashDailyStatementReads: OFormat[CashDailyStatement] = Json.format[CashDailyStatement]

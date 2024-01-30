@@ -159,8 +159,10 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
     "propagate exceptions when the backend POST fails" in new Setup {
 
+      private val responseCode: Int = 500
+
       when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
-        .thenReturn(Future.failed(new HttpException("It's broken", 500)))
+        .thenReturn(Future.failed(new HttpException("It's broken", responseCode)))
       when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
 
       val appWithMocks: Application = application
@@ -216,7 +218,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   }
 
   "retrieveCashTransactionsDetail" must {
-    "call the correct URL and pass through the HeaderCarrier and CAN, and return a list of cash daily statements" in new Setup {
+    "call the correct URL and pass through the HeaderCarrier and CAN," +
+      " and return a list of cash daily statements" in new Setup {
+
       val expectedUrl = "apiEndpointUrl/account/cash/transactions-detail"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
@@ -241,9 +245,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "propagate exceptions when the backend POST fails" in new Setup {
-
+      private val responseCode: Int = 500
       when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
-        .thenReturn(Future.failed(new HttpException("It's broken", 500)))
+        .thenReturn(Future.failed(new HttpException("It's broken", responseCode)))
 
       val appWithMocks: Application = application
         .overrides(
@@ -318,8 +322,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "propagate exceptions when the backend POST fails" in new Setup {
+      private val responseCode: Int = 500
       when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
-        .thenReturn(Future.failed(new HttpException("It's broken", 500)))
+        .thenReturn(Future.failed(new HttpException("It's broken", responseCode)))
 
       running(appWithHttpClient) {
         val result = await(connector().retrieveHistoricCashTransactions("can", fromDate, toDate))
@@ -411,7 +416,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       Account(cashAccountNumber, emptyString, traderEori, Some(AccountStatusOpen), false, Some(false)),
       Some("999.99"))
 
-    val cashAccount: CashAccount = cdsCashAccount.toDomain()
+    val cashAccount: CashAccount = cdsCashAccount.toDomain
 
     val fromDate: LocalDate = LocalDate.parse("2019-10-08")
     val toDate: LocalDate = LocalDate.parse("2020-04-08")

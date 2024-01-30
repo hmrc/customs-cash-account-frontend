@@ -16,17 +16,27 @@
 
 package services
 
-import java.time.LocalDateTime
 import models.MongoDateTimeFormats
 import utils.SpecBase
+
+import java.time.LocalDateTime
 
 class MongoDateTimeFormatsSpec extends SpecBase {
 
   "MongoDateTimeFormats" must {
+
     "localDateTimeWrite must return valid value" in {
-      val dateTime = LocalDateTime.of(2023, 1, 1, 1, 1)
+      val day = 1
+      val month = 1
+      val year = 2023
+      val minute = 1
+      val hour = 1
+
+      val dateTime = LocalDateTime.of(year, month, day, hour, minute)
+
       val test = MongoDateTimeFormats.localDateTimeWrite
       val result = test.writes(dateTime)
+
       result.toString() mustBe "{\"$date\":1672534860000}"
     }
   }

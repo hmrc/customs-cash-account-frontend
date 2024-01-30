@@ -34,7 +34,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DefaultCacheRepository @Inject()(mongo: MongoComponent,
                                        config: Configuration,
-                                       encrypter: CashTransactionsEncrypter)(implicit executionContext: ExecutionContext)
+                                       encrypter: CashTransactionsEncrypter)
+                                      (implicit executionContext: ExecutionContext)
   extends PlayMongoRepository[CashTransactionsMongo](
     collectionName = "cash-account-cache",
     mongoComponent = mongo,
@@ -45,19 +46,21 @@ class DefaultCacheRepository @Inject()(mongo: MongoComponent,
         IndexOptions().name("cash-account-cache-last-updated-index")
           .expireAfter(config.get[Int]("mongodb.timeToLiveInSeconds"), TimeUnit.SECONDS)
       )
-    )) with CacheRepository  {
+    )) with CacheRepository {
 
   private val encryptionKey = config.get[String]("mongodb.encryptionKey")
 
   override def get(id: String): Future[Option[CashTransactions]] = {
-    for{
+    for {
       result <- collection.find(equal("_id", id)).toSingle().toFutureOption()
-      account = result.map(cashAccountMongo => encrypter.decryptCashTransactions(cashAccountMongo.transactions, encryptionKey))
+      account = result.map(cashAccountMongo =>
+        encrypter.decryptCashTransactions(cashAccountMongo.transactions, encryptionKey))
     } yield account
   }
 
   override def set(id: String, transactions: CashTransactions): Future[Boolean] = {
-    val record: CashTransactionsMongo = CashTransactionsMongo(encrypter.encryptCashTransactions(transactions, encryptionKey), DateTime.now)
+    val record: CashTransactionsMongo = CashTransactionsMongo(
+      encrypter.encryptCashTransactions(transactions, encryptionKey), DateTime.now)
 
     collection.replaceOne(equal("_id", id),
       record,
@@ -72,7 +75,9 @@ class DefaultCacheRepository @Inject()(mongo: MongoComponent,
 trait CacheRepository {
 
   def get(id: String): Future[Option[CashTransactions]]
+
   def set(id: String, transactions: CashTransactions): Future[Boolean]
+
   def remove(id: String): Future[Boolean]
 }
 

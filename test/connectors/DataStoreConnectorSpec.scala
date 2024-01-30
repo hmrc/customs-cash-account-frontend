@@ -42,7 +42,7 @@ class DataStoreConnectorSpec extends SpecBase {
         Future.successful(emailResFromAPI)
       )
 
-      connector.getEmail(eori).map{
+      connector.getEmail(eori).map {
         res => res mustBe Right(Email(emailId))
       }
     }
@@ -72,7 +72,7 @@ class DataStoreConnectorSpec extends SpecBase {
         Future.successful(emailResFromAPI)
       )
 
-      connector.getEmail(eori).map{
+      connector.getEmail(eori).map {
         res => res mustBe Left(UnverifiedEmail)
       }
     }
@@ -96,12 +96,13 @@ class DataStoreConnectorSpec extends SpecBase {
   trait Setup {
     val eori = "EORINOTIMESTAMP"
     val emailId = "test@test.com"
+    val value = 12
 
     val undelInfoEventOb: UndeliverableInformationEvent = UndeliverableInformationEvent("example-id",
       "someEvent",
       "email@email.com",
       "2021-05-14T10:59:45.811+01:00",
-      Some(12),
+      Some(value),
       Some("Inbox full"),
       "HMRC-CUS-ORG~EORINumber~GB744638982004")
 
@@ -116,7 +117,7 @@ class DataStoreConnectorSpec extends SpecBase {
 
     val app: Application = application.overrides(
       bind[HttpClient].toInstance(mockHttpClient),
-      bind[MetricsReporterService].toInstance(mockMetricsReporter),
+      bind[MetricsReporterService].toInstance(mockMetricsReporter)
     ).build()
 
     implicit val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]

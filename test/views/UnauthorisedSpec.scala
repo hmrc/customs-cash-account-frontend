@@ -28,7 +28,9 @@ import utils.SpecBase
 import views.html.unauthorised
 
 class UnauthorisedSpec extends SpecBase {
+
   "Unauthorised view" should {
+
     "display correct title and guidance" in new Setup {
       view.title() mustBe
         s"${messages(app)("cf.not-subscribed-to-cds.detail.title")} - ${messages(app)("service.name")} - GOV.UK"

@@ -17,21 +17,23 @@
 package helpers
 
 import config.AppConfig
-import java.time.LocalDate
+import helpers.Formatters.{ddMMyyyyDateFormatter, yyyyMMddHHmmssDateFormatter}
 import play.api.i18n.Messages
 import services.DateTimeService
-import java.time.format.DateTimeFormatter
+
+import java.time.LocalDate
 import javax.inject.Inject
 
-class CashAccountUtils @Inject()(dateTimeService: DateTimeService, appConfig: AppConfig){
+class CashAccountUtils @Inject()(dateTimeService: DateTimeService, appConfig: AppConfig) {
 
   def filenameWithDateTime()(implicit messages: Messages): String = {
-    val formattedTime = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(dateTimeService.localDateTime())
+    val formattedTime = yyyyMMddHHmmssDateFormatter.format(dateTimeService.localDateTime())
     messages("cf.cash-account.csv.filename", formattedTime)
   }
 
-  def filenameRequestCashTransactions(from:LocalDate, to:LocalDate)(implicit messages: Messages): String = {
-    messages("cf.cash-account.requested.csv.filename", dateFormat(from) , dateFormat(to))
+  def filenameRequestCashTransactions(from: LocalDate,
+                                      to: LocalDate)(implicit messages: Messages): String = {
+    messages("cf.cash-account.requested.csv.filename", dateFormat(from), dateFormat(to))
   }
 
   def makeHumanReadable(columnName: String)(implicit messages: Messages): String = {
@@ -40,7 +42,7 @@ class CashAccountUtils @Inject()(dateTimeService: DateTimeService, appConfig: Ap
     messages(messageKey)
   }
 
-  def dateFormat(date: LocalDate): String = DateTimeFormatter.ofPattern("ddMMyyyy").format(date)
+  private def dateFormat(date: LocalDate): String = ddMMyyyyDateFormatter.format(date)
 
   def transactionDateRange(): (LocalDate, LocalDate) = {
     val to = dateTimeService.localDateTime().toLocalDate

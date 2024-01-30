@@ -16,8 +16,7 @@
 
 package viewmodels
 
-import java.time.format.DateTimeFormatter
-
+import helpers.Formatters.yyyyMMddDateFormatter
 import models._
 import play.api.i18n.Messages
 
@@ -53,8 +52,8 @@ object CashTransactionCsvRow {
 
   implicit class DailyStatementCsvRowsViewModel(cashDailyStatement: CashDailyStatement)(implicit messages: Messages) {
 
-    val closingBalance = CashTransactionCsvRow(
-      date = Some(DateTimeFormatter.ofPattern("yyyy-MM-dd").format(cashDailyStatement.date)),
+    val closingBalance: CashTransactionCsvRow = CashTransactionCsvRow(
+      date = Some(yyyyMMddDateFormatter.format(cashDailyStatement.date)),
       transactionType = Some(messages("cf.cash-account.csv.closing-balance")),
       movementReferenceNumber = None,
       uniqueConsignmentReference = None,
@@ -68,11 +67,11 @@ object CashTransactionCsvRow {
       balance = Some(cashDailyStatement.closingBalance)
     )
 
-    val declarations = cashDailyStatement.declarations.sorted.map { declaration =>
+    val declarations: Seq[CashTransactionCsvRow] = cashDailyStatement.declarations.sorted.map { declaration =>
 
       val groups = declaration.taxGroups
       CashTransactionCsvRow(
-        date = Some(DateTimeFormatter.ofPattern("yyyy-MM-dd").format(cashDailyStatement.date)),
+        date = Some(yyyyMMddDateFormatter.format(cashDailyStatement.date)),
         transactionType = Some(messages("cf.cash-account.csv.declaration")),
         movementReferenceNumber = Some(declaration.movementReferenceNumber),
         uniqueConsignmentReference = declaration.declarantReference,
@@ -87,17 +86,21 @@ object CashTransactionCsvRow {
       )
     }
 
-    private def findTaxGroups(taxGroupType: TaxGroupType, groups: Seq[TaxGroup]) = {
+    private def findTaxGroups(taxGroupType: TaxGroupType, groups: Seq[TaxGroup]): Option[BigDecimal] = {
       groups.find(_.taxTypeGroup == taxGroupType).map(_.amount.abs).orElse(Some(BigDecimal(0)))
     }
 
-    val withdrawals = cashDailyStatement.withdrawals.map { withdrawal =>
-      val withdrawalText = withdrawal.bankAccountNumberLastFourDigits.map(digits =>
-        s"""${messages("cf.cash-account.detail.withdrawal")} ${messages("cf.cash-account.detail.withdrawal.account-ending", digits)}""")
-        .orElse(Some(messages("cf.cash-account.detail.withdrawal")))
+    val withdrawals: Seq[CashTransactionCsvRow] = cashDailyStatement.withdrawals.map { withdrawal =>
+      val withdrawalText = withdrawal.bankAccountNumberLastFourDigits.map(
+        digits =>
+          s"""${
+            messages("cf.cash-account.detail.withdrawal")
+          } ${
+            messages("cf.cash-account.detail.withdrawal.account-ending", digits)
+          }""").orElse(Some(messages("cf.cash-account.detail.withdrawal")))
 
       CashTransactionCsvRow(
-        date = Some(DateTimeFormatter.ofPattern("yyyy-MM-dd").format(cashDailyStatement.date)),
+        date = Some(yyyyMMddDateFormatter.format(cashDailyStatement.date)),
         transactionType = withdrawalText,
         movementReferenceNumber = None,
         uniqueConsignmentReference = None,
@@ -112,9 +115,9 @@ object CashTransactionCsvRow {
       )
     }
 
-    val transfersOut = cashDailyStatement.transfersOut.map { transfer =>
+    val transfersOut: Seq[CashTransactionCsvRow] = cashDailyStatement.transfersOut.map { transfer =>
       CashTransactionCsvRow(
-        date = Some(DateTimeFormatter.ofPattern("yyyy-MM-dd").format(cashDailyStatement.date)),
+        date = Some(yyyyMMddDateFormatter.format(cashDailyStatement.date)),
         transactionType = Some(messages("cf.cash-account.csv.transfer-out")),
         movementReferenceNumber = None,
         uniqueConsignmentReference = None,
@@ -129,9 +132,9 @@ object CashTransactionCsvRow {
       )
     }
 
-    val topUps = cashDailyStatement.topUps.map { topUp =>
+    val topUps: Seq[CashTransactionCsvRow] = cashDailyStatement.topUps.map { topUp =>
       CashTransactionCsvRow(
-        date = Some(DateTimeFormatter.ofPattern("yyyy-MM-dd").format(cashDailyStatement.date)),
+        date = Some(yyyyMMddDateFormatter.format(cashDailyStatement.date)),
         transactionType = Some(messages("cf.cash-account.csv.top-up")),
         movementReferenceNumber = None,
         uniqueConsignmentReference = None,
@@ -142,13 +145,13 @@ object CashTransactionCsvRow {
         excise = None,
         credit = Some(topUp.amount),
         debit = None,
-        balance = None,
+        balance = None
       )
     }
 
-    val transfersIn = cashDailyStatement.transfersIn.map { transfer =>
+    val transfersIn: Seq[CashTransactionCsvRow] = cashDailyStatement.transfersIn.map { transfer =>
       CashTransactionCsvRow(
-        date = Some(DateTimeFormatter.ofPattern("yyyy-MM-dd").format(cashDailyStatement.date)),
+        date = Some(yyyyMMddDateFormatter.format(cashDailyStatement.date)),
         transactionType = Some(messages("cf.cash-account.csv.transfer-in")),
         movementReferenceNumber = None,
         uniqueConsignmentReference = None,
@@ -163,8 +166,8 @@ object CashTransactionCsvRow {
       )
     }
 
-    val openingBalance = CashTransactionCsvRow(
-      date = Some(DateTimeFormatter.ofPattern("yyyy-MM-dd").format(cashDailyStatement.date)),
+    val openingBalance: CashTransactionCsvRow = CashTransactionCsvRow(
+      date = Some(yyyyMMddDateFormatter.format(cashDailyStatement.date)),
       transactionType = Some(messages("cf.cash-account.csv.opening-balance")),
       movementReferenceNumber = None,
       uniqueConsignmentReference = None,

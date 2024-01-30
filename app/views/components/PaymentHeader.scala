@@ -57,7 +57,7 @@ object PaymentHeader {
           s"""
                     ${messages("cf.cash-account.detail.amount")}
                     """)
-      ),
+      )
     )
   }
 }

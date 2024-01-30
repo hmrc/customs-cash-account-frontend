@@ -18,19 +18,6 @@ package helpers
 
 object FormHelper {
 
-  /**
-   * Updates the key as per below validation
-   * If key is either start or end and error msg is among future date,etmp date or tax year date
-   *  Updated key - start.day
-   *
-   *  If key is either start or end and error msg is of invalid year length
-   *   Updated key - start.year
-   *
-   *  If key is other than start or end
-   *   Updated key is unchanged
-   *
-   * @return Updated FormError key
-   */
   def updateFormErrorKeyForStartAndEndDate(): (String, String) => String = (key: String, errorMsg: String) => {
     val futureStartDateMsgKey = "cf.form.error.start-future-date"
     val etmpStartDateMsgKey = "cf.form.error.startDate.date-earlier-than-system-start-date"
@@ -43,13 +30,22 @@ object FormHelper {
     val startDateMsgKeyList = List(futureStartDateMsgKey, etmpStartDateMsgKey, taxYearStartDateMsgKey)
     val endDateMsgKeyList = List(futureEndDateMsgKey, etmpEndDateMsgKey, taxYearEndDateMsgKey)
 
-    if ((key.equals("start") || key.equals("end"))) {
-      if (startDateMsgKeyList.contains(errorMsg) || endDateMsgKeyList.contains(errorMsg))
-        s"$key.day"
-      else
-        s"$key.year"
+    if (key.equals("start") || key.equals("end")) {
+      retrieveKeyForErrorMsg(key, errorMsg, startDateMsgKeyList, endDateMsgKeyList)
     } else {
       key
+    }
+  }
+
+  private def retrieveKeyForErrorMsg(key: String,
+                                     errorMsg: String,
+                                     startDateMsgKeyList: List[String],
+                                     endDateMsgKeyList: List[String]): String = {
+    if (startDateMsgKeyList.contains(errorMsg) || endDateMsgKeyList.contains(errorMsg)) {
+      s"$key.day"
+    }
+    else {
+      s"$key.year"
     }
   }
 }

@@ -17,6 +17,7 @@
 package models
 
 import play.api.mvc.PathBindable
+import utils.Utils.emptyString
 
 package object domain {
   type EORI = String
@@ -25,6 +26,7 @@ package object domain {
   type MRN = String
 
   implicit def optionBindable: PathBindable[Option[LinkId]] = new PathBindable[Option[LinkId]] {
+
     def bind(key: String, value: String): Either[String, Option[LinkId]] =
       implicitly[PathBindable[LinkId]].
         bind(key, value).
@@ -33,6 +35,6 @@ package object domain {
           right => Right(Some(right))
         )
 
-    def unbind(key: String, value: Option[LinkId]): String = value map (_.toString) getOrElse ""
+    def unbind(key: String, value: Option[LinkId]): String = value map (_.toString) getOrElse emptyString
   }
 }

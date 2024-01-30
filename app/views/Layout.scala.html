@@ -44,12 +44,10 @@
         welshToggle: Boolean = true,
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-
-
     @phaseBannerContent = {
-    @messages("feedback.before")
-        <a class='govuk-link' href='/contact/beta-feedback-unauthenticated?service=CDS-FIN'>@messages("feedback.link")</a>
-    @messages("feedback.after")
+        @messages("feedback.before")
+            <a class='govuk-link' href='/contact/beta-feedback-unauthenticated?service=CDS-FIN'>@messages("feedback.link")</a>
+        @messages("feedback.after")
     }
 
     @fullPageTitle = @{

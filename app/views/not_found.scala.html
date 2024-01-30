@@ -26,8 +26,11 @@
     @layout(pageTitle = Some(messages("cf.error.not-found.title")), fullWidth = false, backLink = None, help = false) {
 
         @h1("cf.error.not-found.heading")
+
         @p("cf.error.not-found.message.address-typed-wrong")
+
         @p("cf.error.not-found.message.address-pasted-wrong")
+
         @link(
             linkMessage = "cf.accounts.view-customs-account",
             location = appConfig.customsFinancialsFrontendHomepage,

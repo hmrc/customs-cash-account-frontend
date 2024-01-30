@@ -21,14 +21,18 @@ import play.api.i18n.Messages
 import play.api.test.Helpers
 
 class PageTitleSpec extends SpecBase {
+
   "fullPageTitle" should {
+
     "return correct string for present title" in new Setup {
-      val res = PageTitle.fullPageTitle(Some("abc"))
+      val res: Option[String] = PageTitle.fullPageTitle(Some("abc"))
+
       res mustBe Some("abc - service.name - GOV.UK")
     }
 
     "return correct string for no title" in new Setup {
-      val res = PageTitle.fullPageTitle(Some(""))
+      val res: Option[String] = PageTitle.fullPageTitle(Some(""))
+
       res mustBe Some(" - service.name - GOV.UK")
     }
   }

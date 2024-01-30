@@ -24,7 +24,6 @@ class CSVWritableSpec extends SpecBase {
   case class Foo(columnA: Option[String],
                  columnB: Option[String],
                  columnC: Option[String]) extends CSVWritable with FieldNames {
-
     override def fieldNames: Seq[String] = Seq("columnA", "columnB", "columnC")
   }
 
@@ -39,16 +38,19 @@ class CSVWritableSpec extends SpecBase {
   "CSVWriter" should {
     "generate a comma-separated string from a given case class" in {
       val foo = Foo(Some("A"), Some("B"), Some("C"))
+
       foo.toCSVRow must be(""""A","B","C"""")
     }
 
     "omit optional fields that are None" in {
       val foo = Foo(Some("A"), None, Some("C"))
+
       foo.toCSVRow must be(""""A",,"C"""")
     }
 
     "flatten nested records" in {
       val bar = Bar(Foo(Some("A"), None, Some("C")), Baz(Foo(None, Some("B"), None), Foo(Some("X"), Some("Y"), None)))
+
       bar.toCSVRow must be(""""A",,"C",,"B",,"X","Y",""")
     }
 

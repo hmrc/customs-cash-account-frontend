@@ -103,7 +103,6 @@ class RequestedTransactionsControllerSpec extends SpecBase {
     running(app) {
       val result = route(app, request).value
       status(result) mustBe SEE_OTHER
-      //contentAsString(result) must include regex "Your search returned too many results"
     }
   }
 
@@ -127,9 +126,13 @@ class RequestedTransactionsControllerSpec extends SpecBase {
   }
 
   "when too many results returned for the search" in new Setup {
+    val day = 30
+    val month = 3
+    val year = 2023
+
     when(mockRequestedTransactionsCache.get(any))
       .thenReturn(Future.successful(Some(CashTransactionDates(
-        LocalDate.of(2023,3,30), LocalDate.of(2023,3,30)))))
+        LocalDate.of(year, month, day), LocalDate.of(year, month, day)))))
 
     when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
       .thenReturn(Future.successful(Some(cashAccount)))
@@ -177,7 +180,7 @@ class RequestedTransactionsControllerSpec extends SpecBase {
     val cashAccount: CashAccount =
       CashAccount(cashAccountNumber, eori, AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))
 
-    val listOfPendingTransactions =
+    val listOfPendingTransactions: Seq[Declaration] =
       Seq(Declaration("pendingDeclarationID", Some("pendingImporterEORI"),
         "pendingDeclarantEORINumber", Some("pendingDeclarantReference"),
         LocalDate.parse("2020-07-21"), -100.00, Nil))
@@ -185,7 +188,7 @@ class RequestedTransactionsControllerSpec extends SpecBase {
     val fromDate: LocalDate = LocalDate.parse("2023-03-30")
     val toDate: LocalDate = LocalDate.parse("2023-03-30")
 
-    val cashDailyStatements = Seq(
+    val cashDailyStatements: Seq[CashDailyStatement] = Seq(
       CashDailyStatement(LocalDate.parse("2020-07-18"), 0.0, 1000.00,
         Seq(Declaration("mrn1", Some("Importer EORI"), "Declarant EORI",
           Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil),

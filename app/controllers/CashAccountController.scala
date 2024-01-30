@@ -57,17 +57,17 @@ class CashAccountController @Inject()(
   def showAccountDetails(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async {
     implicit request =>
 
-    val eventualMaybeCashAccount = apiConnector.getCashAccount(request.eori)
-    val result = for {
-      cashAccount <- fromOptionF[Future, Result, CashAccount](eventualMaybeCashAccount, NotFound(eh.notFoundTemplate))
-      (from, to) = cashAccountUtils.transactionDateRange()
-      page <- liftF[Future, Result, Result](showAccountWithTransactionDetails(cashAccount, from, to, page))
-    } yield page
-    result.merge.recover {
-      case e =>
-        logger.error(s"Unable to retrieve account details: ${e.getMessage}")
-        Redirect(routes.CashAccountController.showAccountUnavailable)
-    }
+      val eventualMaybeCashAccount = apiConnector.getCashAccount(request.eori)
+      val result = for {
+        cashAccount <- fromOptionF[Future, Result, CashAccount](eventualMaybeCashAccount, NotFound(eh.notFoundTemplate))
+        (from, to) = cashAccountUtils.transactionDateRange()
+        page <- liftF[Future, Result, Result](showAccountWithTransactionDetails(cashAccount, from, to, page))
+      } yield page
+      result.merge.recover {
+        case e =>
+          logger.error(s"Unable to retrieve account details: ${e.getMessage}")
+          Redirect(routes.CashAccountController.showAccountUnavailable)
+      }
   }
 
   private def showAccountWithTransactionDetails(account: CashAccount,
@@ -78,17 +78,20 @@ class CashAccountController @Inject()(
     apiConnector.retrieveCashTransactions(account.number, from, to).map {
       case Left(errorResponse) => errorResponse match {
         case NoTransactionsAvailable => account.balances.AvailableAccountBalance match {
-            case Some(v) if v == 0 => Ok(noTransactions(CashAccountViewModel(req.eori, account)))
-            case Some(_) => Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
-            case None => Ok(noTransactions(CashAccountViewModel(req.eori, account)))
-          }
+          case Some(v) if v == 0 => Ok(noTransactions(CashAccountViewModel(req.eori, account)))
+          case Some(_) => Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
+          case None => Ok(noTransactions(CashAccountViewModel(req.eori, account)))
+        }
+
         case TooManyTransactionsRequested => Redirect(routes.CashAccountController.tooManyTransactions())
 
-        case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
+        case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account),
+          appConfig.transactionsTimeoutFlag))
       }
       case Right(cashTransactions) =>
         if (cashTransactions.availableTransactions) {
-          Ok(showAccountsView(CashAccountViewModel(req.eori, account), CashTransactionsViewModel(cashTransactions, page = page)))
+          Ok(showAccountsView(CashAccountViewModel(req.eori, account),
+            CashTransactionsViewModel(cashTransactions, page = page)))
         } else {
           Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
         }
@@ -98,10 +101,9 @@ class CashAccountController @Inject()(
   def tooManyTransactions(): Action[AnyContent] = authenticate.async { implicit request =>
     apiConnector.getCashAccount(request.eori) flatMap {
       case None => Future.successful(NotFound(eh.notFoundTemplate))
-      case Some(account) => {
+      case Some(account) =>
         Future.successful(Ok(showAccountsExceededThreshold(CashAccountViewModel(request.eori, CashAccount(
           account.number, account.owner, account.status, account.balances)))))
-      }
     }
   }
 

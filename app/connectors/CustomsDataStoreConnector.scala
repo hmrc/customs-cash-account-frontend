@@ -18,21 +18,21 @@ package connectors
 
 import config.AppConfig
 import models.domain.EORI
-import models.email.{EmailResponse, EmailResponses, UnverifiedEmail, UndeliverableEmail}
+import models.email.{EmailResponse, EmailResponses, UndeliverableEmail, UnverifiedEmail}
 import play.api.Logger
 import play.api.http.Status.NOT_FOUND
 import services.MetricsReporterService
 import uk.gov.hmrc.auth.core.retrieve.Email
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CustomsDataStoreConnector @Inject()(http: HttpClient,
-                                          metricsReporter: MetricsReporterService)(
-                                           implicit appConfig: AppConfig, ec: ExecutionContext) {
+                                          metricsReporter: MetricsReporterService)
+                                         (implicit appConfig: AppConfig, ec: ExecutionContext) {
 
   private val log = Logger(this.getClass)
 

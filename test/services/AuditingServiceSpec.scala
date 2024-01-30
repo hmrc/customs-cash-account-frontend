@@ -18,7 +18,7 @@ package services
 
 import config.AppConfig
 import models.AuditModel
-import org.mockito.captor.ArgCaptor
+import org.mockito.captor.{ArgCaptor, Captor}
 import org.scalatest.matchers.should.Matchers._
 import play.api.libs.json
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
@@ -26,8 +26,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector._
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import utils.SpecBase
-import java.time.LocalDateTime
 
+import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -36,12 +36,12 @@ class AuditingServiceSpec extends SpecBase {
   "AuditingService" should {
 
     "create the correct data event for recording a successful audit event" in new Setup {
-      val model = AuditModel("auditType", "transactionName", json.Json.toJson("the details"))
+      val model: AuditModel = AuditModel("auditType", "transactionName", json.Json.toJson("the details"))
       await(auditingService.audit(model))
 
-      val dataEventCaptor = ArgCaptor[ExtendedDataEvent]
+      val dataEventCaptor: Captor[ExtendedDataEvent] = ArgCaptor[ExtendedDataEvent]
       verify(mockAuditConnector).sendExtendedEvent(dataEventCaptor.capture)(any, any)
-      val dataEvent = dataEventCaptor.value
+      val dataEvent: ExtendedDataEvent = dataEventCaptor.value
 
       dataEvent.auditSource should be(expectedAuditSource)
       dataEvent.auditType should be("auditType")
@@ -52,9 +52,9 @@ class AuditingServiceSpec extends SpecBase {
     "create the correct data event for recording a successful CSV download" in new Setup {
       await(auditingService.auditCsvDownload("eori1", "can1", now, today, tomorrow))
 
-      val dataEventCaptor = ArgCaptor[ExtendedDataEvent]
+      val dataEventCaptor: Captor[ExtendedDataEvent] = ArgCaptor[ExtendedDataEvent]
       verify(mockAuditConnector).sendExtendedEvent(dataEventCaptor.capture)(any, any)
-      val dataEvent = dataEventCaptor.value
+      val dataEvent: ExtendedDataEvent = dataEventCaptor.value
 
       dataEvent.auditSource should be(expectedAuditSource)
       dataEvent.auditType should be("DownloadCashStatement")
@@ -65,14 +65,15 @@ class AuditingServiceSpec extends SpecBase {
     }
 
     "create the data event for recording an failed audit result" in new Setup {
-      when(mockAuditConnector.sendExtendedEvent(any)(any, any)).thenReturn(Future.successful(AuditResult.Failure("An audit failure occurred")))
+      when(mockAuditConnector.sendExtendedEvent(any)(any, any))
+        .thenReturn(Future.successful(AuditResult.Failure("An audit failure occurred")))
 
-      val model = AuditModel("auditType", "transactionName", json.Json.toJson("the details"))
+      val model: AuditModel = AuditModel("auditType", "transactionName", json.Json.toJson("the details"))
       await(auditingService.audit(model))
 
-      val dataEventCaptor = ArgCaptor[ExtendedDataEvent]
+      val dataEventCaptor: Captor[ExtendedDataEvent] = ArgCaptor[ExtendedDataEvent]
       verify(mockAuditConnector).sendExtendedEvent(dataEventCaptor.capture)(any, any)
-      val dataEvent = dataEventCaptor.value
+      val dataEvent: ExtendedDataEvent = dataEventCaptor.value
 
       dataEvent.auditSource should be(expectedAuditSource)
       dataEvent.auditType should be("auditType")
@@ -81,8 +82,10 @@ class AuditingServiceSpec extends SpecBase {
     }
 
     "throw an exception when the send fails to connect" in new Setup {
-      when(mockAuditConnector.sendExtendedEvent(any)(any, any)).thenReturn(Future.failed(new Exception("Failed connection")))
-      val model = AuditModel("auditType", "transactionName", json.Json.toJson("the details"))
+      when(mockAuditConnector.sendExtendedEvent(any)(any, any))
+        .thenReturn(Future.failed(new Exception("Failed connection")))
+
+      val model: AuditModel = AuditModel("auditType", "transactionName", json.Json.toJson("the details"))
       intercept[Exception] {
         await(auditingService.audit(model))
       }
@@ -92,16 +95,17 @@ class AuditingServiceSpec extends SpecBase {
   trait Setup {
     implicit val hc: HeaderCarrier = HeaderCarrier()
 
-    val now = LocalDateTime.now()
-    val today = now.toLocalDate()
-    val tomorrow = today.plusDays(1)
+    val oneDay = 1
+    val now: LocalDateTime = LocalDateTime.now()
+    val today: LocalDate = now.toLocalDate
+    val tomorrow: LocalDate = today.plusDays(oneDay)
 
     val expectedAuditSource = "customs-cash-account-frontend"
 
-    val mockConfig = mock[AppConfig]
+    val mockConfig: AppConfig = mock[AppConfig]
     when(mockConfig.appName).thenReturn("customs-cash-account-frontend")
 
-    val mockAuditConnector = mock[AuditConnector]
+    val mockAuditConnector: AuditConnector = mock[AuditConnector]
     when(mockAuditConnector.sendExtendedEvent(any)(any, any)).thenReturn(Future.successful(AuditResult.Success))
 
     val auditingService = new AuditingService(mockConfig, mockAuditConnector)

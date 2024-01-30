@@ -25,27 +25,32 @@ import play.api.data.format.Formats.{booleanFormat, localDateFormat, stringForma
 class MappingsSpec extends SpecBase with Mappings with Formatters {
 
   "Mappings" must {
+
     "boolean" in {
-      val map = FieldMapping[Boolean]("",List.empty)
+      val map = FieldMapping[Boolean](emptyString, List.empty)
       val test = boolean()
+
       test mustBe map
     }
 
     "localDate - end of month is true" in {
-      val map = FieldMapping[LocalDate]("",List.empty)
-      val test = localDate("",true)
+      val map = FieldMapping[LocalDate](emptyString, List.empty)
+      val test = localDate(emptyString)
+
       test mustBe map
     }
 
     "localDate - end of month is false" in {
-      val map = FieldMapping[LocalDate]("",List.empty)
-      val test = localDate("",false)
+      val map = FieldMapping[LocalDate](emptyString, List.empty)
+      val test = localDate(emptyString)
+
       test mustBe map
     }
 
     "decimal" in {
-      val map = FieldMapping[String]("",List.empty)
+      val map = FieldMapping[String](emptyString, List.empty)
       val test = decimal()
+
       test mustBe map
     }
   }

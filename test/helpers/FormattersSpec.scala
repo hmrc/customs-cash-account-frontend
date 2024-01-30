@@ -16,27 +16,76 @@
 
 package helpers
 
+import helpers.Formatters.{ddMMyyyyDateFormatter, yyyyMMddDateFormatter, yyyyMMddHHmmssDateFormatter}
 import utils.SpecBase
 
-class FormattersSpec extends SpecBase {
-  "Formatters" must {
+import java.time.{LocalDate, LocalDateTime}
 
-    "fileSizeFormat size of 1 returns 1KB" in {
+class FormattersSpec extends SpecBase {
+
+  "fileSizeFormat" must {
+
+    "returns 1KB for size 1" in {
       val size: Long = 1
+
       val result = Formatters.fileSizeFormat(size)
       result mustBe "1KB"
     }
 
-    "fileSizeFormat size of 1000000000 returns 1000.0MB" in {
+    "return 1000.0MB for size of 1000000000" in {
       val size: Long = 1000000000
+
       val result = Formatters.fileSizeFormat(size)
       result mustBe "1000.0MB"
     }
 
-    "fileSizeFormat size of 1000 returns " in {
+    "return correct value for size of 1000 " in {
       val size: Long = 100000
+
       val result = Formatters.fileSizeFormat(size)
       result mustBe "100KB"
+    }
+  }
+
+  "yyyyMMddDateFormatter" should {
+
+    "return date in correct pattern" in {
+      val year = 2024
+      val month = 1
+      val dayOfMonth = 29
+
+      yyyyMMddDateFormatter.format(LocalDate.of(year, month, dayOfMonth)) mustBe "2024-01-29"
+    }
+  }
+
+  "yyyyMMddHHmmssDateFormatter" should {
+
+    "return date in correct pattern" in {
+      val year = 2024
+      val month = 1
+      val dayOfMonth = 29
+      val hourOfDay = 14
+      val minOfHour = 6
+      val secsOfMin = 26
+
+      yyyyMMddHHmmssDateFormatter.format(LocalDateTime.of(
+        year,
+        month,
+        dayOfMonth,
+        hourOfDay,
+        minOfHour,
+        secsOfMin)) mustBe "20240129140626"
+    }
+  }
+
+  "ddMMyyyyDateFormatter" should {
+
+    "return date in correct pattern" in {
+      val year = 2024
+      val month = 1
+      val dayOfMonth = 29
+
+      ddMMyyyyDateFormatter.format(LocalDate.of(year, month, dayOfMonth)) mustBe "29012024"
     }
   }
 }

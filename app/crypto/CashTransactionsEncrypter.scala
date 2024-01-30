@@ -16,13 +16,15 @@
 
 package crypto
 
-import models.{CashDailyStatement, CashTransactions, Declaration, EncryptedCashTransactions, EncryptedDailyStatements, EncryptedDeclaration}
+import models._
+import utils.Utils.emptyString
 
 import javax.inject.Inject
 
-class CashTransactionsEncrypter @Inject()(crypto: AesGCMCrypto){
+class CashTransactionsEncrypter @Inject()(crypto: AesGCMCrypto) {
 
-  def encryptCashTransactions(cashTransactions: CashTransactions, key: String): EncryptedCashTransactions = {
+  def encryptCashTransactions(cashTransactions: CashTransactions,
+                              key: String): EncryptedCashTransactions = {
     EncryptedCashTransactions(
       cashTransactions.pendingTransactions.map(declaration => encryptDeclaration(declaration, key)),
       cashTransactions.cashDailyStatements.map(dailyStatement =>
@@ -37,10 +39,12 @@ class CashTransactionsEncrypter @Inject()(crypto: AesGCMCrypto){
     )
   }
 
-  def decryptCashTransactions(encryptedCashTransactions: EncryptedCashTransactions, key: String): CashTransactions = {
+  def decryptCashTransactions(encryptedCashTransactions: EncryptedCashTransactions,
+                              key: String): CashTransactions = {
     CashTransactions(
-      encryptedCashTransactions.pendingTransactions.map(encryptedDeclaration => decryptDeclaration(encryptedDeclaration, key)),
-      encryptedCashTransactions.cashDailyStatement.map( encryptedDailyStatement =>
+      encryptedCashTransactions.pendingTransactions.map(
+        encryptedDeclaration => decryptDeclaration(encryptedDeclaration, key)),
+      encryptedCashTransactions.cashDailyStatement.map(encryptedDailyStatement =>
         CashDailyStatement(
           encryptedDailyStatement.date,
           encryptedDailyStatement.openingBalance,
@@ -52,9 +56,11 @@ class CashTransactionsEncrypter @Inject()(crypto: AesGCMCrypto){
     )
   }
 
-  def encryptDeclaration(declaration: Declaration, key: String): EncryptedDeclaration = {
+  private def encryptDeclaration(declaration: Declaration,
+                                 key: String): EncryptedDeclaration = {
     def encrypt(field: String): EncryptedValue = crypto.encrypt(field, key)
-    def encryptSome(field: Option[String]): EncryptedValue = crypto.encrypt(field.getOrElse(""), key)
+
+    def encryptSome(field: Option[String]): EncryptedValue = crypto.encrypt(field.getOrElse(emptyString), key)
 
     EncryptedDeclaration(
       encrypt(declaration.movementReferenceNumber),
@@ -67,8 +73,10 @@ class CashTransactionsEncrypter @Inject()(crypto: AesGCMCrypto){
     )
   }
 
-  def decryptDeclaration(encryptedDeclaration: EncryptedDeclaration, key: String) = {
+  private def decryptDeclaration(encryptedDeclaration: EncryptedDeclaration,
+                                 key: String): Declaration = {
     def decrypt(field: EncryptedValue): String = crypto.decrypt(field, key)
+
     def decryptSome(field: EncryptedValue): Option[String] = Some(crypto.decrypt(field, key))
 
     Declaration(

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package models.request
+package utils
 
-import play.api.mvc.{Request, WrappedRequest}
-
-case class OptionalDataRequest[A](request: Request[A],
-                                  eori: String) extends WrappedRequest[A](request)
-
-case class DataRequest[A](request: Request[A],
-                          eori: String) extends WrappedRequest[A](request)
+object Utils {
+  val comma: String = ","
+  val emptyString: String = ""
+  val period: String = "."
+  val hyphen = "-"
+  val singleSpace = " "
+}

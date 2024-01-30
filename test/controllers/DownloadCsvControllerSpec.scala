@@ -22,6 +22,7 @@ import org.jsoup.Jsoup.parseBodyFragment
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.AuditingService
@@ -36,6 +37,7 @@ import scala.util.Random
 
 class DownloadCsvControllerSpec extends SpecBase {
   "downloadCSV" must {
+
     "return OK with the user's CSV of cash transactions" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
@@ -43,7 +45,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app = application
+      val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -62,7 +64,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app = application
+      val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -99,7 +101,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app = application
+      val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -119,7 +121,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app = application
+      val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -141,7 +143,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Left(UnknownException)))
 
-      val app = application
+      val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -159,11 +161,11 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app = application
+      val app: Application = application
         .overrides(
-          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
+          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
         ).configure("features.fixed-systemdate-for-tests" -> "true"
-        ).build()
+      ).build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
@@ -178,24 +180,25 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
-      when(mockAuditingservice.auditCsvDownload(any, any, any, any, any)(any)).thenReturn(Future.successful(AuditResult.Success))
+      when(mockAuditingService.auditCsvDownload(any, any, any, any, any)(any))
+        .thenReturn(Future.successful(AuditResult.Success))
 
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app = application
+      val app: Application = application
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
-          bind[AuditingService].toInstance(mockAuditingservice)
+          bind[AuditingService].toInstance(mockAuditingService)
         ).configure("features.fixed-systemdate-for-tests" -> "true"
-        ).build()
+      ).build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
         val result = route(app, request).value
         status(result) mustEqual OK
 
-        verify(mockAuditingservice).auditCsvDownload(
+        verify(mockAuditingService).auditCsvDownload(
           eqTo("exampleEori"),
           eqTo("1234567"),
           any[java.time.LocalDateTime],
@@ -208,11 +211,11 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(None))
 
-      val app = application
+      val app: Application = application
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
         ).configure("features.fixed-systemdate-for-tests" -> "true"
-        ).build()
+      ).build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
@@ -223,11 +226,13 @@ class DownloadCsvControllerSpec extends SpecBase {
 
     "paginator" should {
       "be compatible with the page and mrn query parameter" in new Setup {
+        val expectedTransaction = 25
+
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
           .thenReturn(Future.successful(Some(cashAccount)))
 
         when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(someCan), any, any)(any))
-          .thenReturn(Future.successful(Right(randomCashTransaction(25))))
+          .thenReturn(Future.successful(Right(randomCashTransaction(expectedTransaction))))
 
         val app: Application = application
           .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
@@ -241,7 +246,7 @@ class DownloadCsvControllerSpec extends SpecBase {
           val pageNumberLinks = html.select("li.govuk-pagination__item > a").asScala
 
           withClue("html did not contain any pagination links:") {
-            pageNumberLinks.size must not be (0)
+            pageNumberLinks.size must not be 0
           }
 
           pageNumberLinks.map { pageNumberLink =>
@@ -261,7 +266,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(TooManyTransactionsRequested)))
 
-      val app = application
+      val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
       running(app) {
@@ -276,7 +281,9 @@ class DownloadCsvControllerSpec extends SpecBase {
 
   "downloadRequestedCSV" must {
     "return OK" in new Setup {
-      when(mockAuditingservice.auditCsvDownload(any, any, any, any, any)(any)).thenReturn(Future.successful(AuditResult.Success))
+      when(mockAuditingService.auditCsvDownload(any, any, any, any, any)(any))
+        .thenReturn(Future.successful(AuditResult.Success))
+
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
@@ -284,7 +291,9 @@ class DownloadCsvControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
       running(newApp) {
-        val request = FakeRequest(GET, routes.DownloadCsvController.downloadRequestedCsv(Some("attachment"), dateRange).url)
+        val request = FakeRequest(GET, routes.DownloadCsvController.downloadRequestedCsv(
+          Some("attachment"), dateRange).url)
+
         val result = route(newApp, request).value
         status(result) mustEqual OK
       }
@@ -292,7 +301,8 @@ class DownloadCsvControllerSpec extends SpecBase {
 
     "return Bad request when invalid dates are submitted" in new Setup {
 
-      val request = fakeRequest(GET, "/customs/cash-account/download-requested-csv?from=20-02-01&to=2020-03-31")
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, "/customs/cash-account/download-requested-csv?from=20-02-01&to=2020-03-31")
 
       running(newApp) {
         val result = route(newApp, request).value
@@ -308,7 +318,8 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Left(NoTransactionsAvailable)))
 
-      val request = fakeRequest(GET, routes.DownloadCsvController.downloadRequestedCsv(Some("attachment"), dateRange).url)
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.DownloadCsvController.downloadRequestedCsv(Some("attachment"), dateRange).url)
 
       running(newApp) {
         val result = route(newApp, request).value
@@ -324,7 +335,8 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Left(TooManyTransactionsRequested)))
 
-      val request = fakeRequest(GET, routes.DownloadCsvController.downloadRequestedCsv(Some("attachment"), dateRange).url)
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.DownloadCsvController.downloadRequestedCsv(Some("attachment"), dateRange).url)
 
       running(newApp) {
         val result = route(newApp, request).value
@@ -340,7 +352,8 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Left(UnknownException)))
 
-      val request = fakeRequest(GET, routes.DownloadCsvController.downloadRequestedCsv(Some("attachment"), dateRange).url)
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.DownloadCsvController.downloadRequestedCsv(Some("attachment"), dateRange).url)
 
       running(newApp) {
         val result = route(newApp, request).value
@@ -350,7 +363,9 @@ class DownloadCsvControllerSpec extends SpecBase {
 
 
     "audit the download of the CSV" in new Setup {
-      when(mockAuditingservice.auditCsvDownload(any, any, any, any, any)(any)).thenReturn(Future.successful(AuditResult.Success))
+      when(mockAuditingService.auditCsvDownload(any, any, any, any, any)(any))
+        .thenReturn(Future.successful(AuditResult.Success))
+
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
@@ -358,10 +373,12 @@ class DownloadCsvControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
       running(newApp) {
-        val request = FakeRequest(GET, routes.DownloadCsvController.downloadRequestedCsv(Some("attachment"), dateRange).url)
+        val request = FakeRequest(
+          GET, routes.DownloadCsvController.downloadRequestedCsv(Some("attachment"), dateRange).url)
+
         val result = route(newApp, request).value
         status(result) mustEqual OK
-        verify(mockAuditingservice).auditCsvDownload(
+        verify(mockAuditingService).auditCsvDownload(
           eqTo("exampleEori"),
           eqTo("1234567"),
           any[java.time.LocalDateTime],
@@ -376,18 +393,24 @@ class DownloadCsvControllerSpec extends SpecBase {
     val eori = "exampleEori"
     val someCan = "1234567"
 
-    val mockAuditingservice = mock[AuditingService]
-    val mockCustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
-    val cashAccount = CashAccount(cashAccountNumber, eori, AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))
+    val mockAuditingService: AuditingService = mock[AuditingService]
+    val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
+    val cashAccount: CashAccount = CashAccount(cashAccountNumber, eori,
+      AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))
 
-    val listOfPendingTransactions =
+    val listOfPendingTransactions: Seq[Declaration] =
       Seq(Declaration("pendingDeclarationID", Some("pendingImporterEORI"),
         "pendingDeclarantEORINumber", Some("pendingDeclarantReference"),
         LocalDate.parse("2020-07-21"), -100.00, Nil))
 
-    val dateRange = RequestedDateRange(LocalDate.of(2019, 10, 10), LocalDate.of(2019, 10, 10))
+    val day = 10
+    val month = 10
+    val year = 2019
 
-    val cashDailyStatements = Seq(
+    val dateRange: RequestedDateRange =
+      RequestedDateRange(LocalDate.of(year, month, day), LocalDate.of(year, month, day))
+
+    val cashDailyStatements: Seq[CashDailyStatement] = Seq(
       CashDailyStatement(LocalDate.parse("2020-07-18"), 0.0, 1000.00,
         Seq(Declaration("mrn1", Some("Importer EORI"), "Declarant EORI",
           Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil),
@@ -403,13 +426,15 @@ class DownloadCsvControllerSpec extends SpecBase {
         Seq(Transaction(67.89, Payment, None)))
     )
 
-    val nonFatalResponse = UpstreamErrorResponse("ServiceUnavailable", Status.SERVICE_UNAVAILABLE, Status.SERVICE_UNAVAILABLE)
-    val cashTransactionResponse = CashTransactions(listOfPendingTransactions, cashDailyStatements)
+    val nonFatalResponse: UpstreamErrorResponse = UpstreamErrorResponse("ServiceUnavailable",
+      Status.SERVICE_UNAVAILABLE, Status.SERVICE_UNAVAILABLE)
 
-    val newApp = application
+    val cashTransactionResponse: CashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements)
+
+    val newApp: Application = application
       .overrides(
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
-        bind[AuditingService].toInstance(mockAuditingservice)
+        bind[AuditingService].toInstance(mockAuditingService)
       )
       .configure("features.fixed-systemdate-for-tests" -> "true")
       .build()
@@ -423,27 +448,40 @@ class DownloadCsvControllerSpec extends SpecBase {
 
   def randomBigDecimal: BigDecimal = BigDecimal(randomFloat.toString)
 
-  def randomLocalDate: LocalDate = LocalDate.now().minusMonths(Random.nextInt(36))
+  def randomLocalDate: LocalDate = {
+    val monthsToSubtract: Int = 36
+    LocalDate.now().minusMonths(Random.nextInt(monthsToSubtract))
+  }
 
-  def randomCashTransaction(howMany: Int): CashTransactions =
-    CashTransactions(randomPendingDailyStatements(20), randomCashDailyStatements(howMany))
+  def randomCashTransaction(howMany: Int): CashTransactions = {
+    val pendingStatementsNumber: Int = 20
+    CashTransactions(randomPendingDailyStatements(pendingStatementsNumber), randomCashDailyStatements(howMany))
+  }
 
-  def randomDeclaration: Declaration =
-    Declaration(randomString(10),
-      Some(randomString(10)),
-      randomString(10),
-      Some(randomString(10)),
+
+  def randomDeclaration: Declaration = {
+    val randomStringLength: Int = 10
+
+    Declaration(randomString(randomStringLength),
+      Some(randomString(randomStringLength)),
+      randomString(randomStringLength),
+      Some(randomString(randomStringLength)),
       randomLocalDate,
       randomBigDecimal, Nil)
+  }
 
-  def randomCashDailyStatement: CashDailyStatement =
+  def randomCashDailyStatement: CashDailyStatement = {
+    val declarations: Int = 5
+    val otherTransactions: Int = 7
+
     CashDailyStatement(randomLocalDate,
       randomBigDecimal,
       randomBigDecimal,
-      randomDeclarations(5),
-      randomTransactions(7))
+      randomDeclarations(declarations),
+      randomTransactions(otherTransactions))
+  }
 
-  val types = Seq("Payment", "Withdrawal", "Transfer")
+  val types: Seq[String] = Seq("Payment", "Withdrawal", "Transfer")
 
   def randomTransactions(howMany: Int): Seq[Transaction] = List.fill(howMany)(randomTransaction)
 

@@ -27,7 +27,11 @@
 @(
    nextPage: String,
    emailAddress: Option[String] = None
- )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+ )(
+    implicit request: Request[_],
+    messages: Messages,
+    appConfig: AppConfig
+)
 
 @layout(pageTitle = Some(messages("cf.undeliverable.email.title")), fullWidth = false, help = true){
 

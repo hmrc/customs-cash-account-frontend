@@ -30,6 +30,7 @@ import scala.concurrent.Future
 class EmailControllerSpec extends SpecBase {
 
   "showUnverified" must {
+
     "return unverified email response" in new Setup {
 
       when(mockConnector.retrieveUnverifiedEmail(any)).thenReturn(Future.successful(emailUnverifiedResponse))
@@ -44,6 +45,7 @@ class EmailControllerSpec extends SpecBase {
   }
 
   "showUndeliverable" must {
+
     "display undeliverableEmail page" in new Setup {
       when(mockConnector.verifiedEmail(any)).thenReturn(Future.successful(emailVerifiedResponse))
 

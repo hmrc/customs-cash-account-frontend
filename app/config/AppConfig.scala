@@ -44,7 +44,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val signOutUrl: String = config.get[String]("urls.signOut")
   lazy val cashAccountTopUpGuidanceUrl: String = config.get[String]("urls.cashAccountTopUpGuidanceUrl")
   lazy val customsFinancialsFrontendHomepage: String = config.get[String]("urls.customsFinancialsHomepage")
-  lazy val govUkHomepage: String = config.get[String]("urls.govUkHome")
   lazy val cashAccountForCdsDeclarationsUrl: String = config.get[String]("urls.cashAccountForCdsDeclarationsUrl")
   lazy val feedbackService: String = config.getOptional[String]("feedback.url").getOrElse("/feedback") +
     config.getOptional[String]("feedback.source").getOrElse("/CDS-FIN")
@@ -52,16 +51,14 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val timeout: Int = config.get[Int]("timeout.timeout")
   lazy val countdown: Int = config.get[Int]("timeout.countdown")
 
-  lazy val registerCdsUrl: String = config.get[String]("urls.cdsRegisterUrl")
   lazy val subscribeCdsUrl: String = config.get[String]("urls.cdsSubscribeUrl")
 
-  lazy val numberOfMonthsOfCashTransactionsToShow: Int = config.get[Int]("application.cash-account.numberOfMonthsOfTransactionsToShow")
+  lazy val numberOfMonthsOfCashTransactionsToShow: Int =
+    config.get[Int]("application.cash-account.numberOfMonthsOfTransactionsToShow")
+
   lazy val numberOfDaysToShow: Int = config.get[Int]("application.cash-account.numberOfDaysToShow")
   lazy val fixedTimeTesting: Boolean = config.get[Boolean]("features.fixed-systemdate-for-tests")
   lazy val transactionsTimeoutFlag: Boolean = config.get[Boolean]("features.transactions-timeout")
-
-  lazy val cashAccountInterval: Int = config.get[Int]("application.cash-account.updateTime.intervalMilliseconds")
-  lazy val cashAccountTimeout: Int = config.get[Int]("application.cash-account.updateTime.timeoutMilliseconds")
 
   lazy val helpMakeGovUkBetterUrl: String = config.get[String]("urls.helpMakeGovUkBetterUrl")
 }

@@ -22,7 +22,9 @@ import utils.SpecBase
 class EmailResponsesSpec extends SpecBase {
 
   "UndeliverableInformationEvent" must {
+
     "generate correct output" when {
+
       "performing Reads" in new Setup {
 
         import UndeliverableInformationEvent.format
@@ -37,7 +39,9 @@ class EmailResponsesSpec extends SpecBase {
   }
 
   "UndeliverableInformation" must {
+
     "generate correct output" when {
+
       "performing Reads" in new Setup {
 
         import UndeliverableInformation.format
@@ -52,7 +56,9 @@ class EmailResponsesSpec extends SpecBase {
   }
 
   "EmailResponse" must {
+
     "generate correct output" when {
+
       "performing Reads" in new Setup {
 
         import EmailResponse.format
@@ -67,6 +73,7 @@ class EmailResponsesSpec extends SpecBase {
   }
 
   "EmailVerifiedResponse.Reads" must {
+
     "generate correct EmailVerifiedResponse object" in new Setup {
 
       import EmailVerifiedResponse.format
@@ -76,12 +83,14 @@ class EmailResponsesSpec extends SpecBase {
   }
 
   "EmailVerifiedResponse.Writes" must {
+
     "generate correct JsValue for EmailVerifiedResponse object" in new Setup {
       Json.toJson(emailVerifiedResponseOb) mustBe Json.parse(emailVerifiedResponse)
     }
   }
 
   "EmailUnverifiedResponse.Reads" must {
+
     "generate correct EmailUnverifiedResponse object" in new Setup {
 
       import EmailUnverifiedResponse.format
@@ -91,6 +100,7 @@ class EmailResponsesSpec extends SpecBase {
   }
 
   "EmailUnverifiedResponse.Writes" must {
+
     "generate correct JsValue for EmailUnverifiedResponse object" in new Setup {
       Json.toJson(emailUnverifiedResponseOb) mustBe Json.parse(emailUnverifiedResponse)
     }
@@ -146,11 +156,12 @@ class EmailResponsesSpec extends SpecBase {
         |  }
         |}""".stripMargin
 
+    val value = 12
     val undelInfoEventOb: UndeliverableInformationEvent = UndeliverableInformationEvent("example-id",
       "someEvent",
       "email@email.com",
       "2021-05-14T10:59:45.811+01:00",
-      Some(12),
+      Some(value),
       Some("Inbox full"),
       "HMRC-CUS-ORG~EORINumber~GB744638982004")
 

@@ -18,7 +18,7 @@ package forms
 
 import forms.FormTestHelper._
 import models.CashTransactionDates
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import utils.SpecBase
 
 import java.time.{Clock, LocalDate, ZoneOffset}
@@ -34,109 +34,132 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
       }
 
       "the day of start date is blank " in new SetUp {
-        val startDate = populateFormValueMap("start", "","10","2021")
-        val validEndDate = populateFormValueMap("end", "10","10","2021")
-        val formData = startDate ++ validEndDate
+        val startDate: Map[String, String] =
+          populateFormValueMap(startKey, emptyString, month10AsString, year2021AsString)
 
-        val expectedErrors = error("start.day", "cf.form.error.start.date-number-invalid")
+        val validEndDate: Map[String, String] =
+          populateFormValueMap(endKey, day10AsString, month10AsString, year2021AsString)
 
-         checkForError(form, formData, expectedErrors)
+        val formData: Map[String, String] = startDate ++ validEndDate
+
+        val expectedErrors: Seq[FormError] = error("start.day", "cf.form.error.start.date-number-invalid")
+
+        checkForError(form, formData, expectedErrors)
       }
 
       "the month of start date is blank " in new SetUp {
-        val startDate = populateFormValueMap("start", "10", "", "2021")
-        val validEndDate = populateFormValueMap("end", "10", "10", "2021")
-        val formData = startDate ++ validEndDate
+        val startDate: Map[String, String] =
+          populateFormValueMap(startKey, day10AsString, emptyString, year2021AsString)
 
-        val expectedErrors = error("start.month", "cf.form.error.start.date-number-invalid")
+        val validEndDate: Map[String, String] =
+          populateFormValueMap(endKey, day10AsString, month10AsString, year2021AsString)
+
+        val formData: Map[String, String] = startDate ++ validEndDate
+
+        val expectedErrors: Seq[FormError] = error("start.month", "cf.form.error.start.date-number-invalid")
 
         checkForError(form, formData, expectedErrors)
       }
 
       "the year of start date is blank " in new SetUp {
-        val startDate = populateFormValueMap("start", "10", "10", "")
-        val validEndDate = populateFormValueMap("end", "10", "10", "2021")
-        val formData = startDate ++ validEndDate
+        val startDate: Map[String, String] =
+          populateFormValueMap(startKey, day10AsString, month10AsString, emptyString)
 
-        val expectedErrors = error("start.year", "cf.form.error.start.date-number-invalid")
+        val validEndDate: Map[String, String] =
+          populateFormValueMap(endKey, day10AsString, month10AsString, year2021AsString)
+
+        val formData: Map[String, String] = startDate ++ validEndDate
+
+        val expectedErrors: Seq[FormError] = error("start.year", "cf.form.error.start.date-number-invalid")
 
         checkForError(form, formData, expectedErrors)
       }
 
       "the day value is invalid for the start date" in new SetUp {
-        val startDate = populateFormValueMap("start", "40", "10", "2021")
-        val validEndDate = populateFormValueMap("end", "10", "10", "2021")
-        val formData = startDate ++ validEndDate
+        val startDate: Map[String, String] =
+          populateFormValueMap(startKey, month40AsString, month10AsString, year2021AsString)
 
-        val expectedErrors = error("start.day", "cf.form.error.start.date-number-invalid")
+        val validEndDate: Map[String, String] =
+          populateFormValueMap(endKey, day10AsString, month10AsString, year2021AsString)
+
+        val formData: Map[String, String] = startDate ++ validEndDate
+
+        val expectedErrors: Seq[FormError] = error("start.day", "cf.form.error.start.date-number-invalid")
 
         checkForError(form, formData, expectedErrors)
       }
 
       "the month value is invalid for the start date" in new SetUp {
-        val startDate = populateFormValueMap("start", "10", "14", "2021")
-        val validEndDate = populateFormValueMap("end", "10", "10", "2021")
-        val formData = startDate ++ validEndDate
+        val startDate: Map[String, String] =
+          populateFormValueMap(startKey, day10AsString, month14AsString, year2021AsString)
 
-        val expectedErrors = error("start.month", "cf.form.error.start.date-number-invalid")
+        val validEndDate: Map[String, String] =
+          populateFormValueMap(endKey, day10AsString, month10AsString, year2021AsString)
+
+        val formData: Map[String, String] = startDate ++ validEndDate
+
+        val expectedErrors: Seq[FormError] = error("start.month", "cf.form.error.start.date-number-invalid")
 
         checkForError(form, formData, expectedErrors)
       }
 
       "the year value is invalid for the start date" in new SetUp {
-        val startDate = populateFormValueMap("start", "10", "10", "-")
-        val validEndDate = populateFormValueMap("end", "10", "10", "2021")
-        val formData = startDate ++ validEndDate
+        val invalidYearValue = "-"
 
-        val expectedErrors = error("start.year", "cf.form.error.start.date-number-invalid")
+        val startDate: Map[String, String] =
+          populateFormValueMap(startKey, day10AsString, month10AsString, invalidYearValue)
+
+        val validEndDate: Map[String, String] =
+          populateFormValueMap(endKey, day10AsString, month10AsString, year2021AsString)
+
+        val formData: Map[String, String] = startDate ++ validEndDate
+
+        val expectedErrors: Seq[FormError] = error("start.year", "cf.form.error.start.date-number-invalid")
 
         checkForError(form, formData, expectedErrors)
       }
 
       "start date is in future" in new SetUp {
-        val startDate = populateFormValueMap("start", "10", "10", futureYear.toString)
-        val validEndDate = populateFormValueMap("end", "10", "10", "2021")
-        val formData = startDate ++ validEndDate
+        val startDate: Map[String, String] =
+          populateFormValueMap(startKey, day10AsString, month10AsString, futureYear.toString)
 
-        val expectedErrors = error("start", "cf.form.error.start-future-date")
+        val validEndDate: Map[String, String] =
+          populateFormValueMap(endKey, day10AsString, month10AsString, year2021AsString)
+
+        val formData: Map[String, String] = startDate ++ validEndDate
+
+        val expectedErrors: Seq[FormError] = error(startKey, "cf.form.error.start-future-date")
 
         checkForError(form, formData, expectedErrors)
       }
 
       "start date has invalid length of the year" in new SetUp {
-        val startDate = populateFormValueMap("start", "10", "10", "20211")
-        val validEndDate = populateFormValueMap("end", "10", "10", "2021")
+        val yearWithInvalidLength = "20211"
+
+        val startDate: Map[String, String] =
+          populateFormValueMap(startKey, day10AsString, month10AsString, yearWithInvalidLength)
+
+        val validEndDate: Map[String, String] =
+          populateFormValueMap(endKey, day10AsString, month10AsString, year2021AsString)
 
         val formData: Map[String, String] = startDate ++ validEndDate
 
-        val expectedErrors = error("start", "cf.form.error.year.length")
+        val expectedErrors: Seq[FormError] = error(startKey, "cf.form.error.year.length")
 
         checkForError(form, formData, expectedErrors)
       }
 
       "start date is not within ETMP statement date period" in new SetUp {
-        val startDate = populateFormValueMap("start", "10", "10", (etmpStatementYear - 1).toString)
-        val validEndDate = populateFormValueMap("end", "10", "10", "2021")
+        val startDate: Map[String, String] =
+          populateFormValueMap(startKey, day10AsString, month10AsString, (etmpStatementYear - 1).toString)
+
+        val validEndDate: Map[String, String] =
+          populateFormValueMap(endKey, day10AsString, month10AsString, year2021AsString)
 
         val formData: Map[String, String] = startDate ++ validEndDate
 
-        val expectedErrors = error("start", "cf.form.error.startDate.date-earlier-than-system-start-date")
-
-        checkForError(form, formData, expectedErrors)
-      }
-
-      /**
-       * Below has been ignored as of now cause below condition is not occurring because
-       * ETMP Statement check is overriding this . Need to be checked with Business Team
-       */
-
-      "start date is not of a valid tax year" ignore new SetUp {
-        val startDate = populateFormValueMap("start", "10", "10", taxYearDateOlderThan6Years.toString)
-        val validEndDate = populateFormValueMap("end", "10", "10", "2021")
-
-        val formData: Map[String, String] = startDate ++ validEndDate
-
-        val expectedErrors = error("start", "cf.form.error.start.date-too-far-in-past")
+        val expectedErrors: Seq[FormError] =
+          error(startKey, "cf.form.error.startDate.date-earlier-than-system-start-date")
 
         checkForError(form, formData, expectedErrors)
       }
@@ -149,106 +172,131 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
       }
 
       "the day of end date is blank " in new SetUp {
-        val validStartDate = populateFormValueMap("start", "10", "10", "2021")
-        val endDate = populateFormValueMap("end", "", "10", "2021")
-        val formData = validStartDate ++ endDate
+        val validStartDate: Map[String, String] =
+          populateFormValueMap(startKey, day10AsString, month10AsString, year2021AsString)
 
-        val expectedErrors = error("end.day", "cf.form.error.end.date-number-invalid")
+        val endDate: Map[String, String] =
+          populateFormValueMap(endKey, emptyString, month10AsString, year2021AsString)
+
+        val formData: Map[String, String] = validStartDate ++ endDate
+
+        val expectedErrors: Seq[FormError] = error("end.day", "cf.form.error.end.date-number-invalid")
 
         checkForError(form, formData, expectedErrors)
       }
 
       "the month of end date is blank " in new SetUp {
-        val validStartDate = populateFormValueMap("start", "10", "10", "2021")
-        val endDate = populateFormValueMap("end", "10", "", "2021")
-        val formData = validStartDate ++ endDate
+        val validStartDate: Map[String, String] =
+          populateFormValueMap(startKey, day10AsString, month10AsString, year2021AsString)
 
-        val expectedErrors = error("end.month", "cf.form.error.end.date-number-invalid")
+        val endDate: Map[String, String] =
+          populateFormValueMap(endKey, day10AsString, emptyString, year2021AsString)
+
+        val formData: Map[String, String] = validStartDate ++ endDate
+
+        val expectedErrors: Seq[FormError] = error("end.month", "cf.form.error.end.date-number-invalid")
 
         checkForError(form, formData, expectedErrors)
       }
 
       "the year of end date is blank " in new SetUp {
-        val validStartDate = populateFormValueMap("start", "10", "10", "2021")
-        val endDate = populateFormValueMap("end", "10", "10", "")
-        val formData = validStartDate ++ endDate
+        val validStartDate: Map[String, String] =
+          populateFormValueMap(startKey, day10AsString, month10AsString, year2021AsString)
 
-        val expectedErrors = error("end.year", "cf.form.error.end.date-number-invalid")
+        val endDate: Map[String, String] =
+          populateFormValueMap(endKey, day10AsString, month10AsString, emptyString)
+
+        val formData: Map[String, String] = validStartDate ++ endDate
+
+        val expectedErrors: Seq[FormError] = error("end.year", "cf.form.error.end.date-number-invalid")
 
         checkForError(form, formData, expectedErrors)
       }
 
       "the day value is invalid for the end date" in new SetUp {
-        val validStartDate = populateFormValueMap("start", "10", "10", "2021")
-        val endDate = populateFormValueMap("end", "32", "10", "2021")
-        val formData = validStartDate ++ endDate
+        val validStartDate: Map[String, String] =
+          populateFormValueMap(startKey, day10AsString, month10AsString, year2021AsString)
 
-        val expectedErrors = error("end.day", "cf.form.error.end.date-number-invalid")
+        val endDate: Map[String, String] =
+          populateFormValueMap(endKey, month32AsString, month10AsString, year2021AsString)
+
+        val formData: Map[String, String] = validStartDate ++ endDate
+
+        val expectedErrors: Seq[FormError] = error("end.day", "cf.form.error.end.date-number-invalid")
 
         checkForError(form, formData, expectedErrors)
       }
 
       "the month value is invalid for the end date" in new SetUp {
-        val validStartDate = populateFormValueMap("start", "10", "10", "2021")
-        val endDate = populateFormValueMap("end", "10", "14", "2021")
-        val formData = validStartDate ++ endDate
+        val validStartDate: Map[String, String] =
+          populateFormValueMap(startKey, day10AsString, month10AsString, year2021AsString)
 
-        val expectedErrors = error("end.month", "cf.form.error.end.date-number-invalid")
+        val endDate: Map[String, String] =
+          populateFormValueMap(endKey, day10AsString, month14AsString, year2021AsString)
+
+        val formData: Map[String, String] = validStartDate ++ endDate
+
+        val expectedErrors: Seq[FormError] = error("end.month", "cf.form.error.end.date-number-invalid")
 
         checkForError(form, formData, expectedErrors)
       }
 
       "the year value is invalid for the end date" in new SetUp {
-        val validStartDate = populateFormValueMap("start", "10", "10", "2021")
-        val endDate = populateFormValueMap("end", "10", "14", "-")
-        val formData = validStartDate ++ endDate
+        val invalidYearValue = "-"
 
-        val expectedErrors = error("end.year", "cf.form.error.end.date-number-invalid")
+        val validStartDate: Map[String, String] =
+          populateFormValueMap(startKey, day10AsString, month10AsString, year2021AsString)
+
+        val endDate: Map[String, String] =
+          populateFormValueMap(endKey, day10AsString, month14AsString, invalidYearValue)
+
+        val formData: Map[String, String] = validStartDate ++ endDate
+
+        val expectedErrors: Seq[FormError] = error("end.year", "cf.form.error.end.date-number-invalid")
 
         checkForError(form, formData, expectedErrors)
       }
 
       "end date is in future" in new SetUp {
-        val validStartDate = populateFormValueMap("start", "10", "10", "2021")
-        val endDate = populateFormValueMap("end", "10", "10", futureYear.toString)
-        val formData = validStartDate ++ endDate
+        val validStartDate: Map[String, String] =
+          populateFormValueMap(startKey, day10AsString, month10AsString, year2021AsString)
 
-        val expectedErrors = error("end", "cf.form.error.end-future-date")
+        val endDate: Map[String, String] =
+          populateFormValueMap(endKey, day10AsString, month10AsString, futureYear.toString)
+
+        val formData: Map[String, String] = validStartDate ++ endDate
+
+        val expectedErrors: Seq[FormError] = error(endKey, "cf.form.error.end-future-date")
 
         checkForError(form, formData, expectedErrors)
       }
 
       "end date has invalid length of the year" in new SetUp {
-        val validStartDate = populateFormValueMap("start", "10", "10", "2021")
-        val endDate = populateFormValueMap("end", "10", "10", "20112")
-        val formData = validStartDate ++ endDate
+        val yearWithInvalidLength = "20112"
 
-        val expectedErrors = error("end", "cf.form.error.year.length")
+        val validStartDate: Map[String, String] =
+          populateFormValueMap(startKey, day10AsString, month10AsString, year2021AsString)
+
+        val endDate: Map[String, String] =
+          populateFormValueMap(endKey, day10AsString, month10AsString, yearWithInvalidLength)
+
+        val formData: Map[String, String] = validStartDate ++ endDate
+
+        val expectedErrors: Seq[FormError] = error(endKey, "cf.form.error.year.length")
 
         checkForError(form, formData, expectedErrors)
       }
 
       "end date is not within ETMP statement date period" in new SetUp {
-        val validStartDate = populateFormValueMap("start", "10", "10", "2021")
-        val endDate = populateFormValueMap("end", "10", "10", (etmpStatementYear - 1).toString)
-        val formData = validStartDate ++ endDate
+        val validStartDate: Map[String, String] =
+          populateFormValueMap(startKey, day10AsString, month10AsString, year2021AsString)
 
-        val expectedErrors = error("end", "cf.form.error.endDate.date-earlier-than-system-start-date")
+        val endDate: Map[String, String] =
+          populateFormValueMap(endKey, day10AsString, month10AsString, (etmpStatementYear - 1).toString)
 
-        checkForError(form, formData, expectedErrors)
-      }
+        val formData: Map[String, String] = validStartDate ++ endDate
 
-      /**
-       * Below has been ignored as of now cause below condition is not occurring because
-       * ETMP Statement check is overriding this . Need to be checked with Business Team
-       */
-
-      "end date is not of a valid tax year" ignore new SetUp {
-        val validStartDate = populateFormValueMap("start", "10", "10", "2021")
-        val endDate = populateFormValueMap("end", "10", "10", taxYearDateOlderThan6Years.toString)
-        val formData = validStartDate ++ endDate
-
-        val expectedErrors = error("end", "cf.form.error.end.date-too-far-in-past")
+        val expectedErrors: Seq[FormError] = error(endKey, "cf.form.error.endDate.date-earlier-than-system-start-date")
 
         checkForError(form, formData, expectedErrors)
       }
@@ -257,16 +305,31 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
 
   trait SetUp {
     implicit val clock: Clock = Clock.system(ZoneOffset.UTC)
+
     val form: Form[CashTransactionDates] = new CashTransactionsRequestPageFormProvider().apply()
 
-    val validDate: LocalDate = LocalDate.of(2021, 10,10)
+    val year = 2021
+    val month = 10
+    val day = 10
+
+    val validDate: LocalDate = LocalDate.of(year, month, day)
     val futureYear: Int = LocalDate.now().getYear + 1
-    val etmpStatementYear = 2019 // This needs to be updated should the Year value in Constraints.etmpStatementsDate is changed
-    val taxYearDateOlderThan6Years: Int = LocalDate.now().getYear  - 7
+    val etmpStatementYear = 2019
+    val taxYearDateOlderThan6Years: Int = LocalDate.now().getYear - 7
+
+    val year2021AsString = "2021"
+    val month10AsString = "10"
+    val month32AsString = "32"
+    val month40AsString = "40"
+    val month14AsString = "14"
+    val day10AsString = "10"
+
+    val startKey = "start"
+    val endKey = "end"
 
     lazy val completeValidDates: Map[String, String] =
-      populateFormValueMap("start", "10", "10", "2021") ++
-        populateFormValueMap("end", "10", "10", "2021")
+      populateFormValueMap(startKey, day10AsString, month10AsString, year2021AsString) ++
+        populateFormValueMap(endKey, day10AsString, month10AsString, year2021AsString)
 
     def populateFormValueMap(key: String,
                              day: String,

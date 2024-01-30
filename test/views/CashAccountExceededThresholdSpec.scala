@@ -26,6 +26,7 @@ import views.html.cash_account_exceeded_threshold
 class CashAccountExceededThresholdSpec extends ViewTestHelper {
 
   "view" should {
+
     "display correct contents and guidance" in new Setup {
       implicit val view: Document = viewDoc
 
@@ -70,8 +71,6 @@ class CashAccountExceededThresholdSpec extends ViewTestHelper {
   }
 
   private def shouldContainExceededThresholdMsg(implicit view: Document): Assertion = {
-    //The static strings have been used in the assertion cause the msg key cf.cash-account-detail.exceeded-threshold
-    // contains <p> tags and hence makes it difficult to capture using the msg key
     view.text().contains(
       "There are too many transactions from the last 6 months to display consecutively.") mustBe true
 

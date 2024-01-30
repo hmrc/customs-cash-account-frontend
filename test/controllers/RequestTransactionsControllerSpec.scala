@@ -32,6 +32,7 @@ class
 RequestTransactionsControllerSpec extends SpecBase {
 
   "onPageLoad" should {
+
     "return OK when cached data present" in new Setup {
 
       when(mockRequestedTransactionsCache.clear(any)).thenReturn(Future.successful(true))
@@ -68,7 +69,7 @@ RequestTransactionsControllerSpec extends SpecBase {
 
       running(app) {
         val result = route(app, store).value
-        val test = route(app,clear).value
+        val test = route(app, clear).value
         status(result) mustBe OK
         status(test) mustBe OK
       }
@@ -79,10 +80,11 @@ RequestTransactionsControllerSpec extends SpecBase {
 
     "redirect to requested transactions page when valid data has been submitted" in new Setup {
       when(mockRequestedTransactionsCache.set(any, any)).thenReturn(Future.successful(true))
+
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest(POST, routes.RequestTransactionsController.onSubmit().url)
           .withFormUrlEncodedBody("start.day" -> "1", "start.month" -> "11", "start.year" -> "2020",
-            "end.day" -> "10","end.month" -> "11", "end.year" -> "2020")
+            "end.day" -> "10", "end.month" -> "11", "end.year" -> "2020")
 
       running(app) {
         val result = route(app, request).value
@@ -95,7 +97,7 @@ RequestTransactionsControllerSpec extends SpecBase {
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest(POST, routes.RequestTransactionsController.onSubmit().url)
           .withFormUrlEncodedBody("start.day" -> "1", "start.month" -> "9", "start.year" -> "2019",
-            "end.day" -> "10","end.month" -> "10", "end.year" -> "2019")
+            "end.day" -> "10", "end.month" -> "10", "end.year" -> "2019")
 
       running(app) {
         val result = route(app, request).value
@@ -204,5 +206,3 @@ RequestTransactionsControllerSpec extends SpecBase {
       .build()
   }
 }
-
-

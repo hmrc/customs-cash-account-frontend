@@ -34,11 +34,13 @@ import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AuditingService @Inject()(appConfig: AppConfig, auditConnector: AuditConnector)(implicit executionContext: ExecutionContext) {
+class AuditingService @Inject()(appConfig: AppConfig, auditConnector: AuditConnector)(
+  implicit executionContext: ExecutionContext) {
 
   val log: LoggerLike = Logger(this.getClass)
 
-  val referrer: HeaderCarrier => String = _.headers(Seq(HeaderNames.REFERER)).headOption.map(_._2).getOrElse("-")
+  private val referrer: HeaderCarrier =>
+    String = _.headers(Seq(HeaderNames.REFERER)).headOption.map(_._2).getOrElse("-")
 
   def audit(auditModel: AuditModel)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val dataEvent = toExtendedDataEvent(appConfig.appName, auditModel, referrer(hc))
@@ -50,7 +52,8 @@ class AuditingService @Inject()(appConfig: AppConfig, auditConnector: AuditConne
       }
   }
 
-  def auditCsvDownload(eori: String, cashAccountNumber: String, dateTime: LocalDateTime, from: LocalDate, to: LocalDate)(implicit hc: HeaderCarrier): Future[Unit] = {
+  def auditCsvDownload(eori: String, cashAccountNumber: String, dateTime: LocalDateTime,
+                       from: LocalDate, to: LocalDate)(implicit hc: HeaderCarrier): Future[Unit] = {
     val eventualResult = audit(
       AuditModel("DownloadCashStatement", "Download cash transactions",
         Json.toJson(CashCsvAuditData(eori, cashAccountNumber, dateTimeAsIso8601(dateTime), "CSV", from, to))))
@@ -61,7 +64,8 @@ class AuditingService @Inject()(appConfig: AppConfig, auditConnector: AuditConne
     }
   }
 
-  private def toExtendedDataEvent(appName: String, auditModel: AuditModel, path: String)(implicit hc: HeaderCarrier): ExtendedDataEvent =
+  private def toExtendedDataEvent(appName: String, auditModel: AuditModel, path: String)(
+    implicit hc: HeaderCarrier): ExtendedDataEvent =
     ExtendedDataEvent(
       auditSource = appName,
       auditType = auditModel.auditType,

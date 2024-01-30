@@ -37,11 +37,13 @@ class CSVWriterSpec extends SpecBase {
   }
 
   "CSVWriter" should {
+
     "prepend header row with case class field names if requested" in {
       val records = Seq(
         Foo(Some("A"), Some("B"), Some("C")),
         Foo(Some("X"), Some("Y"), Some("Z"))
       )
+
       CSVWriter.toCSVWithHeaders(records) must be(
         """"columnA","columnB","columnC"
           |"A","B","C"
@@ -54,6 +56,7 @@ class CSVWriterSpec extends SpecBase {
       val records = Seq(
         Foo(Some("a"), Some("b"), Some("c"))
       )
+
       CSVWriter.toCSVWithHeaders(records, mappingFn) must be(
         """"COLUMNA","COLUMNB","COLUMNC"
           |"a","b","c"""".stripMargin)
@@ -64,6 +67,7 @@ class CSVWriterSpec extends SpecBase {
         Foo(Some("A"), Some("B"), Some("C")),
         Foo(Some("X"), Some("Y"), Some("Z"))
       )
+
       CSVWriter.toCSVWithHeaders(records, footer = Some("footer text")) must be(
         """"columnA","columnB","columnC"
           |"A","B","C"

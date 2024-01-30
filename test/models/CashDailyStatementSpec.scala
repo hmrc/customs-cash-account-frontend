@@ -17,45 +17,48 @@
 package models
 
 import utils.SpecBase
-import play.api.libs.json.{JsValue, JsString, JsSuccess}
+import play.api.libs.json.{JsResult, JsString, JsSuccess, JsValue}
 
 class CashDailyStatementSpec extends SpecBase {
 
   "taxGroupTypeReads" must {
+
     "read ImportVat correctly as jsSuccess ImportVat" in new Setup {
-      val res = CashDailyStatement.taxGroupTypeReads.reads(jsImport)
+      val res: JsResult[TaxGroupType] = CashDailyStatement.taxGroupTypeReads.reads(jsImport)
       res mustBe JsSuccess(ImportVat)
     }
 
     "read Excise correctly as jsSuccess Excise" in new Setup {
-      val res = CashDailyStatement.taxGroupTypeReads.reads(jsExcise)
+      val res: JsResult[TaxGroupType] = CashDailyStatement.taxGroupTypeReads.reads(jsExcise)
       res mustBe JsSuccess(ExciseDuty)
     }
 
     "read Customs correctly as jsSuccess Customs" in new Setup {
-      val res = CashDailyStatement.taxGroupTypeReads.reads(jsCustoms)
+      val res: JsResult[TaxGroupType] = CashDailyStatement.taxGroupTypeReads.reads(jsCustoms)
       res mustBe JsSuccess(CustomsDuty)
     }
   }
 
   "cashTransactionTypeReads" must {
+
     "read Payment correctly as jsSuccess Payment" in new Setup {
-      val res = CashDailyStatement.cashTransactionTypeReads.reads(jsPayment)
+      val res: JsResult[CashTransactionType] = CashDailyStatement.cashTransactionTypeReads.reads(jsPayment)
       res mustBe JsSuccess(Payment)
     }
 
     "read Withdrawal correctly as jsSuccess Withdrawal" in new Setup {
-      val res = CashDailyStatement.cashTransactionTypeReads.reads(jsWithdrawal)
+      val res: JsResult[CashTransactionType] = CashDailyStatement.cashTransactionTypeReads.reads(jsWithdrawal)
       res mustBe JsSuccess(Withdrawal)
     }
 
     "read Transfer correctly as jsSuccess Transfer" in new Setup {
-      val res = CashDailyStatement.cashTransactionTypeReads.reads(jsTransfer)
+      val res: JsResult[CashTransactionType] = CashDailyStatement.cashTransactionTypeReads.reads(jsTransfer)
       res mustBe JsSuccess(Transfer)
     }
   }
 
   "cashTransactionTypeWrites" must {
+
     "write Payment correctly as JsString Payment" in new Setup {
       val res: JsValue = CashDailyStatement.cashTransactionTypeWrites.writes(Payment)
       res mustBe jsPayment

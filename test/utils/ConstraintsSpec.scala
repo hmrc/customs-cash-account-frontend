@@ -16,68 +16,91 @@
 
 package utils
 
-import java.time.{LocalDate, LocalDateTime}
-import org.scalatest.matchers.should.Matchers._
 import forms.mappings.Constraints
-import play.api.data.validation.{Invalid, Valid, ValidationError}
+import org.scalatest.matchers.should.Matchers._
+import play.api.data.validation.{Invalid, Valid, ValidationError, ValidationResult}
+
+import java.time.{LocalDate, LocalDateTime}
 
 class ConstraintsSpec extends SpecBase with Constraints {
 
   "Constraints" should {
 
     "currentDate" must {
+
       "current date should return a local date time" in new Setup {
-        val target = currentDate
+        val target: LocalDate = currentDate
         ld mustBe target
       }
     }
 
     "beforeCurrentMonth" must {
+
       "return Valid if request is equal to current month" in new Setup {
-        val result = beforeCurrentMonth("error.min").apply(ld)
+        val result: ValidationResult = beforeCurrentMonth("error.min").apply(ld)
         result mustBe Valid
       }
 
       "return valid result for current date" in new Setup {
-        val result = beforeCurrentMonth("error.min").apply(ld)
+        val result: ValidationResult = beforeCurrentMonth("error.min").apply(ld)
         result mustBe Valid
       }
 
       "return valid result for date in past" in {
-        def oldDate: LocalDate = LocalDate.of(2008, 1, 1)
+        val day = 1
+        val month = 1
+        val year = 2008
+
+        def oldDate: LocalDate = LocalDate.of(year, month, day)
+
         val result = beforeCurrentMonth("error.min").apply(oldDate)
         result mustBe Valid
       }
 
-      //TODO: Need to looked at as its failing for some dates
-      "return invalid result is years are within 6" ignore new Setup {
-        def monthOld: LocalDate = LocalDateTime.now().minusMonths(8).toLocalDate
-        val result = beforeCurrentMonth("error.min").apply(monthOld)
-        result mustBe Invalid(List(ValidationError(List("error.min"))))
+      "return invalid result if request date is not within 6 months in the past and " +
+        "request and current date years are not same" in new Setup {
+        val eightMonths = 8
+        val month9th = 9
+
+        def monthOld: LocalDate = LocalDateTime.now().minusMonths(eightMonths).toLocalDate
+
+        val result: ValidationResult = beforeCurrentMonth("error.min").apply(monthOld)
+
+        if (LocalDateTime.now().getMonthValue < month9th) {
+          result mustBe Invalid(List(ValidationError(List("error.min"))))
+        } else {
+          result mustBe Valid
+        }
       }
 
       "return invalid result if request is after current month" in new Setup {
         def monthOld: LocalDate = LocalDateTime.now().plusMonths(2).toLocalDate
-        val result = beforeCurrentMonth("error.min").apply(monthOld)
+
+        val result: ValidationResult = beforeCurrentMonth("error.min").apply(monthOld)
         result mustBe Invalid(List(ValidationError(List("error.min"))))
       }
 
       "return invalid result if request is after current year" in new Setup {
         def monthOld: LocalDate = LocalDateTime.now().plusYears(1).toLocalDate
-        val result = beforeCurrentMonth("error.min").apply(monthOld)
+
+        val result: ValidationResult = beforeCurrentMonth("error.min").apply(monthOld)
         result mustBe Invalid(List(ValidationError(List("error.min"))))
       }
     }
 
     "beforeCurrentDate" must {
       "return Valid if request before or equal to current date" in new Setup {
-        val result = beforeCurrentDate("error.min").apply(ld)
+        val result: ValidationResult = beforeCurrentDate("error.min").apply(ld)
+
         result mustBe Valid
       }
 
       "return invalid if request is after current date" in new Setup {
-        def futureMonth: LocalDate = LocalDateTime.now().plusMonths(6).toLocalDate
-        val result = beforeCurrentDate("error.min").apply(futureMonth)
+        val months = 6
+
+        def futureMonth: LocalDate = LocalDateTime.now().plusMonths(months).toLocalDate
+
+        val result: ValidationResult = beforeCurrentDate("error.min").apply(futureMonth)
         result mustBe Invalid(List(ValidationError(List("error.min"))))
       }
     }

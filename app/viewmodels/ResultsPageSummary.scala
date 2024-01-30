@@ -21,45 +21,57 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.Aliases.ActionItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Actions
+import utils.Utils.{emptyString, period}
+
 import java.time.LocalDate
 
 class ResultsPageSummary(from: LocalDate, to: LocalDate)(implicit messages: Messages) extends SummaryListRowHelper {
 
-  def rows(fullstop: Boolean = true):SummaryListRow = {
-    cashTransactionsResultRow(CashTransactionDates(from, to), fullstop)
+  def rows(fullStop: Boolean = true): SummaryListRow = {
+    cashTransactionsResultRow(CashTransactionDates(from, to), fullStop)
   }
 
-  def cashTransactionsResultRow(dates: CashTransactionDates, fullstop: Boolean): SummaryListRow = {
-      summaryListRow(
-        value = HtmlFormat.escape(
-          if(fullstop) {
-            rowResult(dates)
-          } else {
-            rowResultWithoutFullStop(dates)
-          }).toString(),
-        secondValue = None,
-        actions = Actions(items = Seq(ActionItem(
-          href = controllers.routes.DownloadCsvController.downloadRequestedCsv(
-            None, RequestedDateRange(dates.start,dates.end)).url,
-          content = span(messages("cf.cash-account.detail.csv")),
-          visuallyHiddenText = Some(messages("cf.cash-account.detail.csv-definition"))
-        ))))
+  private def cashTransactionsResultRow(dates: CashTransactionDates, fullStop: Boolean): SummaryListRow = {
+    summaryListRow(
+      value = HtmlFormat.escape(
+        if (fullStop) {
+          rowResult(dates)
+        } else {
+          rowResultWithoutFullStop(dates)
+        }).toString(),
+      secondValue = None,
+      actions = Actions(items = Seq(ActionItem(
+        href = controllers.routes.DownloadCsvController.downloadRequestedCsv(
+          None, RequestedDateRange(dates.start, dates.end)).url,
+        content = span(messages("cf.cash-account.detail.csv")),
+        visuallyHiddenText = Some(messages("cf.cash-account.detail.csv-definition"))
+      )))
+    )
   }
 
-  def rowResult(dates: CashTransactionDates): String = {
-    messages("date.range", formatDate(dates.start),formatDate(dates.end))}
+  private def rowResult(dates: CashTransactionDates): String = {
+    messages("date.range", formatDate(dates.start), formatDate(dates.end))
+  }
 
-  def rowResultWithoutFullStop(dates: CashTransactionDates) = {
-    messages("date.range", formatDate(dates.start),formatDate(dates.end)).replace(".","")}
+  private def rowResultWithoutFullStop(dates: CashTransactionDates): String = {
+    messages("date.range", formatDate(dates.start), formatDate(dates.end)).replace(period, emptyString)
+  }
 
   def formatDate(date: LocalDate)(implicit messages: Messages): String =
     s"${dateAsDay(date)} ${dateAsMonth(date)} ${date.getYear}"
 
   def dateAsDay(date: LocalDate): String = {
-    if (date.getDayOfMonth >= 10) s"${date.getDayOfMonth}"
-    else s"0${date.getDayOfMonth}"
+    val dayTenth = 10
+
+    if (date.getDayOfMonth >= dayTenth) {
+      s"${date.getDayOfMonth}"
+    }
+    else {
+      s"0${date.getDayOfMonth}"
+    }
   }
 
   def dateAsMonth(date: LocalDate)(implicit messages: Messages): String = {
-    messages(s"month.${date.getMonthValue}")}
+    messages(s"month.${date.getMonthValue}")
+  }
 }

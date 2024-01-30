@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,38 @@
  * limitations under the License.
  */
 
-package models
+package utils
 
-import models.domain.EORI
-import play.api.libs.json.{Json, OFormat}
+import utils.Utils._
 
-case class AuditEori(eori: EORI, isHistoric: Boolean)
+class UtilsSpec extends SpecBase {
+  "Comma" should {
+    "return correct value" in {
+      comma mustBe ","
+    }
+  }
 
+  "Empty string" should {
+    "return correct value" in {
+      emptyString mustBe ""
+    }
+  }
 
-object AuditEori {
-  implicit val format: OFormat[AuditEori] = Json.format[AuditEori]
+  "Period" should {
+    "return correct value" in {
+      period mustBe "."
+    }
+  }
+
+  "hyphen" should {
+    "return correct value" in {
+      hyphen mustBe "-"
+    }
+  }
+
+  "singleSpace" should {
+    "return correct value" in {
+      singleSpace mustBe " "
+    }
+  }
 }

@@ -27,7 +27,9 @@ import views.html.components.p1
 class P1Spec extends SpecBase {
 
   "component" should {
+
     "display correct contents" when {
+
       "it contains all the parameters' value" in new Setup {
         p1Component.getElementById(id).text() mustBe
           s"${content.body}$space${link.get.body}$space${tabLink.get.body}"

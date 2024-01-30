@@ -18,7 +18,6 @@ package models
 
 import models.domain.CAN
 
-
 trait Balances
 
 case class CDSCashBalance(AvailableAccountBalance: Option[BigDecimal]) extends Balances
@@ -26,5 +25,4 @@ case class CDSCashBalance(AvailableAccountBalance: Option[BigDecimal]) extends B
 case class CashAccount(number: CAN,
                        owner: String,
                        status: CDSAccountStatus,
-                       balances: CDSCashBalance
-                      )
+                       balances: CDSCashBalance)

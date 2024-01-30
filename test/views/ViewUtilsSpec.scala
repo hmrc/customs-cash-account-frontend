@@ -21,6 +21,7 @@ import utils.SpecBase
 class ViewUtilsSpec extends SpecBase {
 
   "emptyString" should {
+
     "return correct value" in {
       emptyString mustBe ""
     }
