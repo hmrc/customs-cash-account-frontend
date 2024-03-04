@@ -17,7 +17,7 @@
 package utils
 
 import com.codahale.metrics.MetricRegistry
-import com.kenshoo.play.metrics.Metrics
+import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import controllers.actions.{FakeIdentifierAction, IdentifierAction}
 import org.mockito.scalatest.MockitoSugar
 import org.scalatest.OptionValues
@@ -35,7 +35,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
 class FakeMetrics extends Metrics {
   override val defaultRegistry: MetricRegistry = new MetricRegistry
-  override val toJson: String = "{}"
 }
 
 trait SpecBase extends AnyWordSpecLike
