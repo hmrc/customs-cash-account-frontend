@@ -52,13 +52,13 @@ trait Formatters {
           .bind(key, data)
           .map(_.replace(comma, emptyString))
           .flatMap {
-          case s if s.matches(decimalRegexp) =>
-            Left(Seq(FormError(key, wholeNumberKey, args)))
-          case s =>
-            nonFatalCatch
-              .either(s.toInt)
-              .left.map(_ => Seq(FormError(key, nonNumericKey, args)))
-        }
+            case s if s.matches(decimalRegexp) =>
+              Left(Seq(FormError(key, wholeNumberKey, args)))
+            case s =>
+              nonFatalCatch
+                .either(s.toInt)
+                .left.map(_ => Seq(FormError(key, nonNumericKey, args)))
+          }
 
       override def unbind(key: String, value: Int): Map[String, String] =
         baseFormatter.unbind(key, value.toString)
@@ -73,10 +73,10 @@ trait Formatters {
         baseFormatter
           .bind(key, data)
           .flatMap {
-          case "true" => Right(true)
-          case "false" => Right(false)
-          case _ => Left(Seq(FormError(key, invalidKey)))
-        }
+            case "true" => Right(true)
+            case "false" => Right(false)
+            case _ => Left(Seq(FormError(key, invalidKey)))
+          }
 
       def unbind(key: String, value: Boolean): Map[String, String] = Map(key -> value.toString)
     }
@@ -90,12 +90,12 @@ trait Formatters {
         baseFormatter.bind(key, data)
           .map(_.replace(comma, emptyString))
           .flatMap {
-          s =>
-            Try(s.toDouble) match {
-              case Success(_) => Right(s)
-              case Failure(_) => Left(Seq(FormError(key, nonNumericKey)))
-            }
-        }
+            s =>
+              Try(s.toDouble) match {
+                case Success(_) => Right(s)
+                case Failure(_) => Left(Seq(FormError(key, nonNumericKey)))
+              }
+          }
 
       override def unbind(key: String, value: String): Map[String, String] =
         baseFormatter.unbind(key, value)
