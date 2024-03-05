@@ -29,6 +29,8 @@ object Formatters {
   val yyyyMMddDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
   val yyyyMMddHHmmssDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
   val ddMMyyyyDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyyyy")
+  private val kbMin: Long = 1000
+  private val kbMax: Long = 1000000
 
   def dateAsMonth(date: LocalDate)(implicit messages: Messages): String = messages(s"month.${date.getMonthValue}")
 
@@ -38,10 +40,7 @@ object Formatters {
   def dateTimeAsIso8601(dateTime: LocalDateTime): String = {
     s"${DateTimeFormatter.ISO_DATE_TIME.format(dateTime.truncatedTo(ChronoUnit.SECONDS))}Z"
   }
-
-  private val kbMin: Long = 1000
-  private val kbMax: Long = 1000000
-
+  
   def fileSizeFormat(size: Long): String = size match {
     case kb: Long if kbMin until kbMax contains kb => s"${kb / kbMin}KB"
     case mb if mb >= kbMax => f"${mb / 1000000.0}%.1fMB"
