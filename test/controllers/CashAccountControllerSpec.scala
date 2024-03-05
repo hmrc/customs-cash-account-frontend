@@ -18,8 +18,8 @@ package controllers
 
 import config.AppConfig
 import connectors._
-import models.email.{UndeliverableEmail, UnverifiedEmail}
 import models._
+import models.email.{UndeliverableEmail, UnverifiedEmail}
 import play.api.Application
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
@@ -29,7 +29,12 @@ import play.api.test.Helpers._
 import services.AuditingService
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
-import views.html.{cash_account_no_transactions, cash_account_no_transactions_with_balance, cash_account_transactions_not_available}
+
+import views.html.{
+  cash_account_no_transactions,
+  cash_account_no_transactions_with_balance,
+  cash_account_transactions_not_available
+}
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -38,7 +43,6 @@ import scala.util.Random
 class CashAccountControllerSpec extends SpecBase {
 
   "show account details" must {
-
     "return OK" in new Setup {
 
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
@@ -52,9 +56,9 @@ class CashAccountControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-
         val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
         val result = route(app, request).value
+
         status(result) mustEqual OK
       }
     }
@@ -72,7 +76,6 @@ class CashAccountControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-
         val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
         val result = route(app, request).value
         status(result) mustEqual OK
@@ -80,6 +83,7 @@ class CashAccountControllerSpec extends SpecBase {
     }
 
     "display transactions unavailable if the call to ACC31 fails" in new Setup {
+
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
@@ -97,10 +101,11 @@ class CashAccountControllerSpec extends SpecBase {
       val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
       running(app) {
-
         val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
         val result = route(app, request).value
+
         status(result) mustEqual OK
+
         contentAsString(result) mustEqual view(CashAccountViewModel(
           eori, cashAccount), appConfig.transactionsTimeoutFlag)(request, messages, appConfig).toString()
 
@@ -131,7 +136,6 @@ class CashAccountControllerSpec extends SpecBase {
       val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
       running(app) {
-
         val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
         val result = route(app, request).value
 
@@ -190,7 +194,6 @@ class CashAccountControllerSpec extends SpecBase {
       val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
       running(app) {
-
         val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
         val result = route(app, request).value
 
@@ -222,7 +225,6 @@ class CashAccountControllerSpec extends SpecBase {
       val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
       running(app) {
-
         val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
         val result = route(app, request).value
 
@@ -247,7 +249,6 @@ class CashAccountControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-
         val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
         val result = route(app, request).value
 
@@ -387,6 +388,7 @@ class CashAccountControllerSpec extends SpecBase {
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountController.showAccountUnavailable.url)
         val result = route(app, request).value
+
         status(result) mustEqual OK
       }
     }
@@ -402,7 +404,44 @@ class CashAccountControllerSpec extends SpecBase {
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.showUnableToDownloadCSV().url)
         val result = route(app, request).value
+
         status(result) mustEqual OK
+      }
+    }
+  }
+
+  "tooManyTransactions" must {
+    "return OK" in new Setup {
+
+      val app: Application = application
+        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+        .build()
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(any)(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      running(app) {
+        val request = FakeRequest(GET, routes.CashAccountController.tooManyTransactions().url)
+        val result = route(app, request).value
+
+        status(result) mustEqual OK
+      }
+    }
+
+    "return NotFound" in new Setup {
+
+      val app: Application = application
+        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+        .build()
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(any)(any, any))
+        .thenReturn(Future.successful(None))
+
+      running(app) {
+        val request = FakeRequest(GET, routes.CashAccountController.tooManyTransactions().url)
+        val result = route(app, request).value
+
+        status(result) mustEqual NOT_FOUND
       }
     }
   }
@@ -448,7 +487,6 @@ class CashAccountControllerSpec extends SpecBase {
 
     val cashTransactionResponse: CashTransactions = CashTransactions(
       listOfPendingTransactions, cashDailyStatements)
-
   }
 
   def randomString(length: Int): String = Random.alphanumeric.take(length).mkString

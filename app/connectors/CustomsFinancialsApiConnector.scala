@@ -33,15 +33,13 @@ import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CustomsFinancialsApiConnector @Inject()(
-                                               httpClient: HttpClient,
-                                               appConfig: AppConfig,
-                                               metricsReporter: MetricsReporterService,
-                                               cacheRepository: CacheRepository
-                                             )(implicit executionContext: ExecutionContext) {
+class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClient,
+                                              appConfig: AppConfig,
+                                              metricsReporter: MetricsReporterService,
+                                              cacheRepository: CacheRepository)
+                                             (implicit executionContext: ExecutionContext) {
 
   private val logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
-
   private val baseUrl = appConfig.customsFinancialsApi
   private val accountsUrl = s"$baseUrl/eori/accounts"
   private val retrieveCashTransactionsUrl = s"$baseUrl/account/cash/transactions"

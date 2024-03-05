@@ -18,7 +18,6 @@ package repositories
 
 import crypto.CashTransactionsEncrypter
 import models.{CashTransactions, EncryptedCashTransactions}
-import org.joda.time.DateTime
 import org.mongodb.scala.model.Filters.equal
 import org.mongodb.scala.model.Indexes.ascending
 import org.mongodb.scala.model.{IndexModel, IndexOptions, ReplaceOptions}
@@ -26,7 +25,9 @@ import play.api.Configuration
 import play.api.libs.json._
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
-import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+
+import java.time.Instant
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -60,7 +61,7 @@ class DefaultCacheRepository @Inject()(mongo: MongoComponent,
 
   override def set(id: String, transactions: CashTransactions): Future[Boolean] = {
     val record: CashTransactionsMongo = CashTransactionsMongo(
-      encrypter.encryptCashTransactions(transactions, encryptionKey), DateTime.now)
+      encrypter.encryptCashTransactions(transactions, encryptionKey), Instant.now())
 
     collection.replaceOne(equal("_id", id),
       record,
@@ -81,9 +82,9 @@ trait CacheRepository {
   def remove(id: String): Future[Boolean]
 }
 
-case class CashTransactionsMongo(transactions: EncryptedCashTransactions, lastUpdated: DateTime)
+case class CashTransactionsMongo(transactions: EncryptedCashTransactions, lastUpdated: Instant)
 
 object CashTransactionsMongo {
-  implicit val jodaTimeFormat: Format[DateTime] = MongoJodaFormats.dateTimeFormat
+  implicit val jodaTimeFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
   implicit val format: OFormat[CashTransactionsMongo] = Json.format[CashTransactionsMongo]
 }

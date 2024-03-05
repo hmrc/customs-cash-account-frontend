@@ -3,9 +3,9 @@ import uk.gov.hmrc.DefaultBuildSettings.{targetJvm, itSettings}
 
 val appName = "customs-cash-account-frontend"
 
-val silencerVersion = "1.17.13"
-val bootstrapVersion = "7.22.0"
-val scala2_13_8 = "2.13.8"
+val silencerVersion = "1.7.16"
+val bootstrapVersion = "8.4.0"
+val scala2_13_12 = "2.13.12"
 
 val testDirectory = "test"
 val scalaStyleConfigFile = "scalastyle-config.xml"
@@ -14,7 +14,7 @@ val testScalaStyleConfigFile = "test-scalastyle-config.xml"
 Global / lintUnusedKeysOnLoad := false
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := scala2_13_8
+ThisBuild / scalaVersion := scala2_13_12
 
 lazy val scalastyleSettings = Seq(scalastyleConfig := baseDirectory.value / scalaStyleConfigFile,
   (Test / scalastyleConfig) := baseDirectory.value / testDirectory / testScalaStyleConfigFile)
@@ -23,7 +23,7 @@ lazy val it = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test")
   .settings(itSettings())
-  .settings(libraryDependencies ++= Seq("uk.gov.hmrc" %% "bootstrap-test-play-28" % bootstrapVersion % Test))
+  .settings(libraryDependencies ++= Seq("uk.gov.hmrc" %% "bootstrap-test-play-29" % bootstrapVersion % Test))
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
@@ -70,5 +70,4 @@ lazy val microservice = Project(appName, file("."))
     )
   )
   .settings(PlayKeys.playDefaultPort := 9394)
-  .configs(IntegrationTest)
   .settings(resolvers += Resolver.jcenterRepo)
