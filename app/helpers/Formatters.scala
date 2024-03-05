@@ -40,7 +40,7 @@ object Formatters {
   def dateTimeAsIso8601(dateTime: LocalDateTime): String = {
     s"${DateTimeFormatter.ISO_DATE_TIME.format(dateTime.truncatedTo(ChronoUnit.SECONDS))}Z"
   }
-  
+
   def fileSizeFormat(size: Long): String = size match {
     case kb: Long if kbMin until kbMax contains kb => s"${kb / kbMin}KB"
     case mb if mb >= kbMax => f"${mb / 1000000.0}%.1fMB"
