@@ -214,12 +214,19 @@ cf.form.error.end.date-too-far-in-past=Ni all y dyddiad ‘i’ fod yn fwy na 6 
 cf.form.error.year.length = Mae’n rhaid i’r flwyddyn gynnwys pedwar rhif
 cf.form.error.startDate.date-earlier-than-system-start-date=Mae’n rhaid i’r dyddiad ‘o’ fod ar neu ar ôl mis Hydref 2019
 cf.form.error.endDate.date-earlier-than-system-start-date=Mae’n rhaid i’r dyddiad ‘i’ fod ar neu ar ôl mis Hydref 2019
-cf.form.error.start.date-number-invalid=Nodwch ddyddiad ‘o’ dilys
-cf.form.error.end.date-number-invalid=Nodwch ddyddiad ‘i’ dilys
+cf.form.error.start.date-number-invalid=Nodwch y dyddiad y mae angen trafodion arnoch o
+cf.form.error.end.date-number-invalid=Nodwch y dyddiad y mae angen trafodion arnoch i
 cf.form.error.start-future-date=Ni all y dyddiad ‘o’ fod yn y dyfodol
 cf.form.error.end-future-date=Ni all y dyddiad ‘i’ fod yn y dyfodol
 cf.form.error.start-after-end=Ni all y dyddiad ‘o’ fod ar ôl y dyddiad ‘i’
 cf.form.error.end-before-start=Ni all y dyddiad ‘i’ fod cyn y dyddiad ‘o’
+
+cf.form.error.start.invalid.day=The from date must include a day
+cf.form.error.start.invalid.month=The from date must include a month
+cf.form.error.start.invalid.year=The from date must include a year
+cf.form.error.end.invalid.day=The end date must include a day
+cf.form.error.end.invalid.month=The end date must include a month
+cf.form.error.end.invalid.year=The end date must include a year
 
 error.summary.title = Mae problem wedi codi
 error.browser.title.prefix = Gwall:

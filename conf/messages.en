@@ -215,12 +215,22 @@ cf.form.error.end.date-too-far-in-past=The to date cannot be older than 6 years 
 cf.form.error.year.length = Year must include 4 numbers
 cf.form.error.startDate.date-earlier-than-system-start-date=The from date must be on or after October 2019
 cf.form.error.endDate.date-earlier-than-system-start-date=The to date must be on or after October 2019
-cf.form.error.start.date-number-invalid=Enter a valid from date
-cf.form.error.end.date-number-invalid=Enter a valid to date
+cf.form.error.start.date-number-invalid=Enter the date you need transactions from
+cf.form.error.end.date-number-invalid=Enter the date you need transactions to
 cf.form.error.start-future-date=The from date cannot be in the future
 cf.form.error.end-future-date=The to date cannot be in the future
 cf.form.error.start-after-end=The from date cannot be after the to date
 cf.form.error.end-before-start=The to date cannot be before the from date
+
+
+cf.form.error.start.invalid.day=The from date must include a day
+cf.form.error.start.invalid.month=The from date must include a month
+cf.form.error.start.invalid.year=The from date must include a year x
+
+cf.form.error.end.invalid.day=The end date must include a day
+cf.form.error.end.invalid.month=The end date must include a month
+cf.form.error.end.invalid.year=The end date must include a year
+
 
 error.summary.title = There is a problem
 error.browser.title.prefix = Error:

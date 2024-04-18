@@ -31,16 +31,24 @@ class CashTransactionsRequestPageFormProvider @Inject()(implicit clock: Clock) e
       "start" -> localDate(
         invalidKey = "cf.form.error.start.date-number-invalid"
       ).verifying(beforeCurrentDate(errorKey = "cf.form.error.start-future-date"))
-        .verifying(checkDates(systemStartDateErrorKey = "cf.form.error.startDate.date-earlier-than-system-start-date",
+        .verifying(checkDates(
+          systemStartDateErrorKey = "cf.form.error.startDate.date-earlier-than-system-start-date",
           taxYearErrorKey = "cf.form.error.start.date-too-far-in-past",
-          invalidLength = "cf.form.error.year.length")),
+          invalidLength = "cf.form.error.year.length",
+          emptyDayErrorKey = "cf.form.error.start.empty-day",
+          emptyMonthErrorKey = "cf.form.error.start.empty-month",
+          emptyYearErrorKey = "cf.form.error.start.empty-year")),
 
       "end" -> localDate(
         invalidKey = "cf.form.error.end.date-number-invalid"
       ).verifying(beforeCurrentDate(errorKey = "cf.form.error.end-future-date"))
-        .verifying(checkDates(systemStartDateErrorKey = "cf.form.error.endDate.date-earlier-than-system-start-date",
+        .verifying(checkDates(
+          systemStartDateErrorKey = "cf.form.error.endDate.date-earlier-than-system-start-date",
           taxYearErrorKey = "cf.form.error.end.date-too-far-in-past",
-          invalidLength = "cf.form.error.year.length"))
+          invalidLength = "cf.form.error.year.length",
+          emptyDayErrorKey = "cf.form.error.end.empty-day",
+          emptyMonthErrorKey = "cf.form.error.end.empty-month",
+          emptyYearErrorKey = "cf.form.error.end.empty-year"))
     )(CashTransactionDates.apply)(CashTransactionDates.unapply)
     )
   }
