@@ -42,7 +42,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
 
         val formData: Map[String, String] = startDate ++ validEndDate
 
-        val expectedErrors: Seq[FormError] = error("start.day", "cf.form.error.start.date-number-invalid")
+        val expectedErrors: Seq[FormError] = error("start.day", dayMsgStartKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -56,7 +56,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
 
         val formData: Map[String, String] = startDate ++ validEndDate
 
-        val expectedErrors: Seq[FormError] = error("start.month", "cf.form.error.start.date-number-invalid")
+        val expectedErrors: Seq[FormError] = error("start.month", monthMsgStartKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -70,7 +70,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
 
         val formData: Map[String, String] = startDate ++ validEndDate
 
-        val expectedErrors: Seq[FormError] = error("start.year", "cf.form.error.start.date-number-invalid")
+        val expectedErrors: Seq[FormError] = error("start.year", yearMsgStartKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -84,7 +84,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
 
         val formData: Map[String, String] = startDate ++ validEndDate
 
-        val expectedErrors: Seq[FormError] = error("start.day", "cf.form.error.start.date-number-invalid")
+        val expectedErrors: Seq[FormError] = error("start.day", invalidMsgStartKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -98,7 +98,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
 
         val formData: Map[String, String] = startDate ++ validEndDate
 
-        val expectedErrors: Seq[FormError] = error("start.month", "cf.form.error.start.date-number-invalid")
+        val expectedErrors: Seq[FormError] = error("start.month", invalidMsgStartKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -114,7 +114,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
 
         val formData: Map[String, String] = startDate ++ validEndDate
 
-        val expectedErrors: Seq[FormError] = error("start.year", "cf.form.error.start.date-number-invalid")
+        val expectedErrors: Seq[FormError] = error("start.year", invalidMsgStartKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -180,7 +180,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
 
         val formData: Map[String, String] = validStartDate ++ endDate
 
-        val expectedErrors: Seq[FormError] = error("end.day", "cf.form.error.end.date-number-invalid")
+        val expectedErrors: Seq[FormError] = error("end.day", dayMsgEndKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -194,7 +194,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
 
         val formData: Map[String, String] = validStartDate ++ endDate
 
-        val expectedErrors: Seq[FormError] = error("end.month", "cf.form.error.end.date-number-invalid")
+        val expectedErrors: Seq[FormError] = error("end.month", monthMsgEndKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -208,7 +208,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
 
         val formData: Map[String, String] = validStartDate ++ endDate
 
-        val expectedErrors: Seq[FormError] = error("end.year", "cf.form.error.end.date-number-invalid")
+        val expectedErrors: Seq[FormError] = error("end.year", yearMsgEndKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -222,7 +222,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
 
         val formData: Map[String, String] = validStartDate ++ endDate
 
-        val expectedErrors: Seq[FormError] = error("end.day", "cf.form.error.end.date-number-invalid")
+        val expectedErrors: Seq[FormError] = error("end.day", invalidMsgEndKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -236,7 +236,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
 
         val formData: Map[String, String] = validStartDate ++ endDate
 
-        val expectedErrors: Seq[FormError] = error("end.month", "cf.form.error.end.date-number-invalid")
+        val expectedErrors: Seq[FormError] = error("end.month", invalidMsgEndKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -252,7 +252,7 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
 
         val formData: Map[String, String] = validStartDate ++ endDate
 
-        val expectedErrors: Seq[FormError] = error("end.year", "cf.form.error.end.date-number-invalid")
+        val expectedErrors: Seq[FormError] = error("end.year", invalidMsgEndKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -326,6 +326,16 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
 
     val startKey = "start"
     val endKey = "end"
+
+    val invalidMsgStartKey = "cf.form.error.start.date-number-invalid"
+    val dayMsgStartKey = "cf.form.error.start.invalid.day"
+    val monthMsgStartKey = "cf.form.error.start.invalid.month"
+    val yearMsgStartKey = "cf.form.error.start.invalid.year"
+
+    val invalidMsgEndKey = "cf.form.error.end.date-number-invalid"
+    val dayMsgEndKey = "cf.form.error.end.invalid.day"
+    val monthMsgEndKey = "cf.form.error.end.invalid.month"
+    val yearMsgEndKey = "cf.form.error.end.invalid.year"
 
     lazy val completeValidDates: Map[String, String] =
       populateFormValueMap(startKey, day10AsString, month10AsString, year2021AsString) ++
