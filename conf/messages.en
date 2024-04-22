@@ -225,7 +225,7 @@ cf.form.error.end-before-start=The to date cannot be before the from date
 
 cf.form.error.start.invalid.day=The from date must include a day
 cf.form.error.start.invalid.month=The from date must include a month
-cf.form.error.start.invalid.year=The from date must include a year x
+cf.form.error.start.invalid.year=The from date must include a year
 
 cf.form.error.end.invalid.day=The end date must include a day
 cf.form.error.end.invalid.month=The end date must include a month

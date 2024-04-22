@@ -29,26 +29,24 @@ class CashTransactionsRequestPageFormProvider @Inject()(implicit clock: Clock) e
   def apply(): Form[CashTransactionDates] = {
     Form(mapping(
       "start" -> localDate(
-        invalidKey = "cf.form.error.start.date-number-invalid"
+        invalidKey = "cf.form.error.start.date-number-invalid",
+        dayKey = "cf.form.error.start.invalid.day",
+        monthKey = "cf.form.error.start.invalid.month",
+        yearKey = "cf.form.error.start.invalid.year"
       ).verifying(beforeCurrentDate(errorKey = "cf.form.error.start-future-date"))
-        .verifying(checkDates(
-          systemStartDateErrorKey = "cf.form.error.startDate.date-earlier-than-system-start-date",
+        .verifying(checkDates(systemStartDateErrorKey = "cf.form.error.startDate.date-earlier-than-system-start-date",
           taxYearErrorKey = "cf.form.error.start.date-too-far-in-past",
-          invalidLength = "cf.form.error.year.length",
-          emptyDayErrorKey = "cf.form.error.start.empty-day",
-          emptyMonthErrorKey = "cf.form.error.start.empty-month",
-          emptyYearErrorKey = "cf.form.error.start.empty-year")),
+          invalidLength = "cf.form.error.year.length")),
 
       "end" -> localDate(
-        invalidKey = "cf.form.error.end.date-number-invalid"
+        invalidKey = "cf.form.error.end.date-number-invalid",
+        dayKey = "cf.form.error.end.invalid.day",
+        monthKey= "cf.form.error.end.invalid.month",
+        yearKey = "cf.form.error.end.invalid.year"
       ).verifying(beforeCurrentDate(errorKey = "cf.form.error.end-future-date"))
-        .verifying(checkDates(
-          systemStartDateErrorKey = "cf.form.error.endDate.date-earlier-than-system-start-date",
+        .verifying(checkDates(systemStartDateErrorKey = "cf.form.error.endDate.date-earlier-than-system-start-date",
           taxYearErrorKey = "cf.form.error.end.date-too-far-in-past",
-          invalidLength = "cf.form.error.year.length",
-          emptyDayErrorKey = "cf.form.error.end.empty-day",
-          emptyMonthErrorKey = "cf.form.error.end.empty-month",
-          emptyYearErrorKey = "cf.form.error.end.empty-year"))
+          invalidLength = "cf.form.error.year.length"))
     )(CashTransactionDates.apply)(CashTransactionDates.unapply)
     )
   }

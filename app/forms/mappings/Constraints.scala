@@ -61,16 +61,7 @@ trait Constraints {
 
   def checkDates(systemStartDateErrorKey: String,
                  taxYearErrorKey: String,
-                 invalidLength: String,
-                 emptyDayErrorKey: String,
-                 emptyMonthErrorKey: String,
-                 emptyYearErrorKey: String)(implicit clock: Clock): Constraint[LocalDate] = Constraint {
-    
-    case request if request.getDayOfMonth == 0 => Invalid(ValidationError(emptyDayErrorKey))
-
-    case request if request.getMonthValue == 0 => Invalid(ValidationError(emptyMonthErrorKey))
-
-    case request if request.getYear == 0 => Invalid(ValidationError(emptyYearErrorKey))
+                 invalidLength: String)(implicit clock: Clock): Constraint[LocalDate] = Constraint {
 
     case request if request.getYear.toString.length() != validYearLength => Invalid(invalidLength)
 
