@@ -23,12 +23,13 @@ import play.api.{Logger, LoggerLike}
 import java.time.{LocalDate, LocalDateTime}
 import scala.util.{Failure, Success, Try}
 
-private[mappings] class LocalDateFormatter(
-                                            invalidKey: String,
-                                            args: Seq[String]
-                                          ) extends Formatter[LocalDate] with Formatters {
+private[mappings] class LocalDateFormatter(invalidKey: String,
+                                           dayKey: String,
+                                           monthKey: String,
+                                           yearKey: String,
+                                           args: Seq[String]) extends Formatter[LocalDate] with Formatters {
 
-  private val fieldKeys: List[String] = List("month", "year")
+  private val fieldKeys: List[String] = List("day", "month", "year")
   val log: LoggerLike = Logger(this.getClass)
   val currentDate: LocalDate = LocalDateTime.now().toLocalDate
 
@@ -39,11 +40,20 @@ private[mappings] class LocalDateFormatter(
     Try(LocalDate.of(year, month, day)) match {
       case Success(_) => Right(LocalDate.of(year, month, day))
       case Failure(_) =>
-        Left(Seq(FormError(updateFormErrorKeys(key, day, month, year), invalidKey, args)))
+        Left(
+          Seq(
+            FormError(
+              updateFormErrorKeys(key, day, month, year),
+              invalidKey,
+              args
+            )
+          )
+        )
     }
   }
 
-  private def formatDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
+  private def formatDate(key: String,
+                         data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
     val int = intFormatter(
       requiredKey = invalidKey,
@@ -65,18 +75,22 @@ private[mappings] class LocalDateFormatter(
   override def bind(key: String,
                     data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
-    val fields = fieldKeys.map {
-      field =>
-        field -> data.get(s"$key.$field").filter(_.nonEmpty)
+    val fields: Map[String, Option[String]] = fieldKeys.map { field =>
+      field -> data.get(s"$key.$field").filter(_.nonEmpty)
     }.toMap
 
     fields.count(_._2.isDefined) match {
-      case 2 =>
-        formatDate(key, data).left.map {
-          _.map(fe => fe.copy(key = fe.key, args = args))
-        }
+      case 2 | 3 => checkForFieldValues(key, data)
       case _ =>
-        Left(List(FormError(formErrorKeysInCaseOfEmptyOrNonNumericValues(key, data), invalidKey, args)))
+        Left(
+          List(
+            FormError(
+              formErrorKeysInCaseOfEmptyOrNonNumericValues(key, data),
+              invalidKey,
+              args
+            )
+          )
+        )
     }
   }
 
@@ -98,6 +112,42 @@ private[mappings] class LocalDateFormatter(
       case _ => s"$key.day"
     }
 
+  private def checkForFieldValues(key: String,
+                                  data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
+
+    data match {
+      case value if value.contains(s"$key.day") && value(s"$key.day").isEmpty =>
+        populateErrorMsg(key, data, dayKey)
+
+      case value
+        if value.contains(s"$key.month") && value(s"$key.month").isEmpty =>
+        populateErrorMsg(key, data, monthKey)
+
+      case value
+        if value.contains(s"$key.year") && data(s"$key.year").isEmpty =>
+        populateErrorMsg(key, data, yearKey)
+
+      case _ =>
+        formatDate(key, data).left.map {
+          _.map(fe => fe.copy(key = fe.key, args = args))
+        }
+    }
+  }
+
+  private def populateErrorMsg(key: String,
+                               data: Map[String, String],
+                               errorMsg: String): Left[List[FormError], Nothing] = {
+    Left(
+      List(
+        FormError(
+          formErrorKeysInCaseOfEmptyOrNonNumericValues(key, data),
+          errorMsg,
+          args
+        )
+      )
+    )
+  }
+
   private[mappings] def formErrorKeysInCaseOfEmptyOrNonNumericValues(key: String,
                                                                      data: Map[String, String]): String = {
     val dayValue = data.get(s"$key.day")
@@ -105,9 +155,12 @@ private[mappings] class LocalDateFormatter(
     val yearValue = data.get(s"$key.year")
 
     (dayValue, monthValue, yearValue) match {
-      case (Some(d), _, _) if d.trim.isEmpty || Try(d.trim.toInt).isFailure => s"$key.day"
-      case (_, Some(m), _) if m.trim.isEmpty || Try(m.trim.toInt).isFailure => s"$key.month"
-      case (_, _, Some(y)) if y.trim.isEmpty || Try(y.trim.toInt).isFailure => s"$key.year"
+      case (Some(d), _, _) if d.trim.isEmpty || Try(d.trim.toInt).isFailure =>
+        s"$key.day"
+      case (_, Some(m), _) if m.trim.isEmpty || Try(m.trim.toInt).isFailure =>
+        s"$key.month"
+      case (_, _, Some(y)) if y.trim.isEmpty || Try(y.trim.toInt).isFailure =>
+        s"$key.year"
       case _ => s"$key.day"
     }
   }

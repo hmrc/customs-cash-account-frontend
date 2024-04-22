@@ -27,11 +27,11 @@ trait Mappings extends Formatters with Constraints {
                         invalidKey: String = "error.boolean"): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey))
 
-
-  protected def localDate(
-                           invalidKey: String
-                         ): FieldMapping[LocalDate] =
-    of(new LocalDateFormatter(invalidKey, Seq.empty))
+  protected def localDate(invalidKey: String,
+                          dayKey: String,
+                          monthKey: String,
+                          yearKey: String): FieldMapping[LocalDate] =
+    of(new LocalDateFormatter(invalidKey, dayKey, monthKey, yearKey, Seq.empty))
 
   protected def decimal(requiredKey: String = "error.required",
                         nonNumericKey: String = "error.nonNumeric"): FieldMapping[String] =
