@@ -221,12 +221,12 @@ cf.form.error.end-future-date=Ni all y dyddiad ‘i’ fod yn y dyfodol
 cf.form.error.start-after-end=Ni all y dyddiad ‘o’ fod ar ôl y dyddiad ‘i’
 cf.form.error.end-before-start=Ni all y dyddiad ‘i’ fod cyn y dyddiad ‘o’
 
-cf.form.error.start.invalid.day=The from date must include a day
-cf.form.error.start.invalid.month=The from date must include a month
-cf.form.error.start.invalid.year=The from date must include a year
-cf.form.error.end.invalid.day=The end date must include a day
-cf.form.error.end.invalid.month=The end date must include a month
-cf.form.error.end.invalid.year=The end date must include a year
+cf.form.error.start.date.invalid.day=Mae’n rhaid i’r dyddiad o gynnwys diwrnod
+cf.form.error.start.date.invalid.month=Mae’n rhaid i’r dyddiad i gynnwys mis
+cf.form.error.start.date.invalid.year=Mae’n rhaid i’r dyddiad o gynnwys blwyddyn
+cf.form.error.end.date.invalid.day=Mae’n rhaid i’r dyddiad dod i ben gynnwys diwrnod
+cf.form.error.end.date.invalid.month=Mae’n rhaid i’r dyddiad dod i ben gynnwys mis
+cf.form.error.end.date.invalid.year=Mae’n rhaid i’r dyddiad dod i ben gynnwys blwyddyn
 
 error.summary.title = Mae problem wedi codi
 error.browser.title.prefix = Gwall:

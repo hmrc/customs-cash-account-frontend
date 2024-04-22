@@ -222,15 +222,12 @@ cf.form.error.end-future-date=The to date cannot be in the future
 cf.form.error.start-after-end=The from date cannot be after the to date
 cf.form.error.end-before-start=The to date cannot be before the from date
 
-
-cf.form.error.start.invalid.day=The from date must include a day
-cf.form.error.start.invalid.month=The from date must include a month
-cf.form.error.start.invalid.year=The from date must include a year
-
-cf.form.error.end.invalid.day=The end date must include a day
-cf.form.error.end.invalid.month=The end date must include a month
-cf.form.error.end.invalid.year=The end date must include a year
-
+cf.form.error.start.date.invalid.day=The from date must include a day
+cf.form.error.start.date.invalid.month=The from date must include a month
+cf.form.error.start.date.invalid.year=The from date must include a year
+cf.form.error.end.date.invalid.day=The end date must include a day
+cf.form.error.end.date.invalid.month=The end date must include a month
+cf.form.error.end.date.invalid.year=The end date must include a year
 
 error.summary.title = There is a problem
 error.browser.title.prefix = Error:
