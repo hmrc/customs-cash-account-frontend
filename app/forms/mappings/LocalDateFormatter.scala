@@ -27,7 +27,7 @@ private[mappings] class LocalDateFormatter(invalidKey: String,
                                            dayKey: String,
                                            monthKey: String,
                                            yearKey: String,
-                                           validDateKey: String,
+                                           invalidDateKey: String,
                                            args: Seq[String]) extends Formatter[LocalDate] with Formatters {
 
   private val fieldKeys: List[String] = List("day", "month", "year")
@@ -45,7 +45,7 @@ private[mappings] class LocalDateFormatter(invalidKey: String,
           Seq(
             FormError(
               updateFormErrorKeys(key, day, month, year),
-              validDateKey,
+              invalidDateKey,
               args
             )
           )

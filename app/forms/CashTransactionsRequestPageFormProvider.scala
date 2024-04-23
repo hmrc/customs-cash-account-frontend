@@ -35,7 +35,7 @@ class CashTransactionsRequestPageFormProvider @Inject() (implicit clock: Clock)
           dayKey = "cf.form.error.start.date.invalid.day",
           monthKey = "cf.form.error.start.date.invalid.month",
           yearKey = "cf.form.error.start.date.invalid.year",
-          validDateKey = "cf.form.error.start.date.invalid.real-date"
+          invalidDateKey = "cf.form.error.start.date.invalid.real-date"
         ).verifying(
           beforeCurrentDate(errorKey = "cf.form.error.start-future-date")
         ).verifying(
@@ -51,7 +51,7 @@ class CashTransactionsRequestPageFormProvider @Inject() (implicit clock: Clock)
           dayKey = "cf.form.error.end.date.invalid.day",
           monthKey = "cf.form.error.end.date.invalid.month",
           yearKey = "cf.form.error.end.date.invalid.year",
-          validDateKey = "cf.form.error.end.date.invalid.real-date"
+          invalidDateKey = "cf.form.error.end.date.invalid.real-date"
         ).verifying(
           beforeCurrentDate(errorKey = "cf.form.error.end-future-date")
         ).verifying(
