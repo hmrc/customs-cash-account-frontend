@@ -27,6 +27,7 @@ private[mappings] class LocalDateFormatter(invalidKey: String,
                                            dayKey: String,
                                            monthKey: String,
                                            yearKey: String,
+                                           validDateKey: String,
                                            args: Seq[String]) extends Formatter[LocalDate] with Formatters {
 
   private val fieldKeys: List[String] = List("day", "month", "year")
@@ -44,7 +45,7 @@ private[mappings] class LocalDateFormatter(invalidKey: String,
           Seq(
             FormError(
               updateFormErrorKeys(key, day, month, year),
-              invalidKey,
+              validDateKey,
               args
             )
           )
@@ -110,7 +111,7 @@ private[mappings] class LocalDateFormatter(invalidKey: String,
       case (_, m, _) if m < 1 || m > 12 => s"$key.month"
       case (_, _, y) if y < 1000 || y > 99999 => s"$key.year"
       case _ => s"$key.day"
-    }
+  }
 
   private def checkForFieldValues(key: String,
                                   data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
