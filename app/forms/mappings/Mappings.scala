@@ -30,8 +30,9 @@ trait Mappings extends Formatters with Constraints {
   protected def localDate(invalidKey: String,
                           dayKey: String,
                           monthKey: String,
-                          yearKey: String): FieldMapping[LocalDate] =
-    of(new LocalDateFormatter(invalidKey, dayKey, monthKey, yearKey, Seq.empty))
+                          yearKey: String,
+                          invalidDateKey: String): FieldMapping[LocalDate] =
+    of(new LocalDateFormatter(invalidKey, dayKey, monthKey, yearKey, invalidDateKey, Seq.empty))
 
   protected def decimal(requiredKey: String = "error.required",
                         nonNumericKey: String = "error.nonNumeric"): FieldMapping[String] =

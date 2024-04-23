@@ -225,9 +225,11 @@ cf.form.error.end-before-start=The to date cannot be before the from date
 cf.form.error.start.date.invalid.day=The from date must include a day
 cf.form.error.start.date.invalid.month=The from date must include a month
 cf.form.error.start.date.invalid.year=The from date must include a year
+cf.form.error.start.date.invalid.real-date=The from date must be a real date
 cf.form.error.end.date.invalid.day=The end date must include a day
 cf.form.error.end.date.invalid.month=The end date must include a month
 cf.form.error.end.date.invalid.year=The end date must include a year
+cf.form.error.end.date.invalid.real-date=The to date must be a real date
 
 error.summary.title = There is a problem
 error.browser.title.prefix = Error:

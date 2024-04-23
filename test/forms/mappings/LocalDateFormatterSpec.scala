@@ -48,10 +48,10 @@ class LocalDateFormatterSpec extends SpecBase {
         Left(Seq(FormError("start.year", List(yearMsgKey), List())))
 
       localDateFormatter.bind(key, bindDataInValidDate) shouldBe
-        Left(Seq(FormError("start.day", List(invalidMsgKey), List())))
+        Left(Seq(FormError("start.day", List(invalidDateMsgKey), List())))
 
       localDateFormatter.bind(key, bindDataInValidMonth) shouldBe
-        Left(Seq(FormError("start.month", List(invalidMsgKey), List())))
+        Left(Seq(FormError("start.month", List(invalidDateMsgKey), List())))
 
       localDateFormatter.bind(key, bindDataInValidYear) shouldBe
         Left(Seq(FormError("start.year", List(invalidMsgKey), List())))
@@ -194,6 +194,7 @@ trait SetUp {
   val dayMsgKey = "cf.form.error.start.date.invalid.day"
   val monthMsgKey = "cf.form.error.start.date.invalid.month"
   val yearMsgKey = "cf.form.error.start.date.invalid.year"
+  val invalidDateMsgKey = "cf.form.error.start.date.invalid.real-date"
   val bindDataValid: Map[String, String] =
     Map("start.day" -> "12", "start.month" -> "10", "start.year" -> "2022")
   val bindDataEmptyDate: Map[String, String] =
@@ -204,6 +205,7 @@ trait SetUp {
     dayMsgKey,
     monthMsgKey,
     yearMsgKey,
+    invalidDateMsgKey,
     Seq()
   )
 
