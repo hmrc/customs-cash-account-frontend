@@ -4,7 +4,7 @@ language.change.english=Change the language to English
 
 site.error = Gwall
 
-service.name=Bwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau
+service.name=Rheoli tollau mewnforio a chyfrifon TAW
 
 
 # BETA Banner
@@ -110,7 +110,7 @@ cf.error.not-found.heading=Heb ddod o hyd i’r dudalen
 cf.error.not-found.message.address-typed-wrong=Os gwnaethoch deipio’r cyfeiriad gwe, gwiriwch ei fod yn gywir.
 cf.error.not-found.message.address-pasted-wrong=Os gwnaethoch ludo’r cyfeiriad gwe, gwiriwch eich bod wedi copïo’r cyfeiriad yn llawn.
 cf.error.not-found.message.go-to-home-page-text1=Neu gallwch
-cf.accounts.view-customs-account=fwrw golwg dros eich cyfrifon ariannol ar gyfer y tollau
+cf.accounts.view-customs-account=rheoli tollau mewnforio a chyfrifon TAW
 
 
 # Undeliverable Email Address
