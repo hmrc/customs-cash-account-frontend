@@ -4,7 +4,7 @@ import uk.gov.hmrc.DefaultBuildSettings.{targetJvm, itSettings}
 val appName = "customs-cash-account-frontend"
 
 val silencerVersion = "1.7.16"
-val bootstrapVersion = "8.5.0"
+val bootstrapVersion = "8.6.0"
 val scala2_13_12 = "2.13.12"
 
 val testDirectory = "test"
