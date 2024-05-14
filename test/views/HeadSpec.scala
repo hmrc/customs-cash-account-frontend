@@ -57,7 +57,7 @@ class HeadSpec extends ViewTestHelper {
 
     htmlView.contains(s"data-timeout=\"${appConfig.timeout}\"") mustBe true
 
-    htmlView.contains(appConfig.countdown) mustBe true
+    htmlView.contains(appConfig.countdown.toString) mustBe true
 
     htmlView.contains(request.uri) mustBe true
 

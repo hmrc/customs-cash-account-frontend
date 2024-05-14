@@ -4,7 +4,7 @@ import uk.gov.hmrc.DefaultBuildSettings.{targetJvm, itSettings}
 val appName = "customs-cash-account-frontend"
 
 val silencerVersion = "1.7.16"
-val bootstrapVersion = "8.5.0"
+val bootstrapVersion = "8.6.0"
 val scala2_13_12 = "2.13.12"
 
 val testDirectory = "test"
@@ -23,7 +23,7 @@ lazy val it = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test")
   .settings(itSettings())
-  .settings(libraryDependencies ++= Seq("uk.gov.hmrc" %% "bootstrap-test-play-29" % bootstrapVersion % Test))
+  .settings(libraryDependencies ++= Seq("uk.gov.hmrc" %% "bootstrap-test-play-30" % bootstrapVersion % Test))
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
