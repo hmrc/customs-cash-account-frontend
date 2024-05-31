@@ -44,6 +44,6 @@ Test coverage threshold is set at 85% - so if you commit any significant amount 
 
 ## All tests and checks
 
-This is a sbt command alias specific to this project. It will run a scala style check, run unit tests, run integration tests and produce a coverage report.
-
+This is a sbt command alias specific to this project. It will run a scala style check, run unit tests, run integration
+tests and produce a coverage report:
 > `sbt runAllChecks`
