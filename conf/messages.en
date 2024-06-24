@@ -99,8 +99,8 @@ timeout.signOut = Sign out
 # ----------------------------------------------------------
 cf.not-subscribed-to-cds.detail.title=Not registered with CDS
 cf.not-subscribed-to-cds.detail.heading=To continue you need to subscribe to the Customs Declaration Service (CDS)
-cf.not-subscribed-to-cds.detail.already-subscribed-to-cds=If you're already subscribed to CDS
-cf.not-subscribed-to-cds.detail.already-subscribed-to-cds-guidance-text=Check that you signed in with the Government Gateway user ID that's linked to your Economic Operator and Registration Identification (EORI) number and CDS account.
+cf.not-subscribed-to-cds.detail.already-subscribed-to-cds=If you''re already subscribed to CDS
+cf.not-subscribed-to-cds.detail.already-subscribed-to-cds-guidance-text=Check that you signed in with the Government Gateway user ID that''s linked to your Economic Operator and Registration Identification (EORI) number and CDS account.
 cf.not-subscribed-to-cds.details.subscribe-to-cds=Subscribe to CDS
 cf.not-subscribed-to-cds.details.subscribe-to-cds-link-text=Subscribe to the Customs Declaration Service.
 
