@@ -174,6 +174,13 @@ cf.cash-account.detail.link.post = ar GOV.UK
 cf.cash-account.detail.link2.pre = Bydd angen i chi
 cf.cash-account.detail.link2 = ychwanegu
 cf.cash-account.detail.link2.post = i’ch cyfrif arian parod cyn y gallwch ei ddefnyddio.
+cf.cash-account.help-and-support.link.text.pre = Mae modd
+cf.cash-account.help-and-support.link.text.post = os oes angen help arnoch.
+cf.cash-account.help-and-support.link.text = gysylltu â chanolfan cyfrifyddu CThEF (yn agor tab newydd)
+cf.cash-account.how-to-use.guidance.text.pre = Dysgwch sut i
+cf.cash-account.how-to-use.guidance.text.post = ar GOV.UK.
+cf.cash-account.how-to-use.guidance.link.text = ddefnyddio cyfrif arian parod ar gyfer datganiadau’r Gwasanaeth Datgan Tollau (CDS)
+cf.cash-account-top-up.guidance = Bydd angen i chi ychwanegu at eich cyfrif arian parod cyn y gallwch ei ddefnyddio.
 cf.cash-account.detail.no-transactions-with-balance.p1=Nid oes unrhyw drafodion i’w gweld. Dim ond am y 6 mis blaenorol y gallwch fwrw golwg dros drafodion.
 
 
