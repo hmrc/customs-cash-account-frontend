@@ -20,6 +20,7 @@
     linkMessage: String, 
     href: String, 
     preLinkMessage: Option[String] = None,
+    postLinkMessage: Option[String] = None,
     classes: String = "govuk-body"
 )(
     implicit messages: Messages,
@@ -37,5 +38,8 @@
             text=messages(linkMessage)
         )
     )
+
+    @postLinkMessage.map(messages(_))
+
     .
 </p>

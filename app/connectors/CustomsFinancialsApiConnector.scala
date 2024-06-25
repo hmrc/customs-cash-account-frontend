@@ -86,7 +86,10 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClient,
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
     cacheRepository.get(can).flatMap {
-      case Some(value) => Future.successful(Right(value))
+      case Some(value) => {
+
+        Future.successful(Left(NoTransactionsAvailable))
+      }
 
       case None =>
         httpClient.POST[CashDailyStatementRequest, CashTransactions](

@@ -22,7 +22,8 @@
         p: components.p,
         cash_account_balance: components.cash_account_balance,
         inset: components.inset,
-        link: components.link
+        link: components.link,
+        newTabLink: components.newTabLink,
 )
 
 @(accountModel: CashAccountViewModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -53,13 +54,12 @@
         classes = "govuk-heading-m govuk-!-margin-top-9"
     )
 
-    @link(
+    @newTabLink(
         linkMessage = "cf.cash-account.help-and-support.link.text",
-        location = appConfig.cashAccountForCdsDeclarationsUrl,
-        linkId = Some("cf.cash-account.help-and-support.link"),
-        pClass = "govuk-body govuk-!-margin-bottom-9",
+        href = appConfig.cashAccountForCdsDeclarationsUrl,
         preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre"),
-        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")
+        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post"),
+        classes = "govuk-body govuk-!-margin-bottom-9"
     )
 
 }

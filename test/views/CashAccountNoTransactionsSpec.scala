@@ -26,6 +26,7 @@ import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.SpecBase
+import utils.Utils.singleSpace
 import views.html.cash_account_no_transactions
 
 class CashAccountNoTransactionsSpec extends SpecBase {
@@ -84,16 +85,24 @@ class CashAccountNoTransactionsSpec extends SpecBase {
 
   private def shouldContainHelpAndSupportGuidance(viewDoc: Document)(implicit msgs: Messages,
                                                                      config: AppConfig): Assertion = {
+    val period = "."
+
     viewDoc.getElementById("help-and-support-heading").text() mustBe
       msgs("cf.cash-account.transactions.request.support.heading")
 
-    val linkElement = viewDoc.getElementById("cf.cash-account.help-and-support.link")
+    val linkElement = viewDoc.getElementsByClass("govuk-body govuk-!-margin-bottom-9")
 
-    linkElement.attribute("href").getValue mustBe config.cashAccountForCdsDeclarationsUrl
-    linkElement.text() mustBe msgs("cf.cash-account.help-and-support.link.text")
+    linkElement.get(0).getElementsByTag("a").attr("href") mustBe
+      config.cashAccountForCdsDeclarationsUrl
 
-    viewDoc.text().contains(msgs("cf.cash-account.help-and-support.link.text.pre")) mustBe true
-    viewDoc.text().contains(msgs("cf.cash-account.help-and-support.link.text.post")) mustBe true
+    linkElement.text() mustBe
+      s"${
+        msgs("cf.cash-account.help-and-support.link.text.pre")
+      }$singleSpace${
+        msgs("cf.cash-account.help-and-support.link.text")
+      }$singleSpace${
+        msgs("cf.cash-account.help-and-support.link.text.post")
+      }$singleSpace$period"
   }
 
   trait Setup {
