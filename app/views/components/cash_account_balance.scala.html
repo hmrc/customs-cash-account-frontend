@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import helpers.Formatters
+@import helpers.Formatters.formatCurrencyAmount
 
 @this( h1: components.h1)
 @(model: CashAccountViewModel, showBalance: Boolean = true)(implicit messages: Messages, appConfig: AppConfig)
@@ -29,7 +29,7 @@
         @if(showBalance) {
             <p class="govuk-label govuk-label--l govuk-!-margin-bottom-4 " id="balance-available">
                 @{
-                    model.account.balances.AvailableAccountBalance.map(Formatters.formatCurrencyAmount(_))
+                    model.account.balances.AvailableAccountBalance.fold(formatCurrencyAmount(0))(formatCurrencyAmount(_))
                 } @messages("cf.cash-account.detail.available")
             </p>
         }

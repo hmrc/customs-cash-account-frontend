@@ -26,7 +26,7 @@ import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.SpecBase
-import utils.Utils.singleSpace
+import utils.Utils.{period, singleSpace}
 import views.html.cash_account_no_transactions
 
 class CashAccountNoTransactionsSpec extends SpecBase {
@@ -36,8 +36,9 @@ class CashAccountNoTransactionsSpec extends SpecBase {
     "display correct guidance" in new Setup {
       val eori = "test_eori"
       val balances: CDSCashBalance = CDSCashBalance(None)
+      val accNumber = "12345678"
 
-      val cashAccount: CashAccount = CashAccount(number = "12345678",
+      val cashAccount: CashAccount = CashAccount(number = accNumber,
         owner = eori,
         status = AccountStatusOpen,
         balances = balances)
@@ -48,6 +49,9 @@ class CashAccountNoTransactionsSpec extends SpecBase {
 
       shouldContainCorrectTitle(viewDoc)
       shouldContainCorrectBackLink(viewDoc)
+      shouldDisplayCorrectAccountNumber(viewDoc, accNumber)
+      shouldContainCorrectCashAccountHeading(viewDoc)
+      shouldContainCorrectTextNoAmount(viewDoc)
       shouldContainAuthoriseAgentGuidance(viewDoc)
       shouldContainTopUpGuidance(viewDoc)
       shouldContainHowToUseCashAccountGuidance(viewDoc)
@@ -61,6 +65,20 @@ class CashAccountNoTransactionsSpec extends SpecBase {
 
   private def shouldContainCorrectBackLink(viewDoc: Document)(implicit appConfig: AppConfig): Assertion = {
     viewDoc.html().contains(appConfig.customsFinancialsFrontendHomepage) mustBe true
+  }
+
+  private def shouldDisplayCorrectAccountNumber(viewDoc: Document,
+                                                accNumber: String)(implicit msgs: Messages): Assertion = {
+    viewDoc.getElementById("account-number").text() mustBe msgs("cf.cash-account.detail.account", accNumber)
+  }
+
+  private def shouldContainCorrectCashAccountHeading(viewDoc: Document)(implicit msgs: Messages): Assertion = {
+    viewDoc.getElementsByTag("h1").text() mustBe msgs("cf.cash-account.detail.heading")
+  }
+
+  private def shouldContainCorrectTextNoAmount(viewDoc: Document)(implicit msgs: Messages): Assertion = {
+    viewDoc.getElementById("balance-available")
+      .text() mustBe s"£0$singleSpace${msgs("cf.cash-account.detail.available")}"
   }
 
   private def shouldContainAuthoriseAgentGuidance(viewDoc: Document)(implicit msgs: Messages): Assertion = {
@@ -86,8 +104,6 @@ class CashAccountNoTransactionsSpec extends SpecBase {
 
   private def shouldContainHelpAndSupportGuidance(viewDoc: Document)(implicit msgs: Messages,
                                                                      config: AppConfig): Assertion = {
-    val period = "."
-
     viewDoc.getElementById("help-and-support-heading").text() mustBe
       msgs("cf.cash-account.transactions.request.support.heading")
 

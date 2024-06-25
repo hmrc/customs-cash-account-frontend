@@ -16,7 +16,7 @@
 
 package helpers
 
-import helpers.Formatters.{ddMMyyyyDateFormatter, yyyyMMddDateFormatter, yyyyMMddHHmmssDateFormatter, formatCurrencyAmount}
+import helpers.Formatters.{ddMMyyyyDateFormatter, formatCurrencyAmount, yyyyMMddDateFormatter, yyyyMMddHHmmssDateFormatter}
 import utils.SpecBase
 
 import java.time.{LocalDate, LocalDateTime}
@@ -96,12 +96,18 @@ class FormattersSpec extends SpecBase {
     }
 
     "return result with two decimal points when value is greater than 0" in {
+      val wholeValue = 200
+      val valueWithTwoDecimalPoint = 530.45
+      val valueWithFourDigitsAndTwoDecimalPoint = 3489.00
+      val wholeValueWithFiveDigits = 54000
+      val valueWithSixDigitsWithTwoDecimalPoints = 554678.56
+
       formatCurrencyAmount(BigDecimal(2)) mustBe "£2.00"
-      formatCurrencyAmount(BigDecimal(200)) mustBe "£200.00"
-      formatCurrencyAmount(BigDecimal(530.45)) mustBe "£530.45"
-      formatCurrencyAmount(BigDecimal(3489.00)) mustBe "£3,489.00"
-      formatCurrencyAmount(BigDecimal(54000)) mustBe "£54,000.00"
-      formatCurrencyAmount(BigDecimal(554678.56)) mustBe "£554,678.56"
+      formatCurrencyAmount(BigDecimal(wholeValue)) mustBe "£200.00"
+      formatCurrencyAmount(BigDecimal(valueWithTwoDecimalPoint)) mustBe "£530.45"
+      formatCurrencyAmount(BigDecimal(valueWithFourDigitsAndTwoDecimalPoint)) mustBe "£3,489.00"
+      formatCurrencyAmount(BigDecimal(wholeValueWithFiveDigits)) mustBe "£54,000.00"
+      formatCurrencyAmount(BigDecimal(valueWithSixDigitsWithTwoDecimalPoints)) mustBe "£554,678.56"
     }
   }
 
