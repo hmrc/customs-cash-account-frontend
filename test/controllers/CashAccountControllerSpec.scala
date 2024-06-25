@@ -29,12 +29,7 @@ import play.api.test.Helpers._
 import services.AuditingService
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
-
-import views.html.{
-  cash_account_no_transactions,
-  cash_account_no_transactions_with_balance,
-  cash_account_transactions_not_available
-}
+import views.html.{cash_account_no_transactions, cash_account_no_transactions_with_balance, cash_account_transactions_not_available}
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -171,9 +166,11 @@ class CashAccountControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual view(
-          CashAccountViewModel(eori, cashAccount))(request, messages, appConfig).toString()
+          CashAccountViewModel(
+            eori,
+            cashAccount.copy(balances = CDSCashBalance(Some(0)))))(request, messages, appConfig).toString()
 
-        contentAsString(result) must include regex "search and download previous transactions as CSV."
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance")
       }
     }
 
@@ -200,9 +197,11 @@ class CashAccountControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual view(
-          CashAccountViewModel(eori, cashAccount))(request, messages, appConfig).toString()
+          CashAccountViewModel(
+            eori,
+            cashAccount.copy(balances = CDSCashBalance(Some(0)))))(request, messages, appConfig).toString()
 
-        contentAsString(result) must include regex "search and download previous transactions as CSV."
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance")
       }
     }
 
