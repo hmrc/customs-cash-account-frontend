@@ -49,7 +49,7 @@ class CashAccountNoTransactionsSpec extends SpecBase {
       shouldContainCorrectBackLink(viewDoc)
       shouldContainAuthoriseAgentGuidance(viewDoc)
       shouldContainTopUpGuidance(viewDoc)
-      shouldContainHowToUseGuidance(viewDoc)
+      shouldContainHowToUseCashAccountGuidance(viewDoc)
       shouldContainHelpAndSupportGuidance(viewDoc)
     }
   }
@@ -67,19 +67,30 @@ class CashAccountNoTransactionsSpec extends SpecBase {
   }
 
   private def shouldContainTopUpGuidance(viewDoc: Document)(implicit msgs: Messages): Assertion = {
-    viewDoc.text().contains(msgs("cf.cash-account-top-up.guidance")) mustBe true
+    viewDoc.text().contains(msgs("cf.cash-account.top-up.guidance")) mustBe true
   }
 
-  private def shouldContainHowToUseGuidance(viewDoc: Document)(implicit msgs: Messages): Assertion = {
+  private def shouldContainHowToUseCashAccountGuidance(viewDoc: Document)(implicit msgs: Messages,
+                                                                          config: AppConfig): Assertion = {
+    val linkElement = viewDoc.getElementById("cf.cash-account.how-to-use.guidance.link")
+
+    linkElement.attribute("href").getValue mustBe config.cashAccountForCdsDeclarationsUrl
+    linkElement.text() mustBe msgs("cf.cash-account.how-to-use.guidance.link.text")
+
     viewDoc.text().contains(msgs("cf.cash-account.how-to-use.guidance.text.pre")) mustBe true
-    viewDoc.text().contains(msgs("cf.cash-account-how-to-use.guidance.text.post")) mustBe true
-    viewDoc.text().contains(msgs("cf.cash-account-how-to-use.guidance.link.text")) mustBe true
+    viewDoc.text().contains(msgs("cf.cash-account.how-to-use.guidance.text.post")) mustBe true
+    viewDoc.text().contains(msgs("cf.cash-account.how-to-use.guidance.link.text")) mustBe true
   }
 
-  private def shouldContainHelpAndSupportGuidance(viewDoc: Document)(implicit msgs: Messages): Assertion = {
-    viewDoc.getElementsByTag("h2").text() mustBe msgs("cf.cash-account.transactions.request.support.heading")
-    viewDoc.getElementById("cf.cash-account.help-and-support.link")
-      .text() mustBe msgs("cf.cash-account.help-and-support.link.text")
+  private def shouldContainHelpAndSupportGuidance(viewDoc: Document)(implicit msgs: Messages,
+                                                                     config: AppConfig): Assertion = {
+    viewDoc.getElementById("help-and-support-heading").text() mustBe
+      msgs("cf.cash-account.transactions.request.support.heading")
+
+    val linkElement = viewDoc.getElementById("cf.cash-account.help-and-support.link")
+
+    linkElement.attribute("href").getValue mustBe config.cashAccountForCdsDeclarationsUrl
+    linkElement.text() mustBe msgs("cf.cash-account.help-and-support.link.text")
 
     viewDoc.text().contains(msgs("cf.cash-account.help-and-support.link.text.pre")) mustBe true
     viewDoc.text().contains(msgs("cf.cash-account.help-and-support.link.text.post")) mustBe true

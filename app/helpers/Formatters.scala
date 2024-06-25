@@ -48,7 +48,7 @@ object Formatters {
   }
 
   def formatCurrencyAmount(amount: BigDecimal): String = {
-    val maxDecimalPlaces: Int = 2
+    val maxDecimalPlaces: Int = if (amount == 0) 0 else 2
     val numberFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.UK)
 
     numberFormat.setMaximumFractionDigits(maxDecimalPlaces)

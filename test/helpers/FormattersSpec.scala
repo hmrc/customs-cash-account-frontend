@@ -16,7 +16,7 @@
 
 package helpers
 
-import helpers.Formatters.{ddMMyyyyDateFormatter, yyyyMMddDateFormatter, yyyyMMddHHmmssDateFormatter}
+import helpers.Formatters.{ddMMyyyyDateFormatter, yyyyMMddDateFormatter, yyyyMMddHHmmssDateFormatter, formatCurrencyAmount}
 import utils.SpecBase
 
 import java.time.{LocalDate, LocalDateTime}
@@ -88,4 +88,21 @@ class FormattersSpec extends SpecBase {
       ddMMyyyyDateFormatter.format(LocalDate.of(year, month, dayOfMonth)) mustBe "29012024"
     }
   }
+
+  "formatCurrencyAmount" should {
+
+    "return result as £0 when value is 0" in {
+      formatCurrencyAmount(BigDecimal(0)) mustBe "£0"
+    }
+
+    "return result with two decimal points when value is greater than 0" in {
+      formatCurrencyAmount(BigDecimal(2)) mustBe "£2.00"
+      formatCurrencyAmount(BigDecimal(200)) mustBe "£200.00"
+      formatCurrencyAmount(BigDecimal(530.45)) mustBe "£530.45"
+      formatCurrencyAmount(BigDecimal(3489.00)) mustBe "£3,489.00"
+      formatCurrencyAmount(BigDecimal(54000)) mustBe "£54,000.00"
+      formatCurrencyAmount(BigDecimal(554678.56)) mustBe "£554,678.56"
+    }
+  }
+
 }
