@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import utils.Utils.period
+
 @this(hmrcNewTabLink: HmrcNewTabLink)
 
 @(
@@ -39,7 +41,5 @@
         )
     )
 
-    @postLinkMessage.map(messages(_))
-
-    .
+    @postLinkMessage.map(messages(_))@period
 </p>

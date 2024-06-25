@@ -64,7 +64,8 @@ class CashAccountNoTransactionsSpec extends SpecBase {
   }
 
   private def shouldContainAuthoriseAgentGuidance(viewDoc: Document)(implicit msgs: Messages): Assertion = {
-    viewDoc.getElementsByTag("p").text().contains(msgs("cf.cash-account.detail.no-transactions.p1")) mustBe true
+    viewDoc.getElementsByTag("p").text()
+      .contains(msgs("cf.cash-account.detail.no-transactions.p1")) mustBe true
   }
 
   private def shouldContainTopUpGuidance(viewDoc: Document)(implicit msgs: Messages): Assertion = {
@@ -102,7 +103,7 @@ class CashAccountNoTransactionsSpec extends SpecBase {
         msgs("cf.cash-account.help-and-support.link.text")
       }$singleSpace${
         msgs("cf.cash-account.help-and-support.link.text.post")
-      }$singleSpace$period"
+      }$period"
   }
 
   trait Setup {
