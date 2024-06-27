@@ -168,15 +168,18 @@ cf.pager.transactions=days of transactions
 # No transactions available
 # ----------------------------------------------------------
 
-cf.cash-account.detail.no-transactions.p1 =  You can use your cash account to pay for import tax and duty payments. Or you can authorise an agent to use it and pay on your behalf.
+cf.cash-account.detail.no-transactions.p1 = You can use your cash account to pay import duties and taxes. You can also authorise an agent to use the account on your behalf.
 cf.cash-account.detail.link.pre = Find out how to
 cf.cash-account.detail.link = use a cash account for CDS declarations
 cf.cash-account.detail.link.post = on GOV.UK
-cf.cash-account.detail.link2.pre = You''ll need to
-cf.cash-account.detail.link2 = top up
-cf.cash-account.detail.link2.post = to your cash account before you can use it.
+cf.cash-account.help-and-support.link.text.pre = You can
+cf.cash-account.help-and-support.link.text.post = if you need help
+cf.cash-account.help-and-support.link.text = contact the HMRC accounting centre (opens in a new tab)
+cf.cash-account.how-to-use.guidance.text.pre = Find out how to
+cf.cash-account.how-to-use.guidance.text.post = on GOV.UK.
+cf.cash-account.how-to-use.guidance.link.text = use a cash account for CDS declarations
+cf.cash-account.top-up.guidance = You’ll need to top up your cash account before you can use it.
 cf.cash-account.detail.no-transactions-with-balance.p1=There are no transactions to view. You can only view transactions for the previous 6 months.
-
 
 # Cash Transactions Request
 # --------------------------------------------------------------

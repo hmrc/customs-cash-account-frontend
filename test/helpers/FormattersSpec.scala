@@ -16,7 +16,7 @@
 
 package helpers
 
-import helpers.Formatters.{ddMMyyyyDateFormatter, yyyyMMddDateFormatter, yyyyMMddHHmmssDateFormatter}
+import helpers.Formatters.{ddMMyyyyDateFormatter, formatCurrencyAmount, yyyyMMddDateFormatter, yyyyMMddHHmmssDateFormatter}
 import utils.SpecBase
 
 import java.time.{LocalDate, LocalDateTime}
@@ -88,4 +88,27 @@ class FormattersSpec extends SpecBase {
       ddMMyyyyDateFormatter.format(LocalDate.of(year, month, dayOfMonth)) mustBe "29012024"
     }
   }
+
+  "formatCurrencyAmount" should {
+
+    "return result as £0 when value is 0" in {
+      formatCurrencyAmount(BigDecimal(0)) mustBe "£0"
+    }
+
+    "return result with two decimal points when value is greater than 0" in {
+      val wholeValue = 200
+      val valueWithTwoDecimalPoint = 530.45
+      val valueWithFourDigitsAndTwoDecimalPoint = 3489.00
+      val wholeValueWithFiveDigits = 54000
+      val valueWithSixDigitsWithTwoDecimalPoints = 554678.56
+
+      formatCurrencyAmount(BigDecimal(2)) mustBe "£2.00"
+      formatCurrencyAmount(BigDecimal(wholeValue)) mustBe "£200.00"
+      formatCurrencyAmount(BigDecimal(valueWithTwoDecimalPoint)) mustBe "£530.45"
+      formatCurrencyAmount(BigDecimal(valueWithFourDigitsAndTwoDecimalPoint)) mustBe "£3,489.00"
+      formatCurrencyAmount(BigDecimal(wholeValueWithFiveDigits)) mustBe "£54,000.00"
+      formatCurrencyAmount(BigDecimal(valueWithSixDigitsWithTwoDecimalPoints)) mustBe "£554,678.56"
+    }
+  }
+
 }

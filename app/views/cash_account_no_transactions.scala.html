@@ -22,7 +22,8 @@
         p: components.p,
         cash_account_balance: components.cash_account_balance,
         inset: components.inset,
-        link: components.link
+        link: components.link,
+        newTabLink: components.newTabLink,
 )
 
 @(accountModel: CashAccountViewModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -33,33 +34,32 @@
     fullWidth = false,
     help = true
 ) {
-    @cash_account_balance(accountModel, showBalance = false)
+    @cash_account_balance(accountModel)
 
     @p("cf.cash-account.detail.no-transactions.p1")
 
-    @inset(
-        link("cf.cash-account.detail.link2",
-            appConfig.cashAccountTopUpGuidanceUrl,
-            preLinkMessage = Some("cf.cash-account.detail.link2.pre"),
-            postLinkMessage = Some("cf.cash-account.detail.link2.post")
-        ).toString(),
-        additionalContent =
-            Some(link(
-                "cf.cash-account.detail.link",
-                appConfig.cashAccountForCdsDeclarationsUrl,
-                preLinkMessage = Some("cf.cash-account.detail.link.pre"),
-                postLinkMessage = Some("cf.cash-account.detail.link.post")
-            ))
-    )
-
-    @h2("cf.cash-account.transactions.request.link.heading", id = Some("missing-documents-guidance-heading"), classes = "govuk-heading-m govuk-!-margin-top-9")
+    @p("cf.cash-account.top-up.guidance")
 
     @link(
-        "cf.cash-account.transactions.request.link",
-        controllers.routes.RequestTransactionsController.onPageLoad().url,
-        pClass = "govuk-body govuk-!-margin-bottom-9",
-        preLinkMessage = Some("cf.cash-account.transactions.request.link.pre"),
-        linkSentence = true
+        linkMessage = "cf.cash-account.how-to-use.guidance.link.text",
+        location = appConfig.cashAccountForCdsDeclarationsUrl,
+        linkId = Some("cf.cash-account.how-to-use.guidance.link"),
+        preLinkMessage = Some("cf.cash-account.how-to-use.guidance.text.pre"),
+        postLinkMessage = Some("cf.cash-account.how-to-use.guidance.text.post")
+    )
+
+    @h2(
+        msg = "cf.cash-account.transactions.request.support.heading",
+        id = Some("help-and-support-heading"),
+        classes = "govuk-heading-m govuk-!-margin-top-9"
+    )
+
+    @newTabLink(
+        linkMessage = "cf.cash-account.help-and-support.link.text",
+        href = appConfig.cashAccountForCdsDeclarationsUrl,
+        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre"),
+        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post"),
+        classes = "govuk-body govuk-!-margin-bottom-9"
     )
 
 }
