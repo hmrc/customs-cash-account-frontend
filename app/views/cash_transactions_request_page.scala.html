@@ -35,7 +35,7 @@
     help = true
 ) {
 
-    @formHelper(action = controllers.routes.RequestTransactionsController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.routes.RequestTransactionsController.onSubmit(), Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors,errorFieldName = None, isErrorKeyUpdateEnabled = true, Some(updateFormErrorKeyForStartAndEndDate))
         @h1("cf.cash-account.transactions.request.heading")
         @p("cf.cash-account.transactions.request.p")

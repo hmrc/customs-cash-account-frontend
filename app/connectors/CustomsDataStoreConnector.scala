@@ -23,14 +23,16 @@ import play.api.Logger
 import play.api.http.Status.NOT_FOUND
 import services.MetricsReporterService
 import uk.gov.hmrc.auth.core.retrieve.Email
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
+import uk.gov.hmrc.http.HttpReads.Implicits.*
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
+import java.net.URL
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CustomsDataStoreConnector @Inject()(http: HttpClient,
+class CustomsDataStoreConnector @Inject()(http: HttpClientV2,
                                           metricsReporter: MetricsReporterService)
                                          (implicit appConfig: AppConfig, ec: ExecutionContext) {
 
@@ -41,11 +43,14 @@ class CustomsDataStoreConnector @Inject()(http: HttpClient,
     val resourceNameForMetrics = "customs-data-store.get.email"
 
     metricsReporter.withResponseTimeLogging(resourceNameForMetrics) {
-      http.GET[EmailResponse](dataStoreEndpoint).map {
-        case EmailResponse(Some(address), _, None) => Right(Email(address))
-        case EmailResponse(Some(email), _, Some(_)) => Left(UndeliverableEmail(email))
-        case _ => Left(UnverifiedEmail)
-      }.recover {
+
+      http.get(new URL("dataStoreEndpoint"))
+        .execute[EmailResponse]
+        .map {
+          case EmailResponse(Some(address), _, None) => Right(Email(address))
+          case EmailResponse(Some(email), _, Some(_)) => Left(UndeliverableEmail(email))
+          case _ => Left(UnverifiedEmail)
+        }.recover {
         case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
           Left(UnverifiedEmail)
         case exception =>

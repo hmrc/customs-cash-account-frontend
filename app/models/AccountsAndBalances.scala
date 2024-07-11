@@ -18,11 +18,14 @@ package models
 
 import play.api.libs.json._
 import play.api.{Logger, LoggerLike}
+import play.api.libs.ws.BodyWritable
 
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import scala.util.Random
+
+
 
 case class AccountsAndBalancesResponseContainer(accountsAndBalancesResponse: AccountsAndBalancesResponse) {
   def toCashAccounts: Seq[CashAccount] = {
@@ -145,4 +148,10 @@ object AccountsAndBalancesRequestContainer {
 
   implicit val accountsAndBalancesRequestContainerFormat: OFormat[AccountsAndBalancesRequestContainer] =
     Json.format[AccountsAndBalancesRequestContainer]
+
+
+  implicit def jsonBodyWritable[T](implicit
+                                   writes: Writes[T],
+                                   jsValueBodyWritable: BodyWritable[JsValue]
+                                  ): BodyWritable[T] = jsValueBodyWritable.map(writes.writes)
 }

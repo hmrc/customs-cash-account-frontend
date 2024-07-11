@@ -28,6 +28,9 @@ import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+import org.mongodb.scala.SingleObservableFuture
+import org.mongodb.scala.ToSingleObservablePublisher
+
 @Singleton
 class DefaultRequestedTransactionsCache @Inject()(mongoComponent: MongoComponent,
                                                   config: Configuration)(implicit executionContext: ExecutionContext)
@@ -40,7 +43,7 @@ class DefaultRequestedTransactionsCache @Inject()(mongoComponent: MongoComponent
         ascending("lastUpdated"),
         IndexOptions()
           .name("requested-transactions-cache-last-updated-index")
-          .expireAfter(config.get[Int]("mongodb.timeToLiveInSeconds"),
+          .expireAfter(config.get[Long]("mongodb.timeToLiveInSeconds"),
             TimeUnit.SECONDS)
       ))) with RequestedTransactionsCache {
 

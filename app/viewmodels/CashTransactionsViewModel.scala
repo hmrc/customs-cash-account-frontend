@@ -39,7 +39,7 @@ case class CashTransactionsViewModel(cashTransactions: CashTransactions, page: O
   }
 
   override val allItems: Seq[PaginatedTransactions] =
-    pendingTransactionsGroupedByDate ++ cashTransactions.cashDailyStatements.sorted.map(PaginatedDailyStatement)
+    pendingTransactionsGroupedByDate ++ cashTransactions.cashDailyStatements.sorted.map(PaginatedDailyStatement.apply)
 
   override val itemsPerPage: Int = appConfig.numberOfDaysToShow
   override val requestedPage: Int = page.getOrElse(1)
