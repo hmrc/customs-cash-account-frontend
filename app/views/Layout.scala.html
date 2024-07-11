@@ -20,13 +20,17 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.phasebanner.PhaseBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcTimeoutDialog
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcLayout, HmrcReportTechnicalIssueHelper}
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcStandardPage, HmrcReportTechnicalIssueHelper}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.timeoutdialog.TimeoutDialog
 @import views.html.helper.CSPNonce
 @import views.html.components.fullWidthMainContent
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.userresearchbanner.UserResearchBanner
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
+@import utils.Utils.emptyString
 
 @this(appConfig: AppConfig,
-        hmrcLayout: HmrcLayout,
+        hmrcStandardPage: HmrcStandardPage,
         govukBackLink: GovukBackLink,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
         hmrcTimeoutDialog: HmrcTimeoutDialog,
@@ -42,7 +46,7 @@
         fullWidth: Boolean,
         deskpro: Boolean = true,
         welshToggle: Boolean = true,
-)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
     @phaseBannerContent = {
         @messages("feedback.before")
@@ -79,15 +83,23 @@
     }
     }
 
-@hmrcLayout(
-    userResearchBannerUrl = Some(appConfig.helpMakeGovUkBetterUrl),
-    pageTitle = fullPageTitle,
-    serviceUrl = Some(appConfig.customsFinancialsFrontendHomepage),
-    signOutUrl = Some(routes.LogoutController.logout.url),
-    backLinkUrl = backLink,
-    additionalHeadBlock = Some(additionalHead),
-    mainContentLayout = Some(if(fullWidth) fullWidthMainContent(_) else twoThirdsMainContent(_)),
-    phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent))),
-    isWelshTranslationAvailable = welshToggle,
-    accessibilityStatementUrl = Some("/accessibility-statement/customs-financials")
-)(mainContent)
+@hmrcStandardPage(
+
+    HmrcStandardPageParams(
+        pageTitle = fullPageTitle,
+        serviceURLs = ServiceURLs(
+                        serviceUrl = Some(appConfig.customsFinancialsFrontendHomepage),
+                        signOutUrl = Some(routes.LogoutController.logout.url),
+                        accessibilityStatementUrl = Some("/accessibility-statement/customs-financials")
+                        ),
+        backLink = Some(BackLink(href = backLink.getOrElse(emptyString))),
+        templateOverrides = TemplateOverrides(
+            additionalHeadBlock = Some(additionalHead),
+            mainContentLayout = Some(if(fullWidth) fullWidthMainContent(_) else twoThirdsMainContent(_))
+        ),
+        banners = Banners(
+            phaseBanner = Some(PhaseBanner(tag = Some(Tag(content = Text("BETA"))), content = HtmlContent(phaseBannerContent))),
+            userResearchBanner = Some(UserResearchBanner(url = appConfig.helpMakeGovUkBetterUrl))
+        ),
+        isWelshTranslationAvailable = welshToggle
+    ))(mainContent)
