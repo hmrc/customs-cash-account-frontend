@@ -19,7 +19,7 @@ package services
 import config.AppConfig
 import models.AuditModel
 import org.mockito.Mockito.{verify, when}
-import org.mockito.{ArgumentCaptor, Captor}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.matchers.should.Matchers.*
 import play.api.libs.json
