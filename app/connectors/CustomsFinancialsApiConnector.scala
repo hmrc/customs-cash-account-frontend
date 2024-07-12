@@ -28,13 +28,12 @@ import repositories.CacheRepository
 import services.MetricsReporterService
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, UpstreamErrorResponse}
 
 import java.net.URL
 import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 
 class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
@@ -57,7 +56,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
     )
 
     metricsReporter.withResponseTimeLogging("customs-financials-api.get.accounts") {
-      httpClient.post(new URL(accountsUrl))
+      httpClient.post(url"$accountsUrl")
         .withBody[AccountsAndBalancesRequestContainer](accountsAndBalancesRequest)
         .execute[AccountsAndBalancesResponseContainer]
         .map(_.toCashAccounts)
@@ -70,7 +69,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
                                       (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
-    httpClient.post(new URL(retrieveCashTransactionsUrl))
+    httpClient.post(url"$retrieveCashTransactionsUrl")
       .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
       .execute[CashTransactions].map(Right(_))
   }.recover {
@@ -97,7 +96,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       case Some(value) => Future.successful(Right(value))
 
       case None =>
-        httpClient.post(new URL(retrieveCashTransactionsUrl))
+        httpClient.post(url"$retrieveCashTransactionsUrl")
           .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
           .execute[CashTransactions]
           .flatMap { response => cacheRepository.set(can, response).map { successfulWrite =>
@@ -128,7 +127,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
                                     (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
-    httpClient.post(new URL(retrieveCashTransactionsDetailUrl))
+    httpClient.post(url"$retrieveCashTransactionsDetailUrl")
       .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
       .execute[CashTransactions]
       .map(Right(_))
@@ -149,7 +148,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
   def verifiedEmail(implicit hc: HeaderCarrier): Future[EmailVerifiedResponse] = {
     val emailDisplayApiUrl = s"$baseUrl/subscriptions/email-display"
 
-    httpClient.get(new URL(emailDisplayApiUrl)).execute[EmailVerifiedResponse].recover {
+    httpClient.get(url"$emailDisplayApiUrl").execute[EmailVerifiedResponse].recover {
       case _ =>
         logger.error(s"Error occurred while calling API $emailDisplayApiUrl")
         EmailVerifiedResponse(None)
@@ -159,7 +158,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
   def retrieveUnverifiedEmail(implicit hc: HeaderCarrier): Future[EmailUnverifiedResponse] = {
     val unverifiedEmailDisplayApiUrl = s"$baseUrl/subscriptions/unverified-email-display"
 
-    httpClient.get(new URL(unverifiedEmailDisplayApiUrl)).execute[EmailUnverifiedResponse].recover {
+    httpClient.get(url"$unverifiedEmailDisplayApiUrl").execute[EmailUnverifiedResponse].recover {
       case _ =>
         logger.error(s"Error occurred while calling API $unverifiedEmailDisplayApiUrl")
         EmailUnverifiedResponse(None)

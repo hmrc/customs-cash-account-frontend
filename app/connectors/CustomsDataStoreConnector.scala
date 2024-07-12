@@ -25,9 +25,9 @@ import services.MetricsReporterService
 import uk.gov.hmrc.auth.core.retrieve.Email
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
-import java.net.URL
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, UpstreamErrorResponse}
 
+import java.net.URL
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,7 +44,7 @@ class CustomsDataStoreConnector @Inject()(http: HttpClientV2,
 
     metricsReporter.withResponseTimeLogging(resourceNameForMetrics) {
 
-      http.get(new URL("dataStoreEndpoint"))
+      http.get(url"$dataStoreEndpoint")
         .execute[EmailResponse]
         .map {
           case EmailResponse(Some(address), _, None) => Right(Email(address))

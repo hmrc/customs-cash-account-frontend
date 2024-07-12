@@ -112,6 +112,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       val appWithMocks: Application = application
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[RequestBuilder].toInstance(requestBuilder),
           bind[MetricsReporterService].toInstance(mockMetricsReporterService),
           bind[AppConfig].toInstance(mockConfig),
           bind[CacheRepository].toInstance(mockCacheRepository)
@@ -277,6 +278,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       val appWithMocks: Application = application
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[RequestBuilder].toInstance(requestBuilder),
           bind[AppConfig].toInstance(mockConfig)
         ).build()
 
