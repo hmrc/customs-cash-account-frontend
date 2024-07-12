@@ -29,6 +29,7 @@ import repositories.CacheRepository
 import services.MetricsReporterService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpReads, InternalServerException, SessionId, UpstreamErrorResponse}
 import utils.SpecBase
+import java.net.URL
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -51,7 +52,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[AccountsAndBalancesResponseContainer]], any[ExecutionContext]))
         .thenReturn(Future.successful(traderAccounts))
-      when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
+      when(mockHttpClient.post(any[URL]())(any)).thenReturn(requestBuilder)
 
       running(appWithHttpClient) {
         val result = await(connector().getCashAccount(eori)(implicitly, IdentifierRequest(fakeRequest(), "12345678")))
@@ -96,15 +97,13 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
-      when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
-
       /*when[Future[CashTransactions]](mockHttpClient.POST(eqTo(expectedUrl),eqTo(cashDailyStatementRequest),any)(any, any, eqTo(hc), any))
         .thenReturn(Future.successful(successResponse))*/
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
         .thenReturn(Future.successful(successResponse))
-      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
       when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
       when(mockCacheRepository.set("can", successResponse)).thenReturn(Future.successful(true))
@@ -114,7 +113,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
           bind[HttpClientV2].toInstance(mockHttpClient),
           bind[RequestBuilder].toInstance(requestBuilder),
           bind[MetricsReporterService].toInstance(mockMetricsReporterService),
-          bind[AppConfig].toInstance(mockConfig),
           bind[CacheRepository].toInstance(mockCacheRepository)
         ).build()
 
@@ -190,7 +188,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         .thenReturn(Future.failed(new HttpException("It's broken", responseCode)))
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
-
       when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
 
       val appWithMocks: Application = application
@@ -262,8 +259,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       val expectedUrl = "apiEndpointUrl/account/cash/transactions-detail"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
-      when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
-
       /*when[Future[CashTransactions]](mockHttpClient.POST(
         eqTo(expectedUrl),
         eqTo(cashDailyStatementRequest),
@@ -273,13 +268,12 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
         .thenReturn(Future.successful(successResponse))
-      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
       val appWithMocks: Application = application
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient),
-          bind[RequestBuilder].toInstance(requestBuilder),
-          bind[AppConfig].toInstance(mockConfig)
+          bind[RequestBuilder].toInstance(requestBuilder)
         ).build()
 
       running(appWithMocks) {
@@ -360,8 +354,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
-      when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
-
       /*when[Future[CashTransactions]](mockHttpClient.POST(
         eqTo(expectedUrl),
         eqTo(cashDailyStatementRequest),
@@ -371,12 +363,13 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
         .thenReturn(Future.successful(successResponse))
-      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
+
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
       val appWithMocks: Application = application
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient),
-          bind[AppConfig].toInstance(mockConfig)
+          bind[RequestBuilder].toInstance(requestBuilder)
         ).build()
 
       running(appWithMocks) {
@@ -443,7 +436,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       when(requestBuilder.execute(any[HttpReads[EmailUnverifiedResponse]], any[ExecutionContext]))
         .thenReturn(Future.successful(emailUnverifiedRes))
-      when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
+      when(mockHttpClient.get(any[URL]())(any())).thenReturn(requestBuilder)
 
       connector().retrieveUnverifiedEmail.map {
         _ mustBe emailUnverifiedRes
