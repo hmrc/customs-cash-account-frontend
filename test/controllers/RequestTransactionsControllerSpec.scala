@@ -28,6 +28,9 @@ import utils.SpecBase
 import java.time.LocalDate
 import scala.concurrent.Future
 
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+
 class
 RequestTransactionsControllerSpec extends SpecBase {
 

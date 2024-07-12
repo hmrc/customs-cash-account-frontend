@@ -19,7 +19,7 @@ package utils
 import com.codahale.metrics.MetricRegistry
 import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import controllers.actions.{FakeIdentifierAction, IdentifierAction}
-import org.mockito.scalatest.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
