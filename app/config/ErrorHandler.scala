@@ -18,26 +18,24 @@ package config
 
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
-import play.api.mvc.RequestHeader
+import play.api.mvc.Request
 import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
+import uk.gov.hmrc.play.bootstrap.frontend.http.LegacyFrontendErrorHandler
 import views.html.{ErrorTemplate, not_found}
 
-import scala.concurrent.{Future,ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ErrorHandler @Inject()(errorTemplate: ErrorTemplate,
                              notFound: not_found,
                              val messagesApi: MessagesApi)
-                            (implicit appConfig: AppConfig, protected val ec: ExecutionContext)
-  extends FrontendErrorHandler {
+                            (implicit appConfig: AppConfig) extends LegacyFrontendErrorHandler {
 
   override def standardErrorTemplate(pageTitle: String,
                                      heading: String,
-                                     message: String)(implicit request: RequestHeader): Future[Html] =
-    Future.successful(errorTemplate(pageTitle, heading, message))
+                                     message: String)(implicit request: Request[_]): Html =
+    errorTemplate(pageTitle, heading, message)
 
-  override def notFoundTemplate(implicit request: RequestHeader): Future[Html] =
-    Future.successful(notFound())
-
+  override def notFoundTemplate(implicit request: Request[_]): Html =
+    notFound()
 }

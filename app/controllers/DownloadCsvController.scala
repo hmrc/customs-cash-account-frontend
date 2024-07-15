@@ -73,7 +73,7 @@ class DownloadCsvController @Inject()(
                                 disposition: Option[String],
                                 filename: String)(implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
     apiConnector.getCashAccount(request.eori) flatMap {
-      case None => eh.notFoundTemplate.map(html => NotFound(html))
+      case None => Future.successful(NotFound(eh.notFoundTemplate))
       case Some(cashAccount) =>
         for {
           cashTransactions <- apiConnector.retrieveCashTransactionsDetail(cashAccount.number, from, to)
