@@ -34,8 +34,10 @@ class ErrorHandler @Inject()(errorTemplate: ErrorTemplate,
 
   override def standardErrorTemplate(pageTitle: String,
                                      heading: String,
-                                     message: String)(implicit request: RequestHeader): Future[Html] = Future.successful(errorTemplate(pageTitle, heading, message))
+                                     message: String)(implicit request: RequestHeader): Future[Html] =
+    Future.successful(errorTemplate(pageTitle, heading, message))
 
-  override def notFoundTemplate(implicit request: RequestHeader): Future[Html] = Future.successful(notFound())
+  override def notFoundTemplate(implicit request: RequestHeader): Future[Html] =
+    Future.successful(notFound())
 
 }

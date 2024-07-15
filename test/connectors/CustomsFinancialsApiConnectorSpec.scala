@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.eq as eqTo
+import org.mockito.ArgumentMatchers.{eq => eqTo}
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 
 class CustomsFinancialsApiConnectorSpec extends SpecBase {
