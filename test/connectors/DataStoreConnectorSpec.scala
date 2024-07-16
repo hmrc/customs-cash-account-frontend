@@ -42,9 +42,6 @@ class DataStoreConnectorSpec extends SpecBase {
       when(mockMetricsReporter.withResponseTimeLogging[EmailResponse](any)(any)(any)).thenReturn(
         Future.successful(emailResFromAPI))
 
-      /*when(mockHttpClient.GET[EmailResponse](any, any, any)(any, any, any))
-        .thenReturn(Future.successful(emailResFromAPI))*/
-
       when(requestBuilder.execute(any[HttpReads[EmailResponse]], any[ExecutionContext]))
         .thenReturn(Future.successful(emailResFromAPI))
       when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
@@ -59,10 +56,6 @@ class DataStoreConnectorSpec extends SpecBase {
 
       when(mockMetricsReporter.withResponseTimeLogging[EmailResponse](any)(any)(any))
         .thenReturn(Future.successful(emailResFromAPI))
-
-      /*when(mockHttpClient.GET[EmailResponse](any, any, any)(any, any, any)).thenReturn(
-        Future.successful(emailResFromAPI)
-      )*/
 
       when(requestBuilder.execute(any[HttpReads[EmailResponse]], any[ExecutionContext]))
         .thenReturn(Future.successful(emailResFromAPI))
@@ -79,10 +72,6 @@ class DataStoreConnectorSpec extends SpecBase {
       when(mockMetricsReporter.withResponseTimeLogging[EmailResponse](any)(any)(any)).thenReturn(
         Future.successful(emailResFromAPI))
 
-      /*when(mockHttpClient.GET[EmailResponse](any, any, any)(any, any, any)).thenReturn(
-        Future.successful(emailResFromAPI)
-      )*/
-
       when(requestBuilder.execute(any[HttpReads[EmailResponse]], any[ExecutionContext]))
         .thenReturn(Future.successful(emailResFromAPI))
       when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
@@ -97,10 +86,6 @@ class DataStoreConnectorSpec extends SpecBase {
 
       when(mockMetricsReporter.withResponseTimeLogging[EmailResponse](any)(any)(any)).thenReturn(
         Future.successful(emailResFromAPI))
-
-      /*when(mockHttpClient.GET[EmailResponse](any, any, any)(any, any, any)).thenReturn(
-        Future.failed(new RuntimeException("Error occurred"))
-      )*/
 
       when(requestBuilder.execute(any[HttpReads[EmailResponse]], any[ExecutionContext]))
         .thenReturn(Future.failed(new RuntimeException("Error occurred")))

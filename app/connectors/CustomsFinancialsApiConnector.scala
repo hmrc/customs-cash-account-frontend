@@ -99,13 +99,14 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
         httpClient.post(url"$retrieveCashTransactionsUrl")
           .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
           .execute[CashTransactions]
-          .flatMap { response => cacheRepository.set(can, response).map { successfulWrite =>
-            if (!successfulWrite) {
-              logger.error("Failed to store data in the session cache defaulting to the api response")
+          .flatMap { response =>
+            cacheRepository.set(can, response).map { successfulWrite =>
+              if (!successfulWrite) {
+                logger.error("Failed to store data in the session cache defaulting to the api response")
+              }
+              Right(response)
             }
-            Right(response)
           }
-        }
     }.recover {
       case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
         logger.error(s"Entity too large to download")
