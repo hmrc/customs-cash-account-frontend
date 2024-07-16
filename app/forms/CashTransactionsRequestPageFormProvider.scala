@@ -62,7 +62,7 @@ class CashTransactionsRequestPageFormProvider @Inject() (implicit clock: Clock)
             invalidLength = "cf.form.error.year.length"
           )
         )
-      )(CashTransactionDates.apply)(CashTransactionDates.unapply)
+      )(CashTransactionDates.apply)(ctd => Some(Tuple.fromProductTyped(ctd)))
     )
   }
 }

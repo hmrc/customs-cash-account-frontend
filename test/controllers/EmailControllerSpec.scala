@@ -27,6 +27,9 @@ import utils.SpecBase
 
 import scala.concurrent.Future
 
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+
 class EmailControllerSpec extends SpecBase {
 
   "showUnverified" must {

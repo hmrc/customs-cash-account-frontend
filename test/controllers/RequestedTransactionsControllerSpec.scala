@@ -32,6 +32,10 @@ import utils.SpecBase
 import java.time.LocalDate
 import scala.concurrent.Future
 
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{eq => eqTo}
+
 class RequestedTransactionsControllerSpec extends SpecBase {
 
   "redirect to request page if no requested data found in cache" in new Setup {

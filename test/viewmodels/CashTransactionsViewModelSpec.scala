@@ -22,6 +22,7 @@ import java.time.LocalDate
 import models._
 import utils.SpecBase
 import CashTransactionsViewModel._
+import org.mockito.Mockito.when
 
 class CashTransactionsViewModelSpec extends SpecBase {
 

@@ -18,12 +18,14 @@ package services
 
 import config.AppConfig
 import models.AuditModel
-import org.mockito.captor.{ArgCaptor, Captor}
-import org.scalatest.matchers.should.Matchers._
+import org.mockito.Mockito.{verify, when}
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.scalatest.matchers.should.Matchers.*
 import play.api.libs.json
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.http.connector._
+import uk.gov.hmrc.play.audit.http.connector.*
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import utils.SpecBase
 
@@ -39,9 +41,9 @@ class AuditingServiceSpec extends SpecBase {
       val model: AuditModel = AuditModel("auditType", "transactionName", json.Json.toJson("the details"))
       await(auditingService.audit(model))
 
-      val dataEventCaptor: Captor[ExtendedDataEvent] = ArgCaptor[ExtendedDataEvent]
-      verify(mockAuditConnector).sendExtendedEvent(dataEventCaptor.capture)(any, any)
-      val dataEvent: ExtendedDataEvent = dataEventCaptor.value
+      val dataEventCaptor = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
+      verify(mockAuditConnector).sendExtendedEvent(dataEventCaptor.capture())(any, any)
+      val dataEvent: ExtendedDataEvent = dataEventCaptor.getValue
 
       dataEvent.auditSource should be(expectedAuditSource)
       dataEvent.auditType should be("auditType")
@@ -52,9 +54,9 @@ class AuditingServiceSpec extends SpecBase {
     "create the correct data event for recording a successful CSV download" in new Setup {
       await(auditingService.auditCsvDownload("eori1", "can1", now, today, tomorrow))
 
-      val dataEventCaptor: Captor[ExtendedDataEvent] = ArgCaptor[ExtendedDataEvent]
-      verify(mockAuditConnector).sendExtendedEvent(dataEventCaptor.capture)(any, any)
-      val dataEvent: ExtendedDataEvent = dataEventCaptor.value
+      val dataEventCaptor = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
+      verify(mockAuditConnector).sendExtendedEvent(dataEventCaptor.capture())(any, any)
+      val dataEvent: ExtendedDataEvent = dataEventCaptor.getValue
 
       dataEvent.auditSource should be(expectedAuditSource)
       dataEvent.auditType should be("DownloadCashStatement")
@@ -71,9 +73,9 @@ class AuditingServiceSpec extends SpecBase {
       val model: AuditModel = AuditModel("auditType", "transactionName", json.Json.toJson("the details"))
       await(auditingService.audit(model))
 
-      val dataEventCaptor: Captor[ExtendedDataEvent] = ArgCaptor[ExtendedDataEvent]
-      verify(mockAuditConnector).sendExtendedEvent(dataEventCaptor.capture)(any, any)
-      val dataEvent: ExtendedDataEvent = dataEventCaptor.value
+      val dataEventCaptor = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
+      verify(mockAuditConnector).sendExtendedEvent(dataEventCaptor.capture())(any, any)
+      val dataEvent: ExtendedDataEvent = dataEventCaptor.getValue
 
       dataEvent.auditSource should be(expectedAuditSource)
       dataEvent.auditType should be("auditType")

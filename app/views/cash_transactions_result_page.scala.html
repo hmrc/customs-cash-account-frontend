@@ -34,7 +34,7 @@
 )
 
 @main_template(pageTitle = Some(messages("cf.cash-account.transactions.result.transaction")),
-    backLink = Some(controllers.routes.RequestTransactionsController.onPageLoad.url),
+    backLink = Some(controllers.routes.RequestTransactionsController.onPageLoad().url),
     fullWidth = false,
     help = true
 ) {

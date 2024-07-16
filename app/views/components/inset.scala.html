@@ -23,6 +23,6 @@
 )(implicit messages: Messages)
 
 @govukInsetText(InsetText(
-    content = HtmlContent(Html(messages(msg)) + additionalContent.map(v => s" $v").getOrElse("")),
+    content = HtmlContent(Html(messages(msg)).toString + additionalContent.map(v => s" $v").getOrElse("")),
     id = id
 ))

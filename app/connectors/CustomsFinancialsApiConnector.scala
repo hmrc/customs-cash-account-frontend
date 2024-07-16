@@ -17,8 +17,8 @@
 package connectors
 
 import config.AppConfig
-import models.CashDailyStatement._
-import models._
+import models.CashDailyStatement.*
+import models.*
 import models.email.{EmailUnverifiedResponse, EmailVerifiedResponse}
 import models.request.{CashDailyStatementRequest, IdentifierRequest}
 import org.slf4j.LoggerFactory
@@ -26,14 +26,17 @@ import play.api.http.Status.{NOT_FOUND, REQUEST_ENTITY_TOO_LARGE}
 import play.api.mvc.AnyContent
 import repositories.CacheRepository
 import services.MetricsReporterService
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
+import uk.gov.hmrc.http.HttpReads.Implicits.*
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, UpstreamErrorResponse}
 
+import java.net.URL
 import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 
-class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClient,
+class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
                                               appConfig: AppConfig,
                                               metricsReporter: MetricsReporterService,
                                               cacheRepository: CacheRepository)
@@ -53,8 +56,10 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClient,
     )
 
     metricsReporter.withResponseTimeLogging("customs-financials-api.get.accounts") {
-      httpClient.POST[AccountsAndBalancesRequestContainer, AccountsAndBalancesResponseContainer](
-        accountsUrl, accountsAndBalancesRequest).map(_.toCashAccounts)
+      httpClient.post(url"$accountsUrl")
+        .withBody[AccountsAndBalancesRequestContainer](accountsAndBalancesRequest)
+        .execute[AccountsAndBalancesResponseContainer]
+        .map(_.toCashAccounts)
     }.map(_.find(_.owner == request.eori))
   }
 
@@ -63,8 +68,10 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClient,
                                        to: LocalDate)
                                       (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
-    httpClient.POST[CashDailyStatementRequest, CashTransactions](
-      retrieveCashTransactionsUrl, cashDailyStatementRequest).map(Right(_))
+
+    httpClient.post(url"$retrieveCashTransactionsUrl")
+      .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
+      .execute[CashTransactions].map(Right(_))
   }.recover {
     case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
       logger.error(s"Entity too large to download")
@@ -89,16 +96,17 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClient,
       case Some(value) => Future.successful(Right(value))
 
       case None =>
-        httpClient.POST[CashDailyStatementRequest, CashTransactions](
-          retrieveCashTransactionsUrl, cashDailyStatementRequest).flatMap { response =>
-
-          cacheRepository.set(can, response).map { successfulWrite =>
-            if (!successfulWrite) {
-              logger.error("Failed to store data in the session cache defaulting to the api response")
+        httpClient.post(url"$retrieveCashTransactionsUrl")
+          .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
+          .execute[CashTransactions]
+          .flatMap { response =>
+            cacheRepository.set(can, response).map { successfulWrite =>
+              if (!successfulWrite) {
+                logger.error("Failed to store data in the session cache defaulting to the api response")
+              }
+              Right(response)
             }
-            Right(response)
           }
-        }
     }.recover {
       case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
         logger.error(s"Entity too large to download")
@@ -120,8 +128,10 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClient,
                                     (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
-    httpClient.POST[CashDailyStatementRequest, CashTransactions](
-      retrieveCashTransactionsDetailUrl, cashDailyStatementRequest).map(Right(_))
+    httpClient.post(url"$retrieveCashTransactionsDetailUrl")
+      .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
+      .execute[CashTransactions]
+      .map(Right(_))
   }.recover {
     case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
       logger.error(s"Entity too large to download")
@@ -139,7 +149,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClient,
   def verifiedEmail(implicit hc: HeaderCarrier): Future[EmailVerifiedResponse] = {
     val emailDisplayApiUrl = s"$baseUrl/subscriptions/email-display"
 
-    httpClient.GET[EmailVerifiedResponse](emailDisplayApiUrl).recover {
+    httpClient.get(url"$emailDisplayApiUrl").execute[EmailVerifiedResponse].recover {
       case _ =>
         logger.error(s"Error occurred while calling API $emailDisplayApiUrl")
         EmailVerifiedResponse(None)
@@ -149,7 +159,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClient,
   def retrieveUnverifiedEmail(implicit hc: HeaderCarrier): Future[EmailUnverifiedResponse] = {
     val unverifiedEmailDisplayApiUrl = s"$baseUrl/subscriptions/unverified-email-display"
 
-    httpClient.GET[EmailUnverifiedResponse](unverifiedEmailDisplayApiUrl).recover {
+    httpClient.get(url"$unverifiedEmailDisplayApiUrl").execute[EmailUnverifiedResponse].recover {
       case _ =>
         logger.error(s"Error occurred while calling API $unverifiedEmailDisplayApiUrl")
         EmailUnverifiedResponse(None)

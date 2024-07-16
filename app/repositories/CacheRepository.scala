@@ -32,6 +32,9 @@ import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+import org.mongodb.scala.SingleObservableFuture
+import org.mongodb.scala.ToSingleObservablePublisher
+
 @Singleton
 class DefaultCacheRepository @Inject()(mongo: MongoComponent,
                                        config: Configuration,
@@ -45,7 +48,7 @@ class DefaultCacheRepository @Inject()(mongo: MongoComponent,
       IndexModel(
         ascending("lastUpdated"),
         IndexOptions().name("cash-account-cache-last-updated-index")
-          .expireAfter(config.get[Int]("mongodb.timeToLiveInSeconds"), TimeUnit.SECONDS)
+          .expireAfter(config.get[Long]("mongodb.timeToLiveInSeconds"), TimeUnit.SECONDS)
       )
     )) with CacheRepository {
 

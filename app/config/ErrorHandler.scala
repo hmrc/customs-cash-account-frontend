@@ -20,13 +20,16 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.Request
 import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
+import uk.gov.hmrc.play.bootstrap.frontend.http.LegacyFrontendErrorHandler
 import views.html.{ErrorTemplate, not_found}
+
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ErrorHandler @Inject()(errorTemplate: ErrorTemplate,
                              notFound: not_found,
-                             val messagesApi: MessagesApi)(implicit appConfig: AppConfig) extends FrontendErrorHandler {
+                             val messagesApi: MessagesApi)
+                            (implicit appConfig: AppConfig) extends LegacyFrontendErrorHandler {
 
   override def standardErrorTemplate(pageTitle: String,
                                      heading: String,

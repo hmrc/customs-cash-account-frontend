@@ -30,6 +30,9 @@ import utils.SpecBase
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+
 class EmailActionSpec extends SpecBase {
 
   "filter" should {

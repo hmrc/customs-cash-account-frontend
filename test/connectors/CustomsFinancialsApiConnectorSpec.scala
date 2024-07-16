@@ -17,30 +17,39 @@
 package connectors
 
 import config.AppConfig
-import models._
+import models.*
 import models.email.{EmailUnverifiedResponse, EmailVerifiedResponse}
 import models.request.{CashDailyStatementRequest, IdentifierRequest}
 import org.mockito.ArgumentMatchers.anyString
-import play.api.Application
+import play.api.{Application, inject}
 import play.api.http.Status.{NOT_FOUND, REQUEST_ENTITY_TOO_LARGE}
 import play.api.inject.bind
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.CacheRepository
 import services.MetricsReporterService
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpException, InternalServerException, SessionId, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpReads, InternalServerException, SessionId, UpstreamErrorResponse}
 import utils.SpecBase
+import java.net.URL
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.{eq => eqTo}
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 
 class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
   "getAccounts" must {
 
     "return all accounts available to the given EORI from the API service" in new Setup {
-      when[Future[AccountsAndBalancesResponseContainer]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[AccountsAndBalancesResponseContainer]], any[ExecutionContext]))
         .thenReturn(Future.successful(traderAccounts))
+      when(mockHttpClient.post(any[URL]())(any)).thenReturn(requestBuilder)
 
       running(appWithHttpClient) {
         val result = await(connector().getCashAccount(eori)(implicitly, IdentifierRequest(fakeRequest(), "12345678")))
@@ -49,15 +58,18 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "log response time metric" in new Setup {
-      when[Future[AccountsAndBalancesResponseContainer]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[AccountsAndBalancesResponseContainer]], any[ExecutionContext]))
         .thenReturn(Future.successful(traderAccounts))
+      when(mockHttpClient.post(any)(any)).thenReturn(requestBuilder)
 
       when[Future[Seq[CashAccount]]](mockMetricsReporterService.withResponseTimeLogging(any)(any)(any))
         .thenReturn(Future.successful(Seq(cashAccount)))
 
       val appWithMocks: Application = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
+          bind[HttpClientV2].toInstance(mockHttpClient),
           bind[MetricsReporterService].toInstance(mockMetricsReporterService)
         ).build()
 
@@ -80,22 +92,19 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
-      when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
-
-      when[Future[CashTransactions]](mockHttpClient.POST(
-        eqTo(expectedUrl),
-        eqTo(cashDailyStatementRequest),
-        any)(any, any, eqTo(hc), any))
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
         .thenReturn(Future.successful(successResponse))
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
       when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
       when(mockCacheRepository.set("can", successResponse)).thenReturn(Future.successful(true))
 
       val appWithMocks: Application = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
+          bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[RequestBuilder].toInstance(requestBuilder),
           bind[MetricsReporterService].toInstance(mockMetricsReporterService),
-          bind[AppConfig].toInstance(mockConfig),
           bind[CacheRepository].toInstance(mockCacheRepository)
         ).build()
 
@@ -113,18 +122,17 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
 
-      when[Future[CashTransactions]](mockHttpClient.POST(
-        eqTo(expectedUrl),
-        eqTo(cashDailyStatementRequest),
-        any)(any, any, eqTo(hc), any))
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
         .thenReturn(Future.successful(successResponse))
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
       when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
       when(mockCacheRepository.set("can", successResponse)).thenReturn(Future.successful(false))
 
       val appWithMocks: Application = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
+          bind[HttpClientV2].toInstance(mockHttpClient),
           bind[MetricsReporterService].toInstance(mockMetricsReporterService),
           bind[AppConfig].toInstance(mockConfig),
           bind[CacheRepository].toInstance(mockCacheRepository)
@@ -161,13 +169,16 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       private val responseCode: Int = 500
 
-      when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(new HttpException("It's broken", responseCode)))
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
+
       when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
 
       val appWithMocks: Application = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
+          bind[HttpClientV2].toInstance(mockHttpClient),
           bind[CacheRepository].toInstance(mockCacheRepository)
         ).build()
 
@@ -181,12 +192,14 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" in new Setup {
       when(mockCacheRepository.get(any)).thenReturn(Future.successful(None))
 
-      when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", REQUEST_ENTITY_TOO_LARGE)))
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
       val appWithMocks: Application = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
+          bind[HttpClientV2].toInstance(mockHttpClient),
           bind[CacheRepository].toInstance(mockCacheRepository)
         ).build()
 
@@ -200,12 +213,14 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
       when(mockCacheRepository.get(any)).thenReturn(Future.successful(None))
 
-      when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
       val appWithMocks: Application = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
+          bind[HttpClientV2].toInstance(mockHttpClient),
           bind[CacheRepository].toInstance(mockCacheRepository)
         ).build()
 
@@ -224,18 +239,15 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       val expectedUrl = "apiEndpointUrl/account/cash/transactions-detail"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
-      when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
-
-      when[Future[CashTransactions]](mockHttpClient.POST(
-        eqTo(expectedUrl),
-        eqTo(cashDailyStatementRequest),
-        any)(any, any, eqTo(hc), any))
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
         .thenReturn(Future.successful(successResponse))
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
       val appWithMocks: Application = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
-          bind[AppConfig].toInstance(mockConfig)
+          bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[RequestBuilder].toInstance(requestBuilder)
         ).build()
 
       running(appWithMocks) {
@@ -245,13 +257,17 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "propagate exceptions when the backend POST fails" in new Setup {
+
       private val responseCode: Int = 500
-      when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(new HttpException("It's broken", responseCode)))
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
       val appWithMocks: Application = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient)
+          bind[HttpClientV2].toInstance(mockHttpClient)
         ).build()
 
       running(appWithMocks) {
@@ -263,12 +279,14 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
     "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" in new Setup {
 
-      when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", REQUEST_ENTITY_TOO_LARGE)))
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
       val appWithMocks: Application = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient)
+          bind[HttpClientV2].toInstance(mockHttpClient)
         ).build()
 
       running(appWithMocks) {
@@ -280,12 +298,14 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
     "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
 
-      when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
       val appWithMocks: Application = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient)
+          bind[HttpClientV2].toInstance(mockHttpClient)
         ).build()
 
       running(appWithMocks) {
@@ -301,18 +321,16 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
-      when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
-
-      when[Future[CashTransactions]](mockHttpClient.POST(
-        eqTo(expectedUrl),
-        eqTo(cashDailyStatementRequest),
-        any)(any, any, eqTo(hc), any))
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
         .thenReturn(Future.successful(successResponse))
+
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
       val appWithMocks: Application = application
         .overrides(
-          bind[HttpClient].toInstance(mockHttpClient),
-          bind[AppConfig].toInstance(mockConfig)
+          bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[RequestBuilder].toInstance(requestBuilder)
         ).build()
 
       running(appWithMocks) {
@@ -322,9 +340,13 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "propagate exceptions when the backend POST fails" in new Setup {
+
       private val responseCode: Int = 500
-      when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(new HttpException("It's broken", responseCode)))
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
       running(appWithHttpClient) {
         val result = await(connector().retrieveHistoricCashTransactions("can", fromDate, toDate))
@@ -333,8 +355,11 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" in new Setup {
-      when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", REQUEST_ENTITY_TOO_LARGE)))
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
       running(appWithHttpClient) {
         connector().retrieveHistoricCashTransactions("can", fromDate, toDate).map {
@@ -344,8 +369,11 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
-      when[Future[Seq[CashDailyStatement]]](mockHttpClient.POST(any, any, any)(any, any, any, any))
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
       running(appWithHttpClient) {
         connector().retrieveHistoricCashTransactions("can", fromDate, toDate).map {
@@ -358,8 +386,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   "retrieveUnverifiedEmail" must {
     "return EmailUnverifiedResponse with unverified email value" in new Setup {
 
-      when(mockHttpClient.GET[EmailUnverifiedResponse](
-        eqTo(customFinancialsApiUrl), any, any)(any, any, any)).thenReturn(Future.successful(emailUnverifiedRes))
+      when(requestBuilder.execute(any[HttpReads[EmailUnverifiedResponse]], any[ExecutionContext]))
+        .thenReturn(Future.successful(emailUnverifiedRes))
+      when(mockHttpClient.get(any[URL]())(any())).thenReturn(requestBuilder)
 
       connector().retrieveUnverifiedEmail.map {
         _ mustBe emailUnverifiedRes
@@ -369,9 +398,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     "return EmailUnverifiedResponse with None for unverified email if there is an error while" +
       " fetching response from api" in new Setup {
 
-      when(mockHttpClient.GET[EmailUnverifiedResponse](
-        eqTo(customFinancialsApiUrl), any, any)(any, any, any))
+      when(requestBuilder.execute(any[HttpReads[EmailUnverifiedResponse]], any[ExecutionContext]))
         .thenReturn(Future.failed(new RuntimeException("error occurred")))
+      when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
 
       connector().retrieveUnverifiedEmail.map {
         _.unVerifiedEmail mustBe empty
@@ -382,8 +411,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   "verifiedEmail" must {
     "return verified email when email-display api call is successful" in new Setup {
 
-      when(mockHttpClient.GET[EmailVerifiedResponse](any, any, any)(any, any, any))
+      when(requestBuilder.execute(any[HttpReads[EmailVerifiedResponse]], any[ExecutionContext]))
         .thenReturn(Future.successful(emailVerifiedRes))
+      when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
 
       connector().verifiedEmail.map {
         _ mustBe emailVerifiedRes
@@ -391,8 +421,10 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "return none for verified email when exception occurs while calling email-display api" in new Setup {
-      when(mockHttpClient.GET[EmailVerifiedResponse](any, any, any)(any, any, any))
+
+      when(requestBuilder.execute(any[HttpReads[EmailVerifiedResponse]], any[ExecutionContext]))
         .thenReturn(Future.failed(new InternalServerException("error occurred")))
+      when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
 
       connector().verifiedEmail.map {
         _.verifiedEmail mustBe empty
@@ -407,7 +439,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     val sessionId: SessionId = SessionId("session_1234")
     implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
 
-    val mockHttpClient: HttpClient = mock[HttpClient]
+    val mockHttpClient: HttpClientV2 = mock[HttpClientV2]
+    val requestBuilder: RequestBuilder = mock[RequestBuilder]
+
     val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
     val mockConfig: AppConfig = mock[AppConfig]
     val mockCacheRepository: CacheRepository = mock[CacheRepository]
@@ -475,7 +509,8 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
     val appWithHttpClient: Application = application
       .overrides(
-        bind[HttpClient].toInstance(mockHttpClient)
+        bind[HttpClientV2].toInstance(mockHttpClient),
+        bind[RequestBuilder].toInstance(requestBuilder)
       ).build()
 
     def connector(app: Application = appWithHttpClient): CustomsFinancialsApiConnector =
