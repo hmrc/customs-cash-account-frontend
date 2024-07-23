@@ -26,13 +26,14 @@ import uk.gov.hmrc.auth.core.retrieve.Email
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, UpstreamErrorResponse}
+import models.email.{EmailUnverifiedResponse, EmailVerifiedResponse}
 
 import java.net.URL
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CustomsDataStoreConnector @Inject()(http: HttpClientV2,
+class CustomsDataStoreConnector @Inject()(httpClient: HttpClientV2,
                                           metricsReporter: MetricsReporterService)
                                          (implicit appConfig: AppConfig, ec: ExecutionContext) {
 
@@ -44,7 +45,7 @@ class CustomsDataStoreConnector @Inject()(http: HttpClientV2,
 
     metricsReporter.withResponseTimeLogging(resourceNameForMetrics) {
 
-      http.get(url"$dataStoreEndpoint")
+      httpClient.get(url"$dataStoreEndpoint")
         .execute[EmailResponse]
         .map {
           case EmailResponse(Some(address), _, None) => Right(Email(address))
@@ -57,6 +58,26 @@ class CustomsDataStoreConnector @Inject()(http: HttpClientV2,
           log.error(s"verified-email API call is Failing and error is ::: ${exception.getMessage}")
           throw exception
       }
+    }
+  }
+
+  def verifiedEmail(implicit hc: HeaderCarrier): Future[EmailVerifiedResponse] = {
+    val emailDisplayApiUrl = s"${appConfig.customsDataStore}/subscriptions/email-display"
+
+    httpClient.get(url"$emailDisplayApiUrl").execute[EmailVerifiedResponse].recover {
+      case _ =>
+        log.error(s"Error occurred while calling API $emailDisplayApiUrl")
+        EmailVerifiedResponse(None)
+    }
+  }
+
+  def retrieveUnverifiedEmail(implicit hc: HeaderCarrier): Future[EmailUnverifiedResponse] = {
+    val unverifiedEmailDisplayApiUrl = s"${appConfig.customsDataStore}/subscriptions/unverified-email-display"
+
+    httpClient.get(url"$unverifiedEmailDisplayApiUrl").execute[EmailUnverifiedResponse].recover {
+      case _ =>
+        log.error(s"Error occurred while calling API $unverifiedEmailDisplayApiUrl")
+        EmailUnverifiedResponse(None)
     }
   }
 
