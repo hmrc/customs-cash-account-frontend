@@ -18,7 +18,6 @@ package connectors
 
 import config.AppConfig
 import models.*
-import models.email.{EmailUnverifiedResponse, EmailVerifiedResponse}
 import models.request.{CashDailyStatementRequest, IdentifierRequest}
 import org.mockito.ArgumentMatchers.anyString
 import play.api.{Application, inject}
@@ -383,55 +382,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
   }
 
-  "retrieveUnverifiedEmail" must {
-    "return EmailUnverifiedResponse with unverified email value" in new Setup {
-
-      when(requestBuilder.execute(any[HttpReads[EmailUnverifiedResponse]], any[ExecutionContext]))
-        .thenReturn(Future.successful(emailUnverifiedRes))
-      when(mockHttpClient.get(any[URL]())(any())).thenReturn(requestBuilder)
-
-      connector().retrieveUnverifiedEmail.map {
-        _ mustBe emailUnverifiedRes
-      }
-    }
-
-    "return EmailUnverifiedResponse with None for unverified email if there is an error while" +
-      " fetching response from api" in new Setup {
-
-      when(requestBuilder.execute(any[HttpReads[EmailUnverifiedResponse]], any[ExecutionContext]))
-        .thenReturn(Future.failed(new RuntimeException("error occurred")))
-      when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
-
-      connector().retrieveUnverifiedEmail.map {
-        _.unVerifiedEmail mustBe empty
-      }
-    }
-  }
-
-  "verifiedEmail" must {
-    "return verified email when email-display api call is successful" in new Setup {
-
-      when(requestBuilder.execute(any[HttpReads[EmailVerifiedResponse]], any[ExecutionContext]))
-        .thenReturn(Future.successful(emailVerifiedRes))
-      when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
-
-      connector().verifiedEmail.map {
-        _ mustBe emailVerifiedRes
-      }
-    }
-
-    "return none for verified email when exception occurs while calling email-display api" in new Setup {
-
-      when(requestBuilder.execute(any[HttpReads[EmailVerifiedResponse]], any[ExecutionContext]))
-        .thenReturn(Future.failed(new InternalServerException("error occurred")))
-      when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
-
-      connector().verifiedEmail.map {
-        _.verifiedEmail mustBe empty
-      }
-    }
-  }
-
   trait Setup {
     private val traderEori = "12345678"
     private val cashAccountNumber = "987654"
@@ -499,10 +449,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
           Declaration("mrn4", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
             LocalDate.parse("2020-07-20"), -30.00, Nil)), Nil)
     )
-
-    val emailId = "test@test.com"
-    val emailUnverifiedRes: EmailUnverifiedResponse = EmailUnverifiedResponse(Some(emailId))
-    val emailVerifiedRes: EmailVerifiedResponse = EmailVerifiedResponse(Some(emailId))
 
     val customFinancialsApiUrl = "http://localhost:9878/customs-financials-api/subscriptions/unverified-email-display"
     val verifyEmailApiUrl = "http://localhost:9878/customs-financials-api/subscriptions/email-display"
