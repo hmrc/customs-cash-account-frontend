@@ -62,6 +62,7 @@ class DataStoreConnectorSpec extends SpecBase {
 
       when(requestBuilder.execute(any[HttpReads[EmailResponse]], any[ExecutionContext]))
         .thenReturn(Future.successful(emailResFromAPI))
+
       when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
 
       connector.getEmail(eori).map {
@@ -72,11 +73,12 @@ class DataStoreConnectorSpec extends SpecBase {
     "return Left(UnverifiedEmail) when unverified email is returned from data store" in new Setup {
       val emailResFromAPI: EmailResponse = EmailResponse(None, None, Some(undelInfoOb))
 
-      when(mockMetricsReporter.withResponseTimeLogging[EmailResponse](any)(any)(any)).thenReturn(
-        Future.successful(emailResFromAPI))
+      when(mockMetricsReporter.withResponseTimeLogging[EmailResponse](any)(any)(any))
+        .thenReturn(Future.successful(emailResFromAPI))
 
       when(requestBuilder.execute(any[HttpReads[EmailResponse]], any[ExecutionContext]))
         .thenReturn(Future.successful(emailResFromAPI))
+
       when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
 
       connector.getEmail(eori).map {
@@ -87,11 +89,12 @@ class DataStoreConnectorSpec extends SpecBase {
     "return Left(UnverifiedEmail) if any error occurs while calling the data store API " in new Setup {
       private val emailResFromAPI = EmailResponse(Some(emailId), None, None)
 
-      when(mockMetricsReporter.withResponseTimeLogging[EmailResponse](any)(any)(any)).thenReturn(
-        Future.successful(emailResFromAPI))
+      when(mockMetricsReporter.withResponseTimeLogging[EmailResponse](any)(any)(any))
+        .thenReturn(Future.successful(emailResFromAPI))
 
       when(requestBuilder.execute(any[HttpReads[EmailResponse]], any[ExecutionContext]))
         .thenReturn(Future.failed(new RuntimeException("Error occurred")))
+
       when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
 
       connector.getEmail(eori).map {
@@ -105,6 +108,7 @@ class DataStoreConnectorSpec extends SpecBase {
 
       when(requestBuilder.execute(any[HttpReads[EmailUnverifiedResponse]], any[ExecutionContext]))
         .thenReturn(Future.successful(emailUnverifiedRes))
+
       when(mockHttpClient.get(any[URL]())(any())).thenReturn(requestBuilder)
 
       connector.retrieveUnverifiedEmail.map {
@@ -117,6 +121,7 @@ class DataStoreConnectorSpec extends SpecBase {
 
       when(requestBuilder.execute(any[HttpReads[EmailUnverifiedResponse]], any[ExecutionContext]))
         .thenReturn(Future.failed(new RuntimeException("error occurred")))
+
       when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
 
       connector.retrieveUnverifiedEmail.map {
@@ -130,6 +135,7 @@ class DataStoreConnectorSpec extends SpecBase {
 
       when(requestBuilder.execute(any[HttpReads[EmailVerifiedResponse]], any[ExecutionContext]))
         .thenReturn(Future.successful(emailVerifiedRes))
+
       when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
 
       connector.verifiedEmail.map {
@@ -141,6 +147,7 @@ class DataStoreConnectorSpec extends SpecBase {
 
       when(requestBuilder.execute(any[HttpReads[EmailVerifiedResponse]], any[ExecutionContext]))
         .thenReturn(Future.failed(new InternalServerException("error occurred")))
+
       when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
 
       connector.verifiedEmail.map {

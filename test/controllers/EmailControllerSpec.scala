@@ -63,6 +63,7 @@ class EmailControllerSpec extends SpecBase {
   "showUndeliverable" must {
 
     "display undeliverableEmail page" in new Setup {
+
       when(mockConnector.verifiedEmail(any)).thenReturn(Future.successful(emailVerifiedResponse))
 
       running(app) {
@@ -74,6 +75,7 @@ class EmailControllerSpec extends SpecBase {
     }
 
     "display undeliverableEmail page when exception occurs while connector is making the API call" in new Setup {
+
       when(mockConnector.verifiedEmail(any)).thenReturn(Future.successful(emailVerifiedResponseWithNoEmailId))
 
       running(app) {

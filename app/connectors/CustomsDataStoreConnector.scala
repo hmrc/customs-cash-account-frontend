@@ -64,21 +64,27 @@ class CustomsDataStoreConnector @Inject()(httpClient: HttpClientV2,
   def verifiedEmail(implicit hc: HeaderCarrier): Future[EmailVerifiedResponse] = {
     val emailDisplayApiUrl = s"${appConfig.customsDataStore}/subscriptions/email-display"
 
-    httpClient.get(url"$emailDisplayApiUrl").execute[EmailVerifiedResponse].recover {
-      case _ =>
-        log.error(s"Error occurred while calling API $emailDisplayApiUrl")
-        EmailVerifiedResponse(None)
-    }
+    httpClient
+      .get(url"$emailDisplayApiUrl")
+      .execute[EmailVerifiedResponse]
+      .recover {
+        case _ =>
+          log.error(s"Error occurred while calling API $emailDisplayApiUrl")
+          EmailVerifiedResponse(None)
+      }
   }
 
   def retrieveUnverifiedEmail(implicit hc: HeaderCarrier): Future[EmailUnverifiedResponse] = {
     val unverifiedEmailDisplayApiUrl = s"${appConfig.customsDataStore}/subscriptions/unverified-email-display"
 
-    httpClient.get(url"$unverifiedEmailDisplayApiUrl").execute[EmailUnverifiedResponse].recover {
-      case _ =>
-        log.error(s"Error occurred while calling API $unverifiedEmailDisplayApiUrl")
-        EmailUnverifiedResponse(None)
-    }
+    httpClient
+      .get(url"$unverifiedEmailDisplayApiUrl")
+      .execute[EmailUnverifiedResponse]
+      .recover {
+        case _ =>
+          log.error(s"Error occurred while calling API $unverifiedEmailDisplayApiUrl")
+          EmailUnverifiedResponse(None)
+      }
   }
 
 }
