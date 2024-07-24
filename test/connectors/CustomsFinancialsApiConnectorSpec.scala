@@ -450,9 +450,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
             LocalDate.parse("2020-07-20"), -30.00, Nil)), Nil)
     )
 
-    val customFinancialsApiUrl = "http://localhost:9878/customs-financials-api/subscriptions/unverified-email-display"
-    val verifyEmailApiUrl = "http://localhost:9878/customs-financials-api/subscriptions/email-display"
-
     val appWithHttpClient: Application = application
       .overrides(
         bind[HttpClientV2].toInstance(mockHttpClient),
