@@ -26,7 +26,7 @@ import play.api.inject.bind
 import play.api.test.Helpers.*
 import repositories.CacheRepository
 import services.MetricsReporterService
-import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpReads, InternalServerException, SessionId, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpReads, SessionId, UpstreamErrorResponse}
 import utils.SpecBase
 import java.net.URL
 
