@@ -19,7 +19,6 @@ package connectors
 import config.AppConfig
 import models.CashDailyStatement.*
 import models.*
-import models.email.{EmailUnverifiedResponse, EmailVerifiedResponse}
 import models.request.{CashDailyStatementRequest, IdentifierRequest}
 import org.slf4j.LoggerFactory
 import play.api.http.Status.{NOT_FOUND, REQUEST_ENTITY_TOO_LARGE}
@@ -144,26 +143,6 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
     case e =>
       logger.error(s"Unable to download CSV :${e.getMessage}")
       Left(UnknownException)
-  }
-
-  def verifiedEmail(implicit hc: HeaderCarrier): Future[EmailVerifiedResponse] = {
-    val emailDisplayApiUrl = s"$baseUrl/subscriptions/email-display"
-
-    httpClient.get(url"$emailDisplayApiUrl").execute[EmailVerifiedResponse].recover {
-      case _ =>
-        logger.error(s"Error occurred while calling API $emailDisplayApiUrl")
-        EmailVerifiedResponse(None)
-    }
-  }
-
-  def retrieveUnverifiedEmail(implicit hc: HeaderCarrier): Future[EmailUnverifiedResponse] = {
-    val unverifiedEmailDisplayApiUrl = s"$baseUrl/subscriptions/unverified-email-display"
-
-    httpClient.get(url"$unverifiedEmailDisplayApiUrl").execute[EmailUnverifiedResponse].recover {
-      case _ =>
-        logger.error(s"Error occurred while calling API $unverifiedEmailDisplayApiUrl")
-        EmailUnverifiedResponse(None)
-    }
   }
 }
 

@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.CustomsFinancialsApiConnector
+import connectors.CustomsDataStoreConnector
 import models.email.{EmailUnverifiedResponse, EmailVerifiedResponse}
 import play.api.Application
 import play.api.http.Status.OK
@@ -45,12 +45,38 @@ class EmailControllerSpec extends SpecBase {
         status(result) mustBe OK
       }
     }
+
+    "display verify your email page when exception occurs while connector making the API call" in new Setup {
+
+      when(mockConnector.retrieveUnverifiedEmail(any))
+        .thenReturn(Future.successful(emailUnverifiedResponseWithNoEmailId))
+
+      running(app) {
+        val request = fakeRequest(GET, routes.EmailController.showUnverified().url)
+
+        val result = route(app, request).value
+        status(result) mustBe OK
+      }
+    }
   }
 
   "showUndeliverable" must {
 
     "display undeliverableEmail page" in new Setup {
+
       when(mockConnector.verifiedEmail(any)).thenReturn(Future.successful(emailVerifiedResponse))
+
+      running(app) {
+        val request = fakeRequest(GET, routes.EmailController.showUndeliverable().url)
+        val result = route(app, request).value
+
+        status(result) mustBe OK
+      }
+    }
+
+    "display undeliverableEmail page when exception occurs while connector is making the API call" in new Setup {
+
+      when(mockConnector.verifiedEmail(any)).thenReturn(Future.successful(emailVerifiedResponseWithNoEmailId))
 
       running(app) {
         val request = fakeRequest(GET, routes.EmailController.showUndeliverable().url)
@@ -63,15 +89,18 @@ class EmailControllerSpec extends SpecBase {
 
   trait Setup {
     implicit val hc: HeaderCarrier = HeaderCarrier()
-    val mockConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
+    val mockConnector: CustomsDataStoreConnector = mock[CustomsDataStoreConnector]
 
     val emailId = "test@test.com"
     val emailVerifiedResponse: EmailVerifiedResponse = EmailVerifiedResponse(Some(emailId))
+    val emailVerifiedResponseWithNoEmailId: EmailVerifiedResponse = EmailVerifiedResponse(None)
+
     val emailUnverifiedResponse: EmailUnverifiedResponse = EmailUnverifiedResponse(Some(emailId))
+    val emailUnverifiedResponseWithNoEmailId: EmailUnverifiedResponse = EmailUnverifiedResponse(None)
 
     val app: Application = application
       .overrides(
-        bind[CustomsFinancialsApiConnector].toInstance(mockConnector)
+        bind[CustomsDataStoreConnector].toInstance(mockConnector)
       ).build()
   }
 }
