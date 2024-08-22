@@ -38,13 +38,12 @@
     @formHelper(action = controllers.routes.RequestTransactionsController.onSubmit(), Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors,errorFieldName = None, isErrorKeyUpdateEnabled = true, Some(updateFormErrorKeyForStartAndEndDate()))
         @h1("cf.cash-account.transactions.request.heading")
-        @p("cf.cash-account.transactions.request.p")
 
         @inputDate(
             form,
             messages("cf.cash-account.transactions.request.from"),
             legendClasses ="govuk-fieldset__legend--s",
-            hintText = Some(messages("cf.cash-account.transactions.request.date.hint")),
+            hintText = Some(messages("cf.cash-account.transactions.request.date.hint-start-date")),
             id = "start",
             legendAsPageHeading = false,
             legendHiddenContent = Some(s"cf.cash-account.transactions.request.legend.hidden.start")

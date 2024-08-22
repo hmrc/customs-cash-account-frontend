@@ -194,10 +194,10 @@ cf.cash-account.transactions.request.legend.hidden.start=what start date do you 
 cf.cash-account.transactions.request.legend.hidden.end=what end date do you need cash account transactions?
 cf.cash-account.transactions.request.heading=Which cash account transactions do you need?
 cf.cash-account.transactions.request.continue=Continue
-cf.cash-account.transactions.request.p=You can request cash account transactions dating back to October 2019.
 cf.cash-account.transactions.request.from=From what start date do you need transactions?
 cf.cash-account.transactions.request.to=To what end date do you need transactions?
-cf.cash-account.transactions.request.date.hint=For example, 31 3 2020.
+cf.cash-account.transactions.request.date.hint-start-date=Start date must be after October 2019. For example, 3 2021.
+cf.cash-account.transactions.request.date.hint=For example, 31 3 2021.
 cf.cash-account.transactions.request.link.label=Back to cash account
 
 date.day=Day
