@@ -193,10 +193,10 @@ cf.cash-account.transactions.request.legend.hidden.start=pa ddyddiad dechrau syd
 cf.cash-account.transactions.request.legend.hidden.end=pa ddyddiad dod i ben sydd ei angen arnoch ar gyfer trafodion cyfrif arian parod?
 cf.cash-account.transactions.request.heading=Pa drafodion cyfrif arian parod sydd eu hangen arnoch?
 cf.cash-account.transactions.request.continue=Yn eich blaen
-cf.cash-account.transactions.request.p=Gallwch wneud cais am drafodion cyfrif arian parod sy’n dyddio’n ôl i fis Hydref 2019.
-cf.cash-account.transactions.request.from=O ba ddyddiad dechrau y mae angen trafodion arnoch?
-cf.cash-account.transactions.request.to=I ba ddyddiad dod i ben y mae angen trafodion arnoch?
-cf.cash-account.transactions.request.date.hint=Er enghraifft, 3 2019.
+cf.cash-account.transactions.request.from=Dyddiad dechrau
+cf.cash-account.transactions.request.to=Dyddiad dod i ben
+cf.cash-account.transactions.request.date.hint-start-date=Mae’n rhaid i’r dyddiad dechrau fod ar ôl Hydref 2019. Er enghraifft, 31 3 2021.
+cf.cash-account.transactions.request.date.hint=Er enghraifft, 3 2021.
 cf.cash-account.transactions.request.link.label=Yn ôl i ‘Cyfrif arian parod’
 
 date.day=Diwrnod
