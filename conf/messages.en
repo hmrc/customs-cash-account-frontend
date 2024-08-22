@@ -196,7 +196,7 @@ cf.cash-account.transactions.request.heading=Which cash account transactions do 
 cf.cash-account.transactions.request.continue=Continue
 cf.cash-account.transactions.request.from=Start date
 cf.cash-account.transactions.request.to=End date
-cf.cash-account.transactions.request.date.hint-start-date=Start date must be after October 2019. For example, 3 2021.
+cf.cash-account.transactions.request.date.hint-start-date=Start date must be after October 2019. For example, 31 3 2021.
 cf.cash-account.transactions.request.date.hint=For example, 31 3 2021.
 cf.cash-account.transactions.request.link.label=Back to cash account
 
