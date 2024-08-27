@@ -196,7 +196,7 @@ cf.cash-account.transactions.request.continue=Yn eich blaen
 cf.cash-account.transactions.request.from=Dyddiad dechrau
 cf.cash-account.transactions.request.to=Dyddiad dod i ben
 cf.cash-account.transactions.request.date.hint-start-date=Mae’n rhaid i’r dyddiad dechrau fod ar ôl Hydref 2019. Er enghraifft, 31 3 2021.
-cf.cash-account.transactions.request.date.hint=Er enghraifft, 3 2021.
+cf.cash-account.transactions.request.date.hint=Er enghraifft, 31 3 2021.
 cf.cash-account.transactions.request.link.label=Yn ôl i ‘Cyfrif arian parod’
 
 date.day=Diwrnod
