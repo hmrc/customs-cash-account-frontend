@@ -51,7 +51,7 @@ cf.cash-account.top-up.guidance.link=Ychwanegu
 cf.cash-account.top-up.guidance.link.aria-label=Ychwanegu at eich cyfrif arian parod
 cf.cash-account.withdraw-funds.guidance.link=Codi arian
 cf.cash-account.withdraw-funds.guidance.link.aria-label=Codi arian o’ch cyfrif arian parod
-cf.cash-account.detail.csv.download=CSV
+cf.cash-account.detail.csv.download=Lawrlwytho’r ffeil CSV
 cf.cash-account.detail.csv-definition=Lawrlwytho’r ffeil CSV
 cf.cash-account.detail.csv=Lawrlwythwch drafodion ar ffurf <abbr title="Gwerthoedd wedi’u gwahanu gan goma. Gellir defnyddio CSV gyda’r rhan fwyaf o raglenni taenlen.">CSV</abbr>
 cf.cash-account.detail.date=Dyddiad
@@ -211,7 +211,7 @@ cf.cash-account.transactions.result.search.again=Chwiliwch eto gydag ystod lai o
 cf.cash-account.transactions.result.no.transactions=Dim trafodion cyfrif arian parod
 cf.cash-account.transactions.result.no.data=Nid oes gennym ddata o fewn y cyfnodau
 cf.cash-account.transactions.result.transaction=Y trafodion cyfrif arian parod y gofynnwyd amdanynt
-cf.cash-account.transactions.result.download.transactions=Mae’n rhaid i chi lawrlwytho’ch CSV trafodion cyn i chi gau ffenestr eich porwr.
+cf.cash-account.transactions.result.download.transactions=Lawrlwythwch ffeil CSV eich trafodion y gofynnwyd amdanynt cyn i chi gau’r ffenestr porwr hon.
 
 cf.form.error.start.date-too-far-in-past=Ni all y dyddiad ‘o’ fod yn fwy na 6 o flynyddoedd ers nawr.
 cf.form.error.end.date-too-far-in-past=Ni all y dyddiad ‘i’ fod yn fwy na 6 o flynyddoedd ers nawr.
