@@ -14,6 +14,9 @@ GET         /too-many-requested-cash-transactions   controllers.RequestedTransac
 GET         /verify-your-email                      controllers.EmailController.showUnverified()
 GET         /undeliverable-email                    controllers.EmailController.showUndeliverable()
 
+GET         /request-date                           controllers.RequestTransactionsPageController.onPageLoad()
+POST        /request-date                           controllers.RequestTransactionsPageController.onSubmit()
+
 GET         /account-unavailable                    controllers.CashAccountController.showAccountUnavailable
 GET         /not-subscribed-for-cds                 controllers.UnauthorisedController.onPageLoad
 

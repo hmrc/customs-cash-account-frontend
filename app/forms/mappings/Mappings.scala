@@ -28,7 +28,7 @@ trait Mappings extends Formatters with Constraints {
     of(booleanFormatter(requiredKey, invalidKey))
 
   protected def localDate(invalidKey: String,
-                          dayKey: String,
+                          dayKey: String = "",
                           monthKey: String,
                           yearKey: String,
                           invalidDateKey: String): FieldMapping[LocalDate] =
