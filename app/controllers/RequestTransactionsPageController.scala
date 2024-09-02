@@ -37,8 +37,8 @@ class RequestTransactionsPageController @Inject()(identify: IdentifierAction,
                                                   view: request_transactions_page_view,
                                                   cache: RequestedTransactionsCache,
                                                   implicit val mcc: MessagesControllerComponents)
-                                                 (implicit ec: ExecutionContext,
-                                                  appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
+                                                 (implicit ec: ExecutionContext, appConfig: AppConfig)
+  extends FrontendController(mcc) with I18nSupport {
 
   val log: Logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
 
@@ -61,7 +61,7 @@ class RequestTransactionsPageController @Inject()(identify: IdentifierAction,
             Future.successful(BadRequest(view(formWithErrors)))
           case None =>
             cache.set(request.eori, value).map { _ =>
-              Redirect(routes.RequestedTransactionsController.onPageLoad())
+              Redirect(routes.RequestedTransactionsPageController.onPageLoad())
             }
         }
       )

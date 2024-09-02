@@ -236,7 +236,7 @@ class RequestTransactionsPageFormProviderSpec extends SpecBase {
 
     val year = 2021
     val month = 10
-    val day = 1
+    val day: String = "1"
 
     val validDate: LocalDate = LocalDate.of(year, month, 1)
     val futureYear: Int = LocalDate.now().getYear + 1
