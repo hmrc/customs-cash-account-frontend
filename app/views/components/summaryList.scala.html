@@ -15,12 +15,14 @@
  *@
 
 @import viewmodels.ResultsPageSummary
+@import utils.Utils.emptyString
 
 @this()
 
 @(
     summary: ResultsPageSummary,
-    fullstop: Boolean = true
+    fullstop: Boolean = true,
+    change: Boolean = false
 )(
     implicit messages: Messages
 )
@@ -35,7 +37,12 @@
             <a class="govuk-link" href="@summary.rows(fullstop).actions.head.items.head.href">
                 <span class="govuk-visually-hidden">
                     @summary.rows(fullstop).actions.head.items.head.visuallyHiddenText</span>
-                <span> @Html(messages("cf.cash-account.detail.csv.download"))</span>
+                <span>
+                    @if(change) {
+                        @Html(messages("cf.cash-account.transactions.request.review.change"))
+                    } else {
+                        @Html(messages("cf.cash-account.detail.csv.download"))
+                    }</span>
             </a>
         </dd>
     </div>

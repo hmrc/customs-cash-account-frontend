@@ -16,7 +16,7 @@ GET         /undeliverable-email                    controllers.EmailController.
 
 GET         /request-date                           controllers.RequestTransactionsPageController.onPageLoad()
 POST        /request-date                           controllers.RequestTransactionsPageController.onSubmit()
-GET         /requested-date                           controllers.RequestedTransactionsPageController.onPageLoad()
+GET         /requested-date                         controllers.RequestedTransactionsPageController.onPageLoad()
 
 GET         /account-unavailable                    controllers.CashAccountController.showAccountUnavailable
 GET         /not-subscribed-for-cds                 controllers.UnauthorisedController.onPageLoad

@@ -18,6 +18,9 @@ package viewmodels
 
 import config.AppConfig
 import models.{CashDailyStatement, CashTransactions}
+import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
+import utils.Utils._
 
 import java.time.LocalDate
 import java.time.chrono.ChronoLocalDate

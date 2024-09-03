@@ -30,13 +30,13 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.RequestedTransactionsCache
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.ResultsPageSummary
-import views.html.{cash_account_transactions_not_available, cash_transactions_no_result, cash_transactions_result_page, cash_transactions_too_many_results}
+import views.html.{cash_account_transactions_not_available, cash_transactions_no_result, request_transactions_result_page, cash_transactions_too_many_results}
 
 import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RequestedTransactionsPageController @Inject()(resultView: cash_transactions_result_page,
+class RequestedTransactionsPageController @Inject()(resultView: request_transactions_result_page,
                                                     apiConnector: CustomsFinancialsApiConnector,
                                                     transactionsUnavailable: cash_account_transactions_not_available,
                                                     tooManyResults: cash_transactions_too_many_results,
@@ -62,6 +62,11 @@ class RequestedTransactionsPageController @Inject()(resultView: cash_transaction
     }
   }
 
+  //TODO - Ticket 4900
+  // def onSubmit(): Action[AnyContent] = {
+  // Submit data to be added in ticket 4900
+  // Redirect we have recieved your requested statements page when it exists
+
   private def showAccountWithTransactionDetails(account: CashAccount,
                                                 from: LocalDate,
                                                 to: LocalDate)
@@ -83,7 +88,8 @@ class RequestedTransactionsPageController @Inject()(resultView: cash_transaction
         Ok(
           resultView(
             new ResultsPageSummary(from, to),
-            controllers.routes.CashAccountController.showAccountDetails(None).url)
+            controllers.routes.CashAccountController.showAccountDetails(None).url,
+            account.number),
         )
     }
   }
