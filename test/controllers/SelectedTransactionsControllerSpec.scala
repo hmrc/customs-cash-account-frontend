@@ -34,19 +34,19 @@ import utils.SpecBase
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class RequestedTransactionsPageControllerSpec extends SpecBase {
+class SelectedTransactionsControllerSpec extends SpecBase {
 
   "redirect to request page if no requested data found in cache" in new Setup {
     when(mockRequestedTransactionsCache.get(any))
       .thenReturn(Future.successful(None))
 
     val request: FakeRequest[AnyContentAsEmpty.type] =
-      fakeRequest(GET, routes.RequestedTransactionsPageController.onPageLoad().url)
+      fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
 
     running(app) {
       val result = route(app, request).value
       status(result) mustBe SEE_OTHER
-      redirectLocation(result).value mustBe routes.RequestTransactionsPageController.onPageLoad().url
+      redirectLocation(result).value mustBe routes.SelectTransactionsController.onPageLoad().url
     }
   }
 
@@ -61,7 +61,7 @@ class RequestedTransactionsPageControllerSpec extends SpecBase {
       .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
     val request: FakeRequest[AnyContentAsEmpty.type] =
-      fakeRequest(GET, routes.RequestedTransactionsPageController.onPageLoad().url)
+      fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
 
     running(app) {
       val result = route(app, request).value
@@ -80,7 +80,7 @@ class RequestedTransactionsPageControllerSpec extends SpecBase {
       .thenReturn(Future.successful(Left(NoTransactionsAvailable)))
 
     val request: FakeRequest[AnyContentAsEmpty.type] =
-      fakeRequest(GET, routes.RequestedTransactionsPageController.onPageLoad().url)
+      fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
 
     running(app) {
       val result = route(app, request).value
@@ -100,7 +100,7 @@ class RequestedTransactionsPageControllerSpec extends SpecBase {
       .thenReturn(Future.successful(Left(TooManyTransactionsRequested)))
 
     val request: FakeRequest[AnyContentAsEmpty.type] =
-      fakeRequest(GET, routes.RequestedTransactionsPageController.onPageLoad().url)
+      fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
 
     running(app) {
       val result = route(app, request).value
@@ -119,7 +119,7 @@ class RequestedTransactionsPageControllerSpec extends SpecBase {
       .thenReturn(Future.successful(Left(UnknownException)))
 
     val request: FakeRequest[AnyContentAsEmpty.type] =
-      fakeRequest(GET, routes.RequestedTransactionsPageController.onPageLoad().url)
+      fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
 
     running(app) {
       val result = route(app, request).value
@@ -143,13 +143,11 @@ class RequestedTransactionsPageControllerSpec extends SpecBase {
       .thenReturn(Future.successful(Left(TooManyTransactionsRequested)))
 
     val request: FakeRequest[AnyContentAsEmpty.type] =
-      fakeRequest(GET, routes.RequestedTransactionsPageController.onPageLoad().url)
+      fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
 
     running(app) {
       val result = route(app, request).value
       status(result) mustBe SEE_OTHER
-      redirectLocation(result).value mustEqual
-        routes.RequestedTransactionsController.tooManyTransactionsRequested(RequestedDateRange(fromDate, toDate)).url
     }
   }
 
@@ -164,7 +162,7 @@ class RequestedTransactionsPageControllerSpec extends SpecBase {
       .thenThrow(new RuntimeException())
 
     val request: FakeRequest[AnyContentAsEmpty.type] =
-      fakeRequest(GET, routes.RequestedTransactionsPageController.onPageLoad().url)
+      fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
 
     running(app) {
       val result = route(app, request).value

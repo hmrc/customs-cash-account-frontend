@@ -18,7 +18,7 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.*
-import forms.{CashTransactionsRequestPageFormProvider, RequestTransactionsRequestPageFormProvider}
+import forms.{CashTransactionsRequestPageFormProvider, SelectTransactionsFormProvider}
 import models.*
 import org.slf4j.{Logger, LoggerFactory}
 import play.api.data.Form
@@ -32,12 +32,12 @@ import views.html.*
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RequestTransactionsPageController @Inject()(identify: IdentifierAction,
-                                                  formProvider: RequestTransactionsRequestPageFormProvider,
-                                                  view: request_transactions_page_view,
-                                                  cache: RequestedTransactionsCache,
-                                                  implicit val mcc: MessagesControllerComponents)
-                                                 (implicit ec: ExecutionContext, appConfig: AppConfig)
+class SelectTransactionsController @Inject()(identify: IdentifierAction,
+                                             formProvider: SelectTransactionsFormProvider,
+                                             view: select_transactions_view,
+                                             cache: RequestedTransactionsCache,
+                                             implicit val mcc: MessagesControllerComponents)
+                                            (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport {
 
   val log: Logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
@@ -61,7 +61,7 @@ class RequestTransactionsPageController @Inject()(identify: IdentifierAction,
             Future.successful(BadRequest(view(formWithErrors)))
           case None =>
             cache.set(request.eori, value).map { _ =>
-              Redirect(routes.RequestedTransactionsPageController.onPageLoad())
+              Redirect(routes.SelectedTransactionsController.onPageLoad())
             }
         }
       )

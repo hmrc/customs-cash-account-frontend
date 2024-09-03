@@ -37,7 +37,7 @@
 )
 
 @main_template(pageTitle = Some(messages("cf.cash-account.transactions.request.review.heading")),
-    backLink = Some(controllers.routes.RequestTransactionsPageController.onPageLoad().url),
+    backLink = Some(controllers.routes.SelectTransactionsController.onPageLoad().url),
     fullWidth = false,
     help = true
 ) {

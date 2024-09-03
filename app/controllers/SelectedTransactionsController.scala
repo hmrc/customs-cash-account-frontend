@@ -30,27 +30,27 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.RequestedTransactionsCache
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.ResultsPageSummary
-import views.html.{cash_account_transactions_not_available, cash_transactions_no_result, request_transactions_result_page, cash_transactions_too_many_results}
+import views.html.*
 
 import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RequestedTransactionsPageController @Inject()(resultView: request_transactions_result_page,
-                                                    apiConnector: CustomsFinancialsApiConnector,
-                                                    transactionsUnavailable: cash_account_transactions_not_available,
-                                                    tooManyResults: cash_transactions_too_many_results,
-                                                    noResults: cash_transactions_no_result,
-                                                    identify: IdentifierAction,
-                                                    eh: ErrorHandler,
-                                                    cache: RequestedTransactionsCache,
-                                                    mcc: MessagesControllerComponents)
-                                                   (implicit executionContext: ExecutionContext, appConfig: AppConfig)
+class SelectedTransactionsController @Inject()(resultView: selected_transactions_view,
+                                               apiConnector: CustomsFinancialsApiConnector,
+                                               transactionsUnavailable: cash_account_transactions_not_available,
+                                               tooManyResults: cash_transactions_too_many_results,
+                                               noResults: cash_transactions_no_result,
+                                               identify: IdentifierAction,
+                                               eh: ErrorHandler,
+                                               cache: RequestedTransactionsCache,
+                                               mcc: MessagesControllerComponents)
+                                              (implicit executionContext: ExecutionContext, appConfig: AppConfig)
   extends FrontendController(mcc) with I18nSupport with Logging {
 
   def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
     val result: EitherT[Future, Result, Result] = for {
-      dates <- fromOptionF(cache.get(request.eori), Redirect(routes.RequestTransactionsPageController.onPageLoad()))
+      dates <- fromOptionF(cache.get(request.eori), Redirect(routes.SelectTransactionsController.onPageLoad()))
       account <- fromOptionF(apiConnector.getCashAccount(request.eori), NotFound(eh.notFoundTemplate))
       page <- EitherT.liftF(showAccountWithTransactionDetails(account, dates.start, dates.end))
     } yield page
@@ -78,7 +78,8 @@ class RequestedTransactionsPageController @Inject()(resultView: request_transact
           case NoTransactionsAvailable => Ok(noResults(new ResultsPageSummary(from, to)))
 
           case TooManyTransactionsRequested => Redirect(
-            routes.RequestedTransactionsController.tooManyTransactionsRequested(RequestedDateRange(from, to)))
+            routes.SelectedTransactionsController.tooManyTransactionsSelected(
+              RequestedDateRange(from, to)))
 
           case _ =>
             Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
@@ -89,19 +90,19 @@ class RequestedTransactionsPageController @Inject()(resultView: request_transact
           resultView(
             new ResultsPageSummary(from, to),
             controllers.routes.CashAccountController.showAccountDetails(None).url,
-            account.number),
+            account.number)
         )
     }
   }
 
-  def tooManyTransactionsRequested(dateRange: RequestedDateRange): Action[AnyContent] =
+  def tooManyTransactionsSelected(dateRange: RequestedDateRange): Action[AnyContent] =
     identify {
       implicit req =>
 
         Ok(
           tooManyResults(
             new ResultsPageSummary(dateRange.from, dateRange.to),
-            controllers.routes.RequestTransactionsPageController.onPageLoad().url)
+            controllers.routes.SelectTransactionsController.onPageLoad().url)
         )
     }
 }

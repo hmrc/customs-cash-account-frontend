@@ -36,7 +36,7 @@
 ) {
 
         @formHelper(
-            action = controllers.routes.RequestTransactionsController.onSubmit(),
+            action = controllers.routes.SelectTransactionsController.onSubmit(),
             Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors,errorFieldName = None,

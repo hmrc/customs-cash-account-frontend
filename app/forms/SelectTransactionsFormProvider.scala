@@ -24,7 +24,7 @@ import play.api.data.Forms.mapping
 import java.time.Clock
 import javax.inject.Inject
 
-class RequestTransactionsRequestPageFormProvider @Inject()(implicit clock: Clock)
+class SelectTransactionsFormProvider @Inject()(implicit clock: Clock)
     extends Mappings {
 
   def apply(): Form[CashTransactionDates] = {
