@@ -14,9 +14,9 @@ GET         /too-many-requested-cash-transactions   controllers.RequestedTransac
 GET         /verify-your-email                      controllers.EmailController.showUnverified()
 GET         /undeliverable-email                    controllers.EmailController.showUndeliverable()
 
-GET         /select-date                           controllers.SelectTransactionsController.onPageLoad()
-POST        /select-date                           controllers.SelectTransactionsController.onSubmit()
-GET         /selected-date                         controllers.SelectedTransactionsController.onPageLoad()
+GET         /request-cash-transactions/v2          controllers.SelectTransactionsController.onPageLoad()
+POST        /request-cash-transactions/v2          controllers.SelectTransactionsController.onSubmit()
+GET         /selected-cash-transactions            controllers.SelectedTransactionsController.onPageLoad()
 GET         /too-many-selected-transactions        controllers.SelectedTransactionsController.tooManyTransactionsSelected(range: models.RequestedDateRange)
 
 GET         /account-unavailable                    controllers.CashAccountController.showAccountUnavailable

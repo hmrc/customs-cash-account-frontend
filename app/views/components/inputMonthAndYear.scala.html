@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import utils.Utils.emptyString
+
 @this(govukDateInput: GovukDateInput,
         span: components.span)
 
@@ -27,15 +29,15 @@
         legendHiddenContent: Option[String])(implicit messages: Messages)
 
 @monthError = @{
-    if(form(s"$id.month").value.contains("")){ "govuk-input--error"} else {""}
+    if(form(s"$id.month").value.contains(emptyString)){ "govuk-input--error"} else {emptyString}
 }
 
 @yearError = @{
-    if(form(s"$id.year").value.contains("")){ "govuk-input--error"} else {""}
+    if(form(s"$id.year").value.contains(emptyString)){ "govuk-input--error"} else {emptyString}
 }
 
 @allError = @{
-    if(monthError && !yearError && form(s"$id").hasErrors) {"govuk-input--error"} else {""}
+    if(monthError && !yearError && form(s"$id").hasErrors) {"govuk-input--error"} else {emptyString}
 }
 
     @govukDateInput(DateInput(
@@ -43,7 +45,8 @@
             legend = Some(
                 Legend(
                     content = HtmlContent(messages(legendContent) +
-                            legendHiddenContent.fold("")(key => span(key, classes = Some("govuk-visually-hidden")).toString())
+                            legendHiddenContent.fold(emptyString)(key => span(
+                                key, classes = Some("govuk-visually-hidden")).toString())
                     ),
                     isPageHeading = legendAsPageHeading,
                     classes = legendClasses
