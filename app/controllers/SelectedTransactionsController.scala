@@ -74,8 +74,9 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
                                                (implicit req: IdentifierRequest[AnyContent],
                                                 appConfig: AppConfig): Future[Result] = {
     apiConnector.retrieveHistoricCashTransactions(account.number, from, to).map {
-      case Left(errorResponse) =>
-        errorResponse match {
+
+      case Left(errorResponse) => errorResponse match {
+
           case NoTransactionsAvailable => Ok(noResults(new ResultsPageSummary(from, to)))
 
           case TooManyTransactionsRequested =>

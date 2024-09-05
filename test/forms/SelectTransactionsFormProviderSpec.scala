@@ -23,7 +23,7 @@ import utils.SpecBase
 
 import java.time.{Clock, LocalDate, ZoneOffset}
 
-class RequestTransactionsPageFormProviderSpec extends SpecBase {
+class SelectTransactionsFormProviderSpec extends SpecBase {
 
   "apply" must {
 
@@ -232,7 +232,7 @@ class RequestTransactionsPageFormProviderSpec extends SpecBase {
   trait SetUp {
     implicit val clock: Clock = Clock.system(ZoneOffset.UTC)
 
-    val form: Form[CashTransactionDates] = new CashTransactionsRequestPageFormProvider().apply()
+    val form: Form[CashTransactionDates] = new SelectTransactionsFormProvider().apply()
 
     val year = 2021
     val month = 10

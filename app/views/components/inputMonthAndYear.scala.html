@@ -30,24 +30,24 @@
 )(implicit messages: Messages)
 
 @monthError = @{
-    if(form(s"$id.month").value.contains(emptyString)){ "govuk-input--error"} else {emptyString}
+    if(form(s"$id.month").value.contains(emptyString)) {"govuk-input--error"} else {emptyString}
 }
 
 @yearError = @{
-    if(form(s"$id.year").value.contains(emptyString)){ "govuk-input--error"} else {emptyString}
+    if(form(s"$id.year").value.contains(emptyString)) {"govuk-input--error"} else {emptyString}
 }
 
 @allError = @{
     if(monthError && !yearError && form(s"$id").hasErrors) {"govuk-input--error"} else {emptyString}
 }
 
-    @govukDateInput(DateInput(
-        fieldset = Some(Fieldset(
-            legend = Some(
-                Legend(
-                    content = HtmlContent(messages(legendContent) +
-                            legendHiddenContent.fold(emptyString)(key => span(
-                                key, classes = Some("govuk-visually-hidden")).toString())
+@govukDateInput(DateInput(
+    fieldset = Some(Fieldset(
+        legend = Some(
+            Legend(
+                content = HtmlContent(messages(legendContent) +
+                    legendHiddenContent.fold(emptyString)(key => span(
+                        key, classes = Some("govuk-visually-hidden")).toString())
                     ),
                     isPageHeading = legendAsPageHeading,
                     classes = legendClasses

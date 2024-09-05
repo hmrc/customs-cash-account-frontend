@@ -16,33 +16,33 @@
 
 package views.components
 
-import forms.CashTransactionsRequestPageFormProvider
-import play.api.Application
+import forms.SelectTransactionsFormProvider
+import models.CashTransactionDates
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.test.Helpers._
+import play.api.Application
+import play.api.data.Form
+import play.api.test.Helpers.*
 import play.twirl.api.HtmlFormat
 import utils.SpecBase
-import views.html.components.inputDate
+import views.html.components.inputMonthAndYear
 
 import java.time.Clock
 
-class InputDateSpec extends SpecBase {
+class inputMonthAndYearSpec extends SpecBase {
 
-  "InputDate component" should {
-
+  "InputMonthAndYear component" should {
     "render correctly with no errors" in new Setup {
 
-      val formWithValues = form.bind(
+      val formWithValues: Form[CashTransactionDates] = form.bind(
         Map(
-          s"$id.day" -> "01",
           s"$id.month" -> "01",
           s"$id.year" -> "2021"
         )
       )
 
       running(app) {
-        val inputDateView = app.injector.instanceOf[inputDate]
+        val inputDateView = app.injector.instanceOf[inputMonthAndYear]
 
         val output: HtmlFormat.Appendable = inputDateView(
           formWithValues,
@@ -57,40 +57,6 @@ class InputDateSpec extends SpecBase {
         val html: Document = Jsoup.parse(output.toString)
 
         html.getElementsByTag("legend").text() must include(headline)
-        html.getElementById(s"$id.day").attr(id) must include("01")
-        html.getElementById(s"$id.month").attr(id) must include("01")
-        html.getElementById(s"$id.year").attr(id) must include("2021")
-        html.getElementsByTag("input").attr("class") mustNot include("govuk-input--error")
-      }
-    }
-
-    "render h1 tag correctly" in new Setup {
-
-      val formWithValues = form.bind(
-        Map(
-          s"$id.day" -> "01",
-          s"$id.month" -> "01",
-          s"$id.year" -> "2021"
-        )
-      )
-
-      running(app) {
-        val inputDateView = app.injector.instanceOf[inputDate]
-
-        val output: HtmlFormat.Appendable = inputDateView(
-          formWithValues,
-          headline,
-          id = id,
-          legendHiddenContent = None,
-          legendClasses = "legend-class",
-          hintText = None,
-          legendAsPageHeading = true
-        )(messages(app))
-
-        val html: Document = Jsoup.parse(output.toString)
-
-        html.getElementsByTag("h1").text() must include(headline)
-        html.getElementById(s"$id.day").attr(id) must include("01")
         html.getElementById(s"$id.month").attr(id) must include("01")
         html.getElementById(s"$id.year").attr(id) must include("2021")
         html.getElementsByTag("input").attr("class") mustNot include("govuk-input--error")
@@ -99,16 +65,15 @@ class InputDateSpec extends SpecBase {
 
     "render correctly with month error" in new Setup {
 
-      val formWithValues = form.bind(
+      val formWithValues: Form[CashTransactionDates] = form.bind(
         Map(
-          s"$id.day" -> "01",
           s"$id.month" -> "",
           s"$id.year" -> "2021"
         )
       )
 
       running(app) {
-        val inputDateView = app.injector.instanceOf[inputDate]
+        val inputDateView = app.injector.instanceOf[inputMonthAndYear]
 
         val output: HtmlFormat.Appendable = inputDateView(
           formWithValues,
@@ -123,25 +88,23 @@ class InputDateSpec extends SpecBase {
         val html: Document = Jsoup.parse(output.toString)
 
         html.getElementsByTag("legend").text() must include(headline)
-        html.getElementById(s"$id.day").attr(id) must include("01")
         html.getElementById(s"$id.month").attr(id) mustNot include("01")
         html.getElementById(s"$id.year").attr(id) must include("2021")
-        html.getElementsByTag("input").get(1).attr("class") must include("govuk-input--error")
+        html.getElementsByTag("input").get(0).attr("class") must include("govuk-input--error")
       }
     }
 
     "render correctly with year error" in new Setup {
 
-      val formWithValues = form.bind(
+      val formWithValues: Form[CashTransactionDates] = form.bind(
         Map(
-          s"$id.day" -> "01",
           s"$id.month" -> "01",
           s"$id.year" -> ""
         )
       )
 
       running(app) {
-        val inputDateView = app.injector.instanceOf[inputDate]
+        val inputDateView = app.injector.instanceOf[inputMonthAndYear]
 
         val output: HtmlFormat.Appendable = inputDateView(
           formWithValues,
@@ -156,25 +119,23 @@ class InputDateSpec extends SpecBase {
         val html: Document = Jsoup.parse(output.toString)
 
         html.getElementsByTag("legend").text() must include(headline)
-        html.getElementById(s"$id.day").attr(id) must include("01")
         html.getElementById(s"$id.month").attr(id) must include("01")
         html.getElementById(s"$id.year").attr(id) mustNot include("2021")
-        html.getElementsByTag("input").get(2).attr("class") must include("govuk-input--error")
+        html.getElementsByTag("input").get(1).attr("class") must include("govuk-input--error")
       }
     }
 
-    "render correctly with both day, month and year errors" in new Setup {
+    "render correctly with both month and year errors" in new Setup {
 
-      val formWithValues = form.bind(
+      val formWithValues: Form[CashTransactionDates] = form.bind(
         Map(
-          s"$id.day" -> "",
           s"$id.month" -> "",
           s"$id.year" -> ""
         )
       )
 
       running(app) {
-        val inputDateView = app.injector.instanceOf[inputDate]
+        val inputDateView = app.injector.instanceOf[inputMonthAndYear]
 
         val output: HtmlFormat.Appendable = inputDateView(
           formWithValues,
@@ -189,7 +150,6 @@ class InputDateSpec extends SpecBase {
         val html: Document = Jsoup.parse(output.toString)
 
         html.getElementsByTag("legend").text() must include(headline)
-        html.getElementById(s"$id.day").attr(id) mustNot include("01")
         html.getElementById(s"$id.month").attr(id) mustNot include("01")
         html.getElementById(s"$id.year").attr(id) mustNot include("2021")
         html.getElementsByTag("input").attr("class") must include("govuk-input--error")
@@ -197,10 +157,11 @@ class InputDateSpec extends SpecBase {
     }
 
     trait Setup {
+
       implicit val clk: Clock = Clock.systemUTC()
-      val form = new CashTransactionsRequestPageFormProvider().apply()
-      val id = "value"
-      val headline = "Date of birth"
+      val form: Form[CashTransactionDates] = new SelectTransactionsFormProvider().apply()
+      val id: String = "value"
+      val headline: String = "Date of birth"
 
       val app: Application = application.build()
     }
