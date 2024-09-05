@@ -20,13 +20,14 @@
         span: components.span)
 
 @(
-        form: Form[_],
-        legendContent: String,
-        legendClasses: String,
-        id: String,
-        hintText: Option[String],
-        legendAsPageHeading: Boolean,
-        legendHiddenContent: Option[String])(implicit messages: Messages)
+    form: Form[_],
+    legendContent: String,
+    legendClasses: String,
+    id: String,
+    hintText: Option[String],
+    legendAsPageHeading: Boolean,
+    legendHiddenContent: Option[String]
+)(implicit messages: Messages)
 
 @monthError = @{
     if(form(s"$id.month").value.contains(emptyString)){ "govuk-input--error"} else {emptyString}

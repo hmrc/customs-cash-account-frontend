@@ -237,11 +237,6 @@ cf.form.error.end.date.invalid.real-date=Mae’n rhaid i’r dyddiad i fod yn dd
 error.summary.title = Mae problem wedi codi
 error.browser.title.prefix = Gwall:
 
-cf.cash-account.transactions.title=Pa drafodion cyfrif arian parod sydd eu hangen arnoch?
-cf.cash-account.transactions.heading=Pa drafodion cyfrif arian parod sydd eu hangen arnoch?
-cf.cash-account.transactions.request.date.hint-start-date=Mae’n rhaid i’r dyddiad dechrau fod ar ôl Hydref 2019. Er enghraifft, 3 2021.
-cf.cash-account.transactions.request.date.hint-end-date=Er enghraifft, 3 2021.
-
 cf.cash-account.transactions.request.review.heading=Y trafodion cyfrif arian parod sydd wedi’u dewis
 cf.cash-account.transactions.request.review.change=Newid
 cf.cash-account.transactions.request.review.account=Cyfrif:

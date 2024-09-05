@@ -56,7 +56,7 @@ class SelectTransactionsController @Inject()(identify: IdentifierAction,
       form.bindFromRequest().fold(formWithErrors => {
         Future.successful(BadRequest(view(formWithErrors)))
       },
-        value => customValidation(value, form)() match {
+        value => customValidation(value, form) match {
           case Some(formWithErrors) =>
             Future.successful(BadRequest(view(formWithErrors)))
           case None =>
@@ -68,7 +68,8 @@ class SelectTransactionsController @Inject()(identify: IdentifierAction,
   }
 
   private def customValidation(dates: CashTransactionDates,
-                               form: Form[CashTransactionDates])(): Option[Form[CashTransactionDates]] = {
+                               form: Form[CashTransactionDates]): Option[Form[CashTransactionDates]] = {
+
     def populateErrors(startMessage: String, endMessage: String): Form[CashTransactionDates] = {
       form.withError("start", startMessage)
         .withError("end", endMessage).fill(dates)
@@ -77,6 +78,7 @@ class SelectTransactionsController @Inject()(identify: IdentifierAction,
     dates match {
       case CashTransactionDates(start, end) if start.isAfter(end) =>
         Some(populateErrors("cf.form.error.start-after-end", "cf.form.error.end-before-start"))
+
       case _ => None
     }
   }

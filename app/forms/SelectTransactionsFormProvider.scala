@@ -25,7 +25,7 @@ import java.time.Clock
 import javax.inject.Inject
 
 class SelectTransactionsFormProvider @Inject()(implicit clock: Clock)
-    extends Mappings {
+  extends Mappings {
 
   def apply(): Form[CashTransactionDates] = {
     Form(

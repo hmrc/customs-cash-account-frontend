@@ -49,6 +49,7 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
   extends FrontendController(mcc) with I18nSupport with Logging {
 
   def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
+
     val result: EitherT[Future, Result, Result] = for {
       dates <- fromOptionF(cache.get(request.eori), Redirect(routes.SelectTransactionsController.onPageLoad()))
       account <- fromOptionF(apiConnector.getCashAccount(request.eori), NotFound(eh.notFoundTemplate))
@@ -77,9 +78,8 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
         errorResponse match {
           case NoTransactionsAvailable => Ok(noResults(new ResultsPageSummary(from, to)))
 
-          case TooManyTransactionsRequested => Redirect(
-            routes.SelectedTransactionsController.tooManyTransactionsSelected(
-              RequestedDateRange(from, to)))
+          case TooManyTransactionsRequested =>
+            Redirect(routes.SelectedTransactionsController.tooManyTransactionsSelected(RequestedDateRange(from, to)))
 
           case _ =>
             Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
