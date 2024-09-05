@@ -86,30 +86,45 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
   "retrieveCashTransactions" must {
     "call the correct URL and pass through the HeaderCarrier and CAN, " +
-      "and return a list of cash daily statements" in new Setup {
+      "return a list of cash daily statements while adding a UUID, and checking cache state" in new Setup {
 
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
+      when(mockCacheRepository.get(any[String])).thenReturn(Future.successful(None))
+      when(mockCacheRepository.set(any[String], any[CashTransactions])).thenReturn(Future.successful(true))
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
         .thenReturn(Future.successful(successResponse))
       when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-      when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
-      when(mockCacheRepository.set("can", successResponse)).thenReturn(Future.successful(true))
-
       val appWithMocks: Application = application
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient),
-          bind[RequestBuilder].toInstance(requestBuilder),
-          bind[MetricsReporterService].toInstance(mockMetricsReporterService),
-          bind[CacheRepository].toInstance(mockCacheRepository)
+          bind[CacheRepository].toInstance(mockCacheRepository),
+          bind[RequestBuilder].toInstance(requestBuilder)
         ).build()
 
       running(appWithMocks) {
         val result = await(connector(appWithMocks).retrieveCashTransactions("can", fromDate, toDate))
-        result mustBe Right(successResponse)
+
+        result match {
+          case Right(actualTransactions) =>
+            verify(mockCacheRepository).set("can", actualTransactions)
+
+            actualTransactions.cashDailyStatements.zip(successResponse.cashDailyStatements).foreach {
+              case (actualStatement, expectedStatement) =>
+                actualStatement.declarations.zip(expectedStatement.declarations).foreach {
+                  case (actualDeclaration, expectedDeclaration) =>
+                    actualDeclaration.secureMovementReferenceNumber must not be empty
+
+                    actualDeclaration.copy(secureMovementReferenceNumber = None) mustEqual
+                      expectedDeclaration.copy(secureMovementReferenceNumber = None)
+                }
+            }
+
+          case Left(error) => fail(s"Expected successful result but got $error")
+        }
       }
     }
 
@@ -385,6 +400,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   trait Setup {
     private val traderEori = "12345678"
     private val cashAccountNumber = "987654"
+    private val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
 
     val sessionId: SessionId = SessionId("session_1234")
     implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
@@ -424,7 +440,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         Some("pendingDeclarantReference"),
         LocalDate.parse("2020-07-21"),
         -100.00,
-        Nil)
+        Nil, Some(sMRN))
     )
 
     val cashDailyStatementRequest: CashDailyStatementRequest = CashDailyStatementRequest("can", fromDate, toDate)
@@ -438,16 +454,16 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         500.0,
         1000.00,
         Seq(Declaration("mrn1", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
-          LocalDate.parse("2020-07-18"), -84.00, Nil),
+          LocalDate.parse("2020-07-18"), -84.00, Nil, Some(sMRN)),
           Declaration("mrn2", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
-            LocalDate.parse("2020-07-18"), -65.00, Nil)),
+            LocalDate.parse("2020-07-18"), -65.00, Nil, Some(sMRN))),
         otherTransactions),
 
       CashDailyStatement(LocalDate.parse("2020-07-20"), 600.0, 1200.00,
         Seq(Declaration("mrn3", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
-          LocalDate.parse("2020-07-20"), -90.00, Nil),
+          LocalDate.parse("2020-07-20"), -90.00, Nil, Some(sMRN)),
           Declaration("mrn4", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
-            LocalDate.parse("2020-07-20"), -30.00, Nil)), Nil)
+            LocalDate.parse("2020-07-20"), -30.00, Nil, Some(sMRN))), Nil)
     )
 
     val appWithHttpClient: Application = application

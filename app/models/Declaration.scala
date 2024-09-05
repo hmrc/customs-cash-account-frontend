@@ -17,7 +17,7 @@
 package models
 
 import crypto.EncryptedValue
-import models.domain.{EORI, MRN}
+import models.domain.{EORI, MRN, UCR}
 import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
@@ -25,10 +25,11 @@ import java.time.LocalDate
 case class Declaration(movementReferenceNumber: MRN,
                        importerEori: Option[String],
                        declarantEori: EORI,
-                       declarantReference: Option[String],
+                       declarantReference: Option[UCR],
                        date: LocalDate,
                        amount: BigDecimal,
-                       taxGroups: Seq[TaxGroup])
+                       taxGroups: Seq[TaxGroup],
+                       secureMovementReferenceNumber: Option[String])
   extends Ordered[Declaration] {
   override def compare(that: Declaration): Int = movementReferenceNumber.compareTo(that.movementReferenceNumber)
 }
@@ -43,7 +44,8 @@ case class EncryptedDeclaration(movementReferenceNumber: EncryptedValue,
                                 declarantReference: Option[EncryptedValue],
                                 date: LocalDate,
                                 amount: BigDecimal,
-                                taxGroups: Seq[TaxGroup])
+                                taxGroups: Seq[TaxGroup],
+                                secureMovementReferenceNumber: String)
 
 object EncryptedDeclaration {
   implicit val format: OFormat[EncryptedDeclaration] = Json.format[EncryptedDeclaration]

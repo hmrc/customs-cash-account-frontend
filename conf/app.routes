@@ -23,3 +23,5 @@ GET         /logout                                 controllers.LogoutController
 GET         /download-requested-csv                 controllers.DownloadCsvController.downloadRequestedCsv(disposition: Option[String], range: models.RequestedDateRange)
 GET         /download-csv                           controllers.DownloadCsvController.downloadCsv(disposition: Option[String])
 GET         /csv-download-error                     controllers.DownloadCsvController.showUnableToDownloadCSV()
+
+GET         /transaction/:ref                       controllers.DeclarationDetailController.displayDetails(ref: String, page: Option[Int])

@@ -84,7 +84,8 @@ cf.cash-account.detail.unable-download-csv=Mae’n ddrwg gennym – roedd proble
 cf.cash-account.detail.try-again-later=Rhowch gynnig arall arni yn nes ymlaen.
 cf.cash-account-detail.back-to-cash-account=Yn ôl i ‘Cyfrif arian parod’
 cf.cash-account-detail.exceeded-threshold = <p>Mae gormod o drafodion o’r 6 mis diwethaf i’w harddangos yn olynol.</p><p>Bwrw golwg dros drafodion blaenorol o gyfnod byrrach gan ddefnyddio’r cysylltiad chwilio isod.</p>
-
+cf.cash-account.detail.declaration.title=Trafodiad datganiad
+cf.cash-account.detail.total.paid=Cyfanswm a dalwyd
 
 # Timeout Messages
 # ----------------------------------------------------------

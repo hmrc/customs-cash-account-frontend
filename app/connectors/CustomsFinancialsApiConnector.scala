@@ -29,16 +29,18 @@ import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, UpstreamErrorResponse}
 
-import java.net.URL
 import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 
+import java.util.UUID
+
 class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
                                               appConfig: AppConfig,
                                               metricsReporter: MetricsReporterService,
-                                              cacheRepository: CacheRepository)
+                                              cacheRepository: CacheRepository,
+                                              loggerFactory: LoggerFactory)
                                              (implicit executionContext: ExecutionContext) {
 
   private val logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
@@ -91,6 +93,18 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
                               (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
+    def addUUID(response: CashTransactions): CashTransactions = {
+      response.copy(
+        cashDailyStatements = response.cashDailyStatements.map { statement =>
+          statement.copy(
+            declarations = statement.declarations.map { declaration =>
+              declaration.copy(secureMovementReferenceNumber = Some(UUID.randomUUID().toString))
+            }
+          )
+        }
+      )
+    }
+
     cacheRepository.get(can).flatMap {
       case Some(value) => Future.successful(Right(value))
 
@@ -99,11 +113,12 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
           .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
           .execute[CashTransactions]
           .flatMap { response =>
-            cacheRepository.set(can, response).map { successfulWrite =>
+            val transactionsWithUUID = addUUID(response)
+            cacheRepository.set(can, transactionsWithUUID).map { successfulWrite =>
               if (!successfulWrite) {
                 logger.error("Failed to store data in the session cache defaulting to the api response")
               }
-              Right(response)
+              Right(transactionsWithUUID)
             }
           }
     }.recover {
@@ -116,7 +131,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
         Left(NoTransactionsAvailable)
 
       case e =>
-        logger.error(s"Unable to retrieve cash transactions :${e.getMessage}")
+        logger.error(s"Unable to retrieve cash transactions: ${e.getMessage}")
         Left(UnknownException)
     }
   }
