@@ -39,8 +39,7 @@ import java.util.UUID
 class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
                                               appConfig: AppConfig,
                                               metricsReporter: MetricsReporterService,
-                                              cacheRepository: CacheRepository,
-                                              loggerFactory: LoggerFactory)
+                                              cacheRepository: CacheRepository)
                                              (implicit executionContext: ExecutionContext) {
 
   private val logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)

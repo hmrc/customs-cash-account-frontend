@@ -86,9 +86,9 @@ object DeclarationDetailViewModel {
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.excise"))),
           value = Value(content = HtmlContent(
-            Formatters.formatCurrencyAmount(declaration.taxGroups.find(_.taxTypeGroup == ExciseDuty)
+            declaration.taxGroups.find(_.taxTypeGroup == ExciseDuty)
               .map(_.amount)
-              .getOrElse(BigDecimal(0)))
+              .fold(emptyString)(amount => Formatters.formatCurrencyAmount(amount))
           )),
           actions = None
         ),

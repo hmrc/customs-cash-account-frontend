@@ -26,9 +26,11 @@ import play.twirl.api.{Html, HtmlFormat}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+import uk.gov.hmrc.govukfrontend
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import views.html.cash_account_declaration_details
 import uk.gov.hmrc.govukfrontend.views
+import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist
 import utils.SpecBase
 
@@ -104,8 +106,10 @@ class DeclarationDetailViewModelSpec extends SpecBase {
         declarantReference = None
       )
 
-      declarationSummaryList.rows must have size 5
-      val contentMap: Map[String, String] = declarationSummaryList.rows.map(row =>
+      val emptyDeclarationFields: Aliases.SummaryList =
+        DeclarationDetailViewModel.declarationSummaryList(declarationWithMissingFields)(messages)
+
+      val contentMap: Map[String, String] = emptyDeclarationFields.rows.map(row =>
         (row.key.content, row.value.content) match {
           case (Text(key), Text(value)) => (key, value)
           case (Text(key), HtmlContent(value)) => (key, value.body)
@@ -171,8 +175,11 @@ class DeclarationDetailViewModelSpec extends SpecBase {
       secureMovementReferenceNumber = Some("5a71a767-5c1c-4df8-8eef-2b83769b8fda")
     )
 
-    val declarationSummaryList = DeclarationDetailViewModel.declarationSummaryList(declaration)(messages)
-    val taxSummaryList = DeclarationDetailViewModel.taxSummaryList(declaration)(messages)
+    val declarationSummaryList: Aliases.SummaryList =
+      DeclarationDetailViewModel.declarationSummaryList(declaration)(messages)
+
+    val taxSummaryList: govukfrontend.views.Aliases.SummaryList =
+      DeclarationDetailViewModel.taxSummaryList(declaration)(messages)
 
     val viewModel: DeclarationDetailViewModel = DeclarationDetailViewModel("GB326037543470", cashAccount)
 
