@@ -20,7 +20,7 @@ import cats.data.EitherT
 import cats.data.EitherT.fromOptionF
 import cats.implicits.*
 import config.{AppConfig, ErrorHandler}
-import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested}
+import connectors.{CustomsFinancialsApiConnector, ErrorResponse, NoTransactionsAvailable, TooManyTransactionsRequested}
 import controllers.actions.IdentifierAction
 import models.request.IdentifierRequest
 import models.{CashAccount, CashAccountViewModel, RequestedDateRange}
@@ -75,16 +75,7 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
                                                 appConfig: AppConfig): Future[Result] = {
     apiConnector.retrieveHistoricCashTransactions(account.number, from, to).map {
 
-      case Left(errorResponse) => errorResponse match {
-
-          case NoTransactionsAvailable => Ok(noResults(new ResultsPageSummary(from, to)))
-
-          case TooManyTransactionsRequested =>
-            Redirect(routes.SelectedTransactionsController.tooManyTransactionsSelected(RequestedDateRange(from, to)))
-
-          case _ =>
-            Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
-        }
+      case Left(errorResponse) => processErrorResponse(account, from, to, errorResponse)
 
       case Right(_) =>
         Ok(
@@ -96,10 +87,26 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
     }
   }
 
+  private def processErrorResponse(account: CashAccount,
+                                   from: LocalDate,
+                                   to: LocalDate,
+                                   errorResponse: ErrorResponse)(
+    implicit request: IdentifierRequest[AnyContent], appConfig: AppConfig): Result = {
+
+    errorResponse match {
+
+      case NoTransactionsAvailable => Ok(noResults(new ResultsPageSummary(from, to)))
+
+      case TooManyTransactionsRequested => Redirect(
+        routes.SelectedTransactionsController.tooManyTransactionsSelected(RequestedDateRange(from, to)))
+
+      case _ => Ok(transactionsUnavailable(CashAccountViewModel(request.eori, account), appConfig.transactionsTimeoutFlag))
+    }
+  }
+
   def tooManyTransactionsSelected(dateRange: RequestedDateRange): Action[AnyContent] =
     identify {
       implicit req =>
-
         Ok(
           tooManyResults(
             new ResultsPageSummary(dateRange.from, dateRange.to),

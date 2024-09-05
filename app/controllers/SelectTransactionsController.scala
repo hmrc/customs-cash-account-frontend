@@ -20,10 +20,11 @@ import config.AppConfig
 import controllers.actions.*
 import forms.{CashTransactionsRequestPageFormProvider, SelectTransactionsFormProvider}
 import models.*
+import models.request.IdentifierRequest
 import org.slf4j.{Logger, LoggerFactory}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.RequestedTransactionsCache
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Utils.{comma, hyphen, singleSpace}
@@ -56,15 +57,21 @@ class SelectTransactionsController @Inject()(identify: IdentifierAction,
       form.bindFromRequest().fold(formWithErrors => {
         Future.successful(BadRequest(view(formWithErrors)))
       },
-        value => customValidation(value, form) match {
-          case Some(formWithErrors) =>
-            Future.successful(BadRequest(view(formWithErrors)))
-          case None =>
-            cache.set(request.eori, value).map { _ =>
-              Redirect(routes.SelectedTransactionsController.onPageLoad())
-            }
-        }
+        value => processCustomValidation(value)
       )
+  }
+
+  private def processCustomValidation(value: CashTransactionDates)
+                                     (implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
+
+    customValidation(value, form) match {
+      case Some(formWithErrors) =>
+        Future.successful(BadRequest(view(formWithErrors)))
+      case None =>
+        cache.set(request.eori, value).map { _ =>
+          Redirect(routes.SelectedTransactionsController.onPageLoad())
+        }
+    }
   }
 
   private def customValidation(dates: CashTransactionDates,

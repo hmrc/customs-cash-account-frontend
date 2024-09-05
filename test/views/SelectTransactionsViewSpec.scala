@@ -39,11 +39,11 @@ class SelectTransactionsViewSpec extends ViewTestHelper {
       }
 
       "start field must be Displayed" in new Setup {
-        view.getElementById("start").text() mustBe "Month Year"
+        view.getElementById("start").text() mustBe dateText
       }
 
       "end field must be Displayed" in new Setup {
-        view.getElementById("start").text() mustBe "Month Year"
+        view.getElementById("start").text() mustBe dateText
       }
 
       "header is correct" in new Setup {
@@ -54,6 +54,8 @@ class SelectTransactionsViewSpec extends ViewTestHelper {
   }
 
   trait Setup {
+    val dateText = "Month Year"
+
     implicit val clk: Clock = Clock.systemUTC()
     val form: Form[CashTransactionDates] = new SelectTransactionsFormProvider().apply()
     val view: Document = Jsoup.parse(app.injector.instanceOf[select_transactions_view].apply(form).body)
