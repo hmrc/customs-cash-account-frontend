@@ -18,7 +18,7 @@ package views
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import views.html.selected_transactions_view
+import views.html.selected_transactions
 import viewmodels.ResultsPageSummary
 
 import java.time.LocalDate
@@ -63,7 +63,7 @@ class SelectedTransactionsViewSpec extends ViewTestHelper {
     val displayAccountNumberFormat: String = s"Account: $accountNumber"
 
     val view: Document =
-      Jsoup.parse(app.injector.instanceOf[selected_transactions_view].apply(
+      Jsoup.parse(app.injector.instanceOf[selected_transactions].apply(
         summary, returnLink, accountNumber).body)
   }
 }

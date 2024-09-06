@@ -36,7 +36,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelectedTransactionsController @Inject()(resultView: selected_transactions_view,
+class SelectedTransactionsController @Inject()(resultView: selected_transactions,
                                                apiConnector: CustomsFinancialsApiConnector,
                                                transactionsUnavailable: cash_account_transactions_not_available,
                                                tooManyResults: cash_transactions_too_many_results,

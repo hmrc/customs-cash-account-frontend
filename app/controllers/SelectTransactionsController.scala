@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SelectTransactionsController @Inject()(identify: IdentifierAction,
                                              formProvider: SelectTransactionsFormProvider,
-                                             view: select_transactions_view,
+                                             view: select_transactions,
                                              cache: RequestedTransactionsCache,
                                              implicit val mcc: MessagesControllerComponents)
                                             (implicit ec: ExecutionContext, appConfig: AppConfig)

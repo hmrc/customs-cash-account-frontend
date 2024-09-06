@@ -20,7 +20,7 @@ import models.CashTransactionDates
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import views.html.select_transactions_view
+import views.html.select_transactions
 import forms.SelectTransactionsFormProvider
 
 import java.time.Clock
@@ -58,6 +58,6 @@ class SelectTransactionsViewSpec extends ViewTestHelper {
 
     implicit val clk: Clock = Clock.systemUTC()
     val form: Form[CashTransactionDates] = new SelectTransactionsFormProvider().apply()
-    val view: Document = Jsoup.parse(app.injector.instanceOf[select_transactions_view].apply(form).body)
+    val view: Document = Jsoup.parse(app.injector.instanceOf[select_transactions].apply(form).body)
   }
 }

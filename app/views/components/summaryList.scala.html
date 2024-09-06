@@ -37,7 +37,7 @@
             <a class="govuk-link" href="@summary.rows(fullstop).actions.head.items.head.href">
                 <span class="govuk-visually-hidden">
                     @summary.rows(fullstop).actions.head.items.head.visuallyHiddenText</span>
-                <span>
+                <span id="downloadChange">
                     @Html(messages(
                         if (change) "cf.cash-account.transactions.request.review.change"
                         else "cf.cash-account.detail.csv.download"))
