@@ -38,11 +38,10 @@
                 <span class="govuk-visually-hidden">
                     @summary.rows(fullstop).actions.head.items.head.visuallyHiddenText</span>
                 <span>
-                    @if(change) {
-                        @messages("cf.cash-account.transactions.request.review.change")
-                    } else {
-                        @messages("cf.cash-account.detail.csv.download")
-                    }</span>
+                    @Html(messages(
+                        if (change) "cf.cash-account.transactions.request.review.change"
+                        else "cf.cash-account.detail.csv.download"))
+                </span>
             </a>
         </dd>
     </div>
