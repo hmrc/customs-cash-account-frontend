@@ -21,8 +21,8 @@ import org.jsoup.nodes.Document
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
-import views.html.components.summaryList
 import viewmodels.ResultsPageSummary
+import views.html.components.summaryList
 
 import java.time.LocalDate
 
@@ -30,17 +30,17 @@ class SummaryListSpec extends SpecBase {
 
   "component" should {
 
-   "display correct contents" when {
-     "when change is false" in new Setup {
-       summaryListComponent.getElementById(id).text() mustBe download
-       summaryListComponent.getElementsByClass(classes).size() mustBe 1
-     }
+    "display correct contents" when {
+      "when change is false" in new Setup {
+        summaryListComponent.getElementById(id).text() mustBe download
+        summaryListComponent.getElementsByClass(classes).size() mustBe 1
+      }
 
-     "change is true without fullstop" in new Setup {
-       summaryListComponentWithChange.getElementById(id).text() mustBe change
-       summaryListComponentWithChange.getElementsByClass(classes).size() mustBe 1
-     }
-   }
+      "change is true without fullstop" in new Setup {
+        summaryListComponentWithChange.getElementById(id).text() mustBe change
+        summaryListComponentWithChange.getElementsByClass(classes).size() mustBe 1
+      }
+    }
   }
 
   trait Setup {
