@@ -92,7 +92,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
                               (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
-    def addUUID(response: CashTransactions): CashTransactions = {
+    def addUUIDToCashTransaction(response: CashTransactions): CashTransactions = {
       response.copy(
         cashDailyStatements = response.cashDailyStatements.map { statement =>
           statement.copy(
@@ -112,11 +112,13 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
           .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
           .execute[CashTransactions]
           .flatMap { response =>
-            val transactionsWithUUID = addUUID(response)
+            val transactionsWithUUID = addUUIDToCashTransaction(response)
+
             cacheRepository.set(can, transactionsWithUUID).map { successfulWrite =>
               if (!successfulWrite) {
                 logger.error("Failed to store data in the session cache defaulting to the api response")
               }
+
               Right(transactionsWithUUID)
             }
           }

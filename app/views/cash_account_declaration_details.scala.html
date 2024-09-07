@@ -17,10 +17,10 @@
 @import helpers.Formatters
 @import viewmodels.DeclarationDetailViewModel
 
-@this(main_template: Layout, govukSummaryList: GovukSummaryList, h1: components.h1)
+@this(main_template: Layout, govukSummaryList: GovukSummaryList, h1: components.h1, h2: components.h2Inner)
 
 @(viewModel: DeclarationDetailViewModel,
-  declarations: Declaration,
+  declarationDetails: Declaration,
   pageNumber: Option[Int]
 )(implicit request: Request[_], messages: Messages)
 
@@ -30,14 +30,16 @@
   fullWidth = false
 ) {
 
-  <h2 class="govuk-caption-xl" id="account-number">
-    @messages("cf.cash-account.detail.account", viewModel.account.number)
-  </h2>
+  @h2(msg = "cf.cash-account.detail.account",
+      innerMsg = viewModel.account.number,
+      id = Some("account-number"),
+      classes = "govuk-caption-xl"
+  )
 
   @h1(msg="cf.cash-account.detail.declaration.title")
 
-  @govukSummaryList(DeclarationDetailViewModel.declarationSummaryList(declarations))
+  @govukSummaryList(DeclarationDetailViewModel.declarationSummaryList(declarationDetails))
 
-  @govukSummaryList(DeclarationDetailViewModel.taxSummaryList(declarations))
+  @govukSummaryList(DeclarationDetailViewModel.taxSummaryList(declarationDetails))
 
 }
