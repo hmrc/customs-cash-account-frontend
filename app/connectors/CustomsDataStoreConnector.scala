@@ -86,5 +86,4 @@ class CustomsDataStoreConnector @Inject()(httpClient: HttpClientV2,
           EmailUnverifiedResponse(None)
       }
   }
-
 }

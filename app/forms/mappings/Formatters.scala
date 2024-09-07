@@ -18,7 +18,7 @@ package forms.mappings
 
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import utils.Utils._
+import utils.Utils.{emptyString, comma}
 
 import scala.util.control.Exception.nonFatalCatch
 import scala.util.{Failure, Success, Try}
@@ -29,7 +29,7 @@ trait Formatters {
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
       data.get(key) match {
-        case None | Some("") => Left(Seq(FormError(key, errorKey)))
+        case None | Some(utils.Utils.emptyString) => Left(Seq(FormError(key, errorKey)))
         case Some(s) => Right(s)
       }
 
