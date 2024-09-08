@@ -16,7 +16,7 @@
 
 package views
 
-import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CustomsDuty, Declaration, ExciseDuty, ImportVat, TaxGroup}
+import models._
 import viewmodels.DeclarationDetailViewModel
 import views.html.cash_account_declaration_details
 import org.jsoup.Jsoup
@@ -74,6 +74,8 @@ class CashAccountDeclarationDetailsSpec extends ViewTestHelper {
     val declarantEori = "GB987654321000"
     val declarantReference: Option[String] = Some("UCR12345")
 
+    val taxTypes: Seq[TaxType] = Seq(TaxType(reasonForSecurity = "Reason", taxTypeID = "50", amount = fourHundred))
+
     val declaration: Declaration = Declaration(
       movementReferenceNumber = movementReferenceNumber,
       importerEori = importerEori,
@@ -82,9 +84,9 @@ class CashAccountDeclarationDetailsSpec extends ViewTestHelper {
       date = date,
       amount = hundred,
       taxGroups = Seq(
-        TaxGroup(CustomsDuty, fiveHundred),
-        TaxGroup(ImportVat, fourHundred),
-        TaxGroup(ExciseDuty, hundred)
+        TaxGroup(CustomsDuty, fiveHundred, taxTypes),
+        TaxGroup(ImportVat, fourHundred, taxTypes),
+        TaxGroup(ExciseDuty, hundred, taxTypes)
       ),
       secureMovementReferenceNumber = None
     )

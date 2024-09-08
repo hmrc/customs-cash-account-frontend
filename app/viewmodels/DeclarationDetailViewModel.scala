@@ -68,7 +68,7 @@ object DeclarationDetailViewModel {
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.duty"))),
           value = Value(content = HtmlContent(
-            Formatters.formatCurrencyAmount(declaration.taxGroups.find(_.taxTypeGroup == CustomsDuty)
+            Formatters.formatCurrencyAmount(declaration.taxGroups.find(_.taxGroupDescription == CustomsDuty)
               .map(_.amount)
               .getOrElse(BigDecimal(0)))
           )),
@@ -77,7 +77,7 @@ object DeclarationDetailViewModel {
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.vat"))),
           value = Value(content = HtmlContent(
-            Formatters.formatCurrencyAmount(declaration.taxGroups.find(_.taxTypeGroup == ImportVat)
+            Formatters.formatCurrencyAmount(declaration.taxGroups.find(_.taxGroupDescription == ImportVat)
               .map(_.amount)
               .getOrElse(BigDecimal(0)))
           )),
@@ -86,7 +86,7 @@ object DeclarationDetailViewModel {
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.excise"))),
           value = Value(content = HtmlContent(
-            declaration.taxGroups.find(_.taxTypeGroup == ExciseDuty)
+            declaration.taxGroups.find(_.taxGroupDescription == ExciseDuty)
               .map(_.amount)
               .fold(emptyString)(amount => Formatters.formatCurrencyAmount(amount))
           )),

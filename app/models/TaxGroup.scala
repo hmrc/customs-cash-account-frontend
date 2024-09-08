@@ -18,7 +18,13 @@ package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class TaxGroup(taxTypeGroup: TaxGroupType, amount: BigDecimal)
+case class TaxGroup(taxGroupDescription: TaxGroupType, amount: BigDecimal, taxTypes: Seq[TaxType])
+
+case class TaxType(reasonForSecurity: String, taxTypeID: String, amount: BigDecimal)
+
+object TaxType {
+  implicit val format: OFormat[TaxType] = Json.format[TaxType]
+}
 
 object TaxGroup {
   implicit val format: OFormat[TaxGroup] = Json.format[TaxGroup]

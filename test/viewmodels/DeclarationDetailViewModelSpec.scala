@@ -18,7 +18,7 @@ package viewmodels
 
 import helpers.Formatters
 import models.domain.EORI
-import models.{CustomsDuty, Declaration, ExciseDuty, ImportVat, TaxGroup}
+import models.{CustomsDuty, Declaration, ExciseDuty, ImportVat, TaxGroup, TaxType}
 import org.mockito.Mockito.*
 import play.api.i18n.{Messages, MessagesApi}
 import uk.gov.hmrc.govukfrontend
@@ -108,9 +108,9 @@ class DeclarationDetailViewModelSpec extends SpecBase {
 
       val declarationWithExcise: Declaration = declaration.copy(
         taxGroups = Seq(
-          TaxGroup(CustomsDuty, fourHundred),
-          TaxGroup(ImportVat, hundred),
-          TaxGroup(ExciseDuty, fifty)
+          TaxGroup(CustomsDuty, fourHundred, taxTypes),
+          TaxGroup(ImportVat, hundred, taxTypes),
+          TaxGroup(ExciseDuty, fifty, taxTypes)
         )
       )
 
@@ -163,6 +163,8 @@ class DeclarationDetailViewModelSpec extends SpecBase {
     val declarantReference: Option[String] = Some("UCR12345")
     val secureMovementReferenceNumber: Option[String] = Some("5a71a767-5c1c-4df8-8eef-2b83769b8fda")
 
+    val taxTypes: Seq[TaxType] = Seq(TaxType(reasonForSecurity = "Reason", taxTypeID = "50", amount = hundred))
+
     val declaration: Declaration = Declaration(
       movementReferenceNumber = movementReferenceNumber,
       importerEori = importerEori,
@@ -171,8 +173,8 @@ class DeclarationDetailViewModelSpec extends SpecBase {
       date = date,
       amount = fiveHundred,
       taxGroups = Seq(
-        TaxGroup(CustomsDuty, fourHundred),
-        TaxGroup(ImportVat, hundred)
+        TaxGroup(CustomsDuty, fourHundred, taxTypes),
+        TaxGroup(ImportVat, hundred, taxTypes)
       ),
       secureMovementReferenceNumber = secureMovementReferenceNumber
     )
