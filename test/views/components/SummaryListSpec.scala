@@ -52,7 +52,7 @@ class SummaryListSpec extends SpecBase {
     val month = 3
     val year = 2022
 
-    val download: String = "Download CSV file"
+    val download: String = "Download CSV"
     val change: String = "Change"
     val classes: String = "govuk-summary-list__actions"
     val id: String = "downloadChange"
