@@ -170,7 +170,7 @@ class DownloadCsvControllerSpec extends SpecBase {
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
         ).configure("features.fixed-systemdate-for-tests" -> "true"
-      ).build()
+        ).build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
@@ -196,7 +196,7 @@ class DownloadCsvControllerSpec extends SpecBase {
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
           bind[AuditingService].toInstance(mockAuditingService)
         ).configure("features.fixed-systemdate-for-tests" -> "true"
-      ).build()
+        ).build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
@@ -220,7 +220,7 @@ class DownloadCsvControllerSpec extends SpecBase {
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
         ).configure("features.fixed-systemdate-for-tests" -> "true"
-      ).build()
+        ).build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
@@ -397,6 +397,7 @@ class DownloadCsvControllerSpec extends SpecBase {
     val cashAccountNumber = "1234567"
     val eori = "exampleEori"
     val someCan = "1234567"
+    val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
 
     val mockAuditingService: AuditingService = mock[AuditingService]
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
@@ -406,7 +407,7 @@ class DownloadCsvControllerSpec extends SpecBase {
     val listOfPendingTransactions: Seq[Declaration] =
       Seq(Declaration("pendingDeclarationID", Some("pendingImporterEORI"),
         "pendingDeclarantEORINumber", Some("pendingDeclarantReference"),
-        LocalDate.parse("2020-07-21"), -100.00, Nil))
+        LocalDate.parse("2020-07-21"), -100.00, Nil, Some(sMRN)))
 
     val day = 10
     val month = 10
@@ -418,16 +419,16 @@ class DownloadCsvControllerSpec extends SpecBase {
     val cashDailyStatements: Seq[CashDailyStatement] = Seq(
       CashDailyStatement(LocalDate.parse("2020-07-18"), 0.0, 1000.00,
         Seq(Declaration("mrn1", Some("Importer EORI"), "Declarant EORI",
-          Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil),
+          Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil, Some(sMRN)),
           Declaration("mrn2", Some("Importer EORI"), "Declarant EORI",
-            Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -65.00, Nil)),
+            Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -65.00, Nil, Some(sMRN))),
         Seq(Transaction(45.67, Payment, None), Transaction(-76.34, Withdrawal, Some("77665544")))),
 
       CashDailyStatement(LocalDate.parse("2020-07-20"), 0.0, 1200.00,
         Seq(Declaration("mrn3", Some("Importer EORI"), "Declarant EORI",
-          Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil),
+          Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil, Some(sMRN)),
           Declaration("mrn4", Some("Importer EORI"), "Declarant EORI",
-            Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)),
+            Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil, Some(sMRN))),
         Seq(Transaction(67.89, Payment, None)))
     )
 
@@ -472,7 +473,9 @@ class DownloadCsvControllerSpec extends SpecBase {
       randomString(randomStringLength),
       Some(randomString(randomStringLength)),
       randomLocalDate,
-      randomBigDecimal, Nil)
+      randomBigDecimal,
+      Nil,
+      Some("ic62zbad-75fa-445f-962b-cc92311686b8e"))
   }
 
   def randomCashDailyStatement: CashDailyStatement = {

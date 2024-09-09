@@ -16,9 +16,10 @@
 
 package crypto
 
-import models._
+import models.*
 import utils.Utils.emptyString
 
+import java.util.UUID
 import javax.inject.Inject
 
 class CashTransactionsEncrypter @Inject()(crypto: AesGCMCrypto) {
@@ -69,7 +70,8 @@ class CashTransactionsEncrypter @Inject()(crypto: AesGCMCrypto) {
       declaration.declarantReference.map(encrypt),
       declaration.date,
       declaration.amount,
-      declaration.taxGroups
+      declaration.taxGroups,
+      declaration.secureMovementReferenceNumber.getOrElse(UUID.randomUUID().toString)
     )
   }
 
@@ -86,7 +88,8 @@ class CashTransactionsEncrypter @Inject()(crypto: AesGCMCrypto) {
       encryptedDeclaration.declarantReference.map(decrypt),
       encryptedDeclaration.date,
       encryptedDeclaration.amount,
-      encryptedDeclaration.taxGroups
+      encryptedDeclaration.taxGroups,
+      Some(encryptedDeclaration.secureMovementReferenceNumber)
     )
   }
 }

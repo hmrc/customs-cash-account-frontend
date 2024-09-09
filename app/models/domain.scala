@@ -24,6 +24,7 @@ package object domain {
   type LinkId = String
   type CAN = String
   type MRN = String
+  type UCR = String
 
   implicit def optionBindable: PathBindable[Option[LinkId]] = new PathBindable[Option[LinkId]] {
 
