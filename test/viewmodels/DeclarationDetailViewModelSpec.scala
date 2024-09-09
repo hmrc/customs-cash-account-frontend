@@ -80,7 +80,6 @@ class DeclarationDetailViewModelSpec extends SpecBase {
       extractedResultData must contain allElementsOf expectedTaxData
     }
 
-
     "handle missing optional fields correctly in declarationSummaryList" in new Setup {
 
       val declarationWithMissingFields: Declaration = declaration.copy(
@@ -126,7 +125,6 @@ class DeclarationDetailViewModelSpec extends SpecBase {
 
       extractedResultData must contain((messages("cf.cash-account.csv.excise"), exciseValue))
     }
-
 
     "handle missing excise duty correctly" in new Setup {
 
