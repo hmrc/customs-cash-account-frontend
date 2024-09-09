@@ -27,7 +27,6 @@ class DeclarationSpec extends SpecBase {
   "Declaration format" should {
 
     "serialize and deserialize a Declaration with all fields populated" in new Setup {
-
       val json: JsValue = Declaration.format.writes(declarations)
       val result: Declaration = Declaration.format.reads(json).get
       result mustBe declarations
@@ -49,7 +48,6 @@ class DeclarationSpec extends SpecBase {
   "EncryptedDeclaration format" should {
 
     "serialize and deserialize an EncryptedDeclaration with all fields populated" in new Setup {
-
       val json: JsValue = EncryptedDeclaration.format.writes(encryptedDeclaration)
       val result: EncryptedDeclaration = EncryptedDeclaration.format.reads(json).get
       result mustBe encryptedDeclaration

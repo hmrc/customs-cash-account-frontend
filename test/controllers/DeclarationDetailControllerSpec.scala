@@ -34,7 +34,6 @@ class DeclarationDetailControllerSpec extends SpecBase {
   "Cash Account Declaration Transaction Details" must {
 
     "return an OK view when a transaction is found" in new Setup {
-
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))

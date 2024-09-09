@@ -34,28 +34,23 @@ object DeclarationDetailViewModel {
       rows = Seq(
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.date"))),
-          value = Value(content = HtmlContent(Formatters.dateAsDayMonthAndYear(declaration.date))),
-          actions = None
+          value = Value(content = HtmlContent(Formatters.dateAsDayMonthAndYear(declaration.date)))
         ),
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.movementReferenceNumber"))),
-          value = Value(content = HtmlContent(declaration.movementReferenceNumber)),
-          actions = None
+          value = Value(content = HtmlContent(declaration.movementReferenceNumber))
         ),
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.uniqueConsignmentReference"))),
-          value = Value(content = HtmlContent(declaration.declarantReference.getOrElse(emptyString))),
-          actions = None
+          value = Value(content = HtmlContent(declaration.declarantReference.getOrElse(emptyString)))
         ),
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.declarantEori"))),
-          value = Value(content = HtmlContent(declaration.declarantEori)),
-          actions = None
+          value = Value(content = HtmlContent(declaration.declarantEori))
         ),
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.importerEori"))),
-          value = Value(content = HtmlContent(declaration.importerEori.getOrElse(emptyString))),
-          actions = None
+          value = Value(content = HtmlContent(declaration.importerEori.getOrElse(emptyString)))
         )
       )
     )
@@ -71,8 +66,7 @@ object DeclarationDetailViewModel {
             Formatters.formatCurrencyAmount(declaration.taxGroups.find(_.taxGroupDescription == CustomsDuty)
               .map(_.amount)
               .getOrElse(BigDecimal(0)))
-          )),
-          actions = None
+          ))
         ),
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.vat"))),
@@ -80,8 +74,7 @@ object DeclarationDetailViewModel {
             Formatters.formatCurrencyAmount(declaration.taxGroups.find(_.taxGroupDescription == ImportVat)
               .map(_.amount)
               .getOrElse(BigDecimal(0)))
-          )),
-          actions = None
+          ))
         ),
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.excise"))),
@@ -89,15 +82,13 @@ object DeclarationDetailViewModel {
             declaration.taxGroups.find(_.taxGroupDescription == ExciseDuty)
               .map(_.amount)
               .fold(emptyString)(amount => Formatters.formatCurrencyAmount(amount))
-          )),
-          actions = None
+          ))
         ),
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.detail.total.paid"))),
           value = Value(content = HtmlContent(
             Formatters.formatCurrencyAmount(declaration.amount)
-          )),
-          actions = None
+          ))
         )
       )
     )
