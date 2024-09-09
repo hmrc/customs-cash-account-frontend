@@ -53,6 +53,6 @@ object Formatters {
 
     numberFormat.setMaximumFractionDigits(maxDecimalPlaces)
     numberFormat.setMinimumFractionDigits(maxDecimalPlaces)
-    numberFormat.format(amount)
+    numberFormat.format(amount.abs)
   }
 }
