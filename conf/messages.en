@@ -240,8 +240,8 @@ error.browser.title.prefix = Error:
 
 cf.cash-account.transactions.title=Which cash account transactions do you need?
 cf.cash-account.transactions.heading=Which cash account transactions do you need?
-cf.cash-account.transactions.request.date.hint-start-date=Start date must be after October 2019. For example, 3 2021.
-cf.cash-account.transactions.request.date.hint-end-date=For example, 3 2021.
+cf.cash-account.transactions.request.date.hint-start-date.v2=Start date must be after October 2019. For example, 3 2021.
+cf.cash-account.transactions.request.date.hint-end-date.v2=For example, 3 2021.
 
 cf.cash-account.transactions.request.review.heading=Selected cash account transactions
 cf.cash-account.transactions.request.review.change=Change
