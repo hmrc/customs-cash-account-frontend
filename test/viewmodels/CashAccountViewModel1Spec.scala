@@ -20,7 +20,7 @@ import models.domain.CAN
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
-import 
+import models.{CashAccount, CDSAccountStatus, CDSCashBalance, AccountStatusOpen}
 
 class CashAccountViewModel1Spec extends SpecBase {
 
@@ -42,15 +42,15 @@ class CashAccountViewModel1Spec extends SpecBase {
 
     val eoriNumber = "test_eori"
     val can = "12345678"
+    val balance: BigDecimal = BigDecimal(8788.00)
 
     val app: Application = application.build()
     implicit val msgs: Messages = messages(app)
 
     val cashAccount: CashAccount = CashAccount(number = can,
       owner = eoriNumber,
-      status: CDSAccountStatus,
-      balances: CDSCashBalance)
-
+      status = AccountStatusOpen,
+      balances = CDSCashBalance(Some(balance)))
   }
 
 }

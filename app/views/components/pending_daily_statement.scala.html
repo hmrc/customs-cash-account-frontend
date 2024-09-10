@@ -30,14 +30,20 @@
 )
 
 @if(index == 0) {
- <h3 class="govuk-heading-m  govuk-!-padding-top-4 govuk-!-margin-bottom-1" id="@{s"pending-heading-${pendingDailyStatement.date}"}" aria-describedby="@{s"pending-detail-${pendingDailyStatement.date}"}"> @{Formatters.dateAsDayMonthAndYear(pendingDailyStatement.date)}</h3>
+ <h3 class="govuk-heading-m  govuk-!-padding-top-4 govuk-!-margin-bottom-1"
+     id="@{s"pending-heading-${pendingDailyStatement.date}"}"
+    aria-describedby="@{s"pending-detail-${pendingDailyStatement.date}"}"> @{Formatters.dateAsDayMonthAndYear(pendingDailyStatement.date)}
+</h3>
+
  <p class="govuk-body govuk-!-margin-bottom-2" id="@{
   s"pending-detail-${pendingDailyStatement.date}"
  }"> @{
   model.account.balances.AvailableAccountBalance.fold(""){balance => messages("cf.cash-account.detail.available-balance", Formatters.formatCurrencyAmount(balance))}
  }</p>
 } else {
- <h3 class="govuk-heading-m  govuk-!-padding-top-4 govuk-!-margin-bottom-1" id="@{s"pending-heading-${pendingDailyStatement.date}"}"> @{Formatters.dateAsDayMonthAndYear(pendingDailyStatement.date)}</h3>
+ <h3 class="govuk-heading-m  govuk-!-padding-top-4 govuk-!-margin-bottom-1"
+     id="@{s"pending-heading-${pendingDailyStatement.date}"}"> @{Formatters.dateAsDayMonthAndYear(pendingDailyStatement.date)}
+</h3>
 }
 
 @govukTable(Table(
