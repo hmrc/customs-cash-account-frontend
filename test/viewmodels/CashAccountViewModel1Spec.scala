@@ -20,10 +20,11 @@ import models.domain.{CAN, EORI}
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
-import models.{AccountStatusOpen, CDSAccountStatus, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Withdrawal}
+import models.{AccountStatusOpen, CDSAccountStatus, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions,
+  Declaration, Payment, Transaction, Withdrawal}
 import config.AppConfig
 import org.scalatest.Assertion
-import utils.TestData.{AMOUNT, DATE, DATE_1, DECLARANT_REF, EORI_NUMBER, MOVEMENT_REF_NUMBER, SECURE_MOVEMENT_REF_NUMBER, TAX_GROUP}
+import utils.TestData.*
 
 import java.time.LocalDate
 

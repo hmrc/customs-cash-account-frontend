@@ -58,8 +58,8 @@ object CashAccountViewModel1 {
     )
 
     CashAccountViewModel1(
-      pageTitle = emptyString,
-      backLink = emptyString,
+      pageTitle = msgs("cf.cash-account.detail.title"),
+      backLink = config.customsFinancialsFrontendHomepage,
       cashAccountBalance = cashAccountBalance,
       cashAccountDashboardViewModel,
       requestTransactionsHeading = requestTransactionsHeading,
