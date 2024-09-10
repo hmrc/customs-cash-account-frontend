@@ -41,12 +41,17 @@ object CashAccountViewModel1 {
 
     val cashAccountDashboardViewModel = CashAccountDashboardViewModel(cashTrans)
 
-    val cashAccountBalance: HtmlFormat.Appendable = new cash_account_balance(emptyH1Component).apply(model = CashAccountViewModel(eori, account))
+    val cashAccountBalance: HtmlFormat.Appendable =
+      new cash_account_balance(emptyH1Component).apply(model = CashAccountViewModel(eori, account))
 
-    val requestTransactionsHeading: HtmlFormat.Appendable = h2Component(msgKey = "cf.cash-account.transactions.request-transactions.heading", id = Some("request-transactions-heading"))
+    val requestTransactionsHeading: HtmlFormat.Appendable =
+      h2Component(
+        msgKey = "cf.cash-account.transactions.request-transactions.heading",
+        id = Some("request-transactions-heading"))
 
     val downloadCSVFileLinkUrl: HtmlFormat.Appendable = linkComponent(
-      LinkComponentValues(pId = Some("download-scv-file"),
+      LinkComponentValues(
+        pId = Some("download-scv-file"),
         linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
         location = config.cashAccountForCdsDeclarationsUrl,
         postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"))
