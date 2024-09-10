@@ -16,6 +16,19 @@
 
 package viewmodels
 
-class CashAccountDashboardViewModel {
+import models.{CashDailyStatement, CashTransactions, Declaration}
 
+case class CashAccountDashboardViewModel(pendingTransactions: Seq[Declaration],
+                                         cashDailyStatements: Seq[CashDailyStatement],
+                                         hasTransactions: Boolean)
+
+object CashAccountDashboardViewModel {
+  def apply(transactions: CashTransactions): CashAccountDashboardViewModel = {
+
+    val pendingTransactions = transactions.pendingTransactions.sortBy(_.date).reverse
+    val dailyStatements = transactions.cashDailyStatements.sortBy(_.date).reverse
+    val hasTransactions = pendingTransactions.nonEmpty || dailyStatements.nonEmpty
+
+    CashAccountDashboardViewModel(pendingTransactions, dailyStatements, hasTransactions)
+  }
 }

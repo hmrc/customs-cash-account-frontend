@@ -16,32 +16,48 @@
 
 package viewmodels
 
+import config.AppConfig
 import models.CashAccount
 import models.domain.EORI
-import utils.Utils.emptyString
+import utils.Utils.{emptyString, h2Component, linkComponent, LinkComponentValues, emptyH1Component}
 import models.CashTransactions
+import play.twirl.api.{Html, HtmlFormat}
+import views.html.components.{cash_account_balance, h1}
+import models.CashAccountViewModel
+import play.api.i18n.Messages
 
 case class CashAccountViewModel1(pageTitle: String,
                                  backLink: String,
-                                 requestTransactionsHeading: String,
-                                 downloadCSVFileLinkUrl: String,
-                                 downloadCSVFileGuidanceText: String,
-                                 dashboard: CashAccountDashboardViewModel)
+                                 cashAccountBalance: HtmlFormat.Appendable,
+                                 dashboard: CashAccountDashboardViewModel,
+                                 requestTransactionsHeading: HtmlFormat.Appendable,
+                                 downloadCSVFileLinkUrl: HtmlFormat.Appendable)
 
 object CashAccountViewModel1 {
 
   def apply(eori: EORI,
             account: CashAccount,
-            cashTrans: CashTransactions): CashAccountViewModel1 = {
+            cashTrans: CashTransactions)(implicit msgs: Messages, config: AppConfig): CashAccountViewModel1 = {
 
-    val cashAccountDashboardViewModel = CashAccountDashboardViewModel()
+    val cashAccountDashboardViewModel = CashAccountDashboardViewModel(cashTrans)
+
+    val cashAccountBalance: HtmlFormat.Appendable = new cash_account_balance(emptyH1Component).apply(model = CashAccountViewModel(eori, account))
+
+    val requestTransactionsHeading: HtmlFormat.Appendable = h2Component(msgKey = "cf.cash-account.transactions.request-transactions.heading", id = Some("request-transactions-heading"))
+
+    val downloadCSVFileLinkUrl: HtmlFormat.Appendable = linkComponent(
+      LinkComponentValues(pId = Some("download-scv-file"),
+        linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
+        location = config.cashAccountForCdsDeclarationsUrl,
+        postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"))
+    )
 
     CashAccountViewModel1(
       pageTitle = emptyString,
       backLink = emptyString,
-      requestTransactionsHeading = emptyString,
-      downloadCSVFileLinkUrl = emptyString,
-      downloadCSVFileGuidanceText = emptyString,
-      cashAccountDashboardViewModel)
+      cashAccountBalance = cashAccountBalance,
+      cashAccountDashboardViewModel,
+      requestTransactionsHeading = requestTransactionsHeading,
+      downloadCSVFileLinkUrl = downloadCSVFileLinkUrl)
   }
 }

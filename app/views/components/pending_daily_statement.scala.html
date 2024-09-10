@@ -39,7 +39,8 @@
   s"pending-detail-${pendingDailyStatement.date}"
  }"> @{
   model.account.balances.AvailableAccountBalance.fold(""){balance => messages("cf.cash-account.detail.available-balance", Formatters.formatCurrencyAmount(balance))}
- }</p>
+ }
+</p>
 } else {
  <h3 class="govuk-heading-m  govuk-!-padding-top-4 govuk-!-margin-bottom-1"
      id="@{s"pending-heading-${pendingDailyStatement.date}"}"> @{Formatters.dateAsDayMonthAndYear(pendingDailyStatement.date)}

@@ -16,7 +16,13 @@
 
 package utils
 
-import utils.Utils._
+import play.api.Application
+import play.api.i18n.Messages
+import play.twirl.api.{Html, HtmlFormat}
+import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablink.NewTabLink
+import utils.Utils.*
+import views.html.components.{h1, h2, link, p}
 
 class UtilsSpec extends SpecBase {
   "Comma" should {
@@ -47,5 +53,92 @@ class UtilsSpec extends SpecBase {
     "return correct value" in {
       singleSpace mustBe " "
     }
+  }
+
+  "emptyH1Component" should {
+
+    "return the empty h1 component" in {
+      emptyH1Component mustBe new h1()
+    }
+  }
+
+  "emptyH2Component" should {
+
+    "return the empty h2 component" in {
+      emptyH2Component mustBe new h2()
+    }
+  }
+
+  "h2Component" should {
+
+    "create the component correctly with provided input" in new Setup {
+      h2Component(msgKey = testMsg, id = Some(testId)) mustBe
+        new h2().apply(msg = testMsg, id = Some(testId))
+
+      h2Component(msgKey = testMsg, id = Some(testId), classes = testClass) mustBe
+        new h2().apply(msg = testMsg, id = Some(testId), classes = testClass)
+    }
+  }
+
+  "emptyLinkComponent" should {
+
+    "return the empty link component" in {
+      emptyLinkComponent mustBe new link()
+    }
+  }
+
+  "linkComponent" should {
+
+    "create the component correctly with provided input" in new Setup {
+      val result: HtmlFormat.Appendable = linkComponent(LinkComponentValues(pId = Some(testId),
+        linkMessageKey = testMsgKey,
+        location = testLocation,
+        linkClass = testClass,
+        preLinkMessageKey = Some(testMsgKey)))
+
+      result mustBe new link().apply(linkMessage = testMsgKey,
+        location = testLocation,
+        linkClass = testClass,
+        preLinkMessage = Some(testMsgKey),
+        pId = Some(testId)
+      )
+    }
+  }
+
+  "emptyPComponent" should {
+
+    "return the empty p component" in {
+      emptyPComponent mustBe new p()
+    }
+  }
+
+  "pComponent" should {
+
+    "create the component correctly with provided input" in new Setup {
+      val result: HtmlFormat.Appendable = pComponent(
+        messageKey = testMsgKey,
+        id = Some(testId),
+        classes = testClass,
+        bold = true)
+
+      result mustBe new p().apply(
+        message = testMsgKey,
+        id = Some(testId),
+        classes = testClass,
+        bold = true)
+    }
+  }
+
+  trait Setup {
+    val app: Application = application.build()
+    implicit val msgs: Messages = messages(app)
+
+    val testMsgKey = "test_key"
+    val testMsg = "test_msg"
+    val testId = "test_id"
+    val testClass = "test_class"
+    val testLocation = "test_location"
+    val testHref = "http://www.test.com"
+    val testLang = "en"
   }
 }

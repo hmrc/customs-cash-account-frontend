@@ -242,6 +242,10 @@ cf.cash-account.transactions.request.review.heading=Y trafodion cyfrif arian par
 cf.cash-account.transactions.request.review.change=Newid
 cf.cash-account.transactions.request.review.account=Cyfrif:
 
+cf.cash-account.transactions.request-transactions.heading = Gofyn am drafodion
+cf.cash-account.transactions.request-transactions.download-csv.url = Gofynnwch yn ôl dyddiad a lawrlwytho’ch trafodion fel ffeil CSV.
+cf.cash-account.transactions.request-transactions.download-csv.post-message = Bydd y ffeil CSV ar gael i’w lawrlwytho cyn pen 24 awr.
+
 site.continue=Cadarnhau ac anfon
 
 cf.cash-account.transactions.title=Pa drafodion cyfrif arian parod sydd eu hangen arnoch?
