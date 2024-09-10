@@ -42,12 +42,12 @@ class SelectTransactionsViewSpec extends ViewTestHelper {
         view.getElementById("start").text() mustBe dateText
       }
 
-      "start hint must be Displayed" in new Setup {
+      "start hint is displayed" in new Setup {
         view.getElementsByClass("govuk-hint").text().contains(
           "Start date must be after October 2019. For example, 3 2021.") mustBe true
       }
 
-      "end hint must be dispalyed" in new Setup {
+      "end hint is displayed" in new Setup {
         view.getElementsByClass("govuk-hint").text().contains(
           "For example, 3 2021") mustBe true
       }
