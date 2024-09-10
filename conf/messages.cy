@@ -246,8 +246,14 @@ site.continue=Cadarnhau ac anfon
 
 cf.cash-account.transactions.title=Pa drafodion cyfrif arian parod sydd eu hangen arnoch?
 cf.cash-account.transactions.heading=Pa drafodion cyfrif arian parod sydd eu hangen arnoch?
-cf.cash-account.transactions.request.date.hint-start-date=Mae’n rhaid i’r dyddiad dechrau fod ar ôl Hydref 2019. Er enghraifft, 3 2021.
-cf.cash-account.transactions.request.date.hint-end-date=Er enghraifft, 3 2021.
+cf.cash-account.transactions.request.date.hint-start-date.v2=Mae’n rhaid i’r dyddiad dechrau fod ar ôl Hydref 2019. Er enghraifft, 3 2021.
+cf.cash-account.transactions.request.date.hint-end-date.v2=Er enghraifft, 3 2021.
+
+cf.cash-account.transactions.confirmation.statements=Mae’ch cais am ddatganiadau wedi dod i law
+cf.cash-account.transactions.confirmation.next=Yr hyn sy’n digwydd nesaf
+cf.cash-account.transactions.confirmation.email=Byddwn yn anfon e-bost at someemail@mail.com cyn pen 48 awr pan fydd eich cais wedi’i brosesu.
+cf.cash-account.transactions.confirmation.download=Byddwch yn gallu lawrlwytho’ch trafodion o’r dudalen trafodion cyfrifon arian parod.
+cf.cash-account.transactions.confirmation.back=Yn ôl i ‘cyfrif arian parod’
 
 cf.cash-account.detail.transactions= Trafodion
 cf.cash-account.detail.payments-caption=Eich taliadau ar gyfer {0}

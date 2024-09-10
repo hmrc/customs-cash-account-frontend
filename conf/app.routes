@@ -18,6 +18,7 @@ GET         /request-cash-transactions/v2          controllers.SelectTransaction
 POST        /request-cash-transactions/v2          controllers.SelectTransactionsController.onSubmit()
 GET         /selected-cash-transactions            controllers.SelectedTransactionsController.onPageLoad()
 GET         /too-many-selected-transactions        controllers.SelectedTransactionsController.tooManyTransactionsSelected(range: models.RequestedDateRange)
+GET         /selected-confirmation                 controllers.ConfirmationPageController.onPageLoad()
 
 GET         /account-unavailable                    controllers.CashAccountController.showAccountUnavailable
 GET         /not-subscribed-for-cds                 controllers.UnauthorisedController.onPageLoad

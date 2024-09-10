@@ -241,12 +241,18 @@ error.browser.title.prefix = Error:
 
 cf.cash-account.transactions.title=Which cash account transactions do you need?
 cf.cash-account.transactions.heading=Which cash account transactions do you need?
-cf.cash-account.transactions.request.date.hint-start-date=Start date must be after October 2019. For example, 3 2021.
-cf.cash-account.transactions.request.date.hint-end-date=For example, 3 2021.
+cf.cash-account.transactions.request.date.hint-start-date.v2=Start date must be after October 2019. For example, 3 2021.
+cf.cash-account.transactions.request.date.hint-end-date.v2=For example, 3 2021.
 
 cf.cash-account.transactions.request.review.heading=Selected cash account transactions
 cf.cash-account.transactions.request.review.change=Change
 cf.cash-account.transactions.request.review.account=Account:
+
+cf.cash-account.transactions.confirmation.statements=We received your request for statements
+cf.cash-account.transactions.confirmation.next=What happens next
+cf.cash-account.transactions.confirmation.email=We’ll send an email within 48 hours to someemail@mail.com when your request is processed.
+cf.cash-account.transactions.confirmation.download=You’ll be able to download your transactions from the cash account transactions page.
+cf.cash-account.transactions.confirmation.back=Back to cash account
 
 site.continue=Confirm and send
 

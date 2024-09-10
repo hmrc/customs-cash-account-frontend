@@ -16,36 +16,35 @@
 
 package controllers
 
-import cats.data.EitherT._
-import cats.instances.future._
+import cats.data.EitherT.*
+import cats.instances.future.*
 import config.{AppConfig, ErrorHandler}
 import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested}
 import controllers.actions.{EmailAction, IdentifierAction}
 import helpers.CashAccountUtils
-import models._
+import models.*
 import models.request.IdentifierRequest
 import org.slf4j.LoggerFactory
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.CashTransactionsViewModel
-import views.html._
+import views.html.*
 
 import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CashAccountController @Inject()(
-                                       authenticate: IdentifierAction,
-                                       verifyEmail: EmailAction,
-                                       apiConnector: CustomsFinancialsApiConnector,
-                                       showAccountsView: cash_account,
-                                       unavailable: cash_account_not_available,
-                                       transactionsUnavailable: cash_account_transactions_not_available,
-                                       noTransactions: cash_account_no_transactions,
-                                       showAccountsExceededThreshold: cash_account_exceeded_threshold,
-                                       noTransactionsWithBalance: cash_account_no_transactions_with_balance,
-                                       cashAccountUtils: CashAccountUtils
+class CashAccountController @Inject()(authenticate: IdentifierAction,
+                                      verifyEmail: EmailAction,
+                                      apiConnector: CustomsFinancialsApiConnector,
+                                      showAccountsView: cash_account,
+                                      unavailable: cash_account_not_available,
+                                      transactionsUnavailable: cash_account_transactions_not_available,
+                                      noTransactions: cash_account_no_transactions,
+                                      showAccountsExceededThreshold: cash_account_exceeded_threshold,
+                                      noTransactionsWithBalance: cash_account_no_transactions_with_balance,
+                                      cashAccountUtils: CashAccountUtils
                                      )(implicit mcc: MessagesControllerComponents,
                                        ec: ExecutionContext,
                                        eh: ErrorHandler,
