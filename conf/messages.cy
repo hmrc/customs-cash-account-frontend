@@ -51,7 +51,7 @@ cf.cash-account.top-up.guidance.link=Ychwanegu
 cf.cash-account.top-up.guidance.link.aria-label=Ychwanegu at eich cyfrif arian parod
 cf.cash-account.withdraw-funds.guidance.link=Codi arian
 cf.cash-account.withdraw-funds.guidance.link.aria-label=Codi arian o’ch cyfrif arian parod
-cf.cash-account.detail.csv.download=Lawrlwytho’r ffeil CSV
+cf.cash-account.detail.csv.download=Lawrlwytho CSV
 cf.cash-account.detail.csv-definition=Lawrlwytho’r ffeil CSV
 cf.cash-account.detail.csv=Lawrlwythwch drafodion ar ffurf <abbr title="Gwerthoedd wedi’u gwahanu gan goma. Gellir defnyddio CSV gyda’r rhan fwyaf o raglenni taenlen.">CSV</abbr>
 cf.cash-account.detail.date=Dyddiad
@@ -84,7 +84,8 @@ cf.cash-account.detail.unable-download-csv=Mae’n ddrwg gennym – roedd proble
 cf.cash-account.detail.try-again-later=Rhowch gynnig arall arni yn nes ymlaen.
 cf.cash-account-detail.back-to-cash-account=Yn ôl i ‘Cyfrif arian parod’
 cf.cash-account-detail.exceeded-threshold = <p>Mae gormod o drafodion o’r 6 mis diwethaf i’w harddangos yn olynol.</p><p>Bwrw golwg dros drafodion blaenorol o gyfnod byrrach gan ddefnyddio’r cysylltiad chwilio isod.</p>
-
+cf.cash-account.detail.declaration.title=Trafodiad datganiad
+cf.cash-account.detail.total.paid=Cyfanswm a dalwyd
 
 # Timeout Messages
 # ----------------------------------------------------------
@@ -245,8 +246,8 @@ site.continue=Cadarnhau ac anfon
 
 cf.cash-account.transactions.title=Pa drafodion cyfrif arian parod sydd eu hangen arnoch?
 cf.cash-account.transactions.heading=Pa drafodion cyfrif arian parod sydd eu hangen arnoch?
-cf.cash-account.transactions.request.date.hint-start-date=Mae’n rhaid i’r dyddiad dechrau fod ar ôl Hydref 2019. Er enghraifft, 3 2021.
-cf.cash-account.transactions.request.date.hint-end-date=Er enghraifft, 3 2021.
+cf.cash-account.transactions.request.date.hint-start-date.v2=Mae’n rhaid i’r dyddiad dechrau fod ar ôl Hydref 2019. Er enghraifft, 3 2021.
+cf.cash-account.transactions.request.date.hint-end-date.v2=Er enghraifft, 3 2021.
 
 cf.cash-account.detail.transactions= Trafodion
 cf.cash-account.detail.payments-caption=Eich taliadau ar gyfer {0}

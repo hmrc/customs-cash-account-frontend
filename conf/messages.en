@@ -50,7 +50,7 @@ cf.cash-account.top-up.guidance.link=Top up
 cf.cash-account.top-up.guidance.link.aria-label=Top up your cash account
 cf.cash-account.withdraw-funds.guidance.link=Withdraw funds
 cf.cash-account.withdraw-funds.guidance.link.aria-label=Withdraw funds from your cash account
-cf.cash-account.detail.csv.download=Download CSV file
+cf.cash-account.detail.csv.download=Download CSV
 cf.cash-account.detail.csv-definition=Download CSV file.
 cf.cash-account.detail.csv=Download transactions as <abbr title="Comma-Separated Values. Can be used with most spreadsheet programs.">CSV</abbr>
 cf.cash-account.detail.payments-heading=Your transactions for the last 6 months
@@ -85,7 +85,8 @@ cf.cash-account.detail.unable-download-csv=Sorry, there was a problem downloadin
 cf.cash-account.detail.try-again-later=Try again later.
 cf.cash-account-detail.back-to-cash-account=Back to Cash account
 cf.cash-account-detail.exceeded-threshold = <p>There are too many transactions from the last 6 months to display consecutively.</p><p>View previous transactions from a narrower date period using the search link below.</p>
-
+cf.cash-account.detail.declaration.title=Declaration transaction
+cf.cash-account.detail.total.paid=Total paid
 
 # Timeout Messages
 # ----------------------------------------------------------
@@ -240,8 +241,8 @@ error.browser.title.prefix = Error:
 
 cf.cash-account.transactions.title=Which cash account transactions do you need?
 cf.cash-account.transactions.heading=Which cash account transactions do you need?
-cf.cash-account.transactions.request.date.hint-start-date=Start date must be after October 2019. For example, 3 2021.
-cf.cash-account.transactions.request.date.hint-end-date=For example, 3 2021.
+cf.cash-account.transactions.request.date.hint-start-date.v2=Start date must be after October 2019. For example, 3 2021.
+cf.cash-account.transactions.request.date.hint-end-date.v2=For example, 3 2021.
 
 cf.cash-account.transactions.request.review.heading=Selected cash account transactions
 cf.cash-account.transactions.request.review.change=Change

@@ -41,12 +41,12 @@ class CashTransactionCsvRowSpec extends SpecBase {
   "generate a declaration row" in new Setup {
 
     val taxGroups: Seq[TaxGroup] = Seq(
-      TaxGroup(ImportVat, -1.23),
-      TaxGroup(CustomsDuty, -2.34),
-      TaxGroup(ExciseDuty, -3.45))
+      TaxGroup(ImportVat, -1.23, taxTypes),
+      TaxGroup(CustomsDuty, -2.34, taxTypes),
+      TaxGroup(ExciseDuty, -3.45, taxTypes))
 
     val declarations: Seq[Declaration] =
-      Seq(Declaration("someMRN", Some("someImporterEORI"), "someEORI", None, dateWithDay4, -1234.56, taxGroups))
+      Seq(Declaration("someMRN", Some("someImporterEORI"), "someEORI", None, dateWithDay4, -1234.56, taxGroups, Some(sMRN)))
 
     override val dailyStatement: CashDailyStatement =
       CashDailyStatement(dateWithDay4, amountZero, amountZero, declarations, Nil)
@@ -72,9 +72,9 @@ class CashTransactionCsvRowSpec extends SpecBase {
   "order declaration rows by ascending MRN" in new Setup {
 
     val declarations: Seq[Declaration] = Seq(
-      Declaration("someMRN2", Some("someImporterEORI"), "someEORI", None, dateWithDay3, 1234.56, Nil),
-      Declaration("someMRN3", Some("someImporterEORI"), "someEORI", None, dateWithDay3, 1234.56, Nil),
-      Declaration("someMRN1", Some("someImporterEORI"), "someEORI", None, dateWithDay3, 1234.56, Nil))
+      Declaration("someMRN2", Some("someImporterEORI"), "someEORI", None, dateWithDay3, 1234.56, Nil, Some(sMRN)),
+      Declaration("someMRN3", Some("someImporterEORI"), "someEORI", None, dateWithDay3, 1234.56, Nil, Some(sMRN)),
+      Declaration("someMRN1", Some("someImporterEORI"), "someEORI", None, dateWithDay3, 1234.56, Nil, Some(sMRN)))
 
     override val dailyStatement: CashDailyStatement =
       CashDailyStatement(dateWithDay4, amountZero, amountZero, declarations, Nil)
@@ -90,7 +90,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
   "default vat/duty/excise to zero if not found in the declaration" in new Setup {
     val taxGroups = Nil
     val declarations: Seq[Declaration] = Seq(
-      Declaration("someMRN", Some("someImporterEORI"), "someEORI", None, dateWithDay3, 1234.56, taxGroups))
+      Declaration("someMRN", Some("someImporterEORI"), "someEORI", None, dateWithDay3, 1234.56, taxGroups, Some(sMRN)))
 
     override val dailyStatement: CashDailyStatement =
       CashDailyStatement(dateWithDay4, amountZero, amountZero, declarations, Nil)
@@ -159,7 +159,7 @@ class CashTransactionCsvRowSpec extends SpecBase {
   "order the entries correctly within each day" in new Setup {
 
     val declarations: Seq[Declaration] = Seq(Declaration("someMRN", Some("someImporterEORI"), "someEORI",
-      None, LocalDate.of(year2020, month3, day3), 1234.56, Nil))
+      None, LocalDate.of(year2020, month3, day3), 1234.56, Nil, Some(sMRN)))
 
     val expectedTransactionTypes: Seq[Some[String]] = Seq(
       Some("Closing balance"),
@@ -176,11 +176,14 @@ class CashTransactionCsvRowSpec extends SpecBase {
   }
 
   trait Setup {
+
     val withdrawal: Transaction = Transaction(-23.45, Withdrawal, None)
     val transferOut: Transaction = Transaction(-23.45, Transfer, None)
     val topUp: Transaction = Transaction(23.45, Payment, None)
     val transferIn: Transaction = Transaction(23.45, Transfer, None)
     val otherTransactions: Seq[Transaction] = Seq(withdrawal, transferOut, topUp, transferIn)
+
+    val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
 
     val amountZero = 0.0
 
@@ -189,9 +192,13 @@ class CashTransactionCsvRowSpec extends SpecBase {
     val day4 = 4
     val day3 = 3
 
+    val fiveHundred: BigDecimal = BigDecimal(500.00)
+
     val dateWithDay3: LocalDate = LocalDate.of(year2020, month3, day3)
     val dateWithDay4: LocalDate = LocalDate.of(year2020, month3, day4)
     val dateForDailyStatement: LocalDate = LocalDate.of(year2020, month3, day4)
+
+    val taxTypes: Seq[TaxType] = Seq(TaxType(reasonForSecurity = "Reason", taxTypeID = "50", amount = fiveHundred))
 
     val dailyStatement: CashDailyStatement =
       CashDailyStatement(dateForDailyStatement, amountZero, amountZero, Nil, Seq(transferIn))

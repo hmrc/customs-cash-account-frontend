@@ -26,26 +26,27 @@ class CashTransactionsEncrypterSpec extends SpecBase {
   private val cipher = new AesGCMCrypto
   private val encrypter = new CashTransactionsEncrypter(cipher)
   private val secretKey = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
+  private val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
 
   trait Setup {
     val listOfPendingTransactions: Seq[Declaration] =
       Seq(Declaration("pendingDeclarationID", Some("pendingImporterEORI"),
         "pendingDeclarantEORINumber", Some("pendingDeclarantReference"),
-        LocalDate.parse("2020-07-21"), -100.00, Nil))
+        LocalDate.parse("2020-07-21"), -100.00, Nil, Some(sMRN)))
 
     val cashDailyStatements: Seq[CashDailyStatement] = Seq(
       CashDailyStatement(LocalDate.parse("2020-07-18"), 0.0, 1000.00,
         Seq(Declaration("mrn1", Some("importer EORI"), "Declarant EORI",
-          Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil),
+          Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil, Some(sMRN)),
           Declaration("mrn2", Some("Importer EORI"), "Declarant EORI",
-            Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -65.00, Nil)),
+            Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -65.00, Nil, Some(sMRN))),
         Seq(Transaction(45.67, Payment, None), Transaction(-76.34, Withdrawal, Some("77665544")))),
 
       CashDailyStatement(LocalDate.parse("2020-07-20"), 0.0, 1200.00,
         Seq(Declaration("mrn3", Some("Importer EORI"), "Declarant EORI",
-          Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil),
+          Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil, Some(sMRN)),
           Declaration("mrn4", Some("Importer EORI"), "Declarant EORI",
-            Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil)),
+            Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil, Some(sMRN))),
         Seq(Transaction(67.89, Payment, None))))
 
     val cashTransactions: CashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements)

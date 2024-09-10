@@ -87,7 +87,7 @@ object CashTransactionCsvRow {
     }
 
     private def findTaxGroups(taxGroupType: TaxGroupType, groups: Seq[TaxGroup]): Option[BigDecimal] = {
-      groups.find(_.taxTypeGroup == taxGroupType).map(_.amount.abs).orElse(Some(BigDecimal(0)))
+      groups.find(_.taxGroupDescription == taxGroupType).map(_.amount.abs).orElse(Some(BigDecimal(0)))
     }
 
     val withdrawals: Seq[CashTransactionCsvRow] = cashDailyStatement.withdrawals.map { withdrawal =>
