@@ -90,8 +90,11 @@ class CashAccountController @Inject()(
       }
       case Right(cashTransactions) =>
         if (cashTransactions.availableTransactions) {
-          Ok(showAccountsView(CashAccountViewModel(req.eori, account),
-            CashTransactionsViewModel(cashTransactions, page = page)))
+          Ok(
+            showAccountsView(
+              CashAccountViewModel(req.eori, account),
+            CashTransactionsViewModel(cashTransactions, page = page))
+          )
         } else {
           Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
         }

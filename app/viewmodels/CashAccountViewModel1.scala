@@ -19,16 +19,29 @@ package viewmodels
 import models.CashAccount
 import models.domain.EORI
 import utils.Utils.emptyString
+import models.CashTransactions
 
-class CashAccountViewModel1(pageTitle: String,
-                            backLink: String,
-                           dashboard: CashAccountDashboardViewModel)
+case class CashAccountViewModel1(pageTitle: String,
+                                 backLink: String,
+                                 requestTransactionsHeading: String,
+                                 downloadCSVFileLinkUrl: String,
+                                 downloadCSVFileGuidanceText: String,
+                                 dashboard: CashAccountDashboardViewModel)
 
 object CashAccountViewModel1 {
 
   def apply(eori: EORI,
             account: CashAccount,
             cashTrans: CashTransactions): CashAccountViewModel1 = {
-    CashAccountViewModel1(pageTitle = emptyString, backLink = emptyString)
+
+    val cashAccountDashboardViewModel = CashAccountDashboardViewModel()
+
+    CashAccountViewModel1(
+      pageTitle = emptyString,
+      backLink = emptyString,
+      requestTransactionsHeading = emptyString,
+      downloadCSVFileLinkUrl = emptyString,
+      downloadCSVFileGuidanceText = emptyString,
+      cashAccountDashboardViewModel)
   }
 }
