@@ -36,13 +36,11 @@ class SelectLocalDateFormatterSpec extends SpecBase {
     }
 
     "return the correct FormError with keys when the supplied data is empty month" in new SetUp {
-      //TODO - update to match changes required during 4900
       localDateFormatter.bind(key, bindDataDateWithEmptyMonth) shouldBe
         Left(Seq(FormError("start.month", List(invalidMsgKey), List())))
     }
 
     "return the correct FormError with keys when the supplied data empty year" in new SetUp {
-      //TODO - update to match changes required during 4900
       localDateFormatter.bind(key, bindDataDateWithEmptyYear) shouldBe
         Left(Seq(FormError("start.year", List(invalidMsgKey), List())))
     }
