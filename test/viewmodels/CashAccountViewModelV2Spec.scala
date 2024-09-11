@@ -20,7 +20,8 @@ import models.domain.{CAN, EORI}
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
-import models.{AccountStatusOpen, CDSAccountStatus, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Withdrawal}
+import models.{AccountStatusOpen, CDSAccountStatus, CDSCashBalance, CashAccount, CashAccountViewModel,
+  CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Withdrawal}
 import config.AppConfig
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
@@ -30,12 +31,12 @@ import views.html.components.cash_account_balance
 
 import java.time.LocalDate
 
-class CashAccountViewModel1Spec extends SpecBase {
+class CashAccountViewModelV2Spec extends SpecBase {
 
-  "CashAccountViewModel1" should {
+  "apply method correct viewmodel" should {
 
     "return correct contents" in new Setup {
-      val cashAccountViewModel: CashAccountViewModel1 =
+      val cashAccountViewModel: CashAccountViewModelV2 =
         createCashAccountViewModel1(eoriNumber, cashAccount, cashTransactions)
 
       shouldDisplayCorrectTitle(cashAccountViewModel.pageTitle)
@@ -137,8 +138,8 @@ class CashAccountViewModel1Spec extends SpecBase {
 
     def createCashAccountViewModel1(eori: EORI,
                                     account: CashAccount,
-                                    cashTrans: CashTransactions): CashAccountViewModel1 =
-      CashAccountViewModel1(eori, account, cashTrans)
+                                    cashTrans: CashTransactions): CashAccountViewModelV2 =
+      CashAccountViewModelV2(eori, account, cashTrans)
   }
 
 }

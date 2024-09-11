@@ -26,18 +26,18 @@ import views.html.components.{cash_account_balance, h1}
 import models.CashAccountViewModel
 import play.api.i18n.Messages
 
-case class CashAccountViewModel1(pageTitle: String,
-                                 backLink: String,
-                                 cashAccountBalance: HtmlFormat.Appendable,
-                                 dashboard: CashAccountDailyStatementsViewModel,
-                                 requestTransactionsHeading: HtmlFormat.Appendable,
-                                 downloadCSVFileLinkUrl: HtmlFormat.Appendable)
+case class CashAccountViewModelV2(pageTitle: String,
+                                  backLink: String,
+                                  cashAccountBalance: HtmlFormat.Appendable,
+                                  dashboard: CashAccountDailyStatementsViewModel,
+                                  requestTransactionsHeading: HtmlFormat.Appendable,
+                                  downloadCSVFileLinkUrl: HtmlFormat.Appendable)
 
-object CashAccountViewModel1 {
+object CashAccountViewModelV2 {
 
   def apply(eori: EORI,
             account: CashAccount,
-            cashTrans: CashTransactions)(implicit msgs: Messages, config: AppConfig): CashAccountViewModel1 = {
+            cashTrans: CashTransactions)(implicit msgs: Messages, config: AppConfig): CashAccountViewModelV2 = {
 
     val cashAccountDashboardViewModel = CashAccountDailyStatementsViewModel(cashTrans)
 
@@ -57,7 +57,7 @@ object CashAccountViewModel1 {
         postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"))
     )
 
-    CashAccountViewModel1(
+    CashAccountViewModelV2(
       pageTitle = msgs("cf.cash-account.detail.title"),
       backLink = config.customsFinancialsFrontendHomepage,
       cashAccountBalance = cashAccountBalance,
