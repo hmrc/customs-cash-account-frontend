@@ -59,10 +59,10 @@ object CashAccountDailyStatementsViewModel {
         val date = dStat.date
 
         val testDeclarationViewModel: Seq[DailyStatementViewModel] =
-          populateViewModelFromDeclarations(date, dStat.declarations)
+          populateViewModelFromDeclarations(date, dStat.declarations).sortBy(_.date).reverse
 
         val testTransferAndWithdrawModel: Seq[DailyStatementViewModel] =
-          populateViewModelFromPaymentAndWithdrawals(date, dStat.otherTransactions)
+          populateViewModelFromPaymentAndWithdrawals(date, dStat.otherTransactions).sortBy(_.date).reverse
 
         testDeclarationViewModel ++ testTransferAndWithdrawModel
     }
