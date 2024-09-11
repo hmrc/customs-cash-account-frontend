@@ -96,7 +96,7 @@ class UtilsSpec extends SpecBase {
         linkClass = testClass,
         preLinkMessageKey = Some(testMsgKey)))
 
-      result mustBe new link().apply(linkMessage = testMsgKey,
+      result mustBe new link().apply(linkMessageKey = testMsgKey,
         location = testLocation,
         linkClass = testClass,
         preLinkMessage = Some(testMsgKey),

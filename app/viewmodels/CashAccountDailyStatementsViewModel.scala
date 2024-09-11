@@ -79,8 +79,8 @@ object CashAccountDailyStatementsViewModel {
           date = dateAsDayMonthAndYear(date),
           transactionType = PaymentType(mrnLink = Some(linkComponent(
             LinkComponentValues(
-              linkMessageKey = "cf-cash-account.tbd",
-              controllers.routes.DeclarationDetailController.displayDetails(
+              linkMessage = Some(declaration.movementReferenceNumber),
+              location = controllers.routes.DeclarationDetailController.displayDetails(
                 declaration.secureMovementReferenceNumber.getOrElse(emptyString), None).url)
           ))),
           debt = Some(formatCurrencyAmount(declaration.amount)),

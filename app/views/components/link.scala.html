@@ -14,9 +14,11 @@
  * limitations under the License.
  *@
 
+@import utils.Utils.emptyString
+
 @this()
 
-@(linkMessage: String,
+@(linkMessageKey: String = emptyString,
         location: String,
         linkId: Option[String] = None,
         linkClass: String = "govuk-link",
@@ -25,10 +27,11 @@
         preLinkMessage: Option[String] = None,
         postLinkMessage: Option[String] = None,
         pId: Option[String] = None,
-        pClass: String = "govuk-body")(implicit messages: Messages)
+        pClass: String = "govuk-body",
+        linkMessage: Option[String] = None)(implicit messages: Messages)
 
 @link = {
- <a @{linkId.fold("")(id => s"id=$id")} class="@linkClass" href="@location">@Html(messages(linkMessage))</a>@if(linkSentence){.}
+ <a @{linkId.fold("")(id => s"id=$id")} class="@linkClass" href="@location">@Html(if(linkMessage.isEmpty) messages(linkMessageKey) else linkMessage.getOrElse(emptyString))</a>@if(linkSentence){.}
 }
 
 @if(pWrapped){

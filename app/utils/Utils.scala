@@ -41,7 +41,7 @@ object Utils {
 
   def linkComponent(input: LinkComponentValues)(implicit messages: Messages): HtmlFormat.Appendable = {
     new link().apply(
-      linkMessage = input.linkMessageKey,
+      linkMessageKey = input.linkMessageKey,
       location = input.location,
       linkId = input.linkId,
       linkClass = input.linkClass,
@@ -50,7 +50,8 @@ object Utils {
       preLinkMessage = input.preLinkMessageKey,
       postLinkMessage = input.postLinkMessageKey,
       pId = input.pId,
-      pClass = input.pClass)
+      pClass = input.pClass,
+      linkMessage = input.linkMessage)
   }
 
   def pComponent(messageKey: String,
@@ -60,7 +61,7 @@ object Utils {
     new p().apply(message = messageKey, classes = classes, id = id, bold = bold)
   }
 
-  case class LinkComponentValues(linkMessageKey: String,
+  case class LinkComponentValues(linkMessageKey: String = emptyString,
                                  location: String,
                                  linkId: Option[String] = None,
                                  linkClass: String = "govuk-link",
@@ -69,5 +70,6 @@ object Utils {
                                  preLinkMessageKey: Option[String] = None,
                                  postLinkMessageKey: Option[String] = None,
                                  pId: Option[String] = None,
-                                 pClass: String = "govuk-body")
+                                 pClass: String = "govuk-body",
+                                 linkMessage:Option[String] = None)
 }
