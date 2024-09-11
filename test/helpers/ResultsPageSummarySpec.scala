@@ -28,10 +28,16 @@ class ResultsPageSummarySpec extends SpecBase {
 
   "LocalDateFormatter" should {
 
-    "Date should format correctly" in new Setup {
-      val result: String = resultPageSummary.formatDate(toDate)
+    "Date should format correctly with day" in new Setup {
+      val result: String = resultPageSummary.formatDate(toDate, true)
 
       result mustBe "10 March 2022"
+    }
+
+    "Date should format correctly without day" in new Setup {
+      val result: String = resultPageSummary.formatDate(toDate, false)
+
+      result mustBe "March 2022"
     }
 
     "return the month when dateAsMonth is called" in new Setup {
@@ -42,7 +48,6 @@ class ResultsPageSummarySpec extends SpecBase {
 
     "return the day of the month with leading 0 if day of the month is less than 10" in new Setup {
       val dateWithDay9th: LocalDate = LocalDate.of(year, month, day9th)
-
       val result: String = resultPageSummary.dateAsDay(dateWithDay9th)
 
       result mustBe "09"
@@ -50,7 +55,6 @@ class ResultsPageSummarySpec extends SpecBase {
 
     "return the day of the month without leading 0 if equal to 10" in new Setup {
       val dateWithDay10th: LocalDate = LocalDate.of(year, month, day10th)
-
       val result: String = resultPageSummary.dateAsDay(dateWithDay10th)
 
       result mustBe "10"
@@ -58,7 +62,6 @@ class ResultsPageSummarySpec extends SpecBase {
 
     "return the day of the month without leading 0 if greater than 10" in new Setup {
       val dateWithDay11th: LocalDate = LocalDate.of(year, month, day11th)
-
       val result: String = resultPageSummary.dateAsDay(dateWithDay11th)
 
       result mustBe "11"
