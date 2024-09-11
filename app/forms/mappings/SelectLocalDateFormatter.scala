@@ -36,7 +36,6 @@ private[mappings] class SelectLocalDateFormatter(invalidKey: String,
   private def toDate(key: String,
                      month: Int,
                      year: Int): Either[Seq[FormError], LocalDate] = {
-    
     //TODO - Update day to either be 1 or the last day of each month in 4900
     Try(LocalDate.of(year, month, 1)) match {
       case Success(date) => Right(date)

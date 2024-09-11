@@ -16,7 +16,7 @@
 
 package forms
 
-import forms.mappings.{Mappings, SelectMappings}
+import forms.mappings.SelectMappings
 import models.CashTransactionDates
 import play.api.data.Form
 import play.api.data.Forms.mapping
