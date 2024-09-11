@@ -16,9 +16,9 @@
 
 package forms.mappings
 
+import org.scalatest.matchers.should.Matchers.shouldBe
 import play.api.data.FormError
 import utils.SpecBase
-import org.scalatest.matchers.should.Matchers.shouldBe
 
 import java.time.LocalDate
 
@@ -186,44 +186,44 @@ class LocalDateFormatterSpec extends SpecBase {
       ) shouldBe s"$key.year"
     }
   }
-}
 
-trait SetUp {
-  val key = "start"
-  val invalidMsgKey = "cf.form.error.start.date-number-invalid"
-  val dayMsgKey = "cf.form.error.start.date.invalid.day"
-  val monthMsgKey = "cf.form.error.start.date.invalid.month"
-  val yearMsgKey = "cf.form.error.start.date.invalid.year"
-  val invalidDateMsgKey = "cf.form.error.start.date.invalid.real-date"
-  val bindDataValid: Map[String, String] =
-    Map("start.day" -> "12", "start.month" -> "10", "start.year" -> "2022")
-  val bindDataEmptyDate: Map[String, String] =
-    Map("start.day" -> "", "start.month" -> "", "start.year" -> "")
+  trait SetUp {
+    val key = "start"
+    val invalidMsgKey = "cf.form.error.start.date-number-invalid"
+    val dayMsgKey = "cf.form.error.start.date.invalid.day"
+    val monthMsgKey = "cf.form.error.start.date.invalid.month"
+    val yearMsgKey = "cf.form.error.start.date.invalid.year"
+    val invalidDateMsgKey = "cf.form.error.start.date.invalid.real-date"
+    val bindDataValid: Map[String, String] =
+      Map("start.day" -> "12", "start.month" -> "10", "start.year" -> "2022")
+    val bindDataEmptyDate: Map[String, String] =
+      Map("start.day" -> "", "start.month" -> "", "start.year" -> "")
 
-  val localDateFormatter = new LocalDateFormatter(
-    invalidMsgKey,
-    dayMsgKey,
-    monthMsgKey,
-    yearMsgKey,
-    invalidDateMsgKey,
-    Seq()
-  )
+    val localDateFormatter = new LocalDateFormatter(
+      invalidMsgKey,
+      dayMsgKey,
+      monthMsgKey,
+      yearMsgKey,
+      invalidDateMsgKey,
+      Seq()
+    )
 
-  val bindDataDateWithEmptyDay: Map[String, String] =
-    Map("start.day" -> "", "start.month" -> "10", "start.year" -> "2022")
+    val bindDataDateWithEmptyDay: Map[String, String] =
+      Map("start.day" -> "", "start.month" -> "10", "start.year" -> "2022")
 
-  val bindDataDateWithEmptyMonth: Map[String, String] =
-    Map("start.day" -> "10", "start.month" -> "", "start.year" -> "2022")
+    val bindDataDateWithEmptyMonth: Map[String, String] =
+      Map("start.day" -> "10", "start.month" -> "", "start.year" -> "2022")
 
-  val bindDataDateWithEmptyYear: Map[String, String] =
-    Map("start.day" -> "10", "start.month" -> "10", "start.year" -> "")
+    val bindDataDateWithEmptyYear: Map[String, String] =
+      Map("start.day" -> "10", "start.month" -> "10", "start.year" -> "")
 
-  val bindDataInValidDate: Map[String, String] =
-    Map("start.day" -> "34", "start.month" -> "14", "start.year" -> "2023")
+    val bindDataInValidDate: Map[String, String] =
+      Map("start.day" -> "34", "start.month" -> "14", "start.year" -> "2023")
 
-  val bindDataInValidMonth: Map[String, String] =
-    Map("start.day" -> "10", "start.month" -> "14", "start.year" -> "2022")
+    val bindDataInValidMonth: Map[String, String] =
+      Map("start.day" -> "10", "start.month" -> "14", "start.year" -> "2022")
 
-  val bindDataInValidYear: Map[String, String] =
-    Map("start.day" -> "10", "start.month" -> "10", "start.year" -> "-")
+    val bindDataInValidYear: Map[String, String] =
+      Map("start.day" -> "10", "start.month" -> "10", "start.year" -> "-")
+  }
 }

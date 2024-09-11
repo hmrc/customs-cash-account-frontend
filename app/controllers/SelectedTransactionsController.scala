@@ -80,7 +80,7 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
       case Right(_) =>
         Ok(
           resultView(
-            new ResultsPageSummary(from, to),
+            new ResultsPageSummary(from, to, false),
             controllers.routes.CashAccountController.showAccountDetails(None).url,
             account.number)
         )
