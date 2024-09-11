@@ -20,11 +20,13 @@ import models.domain.{CAN, EORI}
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
-import models.{AccountStatusOpen, CDSAccountStatus, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions,
-  Declaration, Payment, Transaction, Withdrawal}
+import models.{AccountStatusOpen, CDSAccountStatus, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Withdrawal}
 import config.AppConfig
 import org.scalatest.Assertion
+import play.twirl.api.HtmlFormat
 import utils.TestData.*
+import utils.Utils.{LinkComponentValues, emptyH1Component, h2Component, linkComponent}
+import views.html.components.cash_account_balance
 
 import java.time.LocalDate
 
@@ -38,6 +40,10 @@ class CashAccountViewModel1Spec extends SpecBase {
 
       shouldDisplayCorrectTitle(cashAccountViewModel.pageTitle)
       shouldDisplayCorrectBackLink(cashAccountViewModel.backLink)
+      shouldDisplayCorrectAccountBalance(cashAccountViewModel.cashAccountBalance, eoriNumber, cashAccount)
+      shouldDisplayCorrectRequestTransactionsHeading(cashAccountViewModel.requestTransactionsHeading)
+      shouldDisplayCorrectDownloadCSVFileLinkUrl(cashAccountViewModel.downloadCSVFileLinkUrl)
+      shouldProduceCorrectDailyStatementViewModel(cashAccountViewModel.dashboard, cashTransactions)
     }
   }
 
@@ -49,13 +55,39 @@ class CashAccountViewModel1Spec extends SpecBase {
     linkStr mustBe appConfig.customsFinancialsFrontendHomepage
   }
 
-  private def shouldDisplayCorrectRequestTransactionsHeading(): Assertion = true mustBe true
+  private def shouldDisplayCorrectAccountBalance(accBalance: HtmlFormat.Appendable,
+                                                 eori: EORI,
+                                                 account: CashAccount)
+                                                (implicit msgs: Messages, appConfig: AppConfig): Assertion = {
+    val expectedAccBalance: HtmlFormat.Appendable =
+      new cash_account_balance(emptyH1Component).apply(model = CashAccountViewModel(eori, account))
 
-  private def shouldDisplayCorrectDownloadCSVFileLinkUrl(): Assertion = true mustBe true
+    accBalance mustBe expectedAccBalance
+  }
 
-  private def shouldDisplayCorrectDownloadCSVFileGuidanceText(): Assertion = true mustBe true
+  private def shouldDisplayCorrectRequestTransactionsHeading(heading: HtmlFormat.Appendable)
+                                                            (implicit msgs: Messages): Assertion = {
+    heading mustBe h2Component(
+      msgKey = "cf.cash-account.transactions.request-transactions.heading",
+      id = Some("request-transactions-heading"))
+    }
 
-  private def shouldProduceCorrectCashAccountDashboardViewModel(): Assertion = true mustBe true
+  private def shouldDisplayCorrectDownloadCSVFileLinkUrl(link: HtmlFormat.Appendable)
+                                                        (implicit msgs: Messages, config: AppConfig): Assertion = {
+    link mustBe linkComponent(
+      LinkComponentValues(
+        pId = Some("download-scv-file"),
+        linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
+        location = config.cashAccountForCdsDeclarationsUrl,
+        postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"))
+    )
+  }
+
+  private def shouldProduceCorrectDailyStatementViewModel(model: CashAccountDailyStatementsViewModel,
+                                                          cashTransactions: CashTransactions)
+                                                         (implicit msgs: Messages, config: AppConfig): Assertion = {
+    model.dailyStatements.size mustBe CashAccountDailyStatementsViewModel(cashTransactions).dailyStatements.size
+  }
 
   trait Setup {
 
