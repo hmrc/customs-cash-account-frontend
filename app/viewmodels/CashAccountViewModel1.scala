@@ -29,7 +29,7 @@ import play.api.i18n.Messages
 case class CashAccountViewModel1(pageTitle: String,
                                  backLink: String,
                                  cashAccountBalance: HtmlFormat.Appendable,
-                                 dashboard: CashAccountDashboardViewModel,
+                                 dashboard: CashAccountDailyStatementsViewModel,
                                  requestTransactionsHeading: HtmlFormat.Appendable,
                                  downloadCSVFileLinkUrl: HtmlFormat.Appendable)
 
@@ -39,7 +39,7 @@ object CashAccountViewModel1 {
             account: CashAccount,
             cashTrans: CashTransactions)(implicit msgs: Messages, config: AppConfig): CashAccountViewModel1 = {
 
-    val cashAccountDashboardViewModel = CashAccountDashboardViewModel(cashTrans)
+    val cashAccountDashboardViewModel = CashAccountDailyStatementsViewModel(cashTrans)
 
     val cashAccountBalance: HtmlFormat.Appendable =
       new cash_account_balance(emptyH1Component).apply(model = CashAccountViewModel(eori, account))
