@@ -21,7 +21,8 @@ import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
 import html.cash_account_v2
-import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Withdrawal}
+import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions, Declaration,
+  Payment, Transaction, Withdrawal}
 import viewmodels.CashAccountViewModelV2
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
@@ -123,11 +124,6 @@ class CashAccountV2Spec extends ViewTestHelper {
   }
 
   trait Setup {
-    /*val app: Application = application.build()
-    implicit val msgs: Messages = messages(app)
-    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
-    implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest()*/
-
     val eoriNumber = "test_eori"
     val can = "12345678"
     val balance: BigDecimal = BigDecimal(8788.00)
