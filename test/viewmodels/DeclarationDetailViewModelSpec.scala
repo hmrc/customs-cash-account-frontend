@@ -161,7 +161,7 @@ class DeclarationDetailViewModelSpec extends SpecBase {
     val declarantReference: Option[String] = Some("UCR12345")
     val secureMovementReferenceNumber: Option[String] = Some("5a71a767-5c1c-4df8-8eef-2b83769b8fda")
 
-    val taxTypes: Seq[TaxType] = Seq(TaxType(reasonForSecurity = "Reason", taxTypeID = "50", amount = hundred))
+    val taxTypes: Seq[TaxType] = Seq(TaxType(reasonForSecurity = Some("Reason"), taxTypeID = "50", amount = hundred))
 
     val declaration: Declaration = Declaration(
       movementReferenceNumber = movementReferenceNumber,

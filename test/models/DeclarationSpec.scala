@@ -71,7 +71,7 @@ class DeclarationSpec extends SpecBase {
     val declarantReference = "UCR12345"
     val secureMovementReferenceNumber = "5a71a767-5c1c-4df8-8eef-2b83769b8fda"
 
-    val taxTypes: Seq[TaxType] = Seq(TaxType(reasonForSecurity = "Reason", taxTypeID = "50", amount = thousand))
+    val taxTypes: Seq[TaxType] = Seq(TaxType(reasonForSecurity = Some("Reason"), taxTypeID = "50", amount = thousand))
 
     val declarations: Declaration = Declaration(
       movementReferenceNumber = movementReferenceNumber,
