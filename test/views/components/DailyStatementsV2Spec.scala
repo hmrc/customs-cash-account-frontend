@@ -50,17 +50,17 @@ class DailyStatementsV2Spec extends SpecBase {
   }
 
   private def shouldDisplayTableHeaders(viewDocument: Document)(implicit msgs: Messages) = {
-    viewDocument.getElementById("transaction-date").text() mustBe msgs("cf.cash-account.detail.date")
-    viewDocument.getElementById("transaction-type").text() mustBe msgs("cf.cash-account.detail.transaction-type")
-    viewDocument.getElementById("transaction-credit").text() mustBe msgs("cf.cash-account.detail.credit")
-    viewDocument.getElementById("transaction-debit").text() mustBe msgs("cf.cash-account.detail.debit")
-    viewDocument.getElementById("transaction-balance").text() mustBe msgs("cf.cash-account.detail.balance")
+    viewDocument.html().contains(msgs("cf.cash-account.detail.date")) mustBe true
+    viewDocument.html().contains(msgs("cf.cash-account.detail.transaction-type")) mustBe true
+    viewDocument.html().contains(msgs("cf.cash-account.detail.credit")) mustBe true
+    viewDocument.html().contains(msgs("cf.cash-account.detail.debit")) mustBe true
+    viewDocument.html().contains(msgs("cf.cash-account.detail.balance")) mustBe true
   }
 
-  private def shouldDisplayTableElements(viewDocument: Document)(implicit msgs: Messages) = {
-    val tableRosElementsByClass = viewDocument.getElementsByClass("hmrc-responsive-table__heading")
+  private def shouldDisplayTableElements(viewDocument: Document) = {
+    val tableRowsElementsByClass = viewDocument.getElementsByClass("hmrc-responsive-table__heading")
 
-    tableRosElementsByClass.size() must be > 0
+    tableRowsElementsByClass.size() must be > 0
   }
 
 

@@ -73,7 +73,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
             "cf-cash-account.tbd",
             controllers.routes.DeclarationDetailController.displayDetails(SECURE_MOVEMENT_REF_NUMBER, None).url)))),
       credit = None,
-      debt = Some(Formatters.formatCurrencyAmount(AMOUNT)),
+      debit = Some(Formatters.formatCurrencyAmount(AMOUNT)),
       balance = Some(Formatters.formatCurrencyAmount(AMOUNT)))
 
     val dailyStatementViewModel2: DailyStatementViewModel = DailyStatementViewModel(date = Formatters.dateAsDayMonthAndYear(date2), transactionType =
@@ -81,7 +81,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
         mrnLink = Some(linkComponent(LinkComponentValues("cf-cash-account.tbd",
             controllers.routes.DeclarationDetailController.displayDetails(SECURE_MOVEMENT_REF_NUMBER, None).url)))),
       credit = None,
-      debt = Some(Formatters.formatCurrencyAmount(AMOUNT)),
+      debit = Some(Formatters.formatCurrencyAmount(AMOUNT)),
       balance = None)
 
     val dailyStatementViewModel3: DailyStatementViewModel = DailyStatementViewModel(date = Formatters.dateAsDayMonthAndYear(date1), transactionType =
@@ -89,7 +89,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
           mrnLink = Some(linkComponent(LinkComponentValues("cf-cash-account.tbd",
               controllers.routes.DeclarationDetailController.displayDetails(SECURE_MOVEMENT_REF_NUMBER, None).url)))),
         credit = None,
-        debt = Some(Formatters.formatCurrencyAmount(AMOUNT)),
+        debit = Some(Formatters.formatCurrencyAmount(AMOUNT)),
         balance = None)
 
     val dailyStatementViewModel4: DailyStatementViewModel = DailyStatementViewModel(date = Formatters.dateAsDayMonthAndYear(date1), transactionType =
@@ -97,24 +97,24 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
         mrnLink = Some(linkComponent(LinkComponentValues("cf-cash-account.tbd",
             controllers.routes.DeclarationDetailController.displayDetails(SECURE_MOVEMENT_REF_NUMBER, None).url)))),
       credit = None,
-      debt = Some(Formatters.formatCurrencyAmount(AMOUNT)),
+      debit = Some(Formatters.formatCurrencyAmount(AMOUNT)),
       balance = None)
 
       val dailyStatementViewModel5: DailyStatementViewModel = DailyStatementViewModel(date = Formatters.dateAsDayMonthAndYear(date2), transactionType =
         PaymentType(textString = Some(msgs("cf.cash-account.detail.top-up.v2"))),
-        credit = Some(Formatters.formatCurrencyAmount(123.45)), debt = None, balance = None)
+        credit = Some(Formatters.formatCurrencyAmount(123.45)), debit = None, balance = None)
 
       val dailyStatementViewModel6: DailyStatementViewModel = DailyStatementViewModel(date = Formatters.dateAsDayMonthAndYear(date2), transactionType =
         PaymentType(textString = Some(msgs("cf.cash-account.detail.transfer-out.v2", "77665544"))),
-        credit = None, debt = Some(Formatters.formatCurrencyAmount(-432.87)), balance = None)
+        credit = None, debit = Some(Formatters.formatCurrencyAmount(-432.87)), balance = None)
 
       val dailyStatementViewModel7: DailyStatementViewModel = DailyStatementViewModel(date = Formatters.dateAsDayMonthAndYear(date1), transactionType =
         PaymentType(textString = Some(msgs("cf.cash-account.detail.top-up.v2"))),
-        credit = Some(Formatters.formatCurrencyAmount(123.45)), debt = None, balance = None)
+        credit = Some(Formatters.formatCurrencyAmount(123.45)), debit = None, balance = None)
 
       val dailyStatementViewModel8: DailyStatementViewModel = DailyStatementViewModel(date = Formatters.dateAsDayMonthAndYear(date1), transactionType =
         PaymentType(textString = Some(msgs("cf.cash-account.detail.withdrawal"))),
-        credit = None, debt = Some(Formatters.formatCurrencyAmount(-432.87)), balance = None)
+        credit = None, debit = Some(Formatters.formatCurrencyAmount(-432.87)), balance = None)
 
       Seq(dailyStatementViewModel1, dailyStatementViewModel3, dailyStatementViewModel5, dailyStatementViewModel6,
         dailyStatementViewModel2, dailyStatementViewModel4, dailyStatementViewModel7, dailyStatementViewModel8)

@@ -31,7 +31,7 @@ case class PaymentType(mrnLink: Option[HtmlFormat.Appendable] = None,
 case class DailyStatementViewModel(date: String,
                                    transactionType: PaymentType,
                                    credit: Option[String] = None,
-                                   debt: Option[String] = None,
+                                   debit: Option[String] = None,
                                    balance: Option[String]) extends Ordered[DailyStatementViewModel] {
   override def compare(that: DailyStatementViewModel): Int = LocalDate.parse(that.date).compareTo(LocalDate.parse(date))
 }
@@ -88,7 +88,7 @@ object CashAccountDailyStatementsViewModel {
               location = controllers.routes.DeclarationDetailController.displayDetails(
                 declaration.secureMovementReferenceNumber.getOrElse(emptyString), None).url)
           ))),
-          debt = Some(formatCurrencyAmount(declaration.amount)),
+          debit = Some(formatCurrencyAmount(declaration.amount)),
           balance = None
         )
     }
@@ -104,7 +104,7 @@ object CashAccountDailyStatementsViewModel {
           transactionType =
             PaymentType(textString = Some(populateTransactionTypeText(paymentAndWithdrawal))),
           credit = populateCreditAmount(paymentAndWithdrawal),
-          debt = populateDebitAmount(paymentAndWithdrawal),
+          debit = populateDebitAmount(paymentAndWithdrawal),
           balance = None
         )
     }

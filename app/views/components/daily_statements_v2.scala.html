@@ -15,7 +15,73 @@
  *@
 
 @import viewmodels.CashAccountDailyStatementsViewModel
+@import helpers.Formatters
+@import views.components.PaymentHeaderV2
+@import utils.Utils.emptyString
 
 @this(govukTable: GovukTable)
 
 @(model: CashAccountDailyStatementsViewModel)(implicit messages: Messages)
+
+  @if(model.hasTransactions) {
+     @govukTable(Table(
+         rows = model.dailyStatements.map { statement =>
+             Seq(
+                  TableRow(
+                       classes = "govuk-!-font-weight-regular",
+                       content = HtmlContent(
+                             s"""
+                                <span class="hmrc-responsive-table__heading" aria-hidden="true">
+                                    ${messages("cf.cash-account.detail.date")}
+                                </span>
+                                ${statement.date}
+                             """
+                       )
+                  ),
+                  TableRow(
+                       content = HtmlContent(
+                            s"""
+                               <span class="hmrc-responsive-table__heading" aria-hidden="true">
+                                   ${messages("cf.cash-account.detail.transaction-type")}
+                               </span>
+                                ${if(statement.transactionType.mrnLink.isDefined) statement.transactionType.mrnLink.get else statement.transactionType.textString.getOrElse(emptyString)}
+                            """
+                       )
+                  ),
+                  TableRow(
+                       content = HtmlContent(
+                            s"""
+                                <span class="hmrc-responsive-table__heading" aria-hidden="true">
+                                     ${messages("cf.cash-account.detail.credit")}
+                                </span>
+                            ${statement.credit.getOrElse(emptyString)}"""
+                       )
+                  ),
+                  TableRow(
+                        content = HtmlContent(
+                            s"""
+                                <span class="hmrc-responsive-table__heading" aria-hidden="true">
+                                     ${messages("cf.cash-account.detail.debit")}
+                                </span>
+                            ${statement.debit.getOrElse(emptyString)}"""
+                        )
+                  ),
+                  TableRow(
+                       classes = "govuk-table__cell--numeric amount",
+                       content = HtmlContent(
+                              s"""
+                                    <span class="hmrc-responsive-table__heading" aria-hidden="true">
+                                        ${messages("cf.cash-account.detail.balance")}
+                                    </span>
+                                 &#8722;${statement.balance.getOrElse(emptyString)}"""
+                       )
+                  )
+             )
+         }
+        ,
+        head = Some(PaymentHeaderV2()),
+        captionClasses = "govuk-visually-hidden",
+        classes = "hmrc-responsive-table govuk-!-margin-bottom-6",
+        firstCellIsHeader = true
+    ))
+}
