@@ -18,7 +18,8 @@
 * Copyright 2021 HM Revenue & Customs
 *
 *@
-@import viewmodels.CashTransactionsViewModel
+
+@import viewmodels.CashAccountViewModelV2
 
 @this(
         main_template: Layout,
@@ -26,7 +27,7 @@
         h2: components.h2,
         span: components.span,
         p: components.p,
-        daily_statements: components.daily_statement,
+        daily_statements: components.daily_statements_v2,
         link: components.link,
         newTabLink: components.newTabLink,
         pager: components.pager
@@ -46,4 +47,12 @@
     fullWidth = true,
     help = true
 ) {
+
+    @viewModel.cashAccountBalance
+
+    @viewModel.requestTransactionsHeading
+
+    @daily_statements(viewModel.dailyStatementsViewModel)
+
+    @viewModel.downloadCSVFileLinkUrl
 }

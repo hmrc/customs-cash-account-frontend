@@ -44,7 +44,7 @@ class CashAccountViewModelV2Spec extends SpecBase {
       shouldDisplayCorrectAccountBalance(cashAccountViewModel.cashAccountBalance, eoriNumber, cashAccount)
       shouldDisplayCorrectRequestTransactionsHeading(cashAccountViewModel.requestTransactionsHeading)
       shouldDisplayCorrectDownloadCSVFileLinkUrl(cashAccountViewModel.downloadCSVFileLinkUrl)
-      shouldProduceCorrectDailyStatementViewModel(cashAccountViewModel.dashboard, cashTransactions)
+      shouldProduceCorrectDailyStatementViewModel(cashAccountViewModel.dailyStatementsViewModel, cashTransactions)
     }
   }
 

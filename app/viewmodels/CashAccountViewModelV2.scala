@@ -29,7 +29,7 @@ import play.api.i18n.Messages
 case class CashAccountViewModelV2(pageTitle: String,
                                   backLink: String,
                                   cashAccountBalance: HtmlFormat.Appendable,
-                                  dashboard: CashAccountDailyStatementsViewModel,
+                                  dailyStatementsViewModel: CashAccountDailyStatementsViewModel,
                                   requestTransactionsHeading: HtmlFormat.Appendable,
                                   downloadCSVFileLinkUrl: HtmlFormat.Appendable)
 
