@@ -74,7 +74,12 @@ class CashAccountDeclarationDetailsSpec extends ViewTestHelper {
     val declarantEori = "GB987654321000"
     val declarantReference: Option[String] = Some("UCR12345")
 
-    val taxTypes: Seq[TaxType] = Seq(TaxType(reasonForSecurity = "Reason", taxTypeID = "50", amount = fourHundred))
+    val taxTypes: Seq[TaxType] = Seq(
+      TaxType(
+        reasonForSecurity = Some("Reason"),
+        taxTypeID = "50",
+        amount = fourHundred
+      ))
 
     val declaration: Declaration = Declaration(
       movementReferenceNumber = movementReferenceNumber,

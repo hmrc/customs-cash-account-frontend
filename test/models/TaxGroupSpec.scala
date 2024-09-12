@@ -25,7 +25,7 @@ class TaxGroupSpec extends SpecBase {
 
     "serialize and deserialize TaxType correctly" in new Setup {
 
-      val expectedTaxType: TaxType = TaxType("Reason", "VAT", hundred)
+      val expectedTaxType: TaxType = TaxType(Some("Reason"), "VAT", hundred)
       val serialized: JsValue = Json.toJson(expectedTaxType)
       val deserialized: TaxType = serialized.as[TaxType]
 
@@ -88,7 +88,7 @@ class TaxGroupSpec extends SpecBase {
     val twoHundred: BigDecimal = BigDecimal(200.50)
     val fiveHundred: BigDecimal = BigDecimal(500.00)
 
-    val taxType: TaxType = TaxType("Reason", "VAT", hundred)
+    val taxType: TaxType = TaxType(Some("Reason"), "VAT", hundred)
 
     val taxGroup: TaxGroup = TaxGroup(
       taxGroupDescription = CustomsDuty,
