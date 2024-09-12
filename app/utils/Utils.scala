@@ -72,4 +72,15 @@ object Utils {
                                  pId: Option[String] = None,
                                  pClass: String = "govuk-body",
                                  linkMessage:Option[String] = None)
+
+  case class DetailsHint(summaryText: String,
+                         text: String,
+                         classes: String = emptyString,
+                         attributes: Map[String, String] = Map.empty,
+                         open: Boolean = false)
+
+  case class LabelHint(labelText: String, classes: String = emptyString)
+
+  case class InputTextHint(detailsHint: Option[DetailsHint] = None,
+                           labelHint: Option[LabelHint] = None)
 }

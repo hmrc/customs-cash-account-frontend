@@ -242,6 +242,8 @@ cf.form.error.end.date.invalid.month=The end date must include a month
 cf.form.error.end.date.invalid.year=The end date must include a year
 cf.form.error.end.date.invalid.real-date=The to date must be a real date
 
+cf.searchTransactions.form.error.required = Please enter a value
+
 error.summary.title = There is a problem
 error.browser.title.prefix = Error:
 
@@ -257,6 +259,8 @@ cf.cash-account.transactions.request.review.account=Account:
 cf.cash-account.transactions.request-transactions.heading = Request transactions
 cf.cash-account.transactions.request-transactions.download-csv.url = Request by date and download your transactions as a CSV file.
 cf.cash-account.transactions.request-transactions.download-csv.post-message = The CSV file will be available to download within 24 hours.
+cf.cash-account.transactions.search-for-transactions.heading = Search for transactions
+cf.cash-account.transactions.search-for-transactions.hint = You can search by MRN, UCR or exact payment amount that includes '£'
 
 site.continue=Confirm and send
 

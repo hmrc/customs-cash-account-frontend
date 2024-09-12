@@ -38,4 +38,7 @@ trait Mappings extends Formatters with Constraints {
   protected def decimal(requiredKey: String = "error.required",
                         nonNumericKey: String = "error.nonNumeric"): FieldMapping[String] =
     of(decimalFormatter(requiredKey, nonNumericKey))
+
+  protected def text(errorKey: String = "error.required"): FieldMapping[String] =
+    of(stringFormatter(errorKey))
 }

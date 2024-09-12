@@ -237,6 +237,7 @@ cf.form.error.end.date.invalid.day=Mae’n rhaid i’r dyddiad dod i ben gynnwys
 cf.form.error.end.date.invalid.month=Mae’n rhaid i’r dyddiad dod i ben gynnwys mis
 cf.form.error.end.date.invalid.year=Mae’n rhaid i’r dyddiad dod i ben gynnwys blwyddyn
 cf.form.error.end.date.invalid.real-date=Mae’n rhaid i’r dyddiad i fod yn ddyddiad go iawn
+cf.searchTransactions.form.error.required = Nodwch werth
 
 error.summary.title = Mae problem wedi codi
 error.browser.title.prefix = Gwall:
@@ -248,6 +249,8 @@ cf.cash-account.transactions.request.review.account=Cyfrif:
 cf.cash-account.transactions.request-transactions.heading = Gofyn am drafodion
 cf.cash-account.transactions.request-transactions.download-csv.url = Gofynnwch yn ôl dyddiad a lawrlwytho’ch trafodion fel ffeil CSV.
 cf.cash-account.transactions.request-transactions.download-csv.post-message = Bydd y ffeil CSV ar gael i’w lawrlwytho cyn pen 24 awr.
+cf.cash-account.transactions.search-for-transactions.heading = Chwilio am drafodion
+cf.cash-account.transactions.search-for-transactions.hint = Gallwch chwilio drwy MRN, UCR neu union swm taliad sy’n cynnwys ‘£’
 
 site.continue=Cadarnhau ac anfon
 

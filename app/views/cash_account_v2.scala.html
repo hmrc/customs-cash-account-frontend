@@ -20,13 +20,16 @@
 *@
 
 @import viewmodels.CashAccountViewModelV2
+@import utils.Utils.{InputTextHint, LabelHint}
 
 @this(
         main_template: Layout,
-        daily_statements: components.daily_statements_v2
+        daily_statements: components.daily_statements_v2,
+        inputText: components.inputText
 )
 
 @(
+    form: Form[_],
     viewModel: CashAccountViewModelV2
 )(
     implicit messages: Messages,
@@ -42,6 +45,20 @@
 ) {
 
     @viewModel.cashAccountBalance
+
+    @inputText(
+        form,
+        id = "search-transactions",
+        name = "value",
+        label = "cf.cash-account.transactions.search-for-transactions.heading",
+        hint = Some(
+                    InputTextHint(labelHint =
+                                    Some(LabelHint("cf.cash-account.transactions.search-for-transactions.hint",
+                                                    "govuk-hint govuk-!-margin-top-6")))),
+        isPageHeading = false,
+        classes = Some("govuk-!-width-two-thirds"),
+        labelClasses = Some("govuk-!-margin-bottom-7")
+    )
 
     @viewModel.requestTransactionsHeading
 

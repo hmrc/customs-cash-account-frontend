@@ -30,6 +30,8 @@ import play.api.test.FakeRequest
 import utils.TestData.*
 
 import java.time.LocalDate
+import forms.SearchTransactionsFormProvider
+import play.api.data.Form
 
 class CashAccountV2Spec extends ViewTestHelper {
 
@@ -171,8 +173,9 @@ class CashAccountV2Spec extends ViewTestHelper {
     val viewModelWithNoTransactions: CashAccountViewModelV2 =
       CashAccountViewModelV2(eoriNumber, cashAccount, cashTransactions.copy(Seq(), Seq()))
 
+    val form: Form[String] = new SearchTransactionsFormProvider().apply()
     protected def createView(viewModel: CashAccountViewModelV2): Document = {
-      Jsoup.parse(app.injector.instanceOf[cash_account_v2].apply(viewModel).body)
+      Jsoup.parse(app.injector.instanceOf[cash_account_v2].apply(form, viewModel).body)
     }
   }
 }
