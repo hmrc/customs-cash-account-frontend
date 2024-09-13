@@ -4,7 +4,10 @@ GET         /assets/*file                           controllers.Assets.versioned
 ->          /hmrc-frontend                          hmrcfrontend.Routes
 
 GET         /                                       controllers.CashAccountController.showAccountDetails(page: Option[Int])
+GET         /v2                                     controllers.CashAccountV2Controller.showAccountDetails(page: Option[Int])
+POST        /v2                                     controllers.CashAccountV2Controller.onSubmit(page: Option[Int])
 GET         /too-many-transactions                  controllers.CashAccountController.tooManyTransactions()
+GET         /v2/too-many-transactions               controllers.CashAccountV2Controller.tooManyTransactions()
 
 GET         /request-cash-transactions              controllers.RequestTransactionsController.onPageLoad()
 POST        /request-cash-transactions              controllers.RequestTransactionsController.onSubmit()
@@ -20,6 +23,7 @@ GET         /selected-cash-transactions            controllers.SelectedTransacti
 GET         /too-many-selected-transactions        controllers.SelectedTransactionsController.tooManyTransactionsSelected(range: models.RequestedDateRange)
 
 GET         /account-unavailable                    controllers.CashAccountController.showAccountUnavailable
+GET         /v2/account-unavailable                 controllers.CashAccountV2Controller.showAccountUnavailable
 GET         /not-subscribed-for-cds                 controllers.UnauthorisedController.onPageLoad
 
 GET         /logout-survey                          controllers.LogoutController.logout
