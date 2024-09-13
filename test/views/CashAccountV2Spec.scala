@@ -16,18 +16,15 @@
 
 package views
 
-import config.AppConfig
-import play.api.Application
 import play.api.i18n.Messages
-import utils.SpecBase
 import html.cash_account_v2
-import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions, Declaration,
-  Payment, Transaction, Withdrawal}
+import models.{
+  AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions, Declaration,
+  Payment, Transaction, Withdrawal
+}
 import viewmodels.CashAccountViewModelV2
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
-import play.api.mvc.AnyContentAsEmpty
-import play.api.test.FakeRequest
 import utils.TestData.*
 
 import java.time.LocalDate
@@ -79,7 +76,7 @@ class CashAccountV2Spec extends ViewTestHelper {
   }
 
   private def shouldContainCorrectSearchForTransactionsInputTextDetails(viewDocument: Document)
-                                                                       (implicit msgs: Messages)= {
+                                                                       (implicit msgs: Messages) = {
     val inputTextElement: Element = viewDocument.getElementById("search-transactions")
     inputTextElement.getElementsByAttribute("name").text() mustBe emptyString
 
@@ -98,8 +95,7 @@ class CashAccountV2Spec extends ViewTestHelper {
       msgs("cf.cash-account.transactions.request-transactions.heading")
   }
 
-  private def shouldContainCorrectDownloadCSVFileLinkUrl(viewDocument: Document)
-                                                        (implicit msgs: Messages, config: AppConfig) = {
+  private def shouldContainCorrectDownloadCSVFileLinkUrl(viewDocument: Document)(implicit msgs: Messages) = {
     val element: Element = viewDocument.getElementById("download-scv-file")
     element.getElementsByAttribute("href").text() mustBe
       msgs("cf.cash-account.transactions.request-transactions.download-csv.url")
@@ -107,8 +103,7 @@ class CashAccountV2Spec extends ViewTestHelper {
     element.html().contains(msgs("cf.cash-account.transactions.request-transactions.download-csv.url")) mustBe true
   }
 
-  private def shouldContainCashAccountDailyStatements(viewDocument: Document)
-                                                     (implicit msgs: Messages, config: AppConfig) = {
+  private def shouldContainCashAccountDailyStatements(viewDocument: Document)(implicit msgs: Messages) = {
     viewDocument.html().contains(msgs("cf.cash-account.detail.date")) mustBe true
     viewDocument.html().contains(msgs("cf.cash-account.detail.transaction-type")) mustBe true
     viewDocument.html().contains(msgs("cf.cash-account.detail.credit")) mustBe true
@@ -118,10 +113,12 @@ class CashAccountV2Spec extends ViewTestHelper {
     val tableRowsElementsByClass = viewDocument.getElementsByClass("hmrc-responsive-table__heading")
 
     tableRowsElementsByClass.size() must be > 0
+
+    viewDocument.getElementById("transactions-for-last-six-months-heading").text() mustBe
+      msgs("cf.cash-account.transactions.transactions-for-last-six-months.heading")
   }
 
-  private def shouldNotContainCashAccountDailyStatements(viewDocument: Document)
-                                                     (implicit msgs: Messages, config: AppConfig) = {
+  private def shouldNotContainCashAccountDailyStatements(viewDocument: Document) = {
     Option(viewDocument.getElementById("transaction-date")) mustBe empty
     Option(viewDocument.getElementById("transaction-type")) mustBe empty
     Option(viewDocument.getElementById("transaction-credit")) mustBe empty
@@ -131,6 +128,7 @@ class CashAccountV2Spec extends ViewTestHelper {
     val tableRosElementsByClass = viewDocument.getElementsByClass("hmrc-responsive-table__heading")
 
     tableRosElementsByClass.size() mustBe 0
+    Option(viewDocument.getElementById("transactions-for-last-six-months-heading")) mustBe empty
   }
 
   trait Setup {
@@ -180,6 +178,7 @@ class CashAccountV2Spec extends ViewTestHelper {
       CashAccountViewModelV2(eoriNumber, cashAccount, cashTransactions.copy(Seq(), Seq()))
 
     val form: Form[String] = new SearchTransactionsFormProvider().apply()
+
     protected def createView(viewModel: CashAccountViewModelV2): Document = {
       Jsoup.parse(app.injector.instanceOf[cash_account_v2].apply(form, viewModel).body)
     }
