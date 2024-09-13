@@ -52,6 +52,7 @@
     @formHelper(action = controllers.routes.CashAccountV2Controller.onSubmit(None)) {
         @errorSummary(form.errors, None)
 
+        <div class="inline">
         @inputText(
             form,
             id = "search-transactions",
@@ -63,10 +64,11 @@
                                                     "govuk-hint govuk-!-margin-top-6")))),
             isPageHeading = false,
             classes = Some("govuk-!-width-one-third"),
-            labelClasses = Some("govuk-label--m govuk-!-margin-bottom-2")
+            labelClasses = Some("govuk-label--m govuk-!-margin-bottom-3")
         )
 
         @button("site.search")
+        </div>
     }
 
     @daily_statements(viewModel.dailyStatementsViewModel)

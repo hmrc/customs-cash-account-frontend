@@ -65,18 +65,18 @@ object CashAccountDailyStatementsViewModel {
       dStat =>
         val date = dStat.date
 
-        val testDeclarationViewModel: Seq[DailyStatementViewModel] =
+        val declarationDailyStatementViewModel: Seq[DailyStatementViewModel] =
           populateViewModelFromDeclarations(date, dStat.declarations).sortBy(_.date).reverse
 
-        val testDeclarationViewModelWithAccBalance = testDeclarationViewModel.zipWithIndex.map {
+        val declarationDailyStatementViewModelWithAccBalance = declarationDailyStatementViewModel.zipWithIndex.map {
           case (dStatViewModel, 0) => dStatViewModel.copy(balance = Some(formatCurrencyAmount(dStat.closingBalance)))
           case (dStatViewModel, _) => dStatViewModel
         }
 
-        val testTransferAndWithdrawModel: Seq[DailyStatementViewModel] =
+        val transferAndWithdrawDailyStatementViewModel: Seq[DailyStatementViewModel] =
           populateViewModelFromPaymentAndWithdrawals(date, dStat.otherTransactions).sortBy(_.date).reverse
 
-        testDeclarationViewModelWithAccBalance ++ testTransferAndWithdrawModel
+        declarationDailyStatementViewModelWithAccBalance ++ transferAndWithdrawDailyStatementViewModel
     }
 
     result.flatten.sortBy(_.date).reverse
