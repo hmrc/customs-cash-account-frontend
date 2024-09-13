@@ -52,7 +52,7 @@ object CashAccountDailyStatementsViewModel {
     CashAccountDailyStatementsViewModel(dailyStatementsForViewModel, hasTransactions, transForLastSixMonthsHeading)
   }
 
-  private def transForLastSixMonthsHeading()(implicit msgs: Messages): HtmlFormat.Appendable = {
+  private def transForLastSixMonthsHeading(implicit msgs: Messages): HtmlFormat.Appendable = {
     h2Component(
       msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
       id = Some("transactions-for-last-six-months-heading"))

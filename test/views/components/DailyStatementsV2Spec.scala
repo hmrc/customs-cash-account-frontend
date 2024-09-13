@@ -37,16 +37,27 @@ class DailyStatementsV2Spec extends SpecBase {
       "there are no transaction to display" in new Setup {
         val view: Document = componentView(CashAccountDailyStatementsViewModel(CashTransactions(Seq(), Seq())))
 
+        shouldNotDisplayTransForLastSixMonthsHeading(view)
         shouldNotDisplayTable(view)
       }
 
       "transactions are available to display" in new Setup {
         val view: Document = componentView(CashAccountDailyStatementsViewModel(cashTransactions))
 
+        shouldDisplayTransForLastSixMonthsHeading(view)
         shouldDisplayTableHeaders(view)
         shouldDisplayTableElements(view)
       }
     }
+  }
+
+  private def shouldDisplayTransForLastSixMonthsHeading(viewDocument: Document)(implicit msgs: Messages) = {
+    viewDocument.getElementById("transactions-for-last-six-months-heading").text() mustBe
+      msgs("cf.cash-account.transactions.transactions-for-last-six-months.heading")
+  }
+
+  private def shouldNotDisplayTransForLastSixMonthsHeading(viewDocument: Document) = {
+    Option(viewDocument.getElementById("transactions-for-last-six-months-heading")) mustBe empty
   }
 
   private def shouldDisplayTableHeaders(viewDocument: Document)(implicit msgs: Messages) = {
