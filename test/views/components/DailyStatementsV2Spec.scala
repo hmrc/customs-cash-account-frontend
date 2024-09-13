@@ -17,18 +17,17 @@
 package views.components
 
 import models.{CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Transfer, Withdrawal}
-import play.api.Application
 import play.api.i18n.Messages
-import utils.SpecBase
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import views.html.components.daily_statements_v2
 import viewmodels.CashAccountDailyStatementsViewModel
 import utils.TestData.*
+import views.ViewTestHelper
 
 import java.time.LocalDate
 
-class DailyStatementsV2Spec extends SpecBase {
+class DailyStatementsV2Spec extends ViewTestHelper {
 
   "component" should {
 
@@ -91,9 +90,6 @@ class DailyStatementsV2Spec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application.build()
-    implicit val msgs: Messages = messages(app)
-
     val declaration1: Declaration =
       Declaration(MOVEMENT_REF_NUMBER, Some(EORI_NUMBER), EORI_NUMBER, Some(DECLARANT_REF), DATE, AMOUNT,
         Seq(TAX_GROUP), Some(SECURE_MOVEMENT_REF_NUMBER))
