@@ -52,7 +52,6 @@
     @formHelper(action = controllers.routes.CashAccountV2Controller.onSubmit(None)) {
         @errorSummary(form.errors, None)
 
-        <div class="inline">
         @inputText(
             form,
             id = "search-transactions",
@@ -68,7 +67,6 @@
         )
 
         @button("site.search")
-        </div>
     }
 
     @daily_statements(viewModel.dailyStatementsViewModel)
