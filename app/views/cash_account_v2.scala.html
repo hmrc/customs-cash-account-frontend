@@ -24,6 +24,9 @@
 
 @this(
         main_template: Layout,
+        formHelper: FormWithCSRF,
+        errorSummary: components.errorSummary,
+        button: components.button,
         daily_statements: components.daily_statements_v2,
         inputText: components.inputText
 )
@@ -46,19 +49,25 @@
 
     @viewModel.cashAccountBalance
 
-    @inputText(
-        form,
-        id = "search-transactions",
-        name = "value",
-        label = "cf.cash-account.transactions.search-for-transactions.heading",
-        hint = Some(
+    @formHelper(action = controllers.routes.SelectTransactionsController.onSubmit()) {
+        @errorSummary(form.errors, None)
+
+        @inputText(
+            form,
+            id = "search-transactions",
+            name = "value",
+            label = "cf.cash-account.transactions.search-for-transactions.heading",
+            hint = Some(
                     InputTextHint(labelHint =
                                     Some(LabelHint("cf.cash-account.transactions.search-for-transactions.hint",
                                                     "govuk-hint govuk-!-margin-top-6")))),
-        isPageHeading = false,
-        classes = Some("govuk-!-width-two-thirds"),
-        labelClasses = Some("govuk-!-margin-bottom-7")
-    )
+            isPageHeading = false,
+            classes = Some("govuk-!-width-two-thirds"),
+            labelClasses = Some("govuk-!-margin-bottom-7")
+        )
+
+        @button("site.search")
+    }
 
     @viewModel.requestTransactionsHeading
 

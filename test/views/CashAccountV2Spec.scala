@@ -46,7 +46,8 @@ class CashAccountV2Spec extends ViewTestHelper {
         titleShouldBeCorrect(view, "cf.cash-account.detail.title")
         shouldContainBackLinkUrl(view, appConfig.customsFinancialsFrontendHomepage)
         shouldContainCorrectAccountBalanceDetails(view, can)
-        //shouldContainCorrectSearchForTransactionsInputTextDetails(view)
+        shouldContainCorrectSearchForTransactionsInputTextDetails(view)
+        shouldContainSearchButton(view)
         shouldNotContainCashAccountDailyStatements(view)
         shouldContainCorrectRequestTransactionsHeading(view)
         shouldContainCorrectDownloadCSVFileLinkUrl(view)
@@ -58,7 +59,8 @@ class CashAccountV2Spec extends ViewTestHelper {
         titleShouldBeCorrect(view, "cf.cash-account.detail.title")
         shouldContainBackLinkUrl(view, appConfig.customsFinancialsFrontendHomepage)
         shouldContainCorrectAccountBalanceDetails(view, can)
-        //shouldContainCorrectSearchForTransactionsInputTextDetails(view)
+        shouldContainCorrectSearchForTransactionsInputTextDetails(view)
+        shouldContainSearchButton(view)
         shouldContainCashAccountDailyStatements(view)
         shouldContainCorrectRequestTransactionsHeading(view)
         shouldContainCorrectDownloadCSVFileLinkUrl(view)
@@ -78,8 +80,16 @@ class CashAccountV2Spec extends ViewTestHelper {
 
   private def shouldContainCorrectSearchForTransactionsInputTextDetails(viewDocument: Document)
                                                                        (implicit msgs: Messages)= {
-    viewDocument.getElementById("search-transactions").text() mustBe
-      msgs("cf.cash-account.detail.account")
+    val inputTextElement: Element = viewDocument.getElementById("search-transactions")
+    inputTextElement.getElementsByAttribute("name").text() mustBe emptyString
+
+    viewDocument.getElementById("search-transactions-hint-text").html() mustBe
+      msgs("cf.cash-account.transactions.search-for-transactions.hint")
+  }
+
+  private def shouldContainSearchButton(viewDocument: Document)
+                                       (implicit msgs: Messages) = {
+    viewDocument.html().contains(msgs("site.search")) mustBe true
   }
 
   private def shouldContainCorrectRequestTransactionsHeading(viewDocument: Document)

@@ -3,6 +3,7 @@ language.english=English
 language.change.english=Change the language to English
 
 site.error = Gwall
+site.search = Chwilio
 
 service.name=Rheoli tollau mewnforio a chyfrifon TAW
 

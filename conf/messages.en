@@ -3,6 +3,7 @@ language.english = English
 language.change.cymraeg=Newid yr iaith ir Gymraeg
 
 site.error = Error
+site.search = Search
 
 service.name=Manage import duties and VAT accounts
 
