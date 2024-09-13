@@ -49,7 +49,7 @@
 
     @viewModel.cashAccountBalance
 
-    @formHelper(action = controllers.routes.SelectTransactionsController.onSubmit()) {
+    @formHelper(action = controllers.routes.CashAccountV2Controller.onSubmit(None)) {
         @errorSummary(form.errors, None)
 
         @inputText(
@@ -62,16 +62,16 @@
                                     Some(LabelHint("cf.cash-account.transactions.search-for-transactions.hint",
                                                     "govuk-hint govuk-!-margin-top-6")))),
             isPageHeading = false,
-            classes = Some("govuk-!-width-two-thirds"),
-            labelClasses = Some("govuk-!-margin-bottom-7")
+            classes = Some("govuk-!-width-one-third"),
+            labelClasses = Some("govuk-label--m govuk-!-margin-bottom-2")
         )
 
         @button("site.search")
     }
 
-    @viewModel.requestTransactionsHeading
-
     @daily_statements(viewModel.dailyStatementsViewModel)
+
+    @viewModel.requestTransactionsHeading
 
     @viewModel.downloadCSVFileLinkUrl
 }

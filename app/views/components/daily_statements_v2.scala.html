@@ -24,7 +24,10 @@
 @(model: CashAccountDailyStatementsViewModel)(implicit messages: Messages)
 
   @if(model.hasTransactions) {
-     @govukTable(Table(
+
+    @model.transForLastSixMonthsHeading
+
+    @govukTable(Table(
          rows = model.dailyStatements.map { statement =>
              Seq(
                   TableRow(

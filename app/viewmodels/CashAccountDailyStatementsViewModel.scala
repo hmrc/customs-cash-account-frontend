@@ -16,11 +16,11 @@
 
 package viewmodels
 
-import models.{CashDailyStatement, CashTransactionType, CashTransactions, Declaration, Transaction, Payment, Withdrawal, Transfer}
+import models.{CashDailyStatement, CashTransactionType, CashTransactions, Declaration, Payment, Transaction, Transfer, Withdrawal}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount}
-import utils.Utils.{LinkComponentValues, linkComponent, emptyString}
+import utils.Utils.{LinkComponentValues, emptyString, h2Component, linkComponent}
 
 import java.time.LocalDate
 
@@ -37,7 +37,8 @@ case class DailyStatementViewModel(date: String,
 }
 
 case class CashAccountDailyStatementsViewModel(dailyStatements: Seq[DailyStatementViewModel],
-                                               hasTransactions: Boolean)
+                                               hasTransactions: Boolean,
+                                               transForLastSixMonthsHeading: HtmlFormat.Appendable)
 
 object CashAccountDailyStatementsViewModel {
   def apply(transactions: CashTransactions)(implicit msgs: Messages): CashAccountDailyStatementsViewModel = {
@@ -48,7 +49,13 @@ object CashAccountDailyStatementsViewModel {
 
     val dailyStatementsForViewModel: Seq[DailyStatementViewModel] = populateDailyStatementViewModelList(dailyStatements)
 
-    CashAccountDailyStatementsViewModel(dailyStatementsForViewModel, hasTransactions)
+    CashAccountDailyStatementsViewModel(dailyStatementsForViewModel, hasTransactions, transForLastSixMonthsHeading)
+  }
+
+  private def transForLastSixMonthsHeading()(implicit msgs: Messages): HtmlFormat.Appendable = {
+    h2Component(
+      msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
+      id = Some("transactions-for-last-six-months-heading"))
   }
 
   private def populateDailyStatementViewModelList(dailyStatements: Seq[CashDailyStatement])

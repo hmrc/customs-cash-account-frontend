@@ -248,6 +248,7 @@ cf.cash-account.transactions.request.review.change=Newid
 cf.cash-account.transactions.request.review.account=Cyfrif:
 
 cf.cash-account.transactions.request-transactions.heading = Gofyn am drafodion
+cf.cash-account.transactions.transactions-for-last-six-months.heading = Eich trafodion ar gyfer y chwe mis diwethaf
 cf.cash-account.transactions.request-transactions.download-csv.url = Gofynnwch yn ôl dyddiad a lawrlwytho’ch trafodion fel ffeil CSV.
 cf.cash-account.transactions.request-transactions.download-csv.post-message = Bydd y ffeil CSV ar gael i’w lawrlwytho cyn pen 24 awr.
 cf.cash-account.transactions.search-for-transactions.heading = Chwilio am drafodion
