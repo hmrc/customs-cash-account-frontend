@@ -51,7 +51,8 @@ object Utils {
       postLinkMessage = input.postLinkMessageKey,
       pId = input.pId,
       pClass = input.pClass,
-      linkMessage = input.linkMessage)
+      linkMessage = input.linkMessage,
+      enableLineBreakBeforePostMessage = input.enableLineBreakBeforePostMessage)
   }
 
   def pComponent(messageKey: String,
@@ -71,7 +72,8 @@ object Utils {
                                  postLinkMessageKey: Option[String] = None,
                                  pId: Option[String] = None,
                                  pClass: String = "govuk-body",
-                                 linkMessage:Option[String] = None)
+                                 linkMessage:Option[String] = None,
+                                 enableLineBreakBeforePostMessage:Boolean = false)
 
   case class DetailsHint(summaryText: String,
                          text: String,

@@ -54,8 +54,8 @@ object CashAccountViewModelV2 {
         pId = Some("download-scv-file"),
         linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
         location = config.cashAccountForCdsDeclarationsUrl,
-        postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"))
-    )
+        postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
+        enableLineBreakBeforePostMessage = true))
 
     CashAccountViewModelV2(
       pageTitle = msgs("cf.cash-account.detail.title"),

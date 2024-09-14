@@ -15,6 +15,8 @@
  *@
 
 @import utils.Utils.emptyString
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent}
+@import play.twirl.api.Html
 
 @this()
 
@@ -28,16 +30,21 @@
         postLinkMessage: Option[String] = None,
         pId: Option[String] = None,
         pClass: String = "govuk-body",
-        linkMessage: Option[String] = None)(implicit messages: Messages)
+        linkMessage: Option[String] = None,
+        enableLineBreakBeforePostMessage: Boolean = false)(implicit messages: Messages)
 
 @link = {
  <a @{linkId.fold("")(id => s"id=$id")} class="@linkClass" href="@location">@Html(if(linkMessage.isEmpty) messages(linkMessageKey) else linkMessage.getOrElse(emptyString))</a>@if(linkSentence){.}
 }
 
+@br = {
+ <br/>
+}
+
 @if(pWrapped){
  <p @{pId.fold("")(id => s"id=$id")} class="@pClass">
       @preLinkMessage.map(m => messages(m))
-      @link
+      @if(enableLineBreakBeforePostMessage){@link @br} else {@link}
       @postLinkMessage.map(m => messages(m))
  </p>
 } else {
