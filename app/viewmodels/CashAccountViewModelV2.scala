@@ -19,19 +19,24 @@ package viewmodels
 import config.AppConfig
 import models.CashAccount
 import models.domain.EORI
-import utils.Utils.{emptyString, h2Component, linkComponent, LinkComponentValues, emptyH1Component}
+import utils.Utils.{LinkComponentValues, emptyH1Component, emptyString, h2Component, linkComponent, hmrcNewTabLinkComponent}
 import models.CashTransactions
 import play.twirl.api.{Html, HtmlFormat}
 import views.html.components.{cash_account_balance, h1}
 import models.CashAccountViewModel
 import play.api.i18n.Messages
 
+case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
+                       link: Option[HtmlFormat.Appendable] = None,
+                       paragraph: Option[HtmlFormat.Appendable] = None)
+
 case class CashAccountViewModelV2(pageTitle: String,
                                   backLink: String,
                                   cashAccountBalance: HtmlFormat.Appendable,
                                   dailyStatementsViewModel: CashAccountDailyStatementsViewModel,
                                   requestTransactionsHeading: HtmlFormat.Appendable,
-                                  downloadCSVFileLinkUrl: HtmlFormat.Appendable)
+                                  downloadCSVFileLinkUrl: HtmlFormat.Appendable,
+                                  helpAndSupportGuidance: GuidanceRow)
 
 object CashAccountViewModelV2 {
 
@@ -63,6 +68,21 @@ object CashAccountViewModelV2 {
       cashAccountBalance = cashAccountBalance,
       cashAccountDashboardViewModel,
       requestTransactionsHeading = requestTransactionsHeading,
-      downloadCSVFileLinkUrl = downloadCSVFileLinkUrl)
+      downloadCSVFileLinkUrl = downloadCSVFileLinkUrl,
+      helpAndSupportGuidance = helpAndSupport)
+  }
+
+  private def helpAndSupport(implicit appConfig: AppConfig, messages: Messages): GuidanceRow = {
+    GuidanceRow(
+      h2Heading = h2Component(
+        id = Some("search-transactions-support-message-heading"),
+        msgKey = "cf.cash-account.transactions.request.support.heading"
+      ),
+
+      link = Some(hmrcNewTabLinkComponent(linkMessage = "cf.cash-account.help-and-support.link.text",
+        href = appConfig.cashAccountForCdsDeclarationsUrl,
+        preLinkMessage  = Some("cf.cash-account.help-and-support.link.text.pre"),
+        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post.with.period")))
+    )
   }
 }

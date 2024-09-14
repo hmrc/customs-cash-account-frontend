@@ -16,48 +16,48 @@
 
 package viewmodels
 
-import models.domain.{CAN, EORI}
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
-import models.{AccountStatusOpen, CDSAccountStatus, CDSCashBalance, CashAccount, CashAccountViewModel,
+import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel,
   CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Withdrawal}
 import config.AppConfig
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
 import utils.TestData.*
-import utils.Utils.{LinkComponentValues, emptyH1Component, h2Component, linkComponent}
+import utils.Utils.{LinkComponentValues, emptyH1Component, h2Component, hmrcNewTabLinkComponent, linkComponent}
 import views.html.components.cash_account_balance
 
 import java.time.LocalDate
 
 class CashAccountViewModelV2Spec extends SpecBase {
 
-  "apply method correct viewmodel" should {
+  "apply method" should {
 
     "return correct contents" in new Setup {
       val cashAccountViewModel: CashAccountViewModelV2 =
         createCashAccountViewModel1(eoriNumber, cashAccount, cashTransactions)
 
-      shouldDisplayCorrectTitle(cashAccountViewModel.pageTitle)
-      shouldDisplayCorrectBackLink(cashAccountViewModel.backLink)
-      shouldDisplayCorrectAccountBalance(cashAccountViewModel.cashAccountBalance, eoriNumber, cashAccount)
-      shouldDisplayCorrectRequestTransactionsHeading(cashAccountViewModel.requestTransactionsHeading)
-      shouldDisplayCorrectDownloadCSVFileLinkUrl(cashAccountViewModel.downloadCSVFileLinkUrl)
+      shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
+      shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
+      shouldProduceCorrectAccountBalance(cashAccountViewModel.cashAccountBalance, eoriNumber, cashAccount)
+      shouldProduceCorrectRequestTransactionsHeading(cashAccountViewModel.requestTransactionsHeading)
+      shouldProduceCorrectDownloadCSVFileLinkUrl(cashAccountViewModel.downloadCSVFileLinkUrl)
+      shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
       shouldProduceCorrectDailyStatementViewModel(cashAccountViewModel.dailyStatementsViewModel, cashTransactions)
     }
   }
 
-  private def shouldDisplayCorrectTitle(title: String)(implicit msgs: Messages): Assertion = {
+  private def shouldProduceCorrectTitle(title: String)(implicit msgs: Messages): Assertion = {
     title mustBe msgs("cf.cash-account.detail.title")
   }
 
-  private def shouldDisplayCorrectBackLink(linkStr: String)(implicit appConfig: AppConfig): Assertion = {
+  private def shouldProduceCorrectBackLink(linkStr: String)(implicit appConfig: AppConfig): Assertion = {
     linkStr mustBe appConfig.customsFinancialsFrontendHomepage
   }
 
-  private def shouldDisplayCorrectAccountBalance(accBalance: HtmlFormat.Appendable,
-                                                 eori: EORI,
+  private def shouldProduceCorrectAccountBalance(accBalance: HtmlFormat.Appendable,
+                                                 eori: String,
                                                  account: CashAccount)
                                                 (implicit msgs: Messages, appConfig: AppConfig): Assertion = {
     val expectedAccBalance: HtmlFormat.Appendable =
@@ -66,27 +66,43 @@ class CashAccountViewModelV2Spec extends SpecBase {
     accBalance mustBe expectedAccBalance
   }
 
-  private def shouldDisplayCorrectRequestTransactionsHeading(heading: HtmlFormat.Appendable)
+  private def shouldProduceCorrectRequestTransactionsHeading(heading: HtmlFormat.Appendable)
                                                             (implicit msgs: Messages): Assertion = {
     heading mustBe h2Component(
       msgKey = "cf.cash-account.transactions.request-transactions.heading",
       id = Some("request-transactions-heading"))
-    }
+  }
 
-  private def shouldDisplayCorrectDownloadCSVFileLinkUrl(link: HtmlFormat.Appendable)
+  private def shouldProduceCorrectDownloadCSVFileLinkUrl(link: HtmlFormat.Appendable)
                                                         (implicit msgs: Messages, config: AppConfig): Assertion = {
     link mustBe linkComponent(
       LinkComponentValues(
         pId = Some("download-scv-file"),
         linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
         location = config.cashAccountForCdsDeclarationsUrl,
-        postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"))
+        postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
+        enableLineBreakBeforePostMessage = true)
     )
+  }
+
+  private def shouldOutputCorrectHelpAndSupportGuidance(guidanceRow: GuidanceRow)
+                                                       (implicit msgs: Messages, config: AppConfig) = {
+
+    guidanceRow mustBe GuidanceRow(h2Heading = h2Component(
+      id = Some("search-transactions-support-message-heading"),
+      msgKey = "cf.cash-account.transactions.request.support.heading"
+    ),
+      link = Some(hmrcNewTabLinkComponent(linkMessage = "cf.cash-account.help-and-support.link.text",
+        href = config.cashAccountForCdsDeclarationsUrl,
+        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre"),
+        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post.with.period")))
+    )
+
   }
 
   private def shouldProduceCorrectDailyStatementViewModel(model: CashAccountDailyStatementsViewModel,
                                                           cashTransactions: CashTransactions)
-                                                         (implicit msgs: Messages, config: AppConfig): Assertion = {
+                                                         (implicit msgs: Messages): Assertion = {
     model.dailyStatements.size mustBe CashAccountDailyStatementsViewModel(cashTransactions).dailyStatements.size
   }
 
@@ -136,7 +152,7 @@ class CashAccountViewModelV2Spec extends SpecBase {
 
     val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
 
-    def createCashAccountViewModel1(eori: EORI,
+    def createCashAccountViewModel1(eori: String,
                                     account: CashAccount,
                                     cashTrans: CashTransactions): CashAccountViewModelV2 =
       CashAccountViewModelV2(eori, account, cashTrans)

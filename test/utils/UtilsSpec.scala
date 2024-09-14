@@ -16,13 +16,14 @@
 
 package utils
 
+import config.AppConfig
 import play.api.Application
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablink.NewTabLink
 import utils.Utils.*
-import views.html.components.{h1, h2, link, p}
+import views.html.components.{h1, h2, link, newTabLink, p, p1}
 
 class UtilsSpec extends SpecBase {
   "Comma" should {
@@ -129,9 +130,27 @@ class UtilsSpec extends SpecBase {
     }
   }
 
+  "hmrcNewTabLinkComponent" should {
+
+    "create the component correctly with provided input" in new Setup {
+      val result: HtmlFormat.Appendable = hmrcNewTabLinkComponent(linkMessage,
+        href,
+        Some(preLinkMessage),
+        Some(postLinkMessage),
+        classes)
+
+      result mustBe new newTabLink(emptyHmrcNewTabLink).apply(linkMessage,
+        href,
+        Some(preLinkMessage),
+        Some(postLinkMessage),
+        classes = classes)
+    }
+  }
+
   trait Setup {
     val app: Application = application.build()
     implicit val msgs: Messages = messages(app)
+    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
 
     val testMsgKey = "test_key"
     val testMsg = "test_msg"
@@ -140,5 +159,11 @@ class UtilsSpec extends SpecBase {
     val testLocation = "test_location"
     val testHref = "http://www.test.com"
     val testLang = "en"
+
+    val linkMessage: String = "go to test page"
+    val href = "www.test.com"
+    val preLinkMessage = "test_pre_link_message"
+    val postLinkMessage = "test_post_link_message"
+    val classes = "govuk-!-margin-bottom-7"
   }
 }

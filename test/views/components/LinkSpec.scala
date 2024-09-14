@@ -21,7 +21,6 @@ import views.html.components.link
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages
-import play.twirl.api.Html
 import utils.SpecBase
 
 class LinkSpec extends SpecBase {

@@ -16,9 +16,11 @@
 
 package utils
 
+import config.AppConfig
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import views.html.components.{h1, h2, inset, link, p}
+import views.html.components.{h1, h2, inset, link, newTabLink, p}
+import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
 
 object Utils {
   val comma: String = ","
@@ -31,6 +33,7 @@ object Utils {
   val emptyH2Component: h2 = new h2()
   val emptyPComponent: p = new p()
   val emptyLinkComponent: link = new link()
+  val emptyHmrcNewTabLink: HmrcNewTabLink = new HmrcNewTabLink()
 
   def h2Component(msgKey: String,
                   id: Option[String] = None,
@@ -62,6 +65,20 @@ object Utils {
     new p().apply(message = messageKey, classes = classes, id = id, bold = bold)
   }
 
+  def hmrcNewTabLinkComponent(linkMessage: String,
+                              href: String,
+                              preLinkMessage: Option[String] = None,
+                              postLinkMessage: Option[String] = None,
+                              classes: String = "govuk-body")
+                             (implicit messages: Messages, config: AppConfig): HtmlFormat.Appendable = {
+    new newTabLink(emptyHmrcNewTabLink).apply(
+      linkMessage = linkMessage,
+      href = href,
+      preLinkMessage = preLinkMessage,
+      postLinkMessage = postLinkMessage,
+      classes = classes)
+  }
+
   case class LinkComponentValues(linkMessageKey: String = emptyString,
                                  location: String,
                                  linkId: Option[String] = None,
@@ -72,8 +89,8 @@ object Utils {
                                  postLinkMessageKey: Option[String] = None,
                                  pId: Option[String] = None,
                                  pClass: String = "govuk-body",
-                                 linkMessage:Option[String] = None,
-                                 enableLineBreakBeforePostMessage:Boolean = false)
+                                 linkMessage: Option[String] = None,
+                                 enableLineBreakBeforePostMessage: Boolean = false)
 
   case class DetailsHint(summaryText: String,
                          text: String,

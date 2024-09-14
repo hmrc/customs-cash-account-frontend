@@ -178,6 +178,7 @@ cf.cash-account.detail.link = ddefnyddio cyfrif arian parod ar gyfer datganiadau
 cf.cash-account.detail.link.post = ar GOV.UK
 cf.cash-account.help-and-support.link.text.pre = Gallw ch
 cf.cash-account.help-and-support.link.text.post = os oes angen help arnoch
+cf.cash-account.help-and-support.link.text.post.with.period = os oes angen help arnoch.
 cf.cash-account.help-and-support.link.text = gysylltu â chanolfan cyfrifyddu CThEF (yn agor tab newydd)
 cf.cash-account.how-to-use.guidance.text.pre = Dysgwch sut i
 cf.cash-account.how-to-use.guidance.text.post = ar GOV.UK.
