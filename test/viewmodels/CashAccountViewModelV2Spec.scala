@@ -90,12 +90,12 @@ class CashAccountViewModelV2Spec extends SpecBase {
 
     guidanceRow mustBe GuidanceRow(h2Heading = h2Component(
       id = Some("search-transactions-support-message-heading"),
-      msgKey = "cf.cash-account.transactions.request.support.heading"
+      msgKey = "site.support.heading"
     ),
       link = Some(hmrcNewTabLinkComponent(linkMessage = "cf.cash-account.help-and-support.link.text",
         href = config.cashAccountForCdsDeclarationsUrl,
         preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre"),
-        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post.with.period")))
+        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")))
     )
 
   }
