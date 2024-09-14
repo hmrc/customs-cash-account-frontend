@@ -28,6 +28,7 @@ object Utils {
   val period: String = "."
   val hyphen = "-"
   val singleSpace = " "
+  val negativeSign = "-"
 
   val emptyH1Component: h1 = new h1()
   val emptyH2Component: h2 = new h2()

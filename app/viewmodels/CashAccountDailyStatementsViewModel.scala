@@ -20,7 +20,7 @@ import models.{CashDailyStatement, CashTransactionType, CashTransactions, Declar
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount}
-import utils.Utils.{LinkComponentValues, emptyString, h2Component, linkComponent}
+import utils.Utils.{LinkComponentValues, emptyString, h2Component, linkComponent, negativeSign}
 
 import java.time.LocalDate
 
@@ -95,7 +95,7 @@ object CashAccountDailyStatementsViewModel {
               location = controllers.routes.DeclarationDetailController.displayDetails(
                 declaration.secureMovementReferenceNumber.getOrElse(emptyString), None).url)
           ))),
-          debit = Some(formatCurrencyAmount(declaration.amount)),
+          debit = Some(appendNegativeSignForDebitAmount(formatCurrencyAmount(declaration.amount))),
           balance = None
         )
     }
@@ -146,13 +146,17 @@ object CashAccountDailyStatementsViewModel {
   private def populateDebitAmount(transaction: Transaction): Option[String] = {
     transaction.transactionType match {
       case Payment => None
-      case Withdrawal => Some(formatCurrencyAmount(transaction.amount))
+      case Withdrawal => Some(appendNegativeSignForDebitAmount(formatCurrencyAmount(transaction.amount)))
       case Transfer =>
         if (transaction.amount < 0) {
-          Some(formatCurrencyAmount(transaction.amount))
+          Some(appendNegativeSignForDebitAmount(formatCurrencyAmount(transaction.amount)))
         } else {
           None
         }
     }
+  }
+
+  private def appendNegativeSignForDebitAmount(debitAmount: String) = {
+    s"$negativeSign${debitAmount}"
   }
 }

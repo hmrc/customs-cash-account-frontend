@@ -56,6 +56,12 @@ class UtilsSpec extends SpecBase {
     }
   }
 
+  "negativeSign" should {
+    "return correct value" in {
+      negativeSign mustBe "-"
+    }
+  }
+
   "emptyH1Component" should {
 
     "return the empty h1 component" in {
