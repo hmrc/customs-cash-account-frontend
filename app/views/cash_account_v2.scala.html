@@ -74,4 +74,9 @@
     @viewModel.requestTransactionsHeading
 
     @viewModel.downloadCSVFileLinkUrl
+
+    @defining(viewModel.helpAndSupportGuidance) { (helpAndSupport) =>
+        @helpAndSupport.h2Heading
+        @helpAndSupport.link.map(identity)
+    }
 }

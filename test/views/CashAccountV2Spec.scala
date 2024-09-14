@@ -48,6 +48,7 @@ class CashAccountV2Spec extends ViewTestHelper {
         shouldNotContainCashAccountDailyStatements(view)
         shouldContainCorrectRequestTransactionsHeading(view)
         shouldContainCorrectDownloadCSVFileLinkUrl(view)
+        shouldContainCorrectHelpAndSupportGuidance(view)
       }
 
       "transactions are present in the model" in new Setup {
@@ -61,6 +62,7 @@ class CashAccountV2Spec extends ViewTestHelper {
         shouldContainCashAccountDailyStatements(view)
         shouldContainCorrectRequestTransactionsHeading(view)
         shouldContainCorrectDownloadCSVFileLinkUrl(view)
+        shouldContainCorrectHelpAndSupportGuidance(view)
       }
     }
   }
@@ -101,6 +103,17 @@ class CashAccountV2Spec extends ViewTestHelper {
       msgs("cf.cash-account.transactions.request-transactions.download-csv.url")
 
     element.html().contains(msgs("cf.cash-account.transactions.request-transactions.download-csv.url")) mustBe true
+  }
+
+  private def shouldContainCorrectHelpAndSupportGuidance(viewDocument: Document)(implicit msgs: Messages) = {
+
+    val supportHeading = viewDocument.getElementById("search-transactions-support-message-heading")
+    supportHeading.text() mustBe msgs("cf.cash-account.transactions.request.support.heading")
+
+    viewDocument.html().contains("https://www.gov.uk/guidance/use-a-cash-account-for-cds-declarations") mustBe true
+    viewDocument.html().contains(msgs("cf.cash-account.help-and-support.link.text")) mustBe true
+    viewDocument.html().contains(msgs("cf.cash-account.help-and-support.link.text.pre")) mustBe true
+    viewDocument.html().contains(msgs("cf.cash-account.help-and-support.link.text.post.with.period")) mustBe true
   }
 
   private def shouldContainCashAccountDailyStatements(viewDocument: Document)(implicit msgs: Messages) = {
