@@ -57,16 +57,20 @@ class CashAccountController @Inject()(
   def showAccountDetails(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async {
     implicit request =>
 
-      val eventualMaybeCashAccount = apiConnector.getCashAccount(request.eori)
-      val result = for {
-        cashAccount <- fromOptionF[Future, Result, CashAccount](eventualMaybeCashAccount, NotFound(eh.notFoundTemplate))
-        (from, to) = cashAccountUtils.transactionDateRange()
-        page <- liftF[Future, Result, Result](showAccountWithTransactionDetails(cashAccount, from, to, page))
-      } yield page
-      result.merge.recover {
-        case e =>
-          logger.error(s"Unable to retrieve account details: ${e.getMessage}")
-          Redirect(routes.CashAccountController.showAccountUnavailable)
+      if (appConfig.isCashAccountV2FeatureFlagEnabled) {
+        Future.successful(Redirect(routes.CashAccountV2Controller.showAccountDetails(page)))
+      } else {
+        val eventualMaybeCashAccount = apiConnector.getCashAccount(request.eori)
+        val result = for {
+          cashAccount <- fromOptionF[Future, Result, CashAccount](eventualMaybeCashAccount, NotFound(eh.notFoundTemplate))
+          (from, to) = cashAccountUtils.transactionDateRange()
+          page <- liftF[Future, Result, Result](showAccountWithTransactionDetails(cashAccount, from, to, page))
+        } yield page
+        result.merge.recover {
+          case e =>
+            logger.error(s"Unable to retrieve account details: ${e.getMessage}")
+            Redirect(routes.CashAccountController.showAccountUnavailable)
+        }
       }
   }
 
