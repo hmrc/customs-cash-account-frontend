@@ -28,7 +28,7 @@ object TestData {
   val DATE: LocalDate = LocalDate.parse("2020-07-21")
   val DATE_1: LocalDate = LocalDate.parse("2020-08-21")
 
-  val TAX_TYPE: TaxType = TaxType("a", "a", AMOUNT)
+  val TAX_TYPE: TaxType = TaxType(Some("a"), "a", AMOUNT)
 
   val TAX_GROUP: TaxGroup = TaxGroup(ImportVat, AMOUNT, Seq(TAX_TYPE))
 }

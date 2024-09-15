@@ -37,7 +37,7 @@ import scala.jdk.CollectionConverters.ListHasAsScala
 import scala.util.Random
 import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.eq as eqTo
+import org.mockito.ArgumentMatchers.{eq => eqTo}
 import org.mockito.Mockito.verify
 
 class DownloadCsvControllerSpec extends SpecBase {
