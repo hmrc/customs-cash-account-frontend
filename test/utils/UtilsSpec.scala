@@ -20,10 +20,8 @@ import config.AppConfig
 import play.api.Application
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablink.NewTabLink
 import utils.Utils.*
-import views.html.components.{h1, h2, link, newTabLink, p, p1}
+import views.html.components.{h1, h2, link, newTabLink, p}
 
 class UtilsSpec extends SpecBase {
   "Comma" should {
@@ -150,6 +148,15 @@ class UtilsSpec extends SpecBase {
         Some(preLinkMessage),
         Some(postLinkMessage),
         classes = classes)
+    }
+  }
+
+  "prependNegativeSignWithAmount" should {
+
+    "prepend - sign with amount" in {
+      val testAmount = "400.00"
+
+      prependNegativeSignWithAmount(testAmount) mustBe "-400.00"
     }
   }
 

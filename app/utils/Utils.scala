@@ -80,6 +80,10 @@ object Utils {
       classes = classes)
   }
 
+  def prependNegativeSignWithAmount(amount: String): String = {
+    s"$negativeSign$amount"
+  }
+
   case class LinkComponentValues(linkMessageKey: String = emptyString,
                                  location: String,
                                  linkId: Option[String] = None,
