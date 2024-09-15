@@ -61,7 +61,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
 
     val expectedDailyStatements: Seq[DailyStatementViewModel] = populateDailyStatViewModelFromDailyCashTransactions()
 
-    //TBD:To be uncommented
+    //TODO To be uncommented once pending statements are added in daily statements
     //actualStatements mustBe expectedDailyStatements
     actualStatements.size mustBe expectedDailyStatements.size
   }
