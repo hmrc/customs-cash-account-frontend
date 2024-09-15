@@ -19,8 +19,10 @@ package viewmodels
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
-import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel,
-  CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Withdrawal}
+import models.{
+  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel,
+  CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Withdrawal
+}
 import config.AppConfig
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
@@ -74,7 +76,7 @@ class CashAccountViewModelV2Spec extends SpecBase {
   }
 
   private def shouldProduceCorrectDownloadCSVFileLinkUrl(link: HtmlFormat.Appendable)
-                                                        (implicit msgs: Messages, config: AppConfig): Assertion = {
+                                                        (implicit msgs: Messages): Assertion = {
     link mustBe linkComponent(
       LinkComponentValues(
         pId = Some("download-scv-file"),

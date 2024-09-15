@@ -19,7 +19,7 @@ package viewmodels
 import config.AppConfig
 import models.CashAccount
 import models.domain.EORI
-import utils.Utils.{LinkComponentValues, emptyH1Component, emptyString, h2Component, linkComponent, hmrcNewTabLinkComponent}
+import utils.Utils.{LinkComponentValues, emptyH1Component, emptyString, h2Component, hmrcNewTabLinkComponent, linkComponent}
 import models.CashTransactions
 import play.twirl.api.{Html, HtmlFormat}
 import views.html.components.{cash_account_balance, h1}
@@ -54,14 +54,6 @@ object CashAccountViewModelV2 {
         msgKey = "cf.cash-account.transactions.request-transactions.heading",
         id = Some("request-transactions-heading"))
 
-    val downloadCSVFileLinkUrl: HtmlFormat.Appendable = linkComponent(
-      LinkComponentValues(
-        pId = Some("download-scv-file"),
-        linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
-        location = controllers.routes.RequestTransactionsController.onPageLoad().url,
-        postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
-        enableLineBreakBeforePostMessage = true))
-
     CashAccountViewModelV2(
       pageTitle = msgs("cf.cash-account.detail.title"),
       backLink = config.customsFinancialsFrontendHomepage,
@@ -70,6 +62,16 @@ object CashAccountViewModelV2 {
       requestTransactionsHeading = requestTransactionsHeading,
       downloadCSVFileLinkUrl = downloadCSVFileLinkUrl,
       helpAndSupportGuidance = helpAndSupport)
+  }
+
+  private def downloadCSVFileLinkUrl(implicit msgs: Messages): HtmlFormat.Appendable = {
+    linkComponent(
+      LinkComponentValues(
+        pId = Some("download-scv-file"),
+        linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
+        location = controllers.routes.RequestTransactionsController.onPageLoad().url,
+        postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
+        enableLineBreakBeforePostMessage = true))
   }
 
   private def helpAndSupport(implicit appConfig: AppConfig, messages: Messages): GuidanceRow = {
@@ -81,7 +83,7 @@ object CashAccountViewModelV2 {
 
       link = Some(hmrcNewTabLinkComponent(linkMessage = "cf.cash-account.help-and-support.link.text",
         href = appConfig.cashAccountForCdsDeclarationsUrl,
-        preLinkMessage  = Some("cf.cash-account.help-and-support.link.text.pre"),
+        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre"),
         postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")))
     )
   }
