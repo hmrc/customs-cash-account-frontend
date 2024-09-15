@@ -19,16 +19,14 @@ package viewmodels
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
-import models.{
-  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel,
-  CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Withdrawal
-}
+import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement,
+  CashTransactions, Declaration, Payment, Transaction, Withdrawal}
 import config.AppConfig
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
 import utils.TestData.*
 import utils.Utils.{LinkComponentValues, emptyH1Component, h2Component, hmrcNewTabLinkComponent, linkComponent}
-import views.html.components.cash_account_balance
+import views.html.components.{cash_account_balance, daily_statements_v2}
 
 import java.time.LocalDate
 
@@ -38,7 +36,7 @@ class CashAccountViewModelV2Spec extends SpecBase {
 
     "return correct contents" in new Setup {
       val cashAccountViewModel: CashAccountViewModelV2 =
-        createCashAccountViewModel1(eoriNumber, cashAccount, cashTransactions)
+        createCashAccountViewModelV2(eoriNumber, cashAccount, cashTransactions)
 
       shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
       shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
@@ -46,7 +44,7 @@ class CashAccountViewModelV2Spec extends SpecBase {
       shouldProduceCorrectRequestTransactionsHeading(cashAccountViewModel.requestTransactionsHeading)
       shouldProduceCorrectDownloadCSVFileLinkUrl(cashAccountViewModel.downloadCSVFileLinkUrl)
       shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
-      shouldProduceCorrectDailyStatementViewModel(cashAccountViewModel.dailyStatementsViewModel, cashTransactions)
+      shouldContainCorrectDailyStatementsComponent(app, cashAccountViewModel.dailyStatements, cashTransactions)
     }
   }
 
@@ -102,10 +100,14 @@ class CashAccountViewModelV2Spec extends SpecBase {
 
   }
 
-  private def shouldProduceCorrectDailyStatementViewModel(model: CashAccountDailyStatementsViewModel,
+  private def shouldContainCorrectDailyStatementsComponent(app: Application,
+                                                            dailyStatementsComponent: HtmlFormat.Appendable,
                                                           cashTransactions: CashTransactions)
                                                          (implicit msgs: Messages): Assertion = {
-    model.dailyStatements.size mustBe CashAccountDailyStatementsViewModel(cashTransactions).dailyStatements.size
+    val expectedDailyStatementsComponent =
+      app.injector.instanceOf[daily_statements_v2].apply(CashAccountDailyStatementsViewModel(cashTransactions))
+
+    dailyStatementsComponent mustBe expectedDailyStatementsComponent
   }
 
   trait Setup {
@@ -154,9 +156,9 @@ class CashAccountViewModelV2Spec extends SpecBase {
 
     val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
 
-    def createCashAccountViewModel1(eori: String,
-                                    account: CashAccount,
-                                    cashTrans: CashTransactions): CashAccountViewModelV2 =
+    def createCashAccountViewModelV2(eori: String,
+                                     account: CashAccount,
+                                     cashTrans: CashTransactions): CashAccountViewModelV2 =
       CashAccountViewModelV2(eori, account, cashTrans)
   }
 

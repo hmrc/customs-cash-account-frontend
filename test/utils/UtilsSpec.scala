@@ -20,6 +20,7 @@ import config.AppConfig
 import play.api.Application
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
+import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
 import utils.Utils.*
 import views.html.components.{h1, h2, link, newTabLink, p}
 
@@ -148,6 +149,13 @@ class UtilsSpec extends SpecBase {
         Some(preLinkMessage),
         Some(postLinkMessage),
         classes = classes)
+    }
+  }
+
+  "emptyGovUkTableComponent" should {
+
+    "return the empty GovukTable" in {
+      emptyGovUkTableComponent mustBe new GovukTable()
     }
   }
 

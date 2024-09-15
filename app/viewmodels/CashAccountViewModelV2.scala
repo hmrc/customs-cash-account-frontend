@@ -19,12 +19,13 @@ package viewmodels
 import config.AppConfig
 import models.CashAccount
 import models.domain.EORI
-import utils.Utils.{LinkComponentValues, emptyH1Component, emptyString, h2Component, hmrcNewTabLinkComponent, linkComponent}
+import utils.Utils.{LinkComponentValues, emptyH1Component, emptyString, h2Component, hmrcNewTabLinkComponent, linkComponent, emptyGovUkTableComponent}
 import models.CashTransactions
 import play.twirl.api.{Html, HtmlFormat}
-import views.html.components.{cash_account_balance, h1}
+import views.html.components.{cash_account_balance, daily_statements_v2, h1}
 import models.CashAccountViewModel
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
 
 case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
                        link: Option[HtmlFormat.Appendable] = None,
@@ -33,7 +34,7 @@ case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
 case class CashAccountViewModelV2(pageTitle: String,
                                   backLink: String,
                                   cashAccountBalance: HtmlFormat.Appendable,
-                                  dailyStatementsViewModel: CashAccountDailyStatementsViewModel,
+                                  dailyStatements: HtmlFormat.Appendable,
                                   requestTransactionsHeading: HtmlFormat.Appendable,
                                   downloadCSVFileLinkUrl: HtmlFormat.Appendable,
                                   helpAndSupportGuidance: GuidanceRow)
@@ -44,7 +45,8 @@ object CashAccountViewModelV2 {
             account: CashAccount,
             cashTrans: CashTransactions)(implicit msgs: Messages, config: AppConfig): CashAccountViewModelV2 = {
 
-    val cashAccountDashboardViewModel = CashAccountDailyStatementsViewModel(cashTrans)
+    val dailyStatementsComponent: HtmlFormat.Appendable =
+      new daily_statements_v2(emptyGovUkTableComponent).apply(CashAccountDailyStatementsViewModel(cashTrans))
 
     val cashAccountBalance: HtmlFormat.Appendable =
       new cash_account_balance(emptyH1Component).apply(model = CashAccountViewModel(eori, account))
@@ -58,7 +60,7 @@ object CashAccountViewModelV2 {
       pageTitle = msgs("cf.cash-account.detail.title"),
       backLink = config.customsFinancialsFrontendHomepage,
       cashAccountBalance = cashAccountBalance,
-      cashAccountDashboardViewModel,
+      dailyStatements = dailyStatementsComponent,
       requestTransactionsHeading = requestTransactionsHeading,
       downloadCSVFileLinkUrl = downloadCSVFileLinkUrl,
       helpAndSupportGuidance = helpAndSupport)
