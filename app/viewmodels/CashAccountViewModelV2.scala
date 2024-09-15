@@ -58,7 +58,7 @@ object CashAccountViewModelV2 {
       LinkComponentValues(
         pId = Some("download-scv-file"),
         linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
-        location = config.cashAccountForCdsDeclarationsUrl,
+        location = controllers.routes.RequestTransactionsController.onPageLoad().url,
         postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
         enableLineBreakBeforePostMessage = true))
 

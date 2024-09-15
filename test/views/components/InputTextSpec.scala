@@ -34,7 +34,7 @@ class InputTextSpec extends SpecBase {
         form = validForm,
         id = "value",
         name = "value",
-        label = "eoriNumber.heading",
+        label = testLabel,
         isPageHeading = false,
         hint = None
       ).body)
@@ -52,18 +52,15 @@ class InputTextSpec extends SpecBase {
         form = validForm,
         id = "value",
         name = "value",
-        label = "eoriNumber.heading",
+        label = testLabel,
         isPageHeading = false,
         hint = Option(InputTextHint(
           Option(DetailsHint(detailsSummaryText, detailsText)), Option(LabelHint(labelText))))
       ).body)
 
-      val detailsHintElement: Element = view.getElementById("value-hint-details")
+      val detailsHintElement: Element = view.getElementById("value-hint")
 
-      detailsHintElement.getElementById("value-hint-title").html() mustBe
-        detailsSummaryText
-      detailsHintElement.getElementsByClass("govuk-body").html() mustBe
-        detailsText
+      detailsHintElement.getElementById("value-hint-text").html() mustBe labelText
     }
 
     "display error if form has any error" in new Setup {
@@ -71,7 +68,7 @@ class InputTextSpec extends SpecBase {
         form = invalidForm,
         id = "value",
         name = "value",
-        label = "eoriNumber.heading",
+        label = testLabel,
         isPageHeading = false,
         hint = None
       ).body)
@@ -86,8 +83,9 @@ class InputTextSpec extends SpecBase {
     implicit val msg: Messages = messages(app)
 
     val validForm: Form[String] = new SearchTransactionsFormProvider().apply().bind(Map("value" -> "GB123456789012"))
-    val invalidForm: Form[String] = new SearchTransactionsFormProvider().apply().bind(Map("value" -> "3456789012"))
+    val invalidForm: Form[String] = new SearchTransactionsFormProvider().apply().bind(Map("value" -> emptyString))
 
+    val testLabel = "eoriNumber.heading"
     val detailsSummaryText = "summaryText"
     val detailsText = "text"
     val labelText = "labelText"
