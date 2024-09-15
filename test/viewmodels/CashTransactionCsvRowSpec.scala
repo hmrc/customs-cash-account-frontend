@@ -46,7 +46,17 @@ class CashTransactionCsvRowSpec extends SpecBase {
       TaxGroup(ExciseDuty, -3.45, taxTypes))
 
     val declarations: Seq[Declaration] =
-      Seq(Declaration("someMRN", Some("someImporterEORI"), "someEORI", None, dateWithDay4, -1234.56, taxGroups, Some(sMRN)))
+      Seq(
+        Declaration("someMRN",
+          Some("someImporterEORI"),
+          "someEORI",
+          None,
+          dateWithDay4,
+          -1234.56,
+          taxGroups,
+          Some(sMRN)
+        )
+      )
 
     override val dailyStatement: CashDailyStatement =
       CashDailyStatement(dateWithDay4, amountZero, amountZero, declarations, Nil)
@@ -198,7 +208,12 @@ class CashTransactionCsvRowSpec extends SpecBase {
     val dateWithDay4: LocalDate = LocalDate.of(year2020, month3, day4)
     val dateForDailyStatement: LocalDate = LocalDate.of(year2020, month3, day4)
 
-    val taxTypes: Seq[TaxType] = Seq(TaxType(reasonForSecurity = "Reason", taxTypeID = "50", amount = fiveHundred))
+    val taxTypes: Seq[TaxType] = Seq(
+      TaxType(
+        reasonForSecurity = Some("Reason"),
+        taxTypeID = "50",
+        amount = fiveHundred
+      ))
 
     val dailyStatement: CashDailyStatement =
       CashDailyStatement(dateForDailyStatement, amountZero, amountZero, Nil, Seq(transferIn))

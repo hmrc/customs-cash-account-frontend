@@ -25,19 +25,22 @@ import utils.Utils.{emptyString, period}
 
 import java.time.LocalDate
 
-class ResultsPageSummary(from: LocalDate, to: LocalDate)(implicit messages: Messages) extends SummaryListRowHelper {
+class ResultsPageSummary(from: LocalDate, to: LocalDate, day: Boolean = true)
+                        (implicit messages: Messages) extends SummaryListRowHelper {
 
   def rows(fullStop: Boolean = true): SummaryListRow = {
-    cashTransactionsResultRow(CashTransactionDates(from, to), fullStop)
+    cashTransactionsResultRow(CashTransactionDates(from, to), fullStop, day)
   }
 
-  private def cashTransactionsResultRow(dates: CashTransactionDates, fullStop: Boolean): SummaryListRow = {
+  private def cashTransactionsResultRow(dates: CashTransactionDates,
+                                        fullStop: Boolean,
+                                        day: Boolean): SummaryListRow = {
     summaryListRow(
       value = HtmlFormat.escape(
         if (fullStop) {
-          rowResult(dates)
+          rowResult(dates, day)
         } else {
-          rowResultWithoutFullStop(dates)
+          rowResultWithoutFullStop(dates, day)
         }).toString(),
       secondValue = None,
       actions = Actions(items = Seq(ActionItem(
@@ -46,19 +49,29 @@ class ResultsPageSummary(from: LocalDate, to: LocalDate)(implicit messages: Mess
         content = span(messages("cf.cash-account.detail.csv")),
         visuallyHiddenText = Some(messages("cf.cash-account.detail.csv-definition"))
       )))
+
     )
   }
 
-  private def rowResult(dates: CashTransactionDates): String = {
-    messages("date.range", formatDate(dates.start), formatDate(dates.end))
+  private def rowResult(dates: CashTransactionDates, day: Boolean): String = {
+    messages("date.range",
+      formatDate(dates.start, day),
+      formatDate(dates.end, day))
   }
 
-  private def rowResultWithoutFullStop(dates: CashTransactionDates): String = {
-    messages("date.range", formatDate(dates.start), formatDate(dates.end)).replace(period, emptyString)
+  private def rowResultWithoutFullStop(dates: CashTransactionDates, day: Boolean): String = {
+    messages("date.range",
+      formatDate(dates.start, day),
+      formatDate(dates.end, day)).replace(period, emptyString)
   }
 
-  def formatDate(date: LocalDate)(implicit messages: Messages): String =
-    s"${dateAsDay(date)} ${dateAsMonth(date)} ${date.getYear}"
+  def formatDate(date: LocalDate, day: Boolean)(implicit messages: Messages): String =
+    if (day) {
+      s"${dateAsDay(date)} ${dateAsMonth(date)} ${date.getYear}"
+    } else {
+      s"${dateAsMonth(date)} ${date.getYear}"
+    }
+
 
   def dateAsDay(date: LocalDate): String = {
     val dayTenth = 10

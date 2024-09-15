@@ -20,7 +20,7 @@ import play.api.libs.json.{Json, OFormat}
 
 case class TaxGroup(taxGroupDescription: TaxGroupType, amount: BigDecimal, taxTypes: Seq[TaxType])
 
-case class TaxType(reasonForSecurity: String, taxTypeID: String, amount: BigDecimal)
+case class TaxType(reasonForSecurity: Option[String], taxTypeID: String, amount: BigDecimal)
 
 object TaxType {
   implicit val format: OFormat[TaxType] = Json.format[TaxType]
