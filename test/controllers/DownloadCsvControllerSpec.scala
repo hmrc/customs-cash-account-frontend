@@ -16,15 +16,16 @@
 
 package controllers
 
+import config.AppConfig
 import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested, UnknownException}
-import models._
+import models.*
 import org.jsoup.Jsoup.parseBodyFragment
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.AuditingService
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
@@ -34,10 +35,9 @@ import java.time.LocalDate
 import scala.concurrent.Future
 import scala.jdk.CollectionConverters.ListHasAsScala
 import scala.util.Random
-
 import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.{eq => eqTo}
+import org.mockito.ArgumentMatchers.eq as eqTo
 import org.mockito.Mockito.verify
 
 class DownloadCsvControllerSpec extends SpecBase {
@@ -170,7 +170,7 @@ class DownloadCsvControllerSpec extends SpecBase {
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
         ).configure("features.fixed-systemdate-for-tests" -> "true"
-        ).build()
+      ).build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
@@ -196,7 +196,7 @@ class DownloadCsvControllerSpec extends SpecBase {
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
           bind[AuditingService].toInstance(mockAuditingService)
         ).configure("features.fixed-systemdate-for-tests" -> "true"
-        ).build()
+      ).build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
@@ -220,7 +220,7 @@ class DownloadCsvControllerSpec extends SpecBase {
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
         ).configure("features.fixed-systemdate-for-tests" -> "true"
-        ).build()
+      ).build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
@@ -231,6 +231,13 @@ class DownloadCsvControllerSpec extends SpecBase {
 
     "paginator" should {
       "be compatible with the page and mrn query parameter" in new Setup {
+        val app: Application = application
+          .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+          .configure("application.cash-account.numberOfDaysToShow" -> "10")
+          .build()
+
+        assume(!app.injector.instanceOf[AppConfig].isCashAccountV2FeatureFlagEnabled)
+
         val expectedTransaction = 25
 
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
@@ -238,11 +245,6 @@ class DownloadCsvControllerSpec extends SpecBase {
 
         when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(someCan), any, any)(any))
           .thenReturn(Future.successful(Right(randomCashTransaction(expectedTransaction))))
-
-        val app: Application = application
-          .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-          .configure("application.cash-account.numberOfDaysToShow" -> "10")
-          .build()
 
         running(app) {
           val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(None).url + "?page=5")

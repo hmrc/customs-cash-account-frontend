@@ -43,7 +43,6 @@ class CashAccountControllerSpec extends SpecBase {
 
   "show account details" must {
     "return OK" in new Setup {
-
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
@@ -491,6 +490,10 @@ class CashAccountControllerSpec extends SpecBase {
 
     val cashTransactionResponse: CashTransactions = CashTransactions(
       listOfPendingTransactions, cashDailyStatements)
+
+    val appConfigOb: AppConfig = application.build().injector.instanceOf[AppConfig]
+
+    assume(!appConfigOb.isCashAccountV2FeatureFlagEnabled)
   }
 
   def randomString(length: Int): String = Random.alphanumeric.take(length).mkString

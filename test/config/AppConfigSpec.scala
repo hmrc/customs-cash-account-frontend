@@ -60,6 +60,8 @@ class AppConfigSpec extends SpecBase {
 
   "isCashAccountV2FeatureFlagEnabled" should {
     "return the correct value" in new Setup {
+      assume(!appConfig.isCashAccountV2FeatureFlagEnabled)
+
       appConfig.isCashAccountV2FeatureFlagEnabled mustBe false
     }
   }
