@@ -62,21 +62,18 @@ class UtilsSpec extends SpecBase {
   }
 
   "emptyH1Component" should {
-
     "return the empty h1 component" in {
       emptyH1Component mustBe new h1()
     }
   }
 
   "emptyH2Component" should {
-
     "return the empty h2 component" in {
       emptyH2Component mustBe new h2()
     }
   }
 
   "h2Component" should {
-
     "create the component correctly with provided input" in new Setup {
       h2Component(msgKey = testMsg, id = Some(testId)) mustBe
         new h2().apply(msg = testMsg, id = Some(testId))
@@ -87,14 +84,12 @@ class UtilsSpec extends SpecBase {
   }
 
   "emptyLinkComponent" should {
-
     "return the empty link component" in {
       emptyLinkComponent mustBe new link()
     }
   }
 
   "linkComponent" should {
-
     "create the component correctly with provided input" in new Setup {
       val result: HtmlFormat.Appendable = linkComponent(LinkComponentValues(pId = Some(testId),
         linkMessageKey = testMsgKey,
@@ -112,14 +107,12 @@ class UtilsSpec extends SpecBase {
   }
 
   "emptyPComponent" should {
-
     "return the empty p component" in {
       emptyPComponent mustBe new p()
     }
   }
 
   "pComponent" should {
-
     "create the component correctly with provided input" in new Setup {
       val result: HtmlFormat.Appendable = pComponent(
         messageKey = testMsgKey,
@@ -136,7 +129,6 @@ class UtilsSpec extends SpecBase {
   }
 
   "hmrcNewTabLinkComponent" should {
-
     "create the component correctly with provided input" in new Setup {
       val result: HtmlFormat.Appendable = hmrcNewTabLinkComponent(linkMessage,
         href,
@@ -153,14 +145,12 @@ class UtilsSpec extends SpecBase {
   }
 
   "emptyGovUkTableComponent" should {
-
     "return the empty GovukTable" in {
       emptyGovUkTableComponent mustBe new GovukTable()
     }
   }
 
   "prependNegativeSignWithAmount" should {
-
     "prepend - sign with amount" in {
       val testAmount = "400.00"
 

@@ -162,7 +162,6 @@ class CashAccountV2Spec extends ViewTestHelper {
       Declaration(MOVEMENT_REF_NUMBER, Some(EORI_NUMBER), EORI_NUMBER, Some(DECLARANT_REF), DATE_1, AMOUNT,
         Seq(TAX_GROUP), Some(SECURE_MOVEMENT_REF_NUMBER))
 
-
     val pendingTransactions: Seq[Declaration] = Seq(declaration1, declaration2)
 
     val date1: LocalDate = LocalDate.parse("2020-07-18")

@@ -25,10 +25,10 @@ object TestData {
   val DECLARANT_REF = "GB1234567890 5569-4213-889 936T"
   val SECURE_MOVEMENT_REF_NUMBER = "5569-4213-889 936T"
   val AMOUNT: BigDecimal = BigDecimal(400.00)
+
   val DATE: LocalDate = LocalDate.parse("2020-07-21")
   val DATE_1: LocalDate = LocalDate.parse("2020-08-21")
 
   val TAX_TYPE: TaxType = TaxType(Some("a"), "a", AMOUNT)
-
   val TAX_GROUP: TaxGroup = TaxGroup(ImportVat, AMOUNT, Seq(TAX_TYPE))
 }

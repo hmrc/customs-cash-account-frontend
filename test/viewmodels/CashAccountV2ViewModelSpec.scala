@@ -19,8 +19,10 @@ package viewmodels
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
-import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement,
-  CashTransactions, Declaration, Payment, Transaction, Withdrawal}
+import models.{
+  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement,
+  CashTransactions, Declaration, Payment, Transaction, Withdrawal
+}
 import config.AppConfig
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
@@ -101,9 +103,9 @@ class CashAccountV2ViewModelSpec extends SpecBase {
   }
 
   private def shouldContainCorrectDailyStatementsComponent(app: Application,
-                                                            dailyStatementsComponent: HtmlFormat.Appendable,
-                                                          cashTransactions: CashTransactions)
-                                                         (implicit msgs: Messages): Assertion = {
+                                                           dailyStatementsComponent: HtmlFormat.Appendable,
+                                                           cashTransactions: CashTransactions)
+                                                          (implicit msgs: Messages): Assertion = {
     val expectedDailyStatementsComponent =
       app.injector.instanceOf[daily_statements_v2].apply(CashAccountDailyStatementsViewModel(cashTransactions))
 
@@ -133,7 +135,6 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     val declaration2: Declaration =
       Declaration(MOVEMENT_REF_NUMBER, Some(EORI_NUMBER), EORI_NUMBER, Some(DECLARANT_REF), DATE_1, AMOUNT,
         Seq(TAX_GROUP), Some(SECURE_MOVEMENT_REF_NUMBER))
-
 
     val pendingTransactions: Seq[Declaration] = Seq(declaration1, declaration2)
 

@@ -33,7 +33,9 @@ case class CashTransactionsViewModel(cashTransactions: CashTransactions, page: O
   val downloadUrl: String = controllers.routes.DownloadCsvController.downloadCsv(None).url
 
   val pendingTransactionsGroupedByDate: Seq[PaginatedPendingDailyStatement] = {
-    val pendingGroupedByDate: Seq[(LocalDate, Seq[Declaration])] = cashTransactions.pendingTransactions.groupBy(_.date).toSeq
+    val pendingGroupedByDate: Seq[(LocalDate, Seq[Declaration])] =
+      cashTransactions.pendingTransactions.groupBy(_.date).toSeq
+
     val sortedGroupedByDate: Seq[(LocalDate, Seq[Declaration])] = pendingGroupedByDate.sortBy(_._1).reverse
 
     sortedGroupedByDate.map {

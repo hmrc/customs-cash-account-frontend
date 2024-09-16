@@ -37,23 +37,21 @@ import scala.concurrent.{ExecutionContext, Future}
 import forms.SearchTransactionsFormProvider
 import play.api.data.Form
 
-class CashAccountV2Controller @Inject()(
-                                       authenticate: IdentifierAction,
-                                       verifyEmail: EmailAction,
-                                       apiConnector: CustomsFinancialsApiConnector,
-                                       showAccountsView: cash_account_v2,
-                                       unavailable: cash_account_not_available,
-                                       transactionsUnavailable: cash_account_transactions_not_available,
-                                       noTransactions: cash_account_no_transactions,
-                                       showAccountsExceededThreshold: cash_account_exceeded_threshold,
-                                       noTransactionsWithBalance: cash_account_no_transactions_with_balance,
-                                       cashAccountUtils: CashAccountUtils,
-                                       formProvider: SearchTransactionsFormProvider
-                                     )(implicit mcc: MessagesControllerComponents,
-                                       ec: ExecutionContext,
-                                       eh: ErrorHandler,
-                                       appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
-
+class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
+                                        verifyEmail: EmailAction,
+                                        apiConnector: CustomsFinancialsApiConnector,
+                                        showAccountsView: cash_account_v2,
+                                        unavailable: cash_account_not_available,
+                                        transactionsUnavailable: cash_account_transactions_not_available,
+                                        noTransactions: cash_account_no_transactions,
+                                        showAccountsExceededThreshold: cash_account_exceeded_threshold,
+                                        noTransactionsWithBalance: cash_account_no_transactions_with_balance,
+                                        cashAccountUtils: CashAccountUtils,
+                                        formProvider: SearchTransactionsFormProvider)
+                                       (implicit mcc: MessagesControllerComponents,
+                                        ec: ExecutionContext,
+                                        eh: ErrorHandler,
+                                        appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
   private val logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
 
@@ -63,14 +61,16 @@ class CashAccountV2Controller @Inject()(
     implicit request =>
 
       val eventualMaybeCashAccount = apiConnector.getCashAccount(request.eori)
+
       val result = for {
         cashAccount <- fromOptionF[Future, Result, CashAccount](eventualMaybeCashAccount, NotFound(eh.notFoundTemplate))
         (from, to) = cashAccountUtils.transactionDateRange()
         page <- liftF[Future, Result, Result](showAccountWithTransactionDetails(cashAccount, from, to, page))
       } yield page
+
       result.merge.recover {
-        case e =>
-          logger.error(s"Unable to retrieve account details: ${e.getMessage}")
+        case exception =>
+          logger.error(s"Unable to retrieve account details: ${exception.getMessage}")
           Redirect(routes.CashAccountV2Controller.showAccountUnavailable)
       }
   }
@@ -82,9 +82,11 @@ class CashAccountV2Controller @Inject()(
   private def showAccountWithTransactionDetails(account: CashAccount,
                                                 from: LocalDate,
                                                 to: LocalDate,
-                                                page: Option[Int])(implicit req: IdentifierRequest[AnyContent],
-                                                                   appConfig: AppConfig): Future[Result] = {
+                                                page: Option[Int])
+                                               (implicit req: IdentifierRequest[AnyContent],
+                                                appConfig: AppConfig): Future[Result] = {
     apiConnector.retrieveCashTransactions(account.number, from, to).map {
+
       case Left(errorResponse) => errorResponse match {
         case NoTransactionsAvailable => account.balances.AvailableAccountBalance match {
           case Some(v) if v == 0 => Ok(noTransactions(CashAccountViewModel(req.eori, account)))
@@ -97,6 +99,7 @@ class CashAccountV2Controller @Inject()(
         case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account),
           appConfig.transactionsTimeoutFlag))
       }
+
       case Right(cashTransactions) =>
         if (cashTransactions.availableTransactions) {
           Ok(
@@ -112,8 +115,13 @@ class CashAccountV2Controller @Inject()(
     apiConnector.getCashAccount(request.eori) flatMap {
       case None => Future.successful(NotFound(eh.notFoundTemplate))
       case Some(account) =>
-        Future.successful(Ok(showAccountsExceededThreshold(CashAccountViewModel(request.eori, CashAccount(
-          account.number, account.owner, account.status, account.balances)))))
+        Future.successful(
+          Ok(
+            showAccountsExceededThreshold(
+              CashAccountViewModel(
+                request.eori,
+                CashAccount(account.number, account.owner, account.status, account.balances)))
+          ))
     }
   }
 

@@ -30,31 +30,31 @@ object PaymentHeaderV2 {
              <abbr title="${messages("cf.cash-account.detail.date")}">
                  ${messages("cf.cash-account.detail.date")}
              </abbr>
-             """)
+          """)
       ),
       HeadCell(
         classes = "second-column-width",
         content = HtmlContent(
           s"""
              <abbr title="${messages("cf.cash-account.detail.transaction-type")}">
-             ${messages("cf.cash-account.detail.transaction-type")}
+                ${messages("cf.cash-account.detail.transaction-type")}
              </abbr>
-             """)
+          """)
       ),
       HeadCell(
         content = HtmlContent(
           s"""
              <abbr title="${messages("cf.cash-account.detail.credit")}">
-             ${messages("cf.cash-account.detail.credit")}
+                ${messages("cf.cash-account.detail.credit")}
              </abbr>
-             """)
+          """)
       ),
       HeadCell(
         format = Some("numeric"),
         content = HtmlContent(
           s"""
              <abbr title="${messages("cf.cash-account.detail.debit")}">
-             ${messages("cf.cash-account.detail.debit")}
+                ${messages("cf.cash-account.detail.debit")}
              </abbr>
              """)
       ),
@@ -62,8 +62,8 @@ object PaymentHeaderV2 {
         format = Some("numeric"),
         content = HtmlContent(
           s"""
-                   ${messages("cf.cash-account.detail.balance")}
-                   """)
+               ${messages("cf.cash-account.detail.balance")}
+          """)
       )
     )
   }

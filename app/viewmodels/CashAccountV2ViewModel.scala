@@ -19,7 +19,7 @@ package viewmodels
 import config.AppConfig
 import models.CashAccount
 import models.domain.EORI
-import utils.Utils.{LinkComponentValues, emptyH1Component, emptyString, h2Component, hmrcNewTabLinkComponent, linkComponent, emptyGovUkTableComponent}
+import utils.Utils.*
 import models.CashTransactions
 import play.twirl.api.{Html, HtmlFormat}
 import views.html.components.{cash_account_balance, daily_statements_v2, h1}

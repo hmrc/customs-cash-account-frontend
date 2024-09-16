@@ -47,9 +47,9 @@ object CashAccountDailyStatementsViewModel {
     val dailyStatements: Seq[CashDailyStatement] = transactions.cashDailyStatements.sortBy(_.date).reverse
     val hasTransactions = dailyStatements.nonEmpty
 
-    val dailyStatementsForViewModel: Seq[DailyStatementViewModel] = populateDailyStatementViewModelList(dailyStatements)
-
-    CashAccountDailyStatementsViewModel(dailyStatementsForViewModel, hasTransactions, transForLastSixMonthsHeading)
+    CashAccountDailyStatementsViewModel(populateDailyStatementViewModelList(dailyStatements),
+      hasTransactions,
+      transForLastSixMonthsHeading)
   }
 
   private def transForLastSixMonthsHeading(implicit msgs: Messages): HtmlFormat.Appendable = {
@@ -108,8 +108,7 @@ object CashAccountDailyStatementsViewModel {
       paymentAndWithdrawal =>
         DailyStatementViewModel(
           date = dateAsDayMonthAndYear(date),
-          transactionType =
-            PaymentType(textString = Some(populateTransactionTypeText(paymentAndWithdrawal))),
+          transactionType = PaymentType(textString = Some(populateTransactionTypeText(paymentAndWithdrawal))),
           credit = populateCreditAmount(paymentAndWithdrawal),
           debit = populateDebitAmount(paymentAndWithdrawal),
           balance = None

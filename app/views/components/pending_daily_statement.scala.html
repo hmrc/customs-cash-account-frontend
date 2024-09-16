@@ -18,6 +18,7 @@
 
 @import helpers.Formatters
 @import views.components.PaymentHeader
+@import utils.Utils.emptyString
 
 @this(govukTable: GovukTable)
 
@@ -38,7 +39,7 @@
  <p class="govuk-body govuk-!-margin-bottom-2" id="@{
   s"pending-detail-${pendingDailyStatement.date}"
  }"> @{
-  model.account.balances.AvailableAccountBalance.fold(""){balance => messages("cf.cash-account.detail.available-balance", Formatters.formatCurrencyAmount(balance))}
+  model.account.balances.AvailableAccountBalance.fold(emptyString){balance => messages("cf.cash-account.detail.available-balance", Formatters.formatCurrencyAmount(balance))}
  }
 </p>
 } else {

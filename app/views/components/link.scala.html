@@ -34,7 +34,7 @@
         enableLineBreakBeforePostMessage: Boolean = false)(implicit messages: Messages)
 
 @link = {
- <a @{linkId.fold("")(id => s"id=$id")} class="@linkClass" href="@location">@Html(if(linkMessage.isEmpty) messages(linkMessageKey) else linkMessage.getOrElse(emptyString))</a>@if(linkSentence){.}
+ <a @{linkId.fold(emptyString)(id => s"id=$id")} class="@linkClass" href="@location">@Html(if(linkMessage.isEmpty) messages(linkMessageKey) else linkMessage.getOrElse(emptyString))</a>@if(linkSentence){.}
 }
 
 @br = {
@@ -42,7 +42,7 @@
 }
 
 @if(pWrapped){
- <p @{pId.fold("")(id => s"id=$id")} class="@pClass">
+ <p @{pId.fold(emptyString)(id => s"id=$id")} class="@pClass">
       @preLinkMessage.map(m => messages(m))
       @if(enableLineBreakBeforePostMessage){@link @br} else {@link}
       @postLinkMessage.map(m => messages(m))
