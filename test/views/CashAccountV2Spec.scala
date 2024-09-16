@@ -22,7 +22,7 @@ import models.{
   AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions, Declaration,
   Payment, Transaction, Withdrawal
 }
-import viewmodels.CashAccountViewModelV2
+import viewmodels.CashAccountV2ViewModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import utils.TestData.*
@@ -184,15 +184,15 @@ class CashAccountV2Spec extends ViewTestHelper {
 
     val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
 
-    val viewModelWithTransactions: CashAccountViewModelV2 =
-      CashAccountViewModelV2(eoriNumber, cashAccount, cashTransactions)
+    val viewModelWithTransactions: CashAccountV2ViewModel =
+      CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions)
 
-    val viewModelWithNoTransactions: CashAccountViewModelV2 =
-      CashAccountViewModelV2(eoriNumber, cashAccount, cashTransactions.copy(Seq(), Seq()))
+    val viewModelWithNoTransactions: CashAccountV2ViewModel =
+      CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions.copy(Seq(), Seq()))
 
     val form: Form[String] = new SearchTransactionsFormProvider().apply()
 
-    protected def createView(viewModel: CashAccountViewModelV2): Document = {
+    protected def createView(viewModel: CashAccountV2ViewModel): Document = {
       Jsoup.parse(app.injector.instanceOf[cash_account_v2].apply(form, viewModel).body)
     }
   }

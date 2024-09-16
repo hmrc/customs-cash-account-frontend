@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import viewmodels.{CashTransactionsViewModel, CashAccountViewModelV2}
+import viewmodels.{CashTransactionsViewModel, CashAccountV2ViewModel}
 import views.html.*
 
 import java.time.LocalDate
@@ -100,7 +100,7 @@ class CashAccountV2Controller @Inject()(
       case Right(cashTransactions) =>
         if (cashTransactions.availableTransactions) {
           Ok(
-            showAccountsView(form, CashAccountViewModelV2(req.eori, account, cashTransactions))
+            showAccountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions))
           )
         } else {
           Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))

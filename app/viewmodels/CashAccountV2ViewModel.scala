@@ -31,7 +31,7 @@ case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
                        link: Option[HtmlFormat.Appendable] = None,
                        paragraph: Option[HtmlFormat.Appendable] = None)
 
-case class CashAccountViewModelV2(pageTitle: String,
+case class CashAccountV2ViewModel(pageTitle: String,
                                   backLink: String,
                                   cashAccountBalance: HtmlFormat.Appendable,
                                   dailyStatements: HtmlFormat.Appendable,
@@ -39,11 +39,11 @@ case class CashAccountViewModelV2(pageTitle: String,
                                   downloadCSVFileLinkUrl: HtmlFormat.Appendable,
                                   helpAndSupportGuidance: GuidanceRow)
 
-object CashAccountViewModelV2 {
+object CashAccountV2ViewModel {
 
   def apply(eori: EORI,
             account: CashAccount,
-            cashTrans: CashTransactions)(implicit msgs: Messages, config: AppConfig): CashAccountViewModelV2 = {
+            cashTrans: CashTransactions)(implicit msgs: Messages, config: AppConfig): CashAccountV2ViewModel = {
 
     val dailyStatementsComponent: HtmlFormat.Appendable =
       new daily_statements_v2(emptyGovUkTableComponent).apply(CashAccountDailyStatementsViewModel(cashTrans))
@@ -56,7 +56,7 @@ object CashAccountViewModelV2 {
         msgKey = "cf.cash-account.transactions.request-transactions.heading",
         id = Some("request-transactions-heading"))
 
-    CashAccountViewModelV2(
+    CashAccountV2ViewModel(
       pageTitle = msgs("cf.cash-account.detail.title"),
       backLink = config.customsFinancialsFrontendHomepage,
       cashAccountBalance = cashAccountBalance,

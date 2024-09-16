@@ -30,13 +30,13 @@ import views.html.components.{cash_account_balance, daily_statements_v2}
 
 import java.time.LocalDate
 
-class CashAccountViewModelV2Spec extends SpecBase {
+class CashAccountV2ViewModelSpec extends SpecBase {
 
   "apply method" should {
 
     "return correct contents" in new Setup {
-      val cashAccountViewModel: CashAccountViewModelV2 =
-        createCashAccountViewModelV2(eoriNumber, cashAccount, cashTransactions)
+      val cashAccountViewModel: CashAccountV2ViewModel =
+        createCashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions)
 
       shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
       shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
@@ -156,10 +156,10 @@ class CashAccountViewModelV2Spec extends SpecBase {
 
     val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
 
-    def createCashAccountViewModelV2(eori: String,
+    def createCashAccountV2ViewModel(eori: String,
                                      account: CashAccount,
-                                     cashTrans: CashTransactions): CashAccountViewModelV2 =
-      CashAccountViewModelV2(eori, account, cashTrans)
+                                     cashTrans: CashTransactions): CashAccountV2ViewModel =
+      CashAccountV2ViewModel(eori, account, cashTrans)
   }
 
 }
