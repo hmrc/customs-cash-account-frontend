@@ -97,7 +97,7 @@ class CashAccountController @Inject()(
           Ok(
             showAccountsView(
               CashAccountViewModel(req.eori, account),
-            CashTransactionsViewModel(cashTransactions, page = page))
+              CashTransactionsViewModel(cashTransactions, page = page))
           )
         } else {
           Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
