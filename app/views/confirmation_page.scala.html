@@ -66,8 +66,7 @@
          id=Some("body-text2")
      )
 
-     @link(linkMessage = messages(
-         s"cf.cash-account.transactions.confirmation.back"),
+     @link(linkMessage = Some(messages(s"cf.cash-account.transactions.confirmation.back")),
          location = controllers.routes.SelectedTransactionsController.onPageLoad().url,
          pId = Some("link-text"),
          pClass = "govuk-body govuk-!-margin-bottom-9")
