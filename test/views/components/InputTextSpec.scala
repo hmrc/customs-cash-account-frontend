@@ -19,11 +19,16 @@ package views.components
 import forms.SearchTransactionsFormProvider
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
+import org.jsoup.select.Elements
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import utils.Utils.{DetailsHint, InputTextHint, LabelHint}
-import views.html.components.inputText
+import views.html.components.{button, inputText}
+import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 import utils.SpecBase
 
 class InputTextSpec extends SpecBase {
@@ -63,6 +68,24 @@ class InputTextSpec extends SpecBase {
       detailsHintElement.getElementById("value-hint-text").html() mustBe labelText
     }
 
+    "display the inline component if any component is passed as part of FormGroup" in new Setup {
+      val button: HtmlFormat.Appendable = new button(new GovukButton()).apply(msg = buttonText)
+
+      val view: Document = Jsoup.parse(app.injector.instanceOf[inputText].apply(
+        form = invalidForm,
+        id = "value",
+        name = "value",
+        label = testLabel,
+        isPageHeading = false,
+        hint = None,
+        formGroup = FormGroup(afterInput = Some(HtmlContent(button)))
+      ).body)
+
+      val inLineComponent: Elements = view.getElementsByClass("govuk-button")
+
+      inLineComponent.get(0).text() mustBe buttonText
+    }
+
     "display error if form has any error" in new Setup {
       val view: Document = Jsoup.parse(app.injector.instanceOf[inputText].apply(
         form = invalidForm,
@@ -89,5 +112,6 @@ class InputTextSpec extends SpecBase {
     val detailsSummaryText = "summaryText"
     val detailsText = "text"
     val labelText = "labelText"
+    val buttonText = "testButton"
   }
 }

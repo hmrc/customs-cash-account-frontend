@@ -88,7 +88,7 @@ class CashAccountV2Spec extends ViewTestHelper {
 
   private def shouldContainSearchButton(viewDocument: Document)
                                        (implicit msgs: Messages) = {
-    viewDocument.html().contains(msgs("site.search")) mustBe true
+    viewDocument.getElementsByClass("inlineButton").text() mustBe msgs("site.search")
   }
 
   private def shouldContainCorrectRequestTransactionsHeading(viewDocument: Document)

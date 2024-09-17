@@ -21,6 +21,7 @@
 
 @import viewmodels.CashAccountV2ViewModel
 @import utils.Utils.{InputTextHint, LabelHint}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
 
 @this(
         main_template: Layout,
@@ -59,13 +60,13 @@
             hint = Some(
                     InputTextHint(labelHint =
                                     Some(LabelHint("cf.cash-account.transactions.search-for-transactions.hint",
-                                                    "govuk-hint govuk-!-margin-top-6")))),
+                                                    "govuk-hint govuk-!-margin-top-2")))),
+            formGroup = FormGroup(afterInput = Some(HtmlContent(button(msg = "site.search", classes = "inlineButton")))),
             isPageHeading = false,
             classes = Some("govuk-!-width-one-third"),
             labelClasses = Some("govuk-label--m govuk-!-margin-bottom-3")
         )
 
-        @button("site.search")
     }
 
     @viewModel.dailyStatements

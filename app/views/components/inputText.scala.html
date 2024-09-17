@@ -15,6 +15,7 @@
  *@
 
 @import utils.Utils.{emptyString, InputTextHint}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
 
 @this(
     govukInput: GovukInput,
@@ -34,7 +35,8 @@
         inputmode: Option[String] = None,
         pattern: Option[String] = None,
         labelClasses: Option[String] = None,
-        inputType: String = "text"
+        inputType: String = "text",
+        formGroup: FormGroup = FormGroup.empty
 )(implicit messages: Messages)
 
     @govukInput(Input(
@@ -49,6 +51,7 @@
         hint = hint.map(hintKey => Hint(
         content = HtmlContent(inTextHint(hintKey.detailsHint, hintKey.labelHint, id))
         )),
+        formGroup = formGroup,
         value = form(name).value,
         errorMessage = form(name).error.map(
                             err => ErrorMessage(
