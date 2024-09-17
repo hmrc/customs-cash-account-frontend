@@ -3,6 +3,8 @@ language.english=English
 language.change.english=Change the language to English
 
 site.error = Gwall
+site.search = Chwilio
+site.support.heading = Help a chymorth
 
 service.name=Rheoli tollau mewnforio a chyfrifon TAW
 
@@ -64,6 +66,9 @@ cf.cash-account.detail.Declarationucr=UCR y datganiad
 cf.cash-account.detail.declarant=EORI
 cf.cash-account.detail.eori=y sawl sy’n datgan nwyddau
 cf.cash-account.detail.eori-definition=Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd
+cf.cash-account.detail.transaction-type = Math o drafodyn
+cf.cash-account.detail.credit = Credyd
+cf.cash-account.detail.debit = Debyd
 cf.cash-account.detail.amount=Swm
 cf.cash-account.detail.balance=Balans
 cf.cash-account.detail.top-up=Ychwanegu
@@ -234,6 +239,7 @@ cf.form.error.end.date.invalid.day=Mae’n rhaid i’r dyddiad dod i ben gynnwys
 cf.form.error.end.date.invalid.month=Mae’n rhaid i’r dyddiad dod i ben gynnwys mis
 cf.form.error.end.date.invalid.year=Mae’n rhaid i’r dyddiad dod i ben gynnwys blwyddyn
 cf.form.error.end.date.invalid.real-date=Mae’n rhaid i’r dyddiad i fod yn ddyddiad go iawn
+cf.searchTransactions.form.error.required = Nodwch werth
 
 error.summary.title = Mae problem wedi codi
 error.browser.title.prefix = Gwall:
@@ -241,6 +247,13 @@ error.browser.title.prefix = Gwall:
 cf.cash-account.transactions.request.review.heading=Y trafodion cyfrif arian parod sydd wedi’u dewis
 cf.cash-account.transactions.request.review.change=Newid
 cf.cash-account.transactions.request.review.account=Cyfrif:
+
+cf.cash-account.transactions.request-transactions.heading = Gofyn am drafodion
+cf.cash-account.transactions.transactions-for-last-six-months.heading = Eich trafodion ar gyfer y chwe mis diwethaf
+cf.cash-account.transactions.request-transactions.download-csv.url = Gofynnwch yn ôl dyddiad a lawrlwytho’ch trafodion fel ffeil CSV.
+cf.cash-account.transactions.request-transactions.download-csv.post-message = Bydd y ffeil CSV ar gael i’w lawrlwytho cyn pen 24 awr.
+cf.cash-account.transactions.search-for-transactions.heading = Chwilio am drafodion
+cf.cash-account.transactions.search-for-transactions.hint = Gallwch chwilio drwy MRN, UCR neu union swm taliad sy’n cynnwys ‘£’
 
 site.continue=Cadarnhau ac anfon
 

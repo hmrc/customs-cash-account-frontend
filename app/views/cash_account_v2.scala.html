@@ -1,0 +1,82 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@*
+* Copyright 2021 HM Revenue & Customs
+*
+*@
+
+@import viewmodels.CashAccountV2ViewModel
+@import utils.Utils.{InputTextHint, LabelHint}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
+
+@this(
+        main_template: Layout,
+        formHelper: FormWithCSRF,
+        errorSummary: components.errorSummary,
+        button: components.button,
+        inputText: components.inputText
+)
+
+@(
+    form: Form[_],
+    viewModel: CashAccountV2ViewModel
+)(
+    implicit messages: Messages,
+    appConfig: AppConfig,
+    request: Request[_]
+)
+
+@main_template(
+    pageTitle = Some(viewModel.pageTitle),
+    backLink = Some(viewModel.backLink),
+    fullWidth = true,
+    help = true
+) {
+
+    @viewModel.cashAccountBalance
+
+    @formHelper(action = controllers.routes.CashAccountV2Controller.onSubmit(None)) {
+        @errorSummary(form.errors, None)
+
+        @inputText(
+            form,
+            id = "search-transactions",
+            name = "value",
+            label = "cf.cash-account.transactions.search-for-transactions.heading",
+            hint = Some(
+                    InputTextHint(labelHint =
+                                    Some(LabelHint("cf.cash-account.transactions.search-for-transactions.hint",
+                                                    "govuk-hint govuk-!-margin-top-2")))),
+            formGroup = FormGroup(afterInput = Some(HtmlContent(button(msg = "site.search", classes = "inline-button")))),
+            isPageHeading = false,
+            classes = Some("govuk-!-width-one-third"),
+            labelClasses = Some("govuk-label--m govuk-!-margin-bottom-3")
+        )
+
+    }
+
+    @viewModel.dailyStatements
+
+    @viewModel.requestTransactionsHeading
+
+    @viewModel.downloadCSVFileLinkUrl
+
+    @defining(viewModel.helpAndSupportGuidance) { (helpAndSupport) =>
+        @helpAndSupport.h2Heading
+        @helpAndSupport.link.map(identity)
+    }
+}

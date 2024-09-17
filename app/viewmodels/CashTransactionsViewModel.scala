@@ -17,10 +17,10 @@
 package viewmodels
 
 import config.AppConfig
-import models.{CashDailyStatement, CashTransactions}
+import models.{CashDailyStatement, CashTransactions, Declaration}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import utils.Utils._
+import utils.Utils.*
 
 import java.time.LocalDate
 import java.time.chrono.ChronoLocalDate
@@ -33,8 +33,10 @@ case class CashTransactionsViewModel(cashTransactions: CashTransactions, page: O
   val downloadUrl: String = controllers.routes.DownloadCsvController.downloadCsv(None).url
 
   val pendingTransactionsGroupedByDate: Seq[PaginatedPendingDailyStatement] = {
-    val pendingGroupedByDate = cashTransactions.pendingTransactions.groupBy(_.date).toSeq
-    val sortedGroupedByDate = pendingGroupedByDate.sortBy(_._1).reverse
+    val pendingGroupedByDate: Seq[(LocalDate, Seq[Declaration])] =
+      cashTransactions.pendingTransactions.groupBy(_.date).toSeq
+
+    val sortedGroupedByDate: Seq[(LocalDate, Seq[Declaration])] = pendingGroupedByDate.sortBy(_._1).reverse
 
     sortedGroupedByDate.map {
       case (date, declarations) => PaginatedPendingDailyStatement(date, declarations)
