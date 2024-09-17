@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package forms
 
-import play.api.libs.json.{Json, OFormat}
+import forms.mappings.Mappings
+import play.api.data.Form
+import javax.inject.Inject
 
-case class TaxGroup(taxGroupDescription: TaxGroupType, amount: BigDecimal, taxTypes: Seq[TaxType])
+class SearchTransactionsFormProvider @Inject() extends Mappings {
 
-case class TaxType(reasonForSecurity: Option[String], taxTypeID: String, amount: BigDecimal)
-
-object TaxType {
-  implicit val format: OFormat[TaxType] = Json.format[TaxType]
-}
-
-object TaxGroup {
-  implicit val format: OFormat[TaxGroup] = Json.format[TaxGroup]
+  def apply(): Form[String] =
+    Form(
+      "value" -> text(errorKey = "cf.searchTransactions.form.error.required")
+    )
 }

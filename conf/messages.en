@@ -3,6 +3,8 @@ language.english = English
 language.change.cymraeg=Newid yr iaith ir Gymraeg
 
 site.error = Error
+site.search = Search
+site.support.heading = Help and support
 
 service.name=Manage import duties and VAT accounts
 
@@ -65,14 +67,20 @@ cf.cash-account.detail.declarant=Declarant
 cf.cash-account.detail.eori=EORI
 cf.cash-account.detail.importerEori=Importer EORI
 cf.cash-account.detail.eori-definition=Economic Operators Registration and Identification number
+cf.cash-account.detail.transaction-type = Transaction type
+cf.cash-account.detail.credit = Credit
+cf.cash-account.detail.debit = Debit
 cf.cash-account.detail.amount=Amount
 cf.cash-account.detail.balance=Balance
 cf.cash-account.detail.top-up=Top-up
+cf.cash-account.detail.top-up.v2=Top up
 cf.cash-account.detail.withdrawal=Withdrawal
 cf.cash-account.detail.withdrawal.account-ending=(to account ending {0})
 cf.cash-account.detail.pending=(Pending)
 cf.cash-account.detail.transfer-in=Transfer from another account
+cf.cash-account.detail.transfer-in.v2=Transfer from Cash account {0}
 cf.cash-account.detail.transfer-out=Transfer to another account
+cf.cash-account.detail.transfer-out.v2 = Transfer to Cash account {0}
 cf.cash-account.detail.account-not-available=We are unable to show your account at the moment. Please try again later.
 cf.cash-account.detail.transactions-not-available=We are unable to show your payments at the moment. Please try again later.
 cf.cash-account.detail.transactions-not-available.first=Sorry, we are unable to show your transactions at this moment.
@@ -236,6 +244,8 @@ cf.form.error.end.date.invalid.month=The end date must include a month
 cf.form.error.end.date.invalid.year=The end date must include a year
 cf.form.error.end.date.invalid.real-date=The to date must be a real date
 
+cf.searchTransactions.form.error.required = Please enter a value
+
 error.summary.title = There is a problem
 error.browser.title.prefix = Error:
 
@@ -247,6 +257,13 @@ cf.cash-account.transactions.request.date.hint-end-date.v2=For example, 3 2021.
 cf.cash-account.transactions.request.review.heading=Selected cash account transactions
 cf.cash-account.transactions.request.review.change=Change
 cf.cash-account.transactions.request.review.account=Account:
+
+cf.cash-account.transactions.request-transactions.heading = Request transactions
+cf.cash-account.transactions.transactions-for-last-six-months.heading = Your transactions for the last 6 months
+cf.cash-account.transactions.request-transactions.download-csv.url = Request by date and download your transactions as a CSV file.
+cf.cash-account.transactions.request-transactions.download-csv.post-message = The CSV file will be available to download within 24 hours.
+cf.cash-account.transactions.search-for-transactions.heading = Search for transactions
+cf.cash-account.transactions.search-for-transactions.hint = You can search by MRN, UCR or exact payment amount that includes ‘£’
 
 cf.cash-account.transactions.confirmation.statements=We received your request for statements
 cf.cash-account.transactions.confirmation.next=What happens next

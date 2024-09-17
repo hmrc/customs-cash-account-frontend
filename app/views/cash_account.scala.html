@@ -50,7 +50,9 @@
     help = true
 ) {
     @cash_account_balance(model)
+
     @h2(msg = "cf.cash-account.detail.payments-heading", id = Some("payments-heading"))
+
     @link("cf.cash-account.detail.csv", cashTransactionsViewModel.downloadUrl, linkId = Some("download-link"), pId = Some("download"))
 
     @for((transaction, index) <- cashTransactionsViewModel.visibleItems.zipWithIndex) {

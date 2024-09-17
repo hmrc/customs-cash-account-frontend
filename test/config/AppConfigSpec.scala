@@ -58,6 +58,14 @@ class AppConfigSpec extends SpecBase {
     }
   }
 
+  "isCashAccountV2FeatureFlagEnabled" should {
+    "return the correct value" in new Setup {
+      assume(!appConfig.isCashAccountV2FeatureFlagEnabled)
+
+      appConfig.isCashAccountV2FeatureFlagEnabled mustBe false
+    }
+  }
+
   trait Setup {
     val app: Application = application.build()
     val appConfig: AppConfig = app.injector.instanceOf[AppConfig]

@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models
+@import utils.Utils.{DetailsHint,LabelHint}
 
-import play.api.libs.json.{Json, OFormat}
+@this(
+    govukHint: GovukHint
+)
 
-case class TaxGroup(taxGroupDescription: TaxGroupType, amount: BigDecimal, taxTypes: Seq[TaxType])
+@(
+    detailsHint: Option[DetailsHint] = None,
+    labelHint: Option[LabelHint] = None,
+    id: String)(implicit messages: Messages
+)
 
-case class TaxType(reasonForSecurity: Option[String], taxTypeID: String, amount: BigDecimal)
-
-object TaxType {
-  implicit val format: OFormat[TaxType] = Json.format[TaxType]
-}
-
-object TaxGroup {
-  implicit val format: OFormat[TaxGroup] = Json.format[TaxGroup]
+@labelHint.map { lh =>
+        @govukHint(Hint(
+            id = Some(s"$id-hint-text"),
+            classes = lh.classes,
+            attributes = Map(),
+            content = HtmlContent(messages(lh.labelText))
+        ))
 }

@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package models
+package utils
 
-import play.api.libs.json.{Json, OFormat}
+import java.time.LocalDate
+import models.{TaxGroup, ImportVat, TaxType}
 
-case class TaxGroup(taxGroupDescription: TaxGroupType, amount: BigDecimal, taxTypes: Seq[TaxType])
+object TestData {
+  val MOVEMENT_REF_NUMBER = "GHRT122317AM33E6D6"
+  val EORI_NUMBER = "GB1234567890"
+  val DECLARANT_REF = "GB1234567890 5569-4213-889 936T"
+  val SECURE_MOVEMENT_REF_NUMBER = "5569-4213-889 936T"
+  val AMOUNT: BigDecimal = BigDecimal(400.00)
 
-case class TaxType(reasonForSecurity: Option[String], taxTypeID: String, amount: BigDecimal)
+  val DATE: LocalDate = LocalDate.parse("2020-07-21")
+  val DATE_1: LocalDate = LocalDate.parse("2020-08-21")
 
-object TaxType {
-  implicit val format: OFormat[TaxType] = Json.format[TaxType]
-}
-
-object TaxGroup {
-  implicit val format: OFormat[TaxGroup] = Json.format[TaxGroup]
+  val TAX_TYPE: TaxType = TaxType(Some("a"), "a", AMOUNT)
+  val TAX_GROUP: TaxGroup = TaxGroup(ImportVat, AMOUNT, Seq(TAX_TYPE))
 }
