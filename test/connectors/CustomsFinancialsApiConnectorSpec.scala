@@ -18,7 +18,7 @@ package connectors
 
 import config.AppConfig
 import models.*
-import models.request.{CashDailyStatementRequest, IdentifierRequest}
+import models.request.{CashDailyStatementRequest, IdentifierRequest, CashAccountStatementRequestDetail}
 import org.mockito.ArgumentMatchers.anyString
 import play.api.{Application, inject}
 import play.api.http.Status.{NOT_FOUND, REQUEST_ENTITY_TOO_LARGE}
@@ -330,6 +330,56 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
   }
 
+  "retrieveCashAccountStatements" must {
+    "call the correct URL" in new Setup {
+
+      val expectedUrl = "apiEndpointUrl/accounts/cashaccountstatementrequest/v1"
+      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
+        .thenReturn(Future.successful(successResponse))
+
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[RequestBuilder].toInstance(requestBuilder)
+        ).build()
+
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).retrieveCashAccountStatements(
+          "eori","can", fromDate, toDate))
+
+        result mustBe Right(successResponse)
+      }
+    }
+
+    "" in new Setup {
+
+      private val responseCode: Int = 500
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
+        .thenReturn(Future.failed(new HttpException("It's broken", responseCode)))
+
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(bind[HttpClientV2].toInstance(mockHttpClient)).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).retrieveCashAccountStatements("eori", "can", fromDate, toDate).map {
+          _ mustBe Left(UnknownException)
+        }
+      }
+    }
+
+  }
+
   "retrieveHistoricCashTransactions" must {
     "return a list of requested cash daily statements" in new Setup {
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
@@ -397,6 +447,21 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
   }
 
+  "Populating CashStatementRequests" should {
+    "return correct values" when {
+
+      "cash daily statement request is populated correctly" in new Setup {
+        val res = CashDailyStatementRequest("can", fromDate, toDate)
+        res mustBe cashDailyStatementRequest
+      }
+
+      "cash account statement request is populated correctly" in new Setup {
+        val res = CashAccountStatementRequestDetail(eori, "someCan", fromDate.toString, toDate.toString)
+        res mustBe cashAccountStatementRequestDetail
+      }
+    }
+  }
+
   trait Setup {
     private val traderEori = "12345678"
     private val cashAccountNumber = "987654"
@@ -444,6 +509,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     )
 
     val cashDailyStatementRequest: CashDailyStatementRequest = CashDailyStatementRequest("can", fromDate, toDate)
+
+    val cashAccountStatementRequestDetail: CashAccountStatementRequestDetail =
+      CashAccountStatementRequestDetail(eori, "someCan", fromDate.toString, toDate.toString)
 
     private val otherTransactions =
       Seq(Transaction(123.45, Payment, None), Transaction(-432.87, Withdrawal, Some("77665544")))

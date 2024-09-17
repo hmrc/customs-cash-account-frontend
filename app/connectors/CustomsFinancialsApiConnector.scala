@@ -19,7 +19,7 @@ package connectors
 import config.AppConfig
 import models.CashDailyStatement.*
 import models.*
-import models.request.{CashDailyStatementRequest, IdentifierRequest}
+import models.request.{CashDailyStatementRequest, CashAccountStatementRequestDetail, IdentifierRequest}
 import org.slf4j.LoggerFactory
 import play.api.http.Status.{NOT_FOUND, REQUEST_ENTITY_TOO_LARGE}
 import play.api.mvc.AnyContent
@@ -47,6 +47,8 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
   private val accountsUrl = s"$baseUrl/eori/accounts"
   private val retrieveCashTransactionsUrl = s"$baseUrl/account/cash/transactions"
   private val retrieveCashTransactionsDetailUrl = s"$baseUrl/account/cash/transactions-detail"
+  private val retrieveCashAccountStatementsUrl = s"$baseUrl/accounts/cashaccountstatementrequest/v1"
+
 
   def getCashAccount(eori: String)(implicit hc: HeaderCarrier,
                                    request: IdentifierRequest[AnyContent]): Future[Option[CashAccount]] = {
@@ -141,6 +143,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
                                      from: LocalDate,
                                      to: LocalDate)
                                     (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
+
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
     httpClient.post(url"$retrieveCashTransactionsDetailUrl")
@@ -156,6 +159,24 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       logger.error(s"No data found")
       Left(NoTransactionsAvailable)
 
+    case e =>
+      logger.error(s"Unable to download CSV :${e.getMessage}")
+      Left(UnknownException)
+  }
+
+  def retrieveCashAccountStatements(eori: String,
+                                    can: String,
+                                    from: LocalDate,
+                                    to: LocalDate)
+                                   (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
+
+    val request = CashAccountStatementRequestDetail(eori, can, from.toString, to.toString)
+
+    httpClient.post(url"$retrieveCashAccountStatementsUrl")
+      .withBody[CashAccountStatementRequestDetail](request)
+      .execute[CashTransactions]
+      .map(Right(_))
+  }.recover {
     case e =>
       logger.error(s"Unable to download CSV :${e.getMessage}")
       Left(UnknownException)

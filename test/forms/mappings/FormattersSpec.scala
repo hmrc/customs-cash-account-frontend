@@ -16,16 +16,18 @@
 
 package forms.mappings
 
+import play.api.Application
 import play.api.data.FormError
+import play.api.i18n.Messages
 import utils.SpecBase
+
+import java.time.LocalDate
 
 class FormattersSpec extends SpecBase {
 
   "booleanFormatter" should {
     "return correct value" when {
-      "key is bound correctly" in {
-
-        val formatterOb = new Formatters {}
+      "key is bound correctly" in new Setup {
 
         formatterOb.booleanFormatter("test_key", "invalid_key").bind(
           "test_key", Map("test_key" -> "true")) mustBe Right(true)
@@ -35,9 +37,8 @@ class FormattersSpec extends SpecBase {
       }
     }
 
-    "return error when invalid key is found" in {
+    "return error when invalid key is found" in new Setup {
 
-      val formatterOb = new Formatters {}
       val key = "test_key"
       val invalidKey = "invalid_key"
 
@@ -47,9 +48,8 @@ class FormattersSpec extends SpecBase {
   }
 
   "decimalFormatter" should {
-    "return correct value when key is bound" in {
+    "return correct value when key is bound" in new Setup {
 
-      val formatterOb = new Formatters {}
       val key = "test_key"
       val invalidKey = "invalid_key"
 
@@ -57,14 +57,30 @@ class FormattersSpec extends SpecBase {
         key, Map(key -> "99.0")) mustBe Right("99.0")
     }
 
-    "return error when key is not bound successfully" in {
+    "return error when key is not bound successfully" in new Setup {
 
-      val formatterOb = new Formatters {}
       val key = "test_key"
       val invalidKey = "invalid_key"
 
       formatterOb.decimalFormatter(key, invalidKey).bind(
         key, Map(key -> "invalid")) mustBe Left(Seq(FormError(key, invalidKey)))
     }
+  }
+
+  "date formatter" should {
+    "return month as a valid value" in new Setup {
+      formatterOb.dateAsMonth(date) mustBe "July"
+    }
+
+    "return month and year as a valid value" in new Setup {
+      formatterOb.dateAsMonthAndYear(date) mustBe "July 2020"
+    }
+  }
+
+  trait Setup {
+    val formatterOb = new Formatters {}
+    val app: Application = application.build()
+    implicit val msg: Messages = messages(app)
+    val date: LocalDate = LocalDate.parse("2020-07-21")
   }
 }

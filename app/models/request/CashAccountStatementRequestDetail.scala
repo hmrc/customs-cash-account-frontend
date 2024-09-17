@@ -17,18 +17,15 @@
 package models.request
 
 import java.time.LocalDate
-import models.domain.CAN
 import play.api.libs.json.{JsValue, Json, OWrites, Writes, Format}
 import play.api.libs.ws.BodyWritable
 
-case class CashDailyStatementRequest(can: CAN, from: LocalDate, to: LocalDate)
-
 case class CashAccountStatementRequestDetail(eori: String, can: String, dateFrom: String, dateTo: String)
 
-object CashDailyStatementRequest {
+object CashAccountStatementRequestDetail {
 
-  implicit val format: Format[CashDailyStatementRequest] = Json.format[CashDailyStatementRequest]
-  implicit val writes: Writes[CashDailyStatementRequest] = Json.writes[CashDailyStatementRequest]
+  implicit val format: Format[CashAccountStatementRequestDetail] = Json.format[CashAccountStatementRequestDetail]
+  implicit val writes: Writes[CashAccountStatementRequestDetail] = Json.writes[CashAccountStatementRequestDetail]
 
   implicit def jsonBodyWritable[T](implicit writes: Writes[T],
                                    jsValueBodyWritable: BodyWritable[JsValue]

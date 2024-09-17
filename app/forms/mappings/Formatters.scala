@@ -19,11 +19,24 @@ package forms.mappings
 import play.api.data.FormError
 import play.api.data.format.Formatter
 import utils.Utils.{emptyString, comma}
+import play.api.i18n.Messages
 
 import scala.util.control.Exception.nonFatalCatch
 import scala.util.{Failure, Success, Try}
+import java.time.LocalDate
+
+import play.api.i18n.Messages
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 trait Formatters {
+
+  def dateAsMonth(date: LocalDate)(implicit messages: Messages): String =
+    messages(s"month.${date.getMonthValue}")
+
+  def dateAsMonthAndYear(date: LocalDate)(implicit messages: Messages): String =
+    s"${dateAsMonth(date)} ${date.getYear}"
 
   private[mappings] def stringFormatter(errorKey: String): Formatter[String] = new Formatter[String] {
 

@@ -55,12 +55,5 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
       result.recover {
         case e => Ok(view(fromDate.toString))
       }
-
- /*     val result: EitherT[Future, Result, Result] = for {
-        dates <- fromOptionF(cache.get(request.eori), Redirect(routes.SelectTransactionsController.onPageLoad()))
-        account <- fromOptionF(apiConnector.getCashAccount(request.eori), NotFound(eh.notFoundTemplate))
-        page <- EitherT.liftF(showAccountWithTransactionDetails(account, dates.start, dates.end))
-      } yield page*/
-
   }
 }
