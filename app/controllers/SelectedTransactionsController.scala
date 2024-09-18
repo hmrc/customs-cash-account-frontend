@@ -23,7 +23,7 @@ import config.{AppConfig, ErrorHandler}
 import connectors.{CustomsFinancialsApiConnector, ErrorResponse, NoTransactionsAvailable, TooManyTransactionsRequested}
 import controllers.actions.IdentifierAction
 import models.request.IdentifierRequest
-import models.{CashAccount, CashAccountViewModel, RequestedDateRange}
+import models.{AccountResponseCommon, CashAccount, CashAccountViewModel, CashTransactionDates, CashTransactions, RequestedDateRange}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -68,18 +68,25 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
 
       apiConnector.getCashAccount(request.eori) flatMap {
         case None => Future.successful(NotFound(eh.notFoundTemplate))
-        case Some(cashAccount) => for {
+        case Some(cashAccount) =>
+          val result: Any = for {
 
-          dates <- fromOptionF(
-            cache.get(request.eori), Redirect(routes.SelectTransactionsController.onPageLoad()))
+          dates: Option[CashTransactionDates] <- cache.get(request.eori)
+          updatedDates: CashTransactionDates <- dates
 
-          transactions <- apiConnector.postCashAccountStatements(
-            request.eori, cashAccount.number, dates.start, dates.end)
+          transactions: Either[ErrorResponse, AccountResponseCommon] <- apiConnector.postCashAccountStatements(
+            request.eori, cashAccount.number, updatedDates.start, updatedDates.end)
 
-        } yield dates
+        } yield {
+          transactions match {
+            case Right(value) => Redirect(
+              routes.ConfirmationPageController.onPageLoad().url)
 
-          Redirect(routes.ConfirmationPageController.onPageLoad(dates.start, dates.end).url)
-
+            case Left(errorResponse) => errorResponse match {
+              case _ => Redirect(controllers.routes.CashAccountController.showAccountDetails(None).url)
+            }
+          }
+        }
       }.recover {
         case e =>
           logger.error(s"Unable to submit selected transactions :${e.getMessage}")

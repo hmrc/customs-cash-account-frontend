@@ -29,6 +29,7 @@ import services.MetricsReporterService
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, UpstreamErrorResponse}
+import models.AccountsAndBalancesResponseContainer.accountResponseCommonReads
 
 import java.time.LocalDate
 import java.util.UUID
@@ -167,17 +168,18 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
                                 can: String,
                                 from: LocalDate,
                                 to: LocalDate)
-                               (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
+                               (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, AccountResponseCommon]] = {
 
     val request = CashAccountStatementRequestDetail(eori, can, from.toString, to.toString)
 
     httpClient.post(url"$retrieveCashAccountStatementsUrl")
       .withBody[CashAccountStatementRequestDetail](request)
-      .execute[CashTransactions]
+      .execute[AccountResponseCommon]
       .map(Right(_))
+
   }.recover {
     case e =>
-      logger.error(s"Unable to download CSV :${e.getMessage}")
+      logger.error(s"Unable to download cash accounts :${e.getMessage}")
       Left(UnknownException)
   }
 }

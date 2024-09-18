@@ -30,6 +30,7 @@ import utils.Utils.emptyString
 import repositories.RequestedTransactionsCache
 import views.html.confirmation_page
 import helpers.Formatters.{dateAsDayMonthAndYear, dateAsMonthAndYear}
+import models.CashTransactionDates
 import play.api.i18n.Messages
 
 import javax.inject.Inject
@@ -47,19 +48,20 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
                                            messages: Messages)
   extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(from: LocalDate, end: LocalDate): Action[AnyContent] = identify.async {
+  def onPageLoad(): Action[AnyContent] = identify.async {
 
     implicit request =>
 
-      val displayDate = dateAsMonthAndYear(from)
-      val displayToDate = dateAsDayMonthAndYear(end)
-
       val result = for {
-        dates <- fromOptionF(cache.get(request.eori), Redirect(routes.SelectTransactionsController.onPageLoad()))
-      } yield Ok(view(s"$displayDate ${messages("month.to")} $displayToDate"))
+        dates: Option[CashTransactionDates] <- cache.get(request.eori)
+        updatedDates: CashTransactionDates <- dates
+      } yield {
+        val startDate = dateAsMonthAndYear(updatedDates.start)
+        val endDate = dateAsDayMonthAndYear(updatedDates.end)
 
-      result.merge.recover {
-        case e => Redirect(routes.CashAccountController.showAccountUnavailable)
+        Future.successful(Ok(view(s"$startDate ${messages("month.to")} $endDate")))
+      }.recover {
+        case _ => Redirect(routes.CashAccountController.showAccountUnavailable)
       }
   }
 }
