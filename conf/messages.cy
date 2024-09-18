@@ -157,7 +157,7 @@ month.9=Medi
 month.10=Hydref
 month.11=Tachwedd
 month.12=Rhagfyr
-
+month.to=i
 
 #Pagination
 # ----------------------------------------------------------

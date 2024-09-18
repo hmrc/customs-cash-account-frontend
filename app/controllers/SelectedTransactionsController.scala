@@ -62,42 +62,42 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
         Redirect(routes.CashAccountController.showAccountUnavailable)
     }
   }
-  
-  def onSubmit(): Action[AnyContent] = Action.async {
+
+  def onSubmit(): Action[AnyContent] = identify.async {
     implicit request =>
 
-    apiConnector.getCashAccount(request.eori) flatMap {
-      case None => Future.successful(NotFound(eh.notFoundTemplate))
-      case Some(cashAccount) =>
-        
-        val result = for {
-          dates <- fromOptionF(cache.get(request.eori), Redirect(routes.SelectTransactionsController.onPageLoad()))
+      apiConnector.getCashAccount(request.eori) flatMap {
+        case None => Future.successful(NotFound(eh.notFoundTemplate))
+        case Some(cashAccount) => for {
+
+          dates <- fromOptionF(
+            cache.get(request.eori), Redirect(routes.SelectTransactionsController.onPageLoad()))
+
           transactions <- apiConnector.postCashAccountStatements(
             request.eori, cashAccount.number, dates.start, dates.end)
-          
-        } yield transactions
 
-        Redirect(routes.ConfirmationPageController.onPageLoad(dates.start, dates.end).url)
+        } yield dates
 
-    }.recover {
-      case e =>
-        logger.error(s"Unable to submit selected transactions :${e.getMessage}")
-        Left(UnknownException)
-    }
+          Redirect(routes.ConfirmationPageController.onPageLoad(dates.start, dates.end).url)
+
+      }.recover {
+        case e =>
+          logger.error(s"Unable to submit selected transactions :${e.getMessage}")
+          Left(UnknownException)
+      }
   }
 
   private def showAccountWithTransactionDetails(account: CashAccount,
-                                        from: LocalDate,
-                                        to: LocalDate)
-                                       (implicit req: IdentifierRequest[AnyContent],
-                                        appConfig: AppConfig): Future[Result] = {
+                                                from: LocalDate,
+                                                to: LocalDate)
+                                               (implicit req: IdentifierRequest[AnyContent],
+                                                appConfig: AppConfig): Future[Result] = {
     apiConnector.retrieveHistoricCashTransactions(account.number, from, to).map {
 
       case Left(errorResponse) => processErrorResponse(account, from, to, errorResponse)
 
       case Right(_) =>
-        Ok(
-          resultView(
+        Ok(resultView(
             new ResultsPageSummary(from, to, false),
             controllers.routes.CashAccountController.showAccountDetails(None).url,
             account.number)
@@ -125,8 +125,7 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
   def tooManyTransactionsSelected(dateRange: RequestedDateRange): Action[AnyContent] =
     identify {
       implicit req =>
-        Ok(
-          tooManyResults(
+        Ok(tooManyResults(
             new ResultsPageSummary(dateRange.from, dateRange.to),
             controllers.routes.SelectTransactionsController.onPageLoad().url)
         )
