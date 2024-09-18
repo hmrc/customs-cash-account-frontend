@@ -82,7 +82,7 @@ cf.cash-account.detail.transfer-in.v2=Transfer from Cash account {0}
 cf.cash-account.detail.transfer-out=Transfer to another account
 cf.cash-account.detail.transfer-out.v2 = Transfer to Cash account {0}
 cf.cash-account.detail.account-not-available=We are unable to show your account at the moment. Please try again later.
-cf.cash-account.detail.transactions-not-available=We are unable to show your payments at the moment. Please try again later.
+cf.cash-account.detail.transactions-not-available=There is a problem displaying your transactions at the moment. <br/>You can try again later.
 cf.cash-account.detail.transactions-not-available.first=Sorry, we are unable to show your transactions at this moment.
 cf.cash-account.detail.transactions-not-available.second=You can search and download previous transactions using the link below.
 cf.cash-account.detail.show-mrn=Show MRN
@@ -92,9 +92,10 @@ cf.cash-account.detail.label.mrn = Show MRN instead of UCR
 cf.cash-account.detail.unable-download-csv=Sorry, there was a problem downloading your CSV.
 cf.cash-account.detail.try-again-later=Try again later.
 cf.cash-account-detail.back-to-cash-account=Back to Cash account
-cf.cash-account-detail.exceeded-threshold = <p>There are too many transactions from the last 6 months to display consecutively.</p><p>View previous transactions from a narrower date period using the search link below.</p>
+cf.cash-account-detail.exceeded-threshold = There are too many transactions from the last 6 months to display.
 cf.cash-account.detail.declaration.title=Declaration transaction
 cf.cash-account.detail.total.paid=Total paid
+cf.cash-account.detail.last-transactions=Your transactions for the last 6 months
 
 # Timeout Messages
 # ----------------------------------------------------------
@@ -188,7 +189,7 @@ cf.cash-account.how-to-use.guidance.text.pre = Find out how to
 cf.cash-account.how-to-use.guidance.text.post = on GOV.UK.
 cf.cash-account.how-to-use.guidance.link.text = use a cash account for CDS declarations
 cf.cash-account.top-up.guidance = You’ll need to top up your cash account before you can use it.
-cf.cash-account.detail.no-transactions-with-balance.p1=There are no transactions to view. You can only view transactions for the previous 6 months.
+cf.cash-account.detail.no-transactions-with-balance.p1=There are no transactions from the last 6 months to display.
 
 # Cash Transactions Request
 # --------------------------------------------------------------
@@ -197,7 +198,8 @@ cf.cash-account.transactions.request.support.heading=Help and Support
 cf.cash-account.transactions.request.support.pre=If you need help
 cf.cash-account.transactions.request.support.link=contact the HMRC accounting centre (opens in new tab)
 cf.cash-account.transactions.request.link.pre=You can
-cf.cash-account.transactions.request.link=search and download previous transactions as CSV
+cf.cash-account.transactions.request.link.post=by searching from a shorter date range.
+cf.cash-account.transactions.request.link=search and download your transactions as a CSV file
 cf.cash-account.transactions.request.title=Which cash account transactions do you need?
 cf.cash-account.transactions.request.legend.hidden.start=what start date do you need cash account transactions?
 cf.cash-account.transactions.request.legend.hidden.end=what end date do you need cash account transactions?

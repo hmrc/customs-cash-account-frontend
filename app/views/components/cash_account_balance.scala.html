@@ -16,23 +16,36 @@
 
 @import helpers.Formatters.formatCurrencyAmount
 
-@this( h1: components.h1)
+@this(
+    h1: components.h1,
+    h2: components.h2Inner,
+    p: components.p
+)
 
 @(model: CashAccountViewModel, showBalance: Boolean = true)(implicit messages: Messages, appConfig: AppConfig)
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds govuk-body govuk-!-margin-bottom-6">
-        <h2 class="govuk-caption-xl" id="account-number">@messages("cf.cash-account.detail.account", model.account.number)
-        </h2>
+    @h2(
+        msg = "cf.cash-account.detail.account",
+        innerMsg = model.account.number,
+        id = Some("account-number"),
+        classes = "govuk-caption-xl"
+    )
 
-        @h1(msg="cf.cash-account.detail.heading")
+    @h1(
+        msg="cf.cash-account.detail.heading",
+        classes="govuk-heading-xl govuk-!-margin-bottom-1"
+    )
 
-        @if(showBalance) {
-            <p class="govuk-label govuk-label--l govuk-!-margin-bottom-4 " id="balance-available">
-                @{
-                    model.account.balances.AvailableAccountBalance.fold(formatCurrencyAmount(0))(formatCurrencyAmount(_))
-                } @messages("cf.cash-account.detail.available")
-            </p>
-        }
-    </div>
-</div>
+    @if(showBalance) {
+        @p(
+            message = s"${model.account.balances.AvailableAccountBalance.fold(formatCurrencyAmount(0))(formatCurrencyAmount)} ${messages("cf.cash-account.detail.available")}",
+            classes = "govuk-label govuk-label--l govuk-!-margin-bottom-7 govuk-!-margin-top-2",
+            id = Some("balance-available")
+        )
+        @p(
+            "cf.cash-account.detail.last-transactions", 
+            classes="govuk-label govuk-label--m govuk-!-margin-bottom-7",
+            id = Some("last-transactions")
+        )
+    }
+
