@@ -178,6 +178,7 @@ cf.cash-account.detail.link.pre = Ewch at i ddysgu sut i
 cf.cash-account.detail.link = ddefnyddio cyfrif arian parod ar gyfer datganiadau’r Gwasanaeth Datgan Tollau (CDS)
 cf.cash-account.detail.link.post = ar GOV.UK
 cf.cash-account.help-and-support.link.text.pre = Gallw ch
+cf.cash-account.help-and-support.link.text.pre.v2 = Gallwch
 cf.cash-account.help-and-support.link.text.post = os oes angen help arnoch
 cf.cash-account.help-and-support.link.text = gysylltu â chanolfan cyfrifyddu CThEF (yn agor tab newydd)
 cf.cash-account.how-to-use.guidance.text.pre = Dysgwch sut i
