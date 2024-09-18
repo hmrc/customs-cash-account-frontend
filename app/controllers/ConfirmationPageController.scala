@@ -16,19 +16,20 @@
 
 package controllers
 
+import cats.data.EitherT
 import cats.data.EitherT.fromOptionF
 import config.AppConfig
 import connectors.CustomsDataStoreConnector
 import controllers.actions.*
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.auth.core.retrieve.Email
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Utils.emptyString
 import repositories.RequestedTransactionsCache
 import views.html.confirmation_page
-import helpers.Formatters.dateAsMonthAndYear
+import helpers.Formatters.{dateAsDayMonthAndYear, dateAsMonthAndYear}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,21 +44,19 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
                                           (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = identify.async {
+  def onPageLoad(from: LocalDate, end: LocalDate): Action[AnyContent] = identify.async {
 
     implicit request =>
 
-      val fromDate = LocalDate.parse("2020-11-06")
-      val toDate = LocalDate.parse("2020-12-08")
+      val displayDate = dateAsMonthAndYear(from)
+      val displayToDate = dateAsDayMonthAndYear(end)
 
-      val displayDate = dateAsMonthAndYear(fromDate)
+      val result = for {
+        dates <- fromOptionF(cache.get(request.eori), Redirect(routes.SelectTransactionsController.onPageLoad()))
+      } yield Ok(view(s"$displayDate $displayToDate"))
 
-        val result = for {
-          dates <- cache.get(request.eori)
-        } yield Ok(view(displayDate))
-
-      result.recover {
-        case e => Ok(view(displayDate))
+      result.merge.recover {
+        case e => Redirect(routes.CashAccountController.showAccountUnavailable)
       }
   }
 }

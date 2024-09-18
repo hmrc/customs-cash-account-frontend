@@ -17,11 +17,12 @@
 package connectors
 
 import config.AppConfig
-import models.CashDailyStatement.*
 import models.*
-import models.request.{CashDailyStatementRequest, CashAccountStatementRequestDetail, IdentifierRequest}
+import models.CashDailyStatement.*
+import models.request.{CashAccountStatementRequestDetail, CashDailyStatementRequest, IdentifierRequest}
 import org.slf4j.LoggerFactory
 import play.api.http.Status.{NOT_FOUND, REQUEST_ENTITY_TOO_LARGE}
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.mvc.AnyContent
 import repositories.CacheRepository
 import services.MetricsReporterService
@@ -30,11 +31,9 @@ import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, UpstreamErrorResponse}
 
 import java.time.LocalDate
+import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
-
-import java.util.UUID
 
 class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
                                               appConfig: AppConfig,
@@ -164,11 +163,11 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       Left(UnknownException)
   }
 
-  def retrieveCashAccountStatements(eori: String,
-                                    can: String,
-                                    from: LocalDate,
-                                    to: LocalDate)
-                                   (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
+  def postCashAccountStatements(eori: String,
+                                can: String,
+                                from: LocalDate,
+                                to: LocalDate)
+                               (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
 
     val request = CashAccountStatementRequestDetail(eori, can, from.toString, to.toString)
 

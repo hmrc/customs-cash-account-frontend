@@ -62,17 +62,35 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
         Redirect(routes.CashAccountController.showAccountUnavailable)
     }
   }
+  
+  def onSubmit(): Action[AnyContent] = Action.async {
+    implicit request =>
 
-  //TODO - Ticket 4900
-  // def onSubmit(): Action[AnyContent] = {
-  // Submit data to be added in ticket 4900
-  // Redirect we have recieved your requested statements page when it exists
+    apiConnector.getCashAccount(request.eori) flatMap {
+      case None => Future.successful(NotFound(eh.notFoundTemplate))
+      case Some(cashAccount) =>
+        
+        val result = for {
+          dates <- fromOptionF(cache.get(request.eori), Redirect(routes.SelectTransactionsController.onPageLoad()))
+          transactions <- apiConnector.postCashAccountStatements(
+            request.eori, cashAccount.number, dates.start, dates.end)
+          
+        } yield transactions
+
+        Redirect(routes.ConfirmationPageController.onPageLoad(dates.start, dates.end).url)
+
+    }.recover {
+      case e =>
+        logger.error(s"Unable to submit selected transactions :${e.getMessage}")
+        Left(UnknownException)
+    }
+  }
 
   private def showAccountWithTransactionDetails(account: CashAccount,
-                                                from: LocalDate,
-                                                to: LocalDate)
-                                               (implicit req: IdentifierRequest[AnyContent],
-                                                appConfig: AppConfig): Future[Result] = {
+                                        from: LocalDate,
+                                        to: LocalDate)
+                                       (implicit req: IdentifierRequest[AnyContent],
+                                        appConfig: AppConfig): Future[Result] = {
     apiConnector.retrieveHistoricCashTransactions(account.number, from, to).map {
 
       case Left(errorResponse) => processErrorResponse(account, from, to, errorResponse)
@@ -91,7 +109,7 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
                                    from: LocalDate,
                                    to: LocalDate,
                                    errorResponse: ErrorResponse)(
-    implicit request: IdentifierRequest[AnyContent], appConfig: AppConfig): Result = {
+                                    implicit request: IdentifierRequest[AnyContent], appConfig: AppConfig): Result = {
 
     errorResponse match {
 
