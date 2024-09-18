@@ -28,6 +28,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Utils.emptyString
 import repositories.RequestedTransactionsCache
 import views.html.confirmation_page
+import helpers.Formatters.dateAsMonthAndYear
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,14 +47,17 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
 
     implicit request =>
 
-      val fromDate = Future.successful(LocalDate.parse("2020-11-06"))
+      val fromDate = LocalDate.parse("2020-11-06")
+      val toDate = LocalDate.parse("2020-12-08")
+
+      val displayDate = dateAsMonthAndYear(fromDate)
 
         val result = for {
           dates <- cache.get(request.eori)
-        } yield Ok(view(fromDate.toString))
+        } yield Ok(view(displayDate))
 
       result.recover {
-        case e => Ok(view(fromDate.toString))
+        case e => Ok(view(displayDate))
       }
   }
 }

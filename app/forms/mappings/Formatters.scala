@@ -32,12 +32,6 @@ import java.time.format.DateTimeFormatter
 
 trait Formatters {
 
-  def dateAsMonth(date: LocalDate)(implicit messages: Messages): String =
-    messages(s"month.${date.getMonthValue}")
-
-  def dateAsMonthAndYear(date: LocalDate)(implicit messages: Messages): String =
-    s"${dateAsMonth(date)} ${date.getYear}"
-
   private[mappings] def stringFormatter(errorKey: String): Formatter[String] = new Formatter[String] {
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =

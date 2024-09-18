@@ -21,8 +21,6 @@ import play.api.data.FormError
 import play.api.i18n.Messages
 import utils.SpecBase
 
-import java.time.LocalDate
-
 class FormattersSpec extends SpecBase {
 
   "booleanFormatter" should {
@@ -67,20 +65,9 @@ class FormattersSpec extends SpecBase {
     }
   }
 
-  "date formatter" should {
-    "return month as a valid value" in new Setup {
-      formatterOb.dateAsMonth(date) mustBe "July"
-    }
-
-    "return month and year as a valid value" in new Setup {
-      formatterOb.dateAsMonthAndYear(date) mustBe "July 2020"
-    }
-  }
-
   trait Setup {
     val formatterOb = new Formatters {}
     val app: Application = application.build()
     implicit val msg: Messages = messages(app)
-    val date: LocalDate = LocalDate.parse("2020-07-21")
   }
 }

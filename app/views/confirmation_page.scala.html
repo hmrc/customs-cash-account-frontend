@@ -58,16 +58,15 @@
       )
 
      @p(
-         message = s"${messages(
-                s"cf.cash-account.transactions.confirmation.email")}${messages(
-                s"cf.cash-account.transactions.confirmation.download")}",
-
+         message =
+            s"${messages(s"cf.cash-account.transactions.confirmation.email")} </br></br> ${messages(
+            s"cf.cash-account.transactions.confirmation.download")}",
          classes = "govuk-body",
          id=Some("body-text2")
      )
 
      @link(linkMessage = Some(messages(s"cf.cash-account.transactions.confirmation.back")),
-         location = controllers.routes.SelectedTransactionsController.onPageLoad().url,
+         location = controllers.routes.CashAccountController.showAccountDetails(None).url,
          pId = Some("link-text"),
          pClass = "govuk-body govuk-!-margin-bottom-9")
 }
