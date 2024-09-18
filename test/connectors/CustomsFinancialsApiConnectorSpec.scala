@@ -331,7 +331,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   }
 
   "retrieveCashAccountStatements" must {
-    "call the correct URL" in new Setup {
+    "return success when calling the correct URL" in new Setup {
 
       val expectedUrl = "apiEndpointUrl/accounts/cashaccountstatementrequest/v1"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
@@ -357,7 +357,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "" in new Setup {
+    "return failure when backend post fails" in new Setup {
 
       private val responseCode: Int = 500
 
@@ -377,7 +377,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         }
       }
     }
-
   }
 
   "retrieveHistoricCashTransactions" must {
