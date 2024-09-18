@@ -182,6 +182,7 @@ cf.cash-account.detail.link.pre = Find out how to
 cf.cash-account.detail.link = use a cash account for CDS declarations
 cf.cash-account.detail.link.post = on GOV.UK
 cf.cash-account.help-and-support.link.text.pre = You can
+cf.cash-account.help-and-support.link.text.pre.v2 = You can
 cf.cash-account.help-and-support.link.text.post = if you need help
 cf.cash-account.help-and-support.link.text = contact the HMRC accounting centre (opens in a new tab)
 cf.cash-account.how-to-use.guidance.text.pre = Find out how to
