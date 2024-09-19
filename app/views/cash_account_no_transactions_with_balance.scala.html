@@ -35,11 +35,14 @@
 ) {
     @cash_account_balance(accountModel)
 
-    @p("cf.cash-account.detail.no-transactions-with-balance.p1")
+    @p(
+        "cf.cash-account.detail.no-transactions-with-balance.p1",
+        id = Some("transactions-not-available"),
+    )
 
     @h2(
-        "cf.cash-account.transactions.request.link.heading", 
-        id = Some("missing-documents-guidance-heading"), 
+        "cf.cash-account.transactions.request.link.heading",
+        id = Some("missing-documents-guidance-heading"),
         classes = "govuk-heading-m govuk-!-margin-top-9"
     )
 
