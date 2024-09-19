@@ -22,8 +22,8 @@ import cats.implicits.*
 import config.{AppConfig, ErrorHandler}
 import connectors.{CustomsFinancialsApiConnector, ErrorResponse, NoTransactionsAvailable, TooManyTransactionsRequested}
 import controllers.actions.IdentifierAction
+import models.*
 import models.request.IdentifierRequest
-import models.{AccountResponseCommon, CashAccount, CashAccountViewModel, CashTransactionDates, CashTransactions, RequestedDateRange}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -65,33 +65,34 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
 
   def onSubmit(): Action[AnyContent] = identify.async {
     implicit request =>
-
-      apiConnector.getCashAccount(request.eori) flatMap {
-        case None => Future.successful(NotFound(eh.notFoundTemplate))
-        case Some(cashAccount) =>
-          val result: Any = for {
-
-          dates: Option[CashTransactionDates] <- cache.get(request.eori)
-          updatedDates: CashTransactionDates <- dates
-
-          transactions: Either[ErrorResponse, AccountResponseCommon] <- apiConnector.postCashAccountStatements(
-            request.eori, cashAccount.number, updatedDates.start, updatedDates.end)
-
-        } yield {
-          transactions match {
-            case Right(value) => Redirect(
-              routes.ConfirmationPageController.onPageLoad().url)
-
-            case Left(errorResponse) => errorResponse match {
-              case _ => Redirect(controllers.routes.CashAccountController.showAccountDetails(None).url)
-            }
-          }
-        }
-      }.recover {
-        case e =>
-          logger.error(s"Unable to submit selected transactions :${e.getMessage}")
-          Left(UnknownException)
+      
+      val result: Future[Future[Result]] = for {
+        optionalAccount: Option[CashAccount] <- apiConnector.getCashAccount(request.eori)
+        optionalDates: Option[CashTransactionDates] <- cache.get(request.eori)
+      } yield {
+        checkAccountAndDatesThenRedirect(optionalAccount, optionalDates)
       }
+
+      result.flatten.recover {
+        case _: Exception =>
+          logger.error("failed to submit data for SelectedTransactionsController")
+          Redirect(routes.CashAccountController.showAccountDetails(None))
+      }
+  }
+
+  private def checkAccountAndDatesThenRedirect(optionalAccount: Option[CashAccount],
+                                               optionalDates: Option[CashTransactionDates])
+                                              (implicit request: IdentifierRequest[AnyContent]) = {
+    (optionalAccount, optionalDates) match {
+      case (Some(cashAcc), Some(dates)) =>
+
+        apiConnector.postCashAccountStatements(request.eori, cashAcc.number, dates.start, dates.end).map {
+          case Right(_) => Redirect(routes.ConfirmationPageController.onPageLoad())
+          case _ => Redirect(routes.CashAccountController.showAccountDetails(None))
+        }
+
+      case _ => Future.successful(Redirect(routes.CashAccountController.showAccountDetails(None)))
+    }
   }
 
   private def showAccountWithTransactionDetails(account: CashAccount,
@@ -105,9 +106,9 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
 
       case Right(_) =>
         Ok(resultView(
-            new ResultsPageSummary(from, to, false),
-            controllers.routes.CashAccountController.showAccountDetails(None).url,
-            account.number)
+          new ResultsPageSummary(from, to, false),
+          controllers.routes.CashAccountController.showAccountDetails(None).url,
+          account.number)
         )
     }
   }
@@ -133,8 +134,8 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
     identify {
       implicit req =>
         Ok(tooManyResults(
-            new ResultsPageSummary(dateRange.from, dateRange.to),
-            controllers.routes.SelectTransactionsController.onPageLoad().url)
+          new ResultsPageSummary(dateRange.from, dateRange.to),
+          controllers.routes.SelectTransactionsController.onPageLoad().url)
         )
     }
 }

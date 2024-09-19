@@ -25,13 +25,15 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.auth.core.retrieve.Email
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.{FrontendBaseController, FrontendController}
 import utils.Utils.emptyString
 import repositories.RequestedTransactionsCache
 import views.html.confirmation_page
 import helpers.Formatters.{dateAsDayMonthAndYear, dateAsMonthAndYear}
 import models.CashTransactionDates
 import play.api.i18n.Messages
+import models.request.IdentifierRequest
+import play.api.Logging
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,27 +43,37 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
                                            identify: IdentifierAction,
                                            cache: RequestedTransactionsCache,
                                            customsDataStoreConnector: CustomsDataStoreConnector,
-                                           val controllerComponents: MessagesControllerComponents,
                                            view: confirmation_page)
-                                          (implicit ec: ExecutionContext,
-                                           appConfig: AppConfig,
-                                           messages: Messages)
-  extends FrontendBaseController with I18nSupport {
+                                          (implicit mcc: MessagesControllerComponents,
+                                           ec: ExecutionContext,
+                                           appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = identify.async {
 
     implicit request =>
 
-      val result = for {
+      val result: Future[Result] = for {
         dates: Option[CashTransactionDates] <- cache.get(request.eori)
-        updatedDates: CashTransactionDates <- dates
       } yield {
-        val startDate = dateAsMonthAndYear(updatedDates.start)
-        val endDate = dateAsDayMonthAndYear(updatedDates.end)
-
-        Future.successful(Ok(view(s"$startDate ${messages("month.to")} $endDate")))
-      }.recover {
-        case _ => Redirect(routes.CashAccountController.showAccountUnavailable)
+        checkDateAndRedirect(dates)
       }
+
+      result.recover {
+        case _: Exception => Redirect(routes.CashAccountController.showAccountUnavailable)
+      }
+  }
+
+  private def checkDateAndRedirect(optionalDates: Option[CashTransactionDates])
+                                  (implicit request: IdentifierRequest[AnyContent]): Result = {
+    optionalDates match {
+      case Some(dates) =>
+
+        val startDate = dateAsMonthAndYear(dates.start)
+        val endDate = dateAsDayMonthAndYear(dates.end)
+
+        Ok(view(s"$startDate month.to $endDate"))
+
+      case _ => Redirect(routes.CashAccountController.showAccountUnavailable)
+    }
   }
 }

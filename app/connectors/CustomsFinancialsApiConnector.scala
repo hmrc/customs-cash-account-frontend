@@ -21,7 +21,7 @@ import models.*
 import models.CashDailyStatement.*
 import models.request.{CashAccountStatementRequestDetail, CashDailyStatementRequest, IdentifierRequest}
 import org.slf4j.LoggerFactory
-import play.api.http.Status.{NOT_FOUND, REQUEST_ENTITY_TOO_LARGE}
+import play.api.http.Status.{NOT_FOUND, REQUEST_ENTITY_TOO_LARGE, BAD_REQUEST, INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE}
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.mvc.AnyContent
 import repositories.CacheRepository
@@ -178,8 +178,20 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       .map(Right(_))
 
   }.recover {
+    case UpstreamErrorResponse(_, BAD_REQUEST, _, _) =>
+      logger.error("BAD Request for postCashAccountStatements")
+      Left(TooManyTransactionsRequested)
+
+    case UpstreamErrorResponse(_, INTERNAL_SERVER_ERROR, _, _) =>
+      logger.error("No Transactions available for postCashAccountStatements")
+      Left(NoTransactionsAvailable)
+
+    case UpstreamErrorResponse(_, SERVICE_UNAVAILABLE, _, _) =>
+      logger.error("SERVICE_UNAVAILABLE for postCashAccountStatements")
+      Left(NoTransactionsAvailable)
+
     case e =>
-      logger.error(s"Unable to download cash accounts :${e.getMessage}")
+      logger.error(s"Unknown error for postCashAccountStatements :${e.getMessage}")
       Left(UnknownException)
   }
 }

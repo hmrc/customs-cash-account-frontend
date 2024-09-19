@@ -330,7 +330,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
   }
 
-  "retrieveCashAccountStatements" must {
+  "postCashAccountStatements" must {
     "return success when calling the correct URL" in new Setup {
 
       val expectedUrl = "apiEndpointUrl/accounts/cashaccountstatementrequest/v1"
@@ -339,7 +339,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 
       when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
-        .thenReturn(Future.successful(successResponse))
+        .thenReturn(Future.successful(accResponse))
 
       when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
@@ -350,10 +350,10 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         ).build()
 
       running(appWithMocks) {
-        val result = await(connector(appWithMocks).retrieveCashAccountStatements(
+        val result = await(connector(appWithMocks).postCashAccountStatements(
           "eori","can", fromDate, toDate))
 
-        result mustBe Right(successResponse)
+        result mustBe Right(accResponse)
       }
     }
 
@@ -372,8 +372,50 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         .overrides(bind[HttpClientV2].toInstance(mockHttpClient)).build()
 
       running(appWithMocks) {
-        connector(appWithMocks).retrieveCashAccountStatements("eori", "can", fromDate, toDate).map {
+        connector(appWithMocks).postCashAccountStatements("eori", "can", fromDate, toDate).map {
           _ mustBe Left(UnknownException)
+        }
+      }
+    }
+
+    "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" in new Setup {
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
+
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", REQUEST_ENTITY_TOO_LARGE)))
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient)
+        ).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).retrieveCashTransactionsDetail("can", fromDate, toDate).map {
+          _ mustBe Left(TooManyTransactionsRequested)
+        }
+      }
+    }
+
+    "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
+
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient)
+        ).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).retrieveCashTransactionsDetail("can", fromDate, toDate).map {
+          _ mustBe Left(NoTransactionsAvailable)
         }
       }
     }
@@ -465,6 +507,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     private val traderEori = "12345678"
     private val cashAccountNumber = "987654"
     private val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
+
+    val accResponse: AccountResponseCommon = AccountResponseCommon(
+      emptyString, Some(emptyString), emptyString, None)
 
     val sessionId: SessionId = SessionId("session_1234")
     implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
