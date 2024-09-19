@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import viewmodels.{CashTransactionsViewModel, CashAccountV2ViewModel}
+import viewmodels.{CashAccountV2ViewModel, TooManyTransactionsViewModel}
 import views.html.*
 
 import java.time.LocalDate
@@ -44,7 +44,7 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
                                         unavailable: cash_account_not_available,
                                         transactionsUnavailable: cash_account_transactions_not_available,
                                         noTransactions: cash_account_no_transactions,
-                                        showAccountsExceededThreshold: cash_account_exceeded_threshold,
+                                        showAccountsExceededThresholdV2: cash_account_exceeded_threshold_v2,
                                         noTransactionsWithBalance: cash_account_no_transactions_with_balance,
                                         cashAccountUtils: CashAccountUtils,
                                         formProvider: SearchTransactionsFormProvider)
@@ -117,10 +117,12 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
       case Some(account) =>
         Future.successful(
           Ok(
-            showAccountsExceededThreshold(
-              CashAccountViewModel(
+            showAccountsExceededThresholdV2(
+              form,
+              TooManyTransactionsViewModel(
                 request.eori,
-                CashAccount(account.number, account.owner, account.status, account.balances)))
+                CashAccount(account.number, account.owner, account.status, account.balances))
+            )
           ))
     }
   }
