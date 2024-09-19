@@ -64,14 +64,15 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
   }
 
   private def checkDateAndRedirect(optionalDates: Option[CashTransactionDates])
-                                  (implicit request: IdentifierRequest[AnyContent]): Result = {
+                                  (implicit request: IdentifierRequest[AnyContent],
+                                   messages: Messages): Result = {
     optionalDates match {
       case Some(dates) =>
 
         val startDate = dateAsMonthAndYear(dates.start)
-        val endDate = dateAsDayMonthAndYear(dates.end)
+        val endDate = dateAsMonthAndYear(dates.end)
 
-        Ok(view(s"$startDate month.to $endDate"))
+        Ok(view(s"$startDate ${messages("month.to")} $endDate"))
 
       case _ => Redirect(routes.CashAccountController.showAccountUnavailable)
     }

@@ -87,10 +87,13 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
 
         apiConnector.postCashAccountStatements(request.eori, cashAcc.number, dates.start, dates.end).map {
           case Right(_) => Redirect(routes.ConfirmationPageController.onPageLoad())
-          case _ => Redirect(routes.CashAccountController.showAccountDetails(None))
+          case _ =>
+            logger.error(s"Error posting cash account statements")
+            Redirect(routes.CashAccountController.showAccountDetails(None))
         }
 
-      case _ => Future.successful(Redirect(routes.CashAccountController.showAccountDetails(None)))
+      case _ =>
+        Future.successful(Redirect(routes.CashAccountController.showAccountDetails(None)))
     }
   }
 

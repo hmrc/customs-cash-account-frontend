@@ -42,10 +42,8 @@
     fullWidth = false,
     help = true
 ) {
-    @formHelper(
-        action = controllers.routes.SelectedTransactionsController.onSubmit(),
-        Symbol("autoComplete") -> "off")
-    {
+    @formHelper(action = controllers.routes.SelectedTransactionsController.onSubmit(), Symbol("autoComplete") -> "off") {
+
             @h2(
                 msg = "cf.cash-account.transactions.request.review.account",
                 id = Some("cash-account.number"),

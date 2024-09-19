@@ -35,10 +35,7 @@
     help = true
 ) {
 
-    @formHelper(
-        action = controllers.routes.SelectTransactionsController.onSubmit(),
-        Symbol("autoComplete") -> "off")
-    {
+    @formHelper(action = controllers.routes.SelectTransactionsController.onSubmit(), Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors,errorFieldName = None,
             isErrorKeyUpdateEnabled = true,
             Some(updateFormErrorKeyForStartAndEndDate()))

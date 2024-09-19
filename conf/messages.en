@@ -266,7 +266,7 @@ cf.cash-account.transactions.request-transactions.download-csv.post-message = Th
 cf.cash-account.transactions.search-for-transactions.heading = Search for transactions
 cf.cash-account.transactions.search-for-transactions.hint = You can search by MRN, UCR or exact payment amount that includes ‘£’
 
-cf.cash-account.transactions.confirmation.statements=We received your request for statements
+cf.cash-account.transactions.confirmation.statements=We received your request for transactions
 cf.cash-account.transactions.confirmation.next=What happens next
 cf.cash-account.transactions.confirmation.email=We’ll send an email within 48 hours to someemail@mail.com when your request is processed.
 cf.cash-account.transactions.confirmation.download=You’ll be able to download your transactions from the cash account transactions page.
