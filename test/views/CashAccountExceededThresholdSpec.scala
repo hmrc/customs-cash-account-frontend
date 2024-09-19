@@ -41,6 +41,8 @@ class CashAccountExceededThresholdSpec extends ViewTestHelper {
       shouldContainMissingDocHeadingMsg
 
       shouldContainLink
+
+      shouldContainNewTabLink
     }
   }
 
@@ -71,16 +73,13 @@ class CashAccountExceededThresholdSpec extends ViewTestHelper {
   }
 
   private def shouldContainExceededThresholdMsg(implicit view: Document): Assertion = {
-    view.text().contains(
-      "There are too many transactions from the last 6 months to display consecutively.") mustBe true
-
-    view.text().contains(
-      "View previous transactions from a narrower date period using the search link below.") mustBe true
+    view.getElementById("exceeded-threshold").text() mustBe
+      messages("cf.cash-account-detail.exceeded-threshold")
   }
 
   private def shouldContainMissingDocHeadingMsg(implicit view: Document): Assertion =
     view.getElementById("missing-documents-guidance-heading").text() mustBe
-      messages("cf.cash-account.transactions.request.link.heading")
+      messages("cf.cash-account.transactions.request.support.heading")
 
   private def shouldContainLink(implicit view: Document): Assertion = {
     val linkElement: String = view.getElementsByClass("govuk-!-margin-bottom-9").html()
@@ -89,6 +88,17 @@ class CashAccountExceededThresholdSpec extends ViewTestHelper {
 
     linkElement.contains(messages("cf.cash-account.transactions.request.link.pre")) mustBe true
 
+    linkElement.contains(messages("cf.cash-account.transactions.request.link.post")) mustBe true
+
     linkElement.contains(controllers.routes.RequestTransactionsController.onPageLoad().url) mustBe true
+  }
+
+
+  private def shouldContainNewTabLink(implicit view: Document): Assertion = {
+    val newTabLinkElement = view.getElementsByClass("govuk-!-margin-bottom-9").html()
+
+    newTabLinkElement.contains(messages("cf.cash-account.transactions.request.support.link")) mustBe true
+
+    newTabLinkElement.contains(appConfig.cashAccountForCdsDeclarationsUrl) mustBe true
   }
 }
