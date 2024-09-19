@@ -63,9 +63,8 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
     }
   }
 
-  def onSubmit(): Action[AnyContent] = identify.async {
-    implicit request =>
-      
+  def onSubmit(): Action[AnyContent] = identify.async { implicit request =>
+
       val result: Future[Future[Result]] = for {
         optionalAccount: Option[CashAccount] <- apiConnector.getCashAccount(request.eori)
         optionalDates: Option[CashTransactionDates] <- cache.get(request.eori)

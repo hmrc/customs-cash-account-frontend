@@ -334,7 +334,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     "return success when calling the correct URL" in new Setup {
 
       val expectedUrl = "apiEndpointUrl/accounts/cashaccountstatementrequest/v1"
-      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 
