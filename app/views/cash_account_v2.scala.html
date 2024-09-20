@@ -22,13 +22,17 @@
 @import viewmodels.CashAccountV2ViewModel
 @import utils.Utils.{InputTextHint, LabelHint}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukPagination
+@import viewmodels.pagination.*
+@import views.html.components.Pagination
 
 @this(
         main_template: Layout,
         formHelper: FormWithCSRF,
         errorSummary: components.errorSummary,
         button: components.button,
-        inputText: components.inputText
+        inputText: components.inputText,
+        pagination: Pagination
 )
 
 @(
@@ -70,6 +74,10 @@
     }
 
     @viewModel.dailyStatements
+
+    @defining(ListPaginationViewModel(10, 2, 2, controllers.routes.CashAccountV2Controller.showAccountDetails(None).url)) { (model: PaginationViewModel) =>
+        @pagination(model)
+    }
 
     @viewModel.requestTransactionsHeading
 
