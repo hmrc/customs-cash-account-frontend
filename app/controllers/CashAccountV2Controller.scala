@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import viewmodels.{CashTransactionsViewModel, CashAccountV2ViewModel}
+import viewmodels.{CashAccountV2ViewModel, CashTransactionsViewModel}
 import views.html.*
 
 import java.time.LocalDate
@@ -36,6 +36,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import forms.SearchTransactionsFormProvider
 import play.api.data.Form
+import viewmodels.pagination.ListPaginationViewModel
 
 class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
                                         verifyEmail: EmailAction,
@@ -103,7 +104,7 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
       case Right(cashTransactions) =>
         if (cashTransactions.availableTransactions) {
           Ok(
-            showAccountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions))
+            showAccountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions, page))
           )
         } else {
           Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))

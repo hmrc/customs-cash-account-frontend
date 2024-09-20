@@ -9,3 +9,13 @@
 .inline-button {
     margin-left: 3px;
 }
+
+.pagination__results {
+  @include govuk-font(19);
+  margin-top: 0;
+
+  @include govuk-media-query($from: desktop) {
+    margin-bottom: govuk-spacing(3);
+    vertical-align: middle;
+  }
+}

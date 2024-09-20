@@ -26,6 +26,7 @@ import views.html.components.{cash_account_balance, daily_statements_v2, h1}
 import models.CashAccountViewModel
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
+import viewmodels.pagination.ListPaginationViewModel
 
 case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
                        link: Option[HtmlFormat.Appendable] = None,
@@ -37,16 +38,17 @@ case class CashAccountV2ViewModel(pageTitle: String,
                                   dailyStatements: HtmlFormat.Appendable,
                                   requestTransactionsHeading: HtmlFormat.Appendable,
                                   downloadCSVFileLinkUrl: HtmlFormat.Appendable,
-                                  helpAndSupportGuidance: GuidanceRow)
+                                  helpAndSupportGuidance: GuidanceRow,
+                                  paginationModel: Option[ListPaginationViewModel] = None)
 
 object CashAccountV2ViewModel {
 
   def apply(eori: EORI,
             account: CashAccount,
-            cashTrans: CashTransactions)(implicit msgs: Messages, config: AppConfig): CashAccountV2ViewModel = {
+            cashTrans: CashTransactions,
+            pageNo: Option[Int])(implicit msgs: Messages, config: AppConfig): CashAccountV2ViewModel = {
 
-    val dailyStatementsComponent: HtmlFormat.Appendable =
-      new daily_statements_v2(emptyGovUkTableComponent).apply(CashAccountDailyStatementsViewModel(cashTrans))
+
 
     val cashAccountBalance: HtmlFormat.Appendable =
       new cash_account_balance(emptyH1Component).apply(model = CashAccountViewModel(eori, account))
@@ -56,6 +58,24 @@ object CashAccountV2ViewModel {
         msgKey = "cf.cash-account.transactions.request-transactions.heading",
         id = Some("request-transactions-heading"))
 
+    val totalDailyStatements: Seq[DailyStatementViewModel] = CashAccountDailyStatementsViewModel(cashTrans).dailyStatements
+
+    val dailyStatementsComponent: HtmlFormat.Appendable =
+      new daily_statements_v2(emptyGovUkTableComponent)
+        .apply(
+          CashAccountDailyStatementsViewModel(
+            dailyStatements = dailyStatementsBasedOnPage(totalDailyStatements, pageNo.getOrElse(1)),
+            hasTransactions = true,
+            transForLastSixMonthsHeading = transForLastSixMonthsHeading
+          )
+        )
+
+    val paginationModel = ListPaginationViewModel(
+      totalNumberOfItems = totalDailyStatements.size,
+      currentPage = pageNo.getOrElse(1),
+      numberOfItemsPerPage = 4,
+      href = controllers.routes.CashAccountV2Controller.showAccountDetails(None).url)
+
     CashAccountV2ViewModel(
       pageTitle = msgs("cf.cash-account.detail.title"),
       backLink = config.customsFinancialsFrontendHomepage,
@@ -63,8 +83,27 @@ object CashAccountV2ViewModel {
       dailyStatements = dailyStatementsComponent,
       requestTransactionsHeading = requestTransactionsHeading,
       downloadCSVFileLinkUrl = downloadCSVFileLinkUrl,
-      helpAndSupportGuidance = helpAndSupport)
+      helpAndSupportGuidance = helpAndSupport,
+      paginationModel = Some(paginationModel))
   }
+
+  private def transForLastSixMonthsHeading(implicit msgs: Messages): HtmlFormat.Appendable = {
+    h2Component(
+      msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
+      id = Some("transactions-for-last-six-months-heading"))
+  }
+
+  private def dailyStatementsBasedOnPage(statements: Seq[DailyStatementViewModel],
+                                         pageNo: Int,
+                                         maxItemPerPage: Int = 4): Seq[DailyStatementViewModel] = {
+
+    if(pageNo == 1) {
+      statements.slice(0, maxItemPerPage)
+    } else {
+      statements.slice((pageNo - 1) * maxItemPerPage, pageNo * maxItemPerPage)
+    }
+  }
+
 
   private def downloadCSVFileLinkUrl(implicit msgs: Messages): HtmlFormat.Appendable = {
     linkComponent(

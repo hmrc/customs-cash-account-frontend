@@ -75,9 +75,7 @@
 
     @viewModel.dailyStatements
 
-    @defining(ListPaginationViewModel(10, 2, 2, controllers.routes.CashAccountV2Controller.showAccountDetails(None).url)) { (model: PaginationViewModel) =>
-        @pagination(model)
-    }
+    @viewModel.paginationModel.map(pagination(_, None))
 
     @viewModel.requestTransactionsHeading
 
