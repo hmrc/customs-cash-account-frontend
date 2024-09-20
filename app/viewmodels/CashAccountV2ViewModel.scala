@@ -61,7 +61,8 @@ object CashAccountV2ViewModel {
       new daily_statements_v2(emptyGovUkTableComponent).apply(CashAccountDailyStatementsViewModel(cashTrans))
 
     val cashAccountBalance: HtmlFormat.Appendable =
-      new cash_account_balance(emptyH1Component).apply(model = CashAccountViewModel(eori, account))
+      new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
+        .apply(model = CashAccountViewModel(eori, account))
 
     val requestTransactionsHeading: HtmlFormat.Appendable =
       h2Component(

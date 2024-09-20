@@ -22,7 +22,7 @@
         p: components.p,
         link: components.link,
         cash_account_balance: components.cash_account_balance,
-        inset: components.inset
+        newTabLink: components.newTabLink
 )
 
 @(accountModel: CashAccountViewModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -35,17 +35,16 @@
 ) {
     @cash_account_balance(accountModel)
 
-    @inset(
-        p("cf.cash-account.detail.no-transactions-with-balance.p1").toString(),
+    @p(
+        "cf.cash-account.detail.no-transactions-with-balance.p1",
         id = Some("transactions-not-available"),
-        Some(link("cf.cash-account.detail.link",
-            appConfig.cashAccountForCdsDeclarationsUrl,
-            preLinkMessage = Some("cf.cash-account.detail.link.pre"),
-            postLinkMessage = Some("cf.cash-account.detail.link.post")
-        ))
     )
 
-    @h2("cf.cash-account.transactions.request.link.heading", id = Some("missing-documents-guidance-heading"), classes = "govuk-heading-m govuk-!-margin-top-9")
+    @h2(
+        "cf.cash-account.transactions.request.link.heading",
+        id = Some("missing-documents-guidance-heading"),
+        classes = "govuk-heading-m govuk-!-margin-top-9"
+    )
 
     @link(
         "cf.cash-account.transactions.request.link",
@@ -55,4 +54,17 @@
         linkSentence = true
     )
 
+    @h2(
+        msg = "cf.cash-account.transactions.request.support.heading",
+        id = Some("help-and-support-heading"),
+        classes = "govuk-heading-m govuk-!-margin-top-9"
+    )
+
+    @newTabLink(
+        linkMessage = "cf.cash-account.help-and-support.link.text",
+        href = appConfig.cashAccountForCdsDeclarationsUrl,
+        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre"),
+        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post"),
+        classes = "govuk-body govuk-!-margin-bottom-9"
+    )
 }

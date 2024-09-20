@@ -62,7 +62,8 @@ class CashAccountV2ViewModelSpec extends SpecBase {
                                                  account: CashAccount)
                                                 (implicit msgs: Messages, appConfig: AppConfig): Assertion = {
     val expectedAccBalance: HtmlFormat.Appendable =
-      new cash_account_balance(emptyH1Component).apply(model = CashAccountViewModel(eori, account))
+      new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
+        .apply(model = CashAccountViewModel(eori, account))
 
     accBalance mustBe expectedAccBalance
   }

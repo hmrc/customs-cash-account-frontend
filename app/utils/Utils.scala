@@ -20,7 +20,7 @@ import config.AppConfig
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
-import views.html.components.{h1, h2, link, newTabLink, notification_panel, p}
+import views.html.components.{h1, h2, inset, link, newTabLink, p, h2Inner, notification_panel}
 import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
 
 object Utils {
@@ -37,6 +37,7 @@ object Utils {
   val emptyLinkComponent: link = new link()
   val emptyHmrcNewTabLink: HmrcNewTabLink = new HmrcNewTabLink()
   val emptyGovUkTableComponent = new GovukTable()
+  val emptyH2InnerComponent = new h2Inner()
 
   def h2Component(msgKey: String,
                   id: Option[String] = None,

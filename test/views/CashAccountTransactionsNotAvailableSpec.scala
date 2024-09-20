@@ -45,6 +45,8 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
         shouldContainLinkElement
 
         checkUnavailabilityOfPaymentSection
+
+        shouldContainHelpAndSupportSection
       }
     }
 
@@ -62,6 +64,8 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
         shouldContainPaymentSection
 
         checkUnavailabilityOfTransactionTimeOutSection
+        
+        shouldContainHelpAndSupportSection
       }
     }
   }
@@ -132,6 +136,18 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
   }
 
   private def shouldContainPaymentSection(implicit view: Document): Assertion =
-    view.text().contains(messages("cf.cash-account.detail.transactions-not-available")) mustBe true
+    view.text().contains(messages("cf.cash-account.detail.transactions-not-available")) mustBe false
 
+  private def shouldContainHelpAndSupportSection(implicit view: Document): Assertion = {
+    val helpAndSupportLink = view.getElementsByClass("govuk-!-margin-bottom-9").html()
+
+    view.getElementById("help-and-support-heading").text() mustBe
+      messages("cf.cash-account.transactions.request.support.heading")
+
+    helpAndSupportLink.contains(messages("cf.cash-account.help-and-support.link.text")) mustBe true
+
+    helpAndSupportLink.contains(messages("cf.cash-account.help-and-support.link.text.pre")) mustBe true
+
+    helpAndSupportLink.contains(appConfig.cashAccountForCdsDeclarationsUrl) mustBe true
+  }
 }
