@@ -17,12 +17,14 @@
 @import config.AppConfig
 @import views.html.Layout
 @import uk.gov.hmrc.auth.core.retrieve.Email
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukPanel
 
 @this(
         layout: Layout,
         link: components.link,
         p: components.p,
-        h1: components.h1
+        h1: components.h1,
+        govukPanel: GovukPanel
 )
 
 @(
@@ -40,33 +42,28 @@
     help = false
 ) {
 
-     <div class="govuk-panel govuk-panel--confirmation">
-          @h1(messages(s"cf.cash-account.transactions.confirmation.statements"),
-          Some("confirmation-text"), "govuk-panel__title govuk-panel__title--confirmation")
+    @govukPanel(Panel(
+        title = Text(messages("cf.cash-account.transactions.confirmation.statements")),
+        headingLevel = 1,
+        content = Text(dates)
+    ))
 
-          @p(
-              message = dates,
-              classes = "govuk-panel--confirmation",
-              id=Some("email-confirmation-panel-date")
-          )
-     </div>
+    @p(
+        message = messages(s"cf.cash-account.transactions.confirmation.next"),
+        classes = "govuk-heading-s",
+        id=Some("email-confirmation-subheader")
+    )
 
-      @p(
-          message = messages(s"cf.cash-account.transactions.confirmation.next"),
-          classes = "govuk-heading-s",
-          id=Some("email-confirmation-subheader")
-      )
+    @p(
+        message =
+           s"${messages(s"cf.cash-account.transactions.confirmation.email")} </br></br> ${messages(
+           s"cf.cash-account.transactions.confirmation.download")}",
+        classes = "govuk-body",
+        id=Some("body-text2")
+    )
 
-     @p(
-         message =
-            s"${messages(s"cf.cash-account.transactions.confirmation.email")} </br></br> ${messages(
-            s"cf.cash-account.transactions.confirmation.download")}",
-         classes = "govuk-body",
-         id=Some("body-text2")
-     )
-
-     @link(linkMessage = Some(messages(s"cf.cash-account.transactions.confirmation.back")),
-         location = controllers.routes.CashAccountController.showAccountDetails(None).url,
-         pId = Some("link-text"),
-         pClass = "govuk-body govuk-!-margin-bottom-9")
+    @link(linkMessage = Some(messages(s"cf.cash-account.transactions.confirmation.back")),
+        location = controllers.routes.CashAccountController.showAccountDetails(None).url,
+        pId = Some("link-text"),
+        pClass = "govuk-body govuk-!-margin-bottom-9")
 }

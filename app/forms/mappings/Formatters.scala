@@ -18,17 +18,13 @@ package forms.mappings
 
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import utils.Utils.{emptyString, comma}
 import play.api.i18n.Messages
-
-import scala.util.control.Exception.nonFatalCatch
-import scala.util.{Failure, Success, Try}
-import java.time.LocalDate
-
-import play.api.i18n.Messages
+import utils.Utils.{comma, emptyString}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import scala.util.control.Exception.nonFatalCatch
+import scala.util.{Failure, Success, Try}
 
 trait Formatters {
 
