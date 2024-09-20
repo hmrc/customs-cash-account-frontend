@@ -23,9 +23,9 @@ import viewmodels.ResultsPageSummary
 
 import java.time.LocalDate
 
-class SelectedTransactionsViewSpec extends ViewTestHelper {
+class SelectedTransactionsSpec extends ViewTestHelper {
 
-  "SelectedTransactionsView" should {
+  "SelectedTransactions" should {
 
     "display correct information" when {
       "title is visible" in new Setup {

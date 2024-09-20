@@ -21,9 +21,9 @@ import org.jsoup.nodes.Document
 import utils.SpecBase
 import views.html.confirmation_page
 
-class ConfirmationPageViewSpec extends SpecBase with ViewTestHelper {
+class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
 
-  "ConfirmationPageView" should {
+  "ConfirmationPage" should {
 
     "display correct information" when {
       "title is visible" in new Setup {
@@ -44,14 +44,14 @@ class ConfirmationPageViewSpec extends SpecBase with ViewTestHelper {
           "cf.cash-account.transactions.confirmation.next")
       }
 
-      "body text is correct" in new Setup {
-        view.getElementById("body-text2").text() mustBe s"${
-          messages(
-            "cf.cash-account.transactions.confirmation.email")
-        } ${
-          messages(
-            "cf.cash-account.transactions.confirmation.download")
-        }"
+      "body text email is correct" in new Setup {
+        view.getElementById("body-text-email").text() mustBe s"${messages(
+          "cf.cash-account.transactions.confirmation.email")}"
+      }
+
+      "body text download is correct" in new Setup {
+        view.getElementById("body-text-download").text() mustBe s"${messages(
+          "cf.cash-account.transactions.confirmation.download")}"
       }
 
       "link text is correct" in new Setup {

@@ -74,6 +74,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
     httpClient.post(url"$retrieveCashTransactionsUrl")
       .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
       .execute[CashTransactions].map(Right(_))
+
   }.recover {
     case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
       logger.error(s"Entity too large to download")
@@ -114,16 +115,17 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
           .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
           .execute[CashTransactions]
           .flatMap { response =>
+
             val transactionsWithUUID = addUUIDToCashTransaction(response)
 
             cacheRepository.set(can, transactionsWithUUID).map { successfulWrite =>
               if (!successfulWrite) {
                 logger.error("Failed to store data in the session cache defaulting to the api response")
               }
-
               Right(transactionsWithUUID)
             }
           }
+
     }.recover {
       case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
         logger.error(s"Entity too large to download")
@@ -150,6 +152,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
       .execute[CashTransactions]
       .map(Right(_))
+
   }.recover {
     case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
       logger.error(s"Entity too large to download")
@@ -175,12 +178,20 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
     httpClient.post(url"$retrieveCashAccountStatementsUrl")
       .withBody[CashAccountStatementRequestDetail](request)
       .execute[AccountResponseCommon]
+      .flatMap match {
+          case 003 =>
+            UpstreamErrorResponse(_, BAD_REQUEST, _, _) =>
+            logger.error ("BAD Request for postCashAccountStatements")
+            Left (BadRequest)
+
+        }
+      }
       .map(Right(_))
 
   }.recover {
     case UpstreamErrorResponse(_, BAD_REQUEST, _, _) =>
       logger.error("BAD Request for postCashAccountStatements")
-      Left(TooManyTransactionsRequested)
+      Left(BadRequest)
 
     case UpstreamErrorResponse(_, INTERNAL_SERVER_ERROR, _, _) =>
       logger.error("No Transactions available for postCashAccountStatements")
@@ -198,8 +209,23 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
 
 sealed trait ErrorResponse
 
+case object RequestCouldNotBeProcessed extends errorResponse
+
 case object NoTransactionsAvailable extends ErrorResponse
 
 case object TooManyTransactionsRequested extends ErrorResponse
 
+case object BadRequest extends ErrorResponse
+
 case object UnknownException extends ErrorResponse
+
+
+/*
+  Error Code Error Text
+  003 Request could not be processed
+  004 Duplicate submission acknowledgment reference
+  092 The account does not exist within ETMP
+  102 Invalid EORI number
+  124 Entry already exists for the same period
+  602 Exceeded maximum threshold of transactions
+ */

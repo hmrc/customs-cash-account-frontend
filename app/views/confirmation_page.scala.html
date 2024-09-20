@@ -55,14 +55,19 @@
     )
 
     @p(
-        message =
-           s"${messages(s"cf.cash-account.transactions.confirmation.email")} </br></br> ${messages(
-           s"cf.cash-account.transactions.confirmation.download")}",
+        message = s"${messages("cf.cash-account.transactions.confirmation.email")}",
         classes = "govuk-body",
-        id=Some("body-text2")
+        id=Some("body-text-email")
     )
 
-    @link(linkMessage = Some(messages(s"cf.cash-account.transactions.confirmation.back")),
+    @p(
+        message = s"${messages("cf.cash-account.transactions.confirmation.download")}",
+        classes = "govuk-body",
+        id=Some("body-text-download")
+    )
+
+    @link(
+        linkMessage = Some(messages(s"cf.cash-account.transactions.confirmation.back")),
         location = controllers.routes.CashAccountController.showAccountDetails(None).url,
         pId = Some("link-text"),
         pClass = "govuk-body govuk-!-margin-bottom-9")

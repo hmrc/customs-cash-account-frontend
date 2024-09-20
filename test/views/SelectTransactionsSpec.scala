@@ -25,9 +25,9 @@ import forms.SelectTransactionsFormProvider
 
 import java.time.Clock
 
-class SelectTransactionsViewSpec extends ViewTestHelper {
+class SelectTransactionsSpec extends ViewTestHelper {
 
-  "SelectTransactionsView" should {
+  "SelectTransactions" should {
 
     "display correct information" when {
       "title is visible" in new Setup {

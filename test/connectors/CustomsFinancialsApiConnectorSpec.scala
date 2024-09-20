@@ -18,25 +18,25 @@ package connectors
 
 import config.AppConfig
 import models.*
-import models.request.{CashDailyStatementRequest, IdentifierRequest, CashAccountStatementRequestDetail}
+import models.request.{CashAccountStatementRequestDetail, CashDailyStatementRequest, IdentifierRequest}
 import org.mockito.ArgumentMatchers.anyString
 import play.api.{Application, inject}
-import play.api.http.Status.{NOT_FOUND, REQUEST_ENTITY_TOO_LARGE}
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE}
 import play.api.inject.bind
 import play.api.test.Helpers.*
 import repositories.CacheRepository
 import services.MetricsReporterService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpReads, SessionId, UpstreamErrorResponse}
 import utils.SpecBase
-import java.net.URL
 
+import java.net.URL
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.{eq => eqTo}
+import org.mockito.ArgumentMatchers.eq as eqTo
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 
 class CustomsFinancialsApiConnectorSpec extends SpecBase {
@@ -377,12 +377,12 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" in new Setup {
+    "return ErrorResponse when the backend POST fails with BAD_REQUEST" in new Setup {
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
-        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", REQUEST_ENTITY_TOO_LARGE)))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", BAD_REQUEST)))
 
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
@@ -393,17 +393,38 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(appWithMocks) {
         connector(appWithMocks).retrieveCashTransactionsDetail("can", fromDate, toDate).map {
-          _ mustBe Left(TooManyTransactionsRequested)
+          _ mustBe Left(BadRequest)
         }
       }
     }
 
-    "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
+    "return ErrorResponse when the backend POST fails with INTERNAL_SERVER_ERROR" in new Setup {
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
-        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", INTERNAL_SERVER_ERROR)))
+
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient)
+        ).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).retrieveCashTransactionsDetail("can", fromDate, toDate).map {
+          _ mustBe Left(NoTransactionsAvailable)
+        }
+      }
+    }
+
+    "return ErrorResponse when the backend POST fails with SERVICE_UNAVAILABLE" in new Setup {
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", SERVICE_UNAVAILABLE)))
 
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
@@ -483,21 +504,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         connector().retrieveHistoricCashTransactions("can", fromDate, toDate).map {
           _ mustBe Left(NoTransactionsAvailable)
         }
-      }
-    }
-  }
-
-  "Populating CashStatementRequests" should {
-    "return correct values" when {
-
-      "cash daily statement request is populated correctly" in new Setup {
-        val res = CashDailyStatementRequest("can", fromDate, toDate)
-        res mustBe cashDailyStatementRequest
-      }
-
-      "cash account statement request is populated correctly" in new Setup {
-        val res = CashAccountStatementRequestDetail(eori, "someCan", fromDate.toString, toDate.toString)
-        res mustBe cashAccountStatementRequestDetail
       }
     }
   }
