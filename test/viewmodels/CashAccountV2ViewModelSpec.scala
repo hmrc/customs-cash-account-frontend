@@ -19,7 +19,18 @@ package viewmodels
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
-import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Withdrawal}
+import models.{
+  AccountStatusOpen,
+  CDSCashBalance,
+  CashAccount,
+  CashAccountViewModel,
+  CashDailyStatement,
+  CashTransactions,
+  Declaration,
+  Payment,
+  Transaction,
+  Withdrawal
+}
 import config.AppConfig
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
