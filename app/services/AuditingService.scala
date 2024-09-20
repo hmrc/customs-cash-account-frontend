@@ -20,7 +20,7 @@ import config.AppConfig
 import helpers.Formatters.dateTimeAsIso8601
 
 import javax.inject.{Inject, Singleton}
-import models.{AuditModel, CashCsvAuditData}
+import models.{AuditEori, AuditModel, CashCsvAuditData}
 import play.api.http.HeaderNames
 import play.api.libs.json.Json
 import play.api.{Logger, LoggerLike}
@@ -62,6 +62,16 @@ class AuditingService @Inject()(appConfig: AppConfig, auditConnector: AuditConne
       case _: AuditResult.Failure => log.error("Cash CSV download auditing failed")
       case _ => ()
     }
+  }
+
+  def auditCashStatements(eori: String)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+    val auditModel = AuditModel(
+      auditType = "DisplayCashStatement",
+      transactionName = "Display Cash Statements",
+      detail = Json.toJson(AuditEori(eori, isHistoric = false))
+    )
+
+    audit(auditModel)
   }
 
   private def toExtendedDataEvent(appName: String, auditModel: AuditModel, path: String)(

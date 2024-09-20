@@ -220,6 +220,11 @@ cf.cash-account.transactions.result.no.data=Nid oes gennym ddata o fewn y cyfnod
 cf.cash-account.transactions.result.transaction=Y trafodion cyfrif arian parod y gofynnwyd amdanynt
 cf.cash-account.transactions.result.download.transactions=Lawrlwythwch ffeil CSV eich trafodion y gofynnwyd amdanynt cyn i chi gau’r ffenestr porwr hon.
 
+# Requested Cash Statement Notification Panel
+cf.cash-account.requested.statements.available.text.pre=Mae’r
+cf.cash-account.requested.statements.available.link.text=trafodion y gwnaethoch gais amdanynt
+cf.cash-account.requested.statements.available.text.post=bellach ar gael
+
 cf.form.error.start.date-too-far-in-past=Ni all y dyddiad ‘o’ fod yn fwy na 6 o flynyddoedd ers nawr.
 cf.form.error.end.date-too-far-in-past=Ni all y dyddiad ‘i’ fod yn fwy na 6 o flynyddoedd ers nawr.
 cf.form.error.year.length = Mae’n rhaid i’r flwyddyn gynnwys pedwar rhif

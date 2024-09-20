@@ -20,6 +20,7 @@
 *@
 
 @import viewmodels.CashAccountV2ViewModel
+@import models.FileRole.CashStatement
 @import utils.Utils.{InputTextHint, LabelHint}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
 
@@ -48,6 +49,8 @@
 ) {
 
     @viewModel.cashAccountBalance
+
+    @viewModel.cashStatementNotification
 
     @formHelper(action = controllers.routes.CashAccountV2Controller.onSubmit(None)) {
         @errorSummary(form.errors, None)
