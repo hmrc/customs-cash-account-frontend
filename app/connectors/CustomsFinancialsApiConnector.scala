@@ -164,11 +164,11 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       Left(UnknownException)
   }
 
-  def postCashAccountStatements(eori: String,
-                                can: String,
-                                from: LocalDate,
-                                to: LocalDate)
-                               (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, AccountResponseCommon]] = {
+  def postCashAccountStatementRequest(eori: String,
+                                      can: String,
+                                      from: LocalDate,
+                                      to: LocalDate)
+                                     (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, AccountResponseCommon]] = {
 
     val request = CashAccountStatementRequestDetail(eori, can, from.toString, to.toString)
 

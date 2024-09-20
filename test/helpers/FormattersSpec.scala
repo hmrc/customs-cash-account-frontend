@@ -113,11 +113,13 @@ class FormattersSpec extends SpecBase {
     }
   }
 
-  "date formatter" should {
+  "dateAsMonth" should {
     "return month as a valid value" in new Setup {
       dateAsMonth(date) mustBe "July"
     }
+  }
 
+  "dateAsMonthAndYear" should {
     "return month and year as a valid value" in new Setup {
       dateAsMonthAndYear(date) mustBe "July 2020"
     }

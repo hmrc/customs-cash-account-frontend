@@ -16,10 +16,7 @@
 
 package controllers
 
-import cats.data.EitherT
-import cats.data.EitherT.fromOptionF
 import config.AppConfig
-import connectors.CustomsDataStoreConnector
 import controllers.actions.*
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -42,7 +39,6 @@ import java.time.LocalDate
 class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi,
                                            identify: IdentifierAction,
                                            cache: RequestedTransactionsCache,
-                                           customsDataStoreConnector: CustomsDataStoreConnector,
                                            view: confirmation_page)
                                           (implicit mcc: MessagesControllerComponents,
                                            ec: ExecutionContext,
@@ -55,7 +51,7 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
       val result: Future[Result] = for {
         dates: Option[CashTransactionDates] <- cache.get(request.eori)
       } yield {
-        checkDateAndRedirect(dates)
+        checkDatesAndRedirect(dates)
       }
 
       result.recover {
@@ -63,7 +59,7 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
       }
   }
 
-  private def checkDateAndRedirect(optionalDates: Option[CashTransactionDates])
+  private def checkDatesAndRedirect(optionalDates: Option[CashTransactionDates])
                                   (implicit request: IdentifierRequest[AnyContent],
                                    messages: Messages): Result = {
     optionalDates match {

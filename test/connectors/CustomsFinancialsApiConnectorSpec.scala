@@ -349,7 +349,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         ).build()
 
       running(appWithMocks) {
-        val result = await(connector(appWithMocks).postCashAccountStatements(
+        val result = await(connector(appWithMocks).postCashAccountStatementRequest(
           "eori","can", fromDate, toDate))
 
         result mustBe Right(accResponse)
@@ -371,7 +371,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         .overrides(bind[HttpClientV2].toInstance(mockHttpClient)).build()
 
       running(appWithMocks) {
-        connector(appWithMocks).postCashAccountStatements("eori", "can", fromDate, toDate).map {
+        connector(appWithMocks).postCashAccountStatementRequest("eori", "can", fromDate, toDate).map {
           _ mustBe Left(UnknownException)
         }
       }
@@ -382,8 +382,8 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
-
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", REQUEST_ENTITY_TOO_LARGE)))
+
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
       val appWithMocks: Application = application

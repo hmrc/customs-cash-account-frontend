@@ -65,18 +65,18 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
 
   def onSubmit(): Action[AnyContent] = identify.async { implicit request =>
 
-      val result: Future[Future[Result]] = for {
-        optionalAccount: Option[CashAccount] <- apiConnector.getCashAccount(request.eori)
-        optionalDates: Option[CashTransactionDates] <- cache.get(request.eori)
-      } yield {
-        checkAccountAndDatesThenRedirect(optionalAccount, optionalDates)
-      }
+    val result: Future[Future[Result]] = for {
+      optionalAccount: Option[CashAccount] <- apiConnector.getCashAccount(request.eori)
+      optionalDates: Option[CashTransactionDates] <- cache.get(request.eori)
+    } yield {
+      checkAccountAndDatesThenRedirect(optionalAccount, optionalDates)
+    }
 
-      result.flatten.recover {
-        case _: Exception =>
-          logger.error("failed to submit data for SelectedTransactionsController")
-          Redirect(routes.CashAccountController.showAccountDetails(None))
-      }
+    result.flatten.recover {
+      case _: Exception =>
+        logger.error("failed to submit data for SelectedTransactionsController")
+        Redirect(routes.CashAccountController.showAccountDetails(None))
+    }
   }
 
   private def checkAccountAndDatesThenRedirect(optionalAccount: Option[CashAccount],
@@ -85,15 +85,14 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
     (optionalAccount, optionalDates) match {
       case (Some(cashAcc), Some(dates)) =>
 
-        apiConnector.postCashAccountStatements(request.eori, cashAcc.number, dates.start, dates.end).map {
+        apiConnector.postCashAccountStatementRequest(request.eori, cashAcc.number, dates.start, dates.end).map {
           case Right(_) => Redirect(routes.ConfirmationPageController.onPageLoad())
           case _ =>
             logger.error(s"Error posting cash account statements")
             Redirect(routes.CashAccountController.showAccountDetails(None))
         }
 
-      case _ =>
-        Future.successful(Redirect(routes.CashAccountController.showAccountDetails(None)))
+      case _ => Future.successful(Redirect(routes.CashAccountController.showAccountDetails(None)))
     }
   }
 
@@ -118,8 +117,8 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
   private def processErrorResponse(account: CashAccount,
                                    from: LocalDate,
                                    to: LocalDate,
-                                   errorResponse: ErrorResponse)(
-                                    implicit request: IdentifierRequest[AnyContent], appConfig: AppConfig): Result = {
+                                   errorResponse: ErrorResponse)
+                                  (implicit request: IdentifierRequest[AnyContent], appConfig: AppConfig): Result = {
 
     errorResponse match {
 

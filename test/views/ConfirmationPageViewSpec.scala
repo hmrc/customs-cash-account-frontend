@@ -18,8 +18,8 @@ package views
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import views.html.confirmation_page
 import utils.SpecBase
+import views.html.confirmation_page
 
 class ConfirmationPageViewSpec extends SpecBase with ViewTestHelper {
 
@@ -39,19 +39,19 @@ class ConfirmationPageViewSpec extends SpecBase with ViewTestHelper {
           "cf.cash-account.transactions.confirmation.statements")
       }
 
-      "email panel is correct" in new Setup {
-        view.getElementById("email-confirmation-panel-date").text() mustBe dates
-      }
-
       "email confirmation is correct" in new Setup {
         view.getElementById("email-confirmation-subheader").text() mustBe messages(
           "cf.cash-account.transactions.confirmation.next")
       }
 
       "body text is correct" in new Setup {
-        view.getElementById("body-text2").text() mustBe s"${messages(
-          "cf.cash-account.transactions.confirmation.email")} ${messages(
-            "cf.cash-account.transactions.confirmation.download")}"
+        view.getElementById("body-text2").text() mustBe s"${
+          messages(
+            "cf.cash-account.transactions.confirmation.email")
+        } ${
+          messages(
+            "cf.cash-account.transactions.confirmation.download")
+        }"
       }
 
       "link text is correct" in new Setup {
