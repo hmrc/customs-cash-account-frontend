@@ -87,6 +87,6 @@
             classes = "hmrc-responsive-table govuk-!-margin-bottom-6",
             firstCellIsHeader = true
         ))
-} else {
-    @model.noTransFromLastSixMonthsText.map(identity)
-}
+    } else {
+        @model.noTransFromLastSixMonthsText.map(identity)
+    }
