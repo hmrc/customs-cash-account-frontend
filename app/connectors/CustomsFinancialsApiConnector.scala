@@ -168,4 +168,6 @@ case object NoTransactionsAvailable extends ErrorResponse
 
 case object TooManyTransactionsRequested extends ErrorResponse
 
+case object MaxTransactionsExceeded extends ErrorResponse
+
 case object UnknownException extends ErrorResponse

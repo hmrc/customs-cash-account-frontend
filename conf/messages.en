@@ -263,6 +263,7 @@ cf.cash-account.transactions.request.review.account=Account:
 
 cf.cash-account.transactions.request-transactions.heading = Request transactions
 cf.cash-account.transactions.transactions-for-last-six-months.heading = Your transactions for the last 6 months
+cf.cash-account.transactions.no-transactions-for-last-six-months = There are no transactions from the last 6 months to display.
 cf.cash-account.transactions.request-transactions.download-csv.url = Request by date and download your transactions as a CSV file.
 cf.cash-account.transactions.request-transactions.download-csv.post-message = The CSV file will be available to download within 24 hours.
 cf.cash-account.transactions.search-for-transactions.heading = Search for transactions

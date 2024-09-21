@@ -19,7 +19,7 @@ package controllers
 import cats.data.EitherT.*
 import cats.instances.future.*
 import config.{AppConfig, ErrorHandler}
-import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested}
+import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested, MaxTransactionsExceeded}
 import controllers.actions.{EmailAction, IdentifierAction}
 import helpers.CashAccountUtils
 import models.*
@@ -95,6 +95,9 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
         }
 
         case TooManyTransactionsRequested => Redirect(routes.CashAccountV2Controller.tooManyTransactions())
+
+        case MaxTransactionsExceeded =>
+          Ok(showAccountsView(form, CashAccountV2ViewModel(req.eori, account, CashTransactions(Seq(), Seq()))))
 
         case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account),
           appConfig.transactionsTimeoutFlag))

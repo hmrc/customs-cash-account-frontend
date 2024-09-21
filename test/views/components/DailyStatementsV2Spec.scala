@@ -36,7 +36,8 @@ class DailyStatementsV2Spec extends ViewTestHelper {
       "there are no transaction to display" in new Setup {
         val view: Document = componentView(CashAccountDailyStatementsViewModel(CashTransactions(Seq(), Seq())))
 
-        shouldNotDisplayTransForLastSixMonthsHeading(view)
+        shouldDisplayTransForLastSixMonthsHeading(view)
+        shouldDisplayNoTransactionsFromLastSixMonthsMessage(view)
         shouldNotDisplayTable(view)
       }
 
@@ -44,6 +45,7 @@ class DailyStatementsV2Spec extends ViewTestHelper {
         val view: Document = componentView(CashAccountDailyStatementsViewModel(cashTransactions))
 
         shouldDisplayTransForLastSixMonthsHeading(view)
+        shouldNotDisplayNoTransactionsFromLastSixMonthsMessage(view)
         shouldDisplayTableHeaders(view)
         shouldDisplayTableElements(view)
       }
@@ -53,6 +55,15 @@ class DailyStatementsV2Spec extends ViewTestHelper {
   private def shouldDisplayTransForLastSixMonthsHeading(viewDocument: Document)(implicit msgs: Messages) = {
     viewDocument.getElementById("transactions-for-last-six-months-heading").text() mustBe
       msgs("cf.cash-account.transactions.transactions-for-last-six-months.heading")
+  }
+
+  private def shouldDisplayNoTransactionsFromLastSixMonthsMessage(viewDocument: Document)(implicit msgs: Messages) = {
+    viewDocument.getElementById("no-transactions-for-last-six-months-text").text() mustBe
+      msgs("cf.cash-account.transactions.no-transactions-for-last-six-months")
+  }
+
+  private def shouldNotDisplayNoTransactionsFromLastSixMonthsMessage(viewDocument: Document)(implicit msgs: Messages) = {
+    Option(viewDocument.getElementById("no-transactions-for-last-six-months-text")) mustBe empty
   }
 
   private def shouldNotDisplayTransForLastSixMonthsHeading(viewDocument: Document) = {

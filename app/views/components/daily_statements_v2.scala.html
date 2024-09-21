@@ -23,26 +23,26 @@
 
 @(model: CashAccountDailyStatementsViewModel)(implicit messages: Messages)
 
-  @if(model.hasTransactions) {
-
     @model.transForLastSixMonthsHeading
 
-    @govukTable(Table(
-         rows = model.dailyStatements.map { statement =>
-             Seq(
-                  TableRow(
-                       classes = "govuk-!-font-weight-regular",
-                       content = HtmlContent(
+    @if(model.hasTransactions) {
+
+        @govukTable(Table(
+            rows = model.dailyStatements.map { statement =>
+                Seq(
+                    TableRow(
+                        classes = "govuk-!-font-weight-regular",
+                        content = HtmlContent(
                              s"""
                                 <span class="hmrc-responsive-table__heading" aria-hidden="true">
                                     ${messages("cf.cash-account.detail.date")}
                                 </span>
                                 ${statement.date}
                              """
-                       )
-                  ),
-                  TableRow(
-                       content = HtmlContent(
+                        )
+                    ),
+                    TableRow(
+                        content = HtmlContent(
                             s"""
                                <span class="hmrc-responsive-table__heading" aria-hidden="true">
                                    ${messages("cf.cash-account.detail.transaction-type")}
@@ -50,17 +50,17 @@
                                 ${if(statement.transactionType.mrnLink.isDefined) statement.transactionType.mrnLink.get else statement.transactionType.textString.getOrElse(emptyString)}
                             """
                        )
-                  ),
-                  TableRow(
-                       content = HtmlContent(
+                    ),
+                    TableRow(
+                        content = HtmlContent(
                             s"""
                                 <span class="hmrc-responsive-table__heading" aria-hidden="true">
                                      ${messages("cf.cash-account.detail.credit")}
                                 </span>
                             ${statement.credit.getOrElse(emptyString)}"""
-                       )
-                  ),
-                  TableRow(
+                        )
+                    ),
+                    TableRow(
                         content = HtmlContent(
                             s"""
                                 <span class="hmrc-responsive-table__heading" aria-hidden="true">
@@ -68,23 +68,25 @@
                                 </span>
                             ${statement.debit.getOrElse(emptyString)}"""
                         )
-                  ),
-                  TableRow(
-                       classes = "govuk-table__cell--numeric amount",
-                       content = HtmlContent(
+                    ),
+                    TableRow(
+                           classes = "govuk-table__cell--numeric amount",
+                            content = HtmlContent(
                               s"""
                                     <span class="hmrc-responsive-table__heading" aria-hidden="true">
                                         ${messages("cf.cash-account.detail.balance")}
                                     </span>
                               ${statement.balance.getOrElse(emptyString)}"""
-                       )
-                  )
-             )
-         }
-        ,
-        head = Some(PaymentHeaderV2()),
-        captionClasses = "govuk-visually-hidden",
-        classes = "hmrc-responsive-table govuk-!-margin-bottom-6",
-        firstCellIsHeader = true
-    ))
+                        )
+                    )
+                )
+            }
+            ,
+            head = Some(PaymentHeaderV2()),
+            captionClasses = "govuk-visually-hidden",
+            classes = "hmrc-responsive-table govuk-!-margin-bottom-6",
+            firstCellIsHeader = true
+        ))
+} else {
+    @model.noTransFromLastSixMonthsText.map(identity)
 }
