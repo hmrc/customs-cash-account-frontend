@@ -21,6 +21,7 @@
         h2: components.h2,
         p: components.p,
         link: components.link,
+        newTabLink: components.newTabLink,
 )
 
 @(accountModel: CashAccountViewModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -48,4 +49,13 @@
         id = Some("help-and-support-heading"),
         classes = "govuk-heading-m govuk-!-margin-top-9"
     )
+    
+    @newTabLink(
+        linkMessage = "cf.cash-account.help-and-support.link.text",
+        href = appConfig.cashAccountForCdsDeclarationsUrl,
+        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre"),
+        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post"),
+        classes = "govuk-body govuk-!-margin-bottom-9"
+    )
+    
 }
