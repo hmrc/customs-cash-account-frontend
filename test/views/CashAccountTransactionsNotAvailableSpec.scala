@@ -64,7 +64,7 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
         shouldContainPaymentSection
 
         checkUnavailabilityOfTransactionTimeOutSection
-        
+
         shouldContainHelpAndSupportSection
       }
     }

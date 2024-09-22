@@ -174,7 +174,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
 
     val dailyStatements: Seq[CashDailyStatement] = Seq(dailyStatement1, dailyStatement2)
 
-    val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
+    val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements, None)
 
     val app: Application = application.build()
     implicit val msgs: Messages = messages(app)

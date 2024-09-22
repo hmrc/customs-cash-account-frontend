@@ -214,7 +214,7 @@ class RequestedTransactionsControllerSpec extends SpecBase {
       UpstreamErrorResponse("ServiceUnavailable", Status.SERVICE_UNAVAILABLE, Status.SERVICE_UNAVAILABLE)
 
     val cashTransactionResponse: CashTransactions =
-      CashTransactions(listOfPendingTransactions, cashDailyStatements)
+      CashTransactions(listOfPendingTransactions, cashDailyStatements, None)
 
     val app: Application = application
       .overrides(

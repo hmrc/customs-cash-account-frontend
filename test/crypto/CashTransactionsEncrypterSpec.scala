@@ -49,7 +49,7 @@ class CashTransactionsEncrypterSpec extends SpecBase {
             Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil, Some(sMRN))),
         Seq(Transaction(67.89, Payment, None))))
 
-    val cashTransactions: CashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements)
+    val cashTransactions: CashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements, None)
   }
 
   "encrypt / decrypt cashTransactions" must {

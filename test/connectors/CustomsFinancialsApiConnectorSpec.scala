@@ -89,7 +89,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       "return a list of cash daily statements while adding a UUID, and checking cache state" in new Setup {
 
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
-      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
+      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements,None)
 
       when(mockCacheRepository.get(any[String])).thenReturn(Future.successful(None))
       when(mockCacheRepository.set(any[String], any[CashTransactions])).thenReturn(Future.successful(true))
@@ -132,7 +132,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       "call" in new Setup {
 
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
-      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
+      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements, None)
 
       when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
 
@@ -161,7 +161,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
     "call the correct URL and pass through the HeaderCarrier and CAN, " +
       "and return a list of cash daily statements from the cacheRepository" in new Setup {
-      val successResponse: CashTransactions = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
+      val successResponse: CashTransactions = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements, None)
 
       when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
 
@@ -251,7 +251,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       " and return a list of cash daily statements" in new Setup {
 
       val expectedUrl = "apiEndpointUrl/account/cash/transactions-detail"
-      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
+      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements, None)
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
@@ -333,7 +333,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   "retrieveHistoricCashTransactions" must {
     "return a list of requested cash daily statements" in new Setup {
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
-      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
+      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements, None)
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))

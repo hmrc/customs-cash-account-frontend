@@ -213,7 +213,7 @@ class CashAccountControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Some(cashAccount)))
 
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
-        .thenReturn(Future.successful(Right(CashTransactions(Seq.empty, Seq.empty))))
+        .thenReturn(Future.successful(Right(CashTransactions(Seq.empty, Seq.empty, None))))
 
 
       val app: Application = application
@@ -489,7 +489,7 @@ class CashAccountControllerSpec extends SpecBase {
       "ServiceUnavailable", Status.SERVICE_UNAVAILABLE, Status.SERVICE_UNAVAILABLE)
 
     val cashTransactionResponse: CashTransactions = CashTransactions(
-      listOfPendingTransactions, cashDailyStatements)
+      listOfPendingTransactions, cashDailyStatements, None)
 
     val appConfigOb: AppConfig = application.build().injector.instanceOf[AppConfig]
 
@@ -511,7 +511,7 @@ class CashAccountControllerSpec extends SpecBase {
 
   def randomCashTransaction(howMany: Int): CashTransactions = {
     val pendingStatementsNumber: Int = 20
-    CashTransactions(randomPendingDailyStatements(pendingStatementsNumber), randomCashDailyStatements(howMany))
+    CashTransactions(randomPendingDailyStatements(pendingStatementsNumber), randomCashDailyStatements(howMany), None)
   }
 
   def randomDeclaration: Declaration = {
