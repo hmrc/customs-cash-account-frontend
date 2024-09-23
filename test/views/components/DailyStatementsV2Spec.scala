@@ -34,7 +34,7 @@ class DailyStatementsV2Spec extends ViewTestHelper {
     "display correct contents" when {
 
       "there are no transaction to display" in new Setup {
-        val view: Document = componentView(CashAccountDailyStatementsViewModel(CashTransactions(Seq(), Seq(), None)))
+        val view: Document = componentView(CashAccountDailyStatementsViewModel(CashTransactions(Seq(), Seq())))
 
         shouldNotDisplayTransForLastSixMonthsHeading(view)
         shouldNotDisplayTable(view)
@@ -122,7 +122,7 @@ class DailyStatementsV2Spec extends ViewTestHelper {
 
     val dailyStatements: Seq[CashDailyStatement] = Seq(dailyStatement1, dailyStatement2)
 
-    val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements, None)
+    val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
 
     def componentView(model: CashAccountDailyStatementsViewModel): Document =
       Jsoup.parse(app.injector.instanceOf[daily_statements_v2].apply(model).body)

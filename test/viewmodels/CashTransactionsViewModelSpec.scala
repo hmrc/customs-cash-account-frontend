@@ -140,8 +140,8 @@ class CashTransactionsViewModelSpec extends SpecBase {
       Some("pendingImporterEORI"), "pendingDeclarantEORINumber", None,
       LocalDate.parse("2020-07-21"), -50.00, Nil, Some(sMRN)))
 
-    val cashTransactions: CashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements, None)
-    val cashTransactionsWithNoDailyStatement: CashTransactions = CashTransactions(listOfPendingTransactions, Seq.empty, None)
+    val cashTransactions: CashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements)
+    val cashTransactionsWithNoDailyStatement: CashTransactions = CashTransactions(listOfPendingTransactions, Seq.empty)
     val model: CashTransactionsViewModel = CashTransactionsViewModel(cashTransactions, Some(1))(mockAppConfig)
 
     val modelWithNoDailyStatement: CashTransactionsViewModel =

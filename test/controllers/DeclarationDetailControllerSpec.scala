@@ -77,7 +77,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
-        .thenReturn(Future.successful(Right(CashTransactions(Seq.empty, Seq.empty, None))))
+        .thenReturn(Future.successful(Right(CashTransactions(Seq.empty, Seq.empty))))
 
       val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
@@ -151,6 +151,6 @@ class DeclarationDetailControllerSpec extends SpecBase {
         Seq(Transaction(67.89, Payment, None))))
 
     val cashTransactionResponse: CashTransactions = CashTransactions(
-      listOfPendingTransactions, cashDailyStatements, None)
+      listOfPendingTransactions, cashDailyStatements)
   }
 }

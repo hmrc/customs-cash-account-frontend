@@ -437,7 +437,7 @@ class DownloadCsvControllerSpec extends SpecBase {
     val nonFatalResponse: UpstreamErrorResponse = UpstreamErrorResponse("ServiceUnavailable",
       Status.SERVICE_UNAVAILABLE, Status.SERVICE_UNAVAILABLE)
 
-    val cashTransactionResponse: CashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements, None)
+    val cashTransactionResponse: CashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements)
 
     val newApp: Application = application
       .overrides(
@@ -463,7 +463,7 @@ class DownloadCsvControllerSpec extends SpecBase {
 
   def randomCashTransaction(howMany: Int): CashTransactions = {
     val pendingStatementsNumber: Int = 20
-    CashTransactions(randomPendingDailyStatements(pendingStatementsNumber), randomCashDailyStatements(howMany), None)
+    CashTransactions(randomPendingDailyStatements(pendingStatementsNumber), randomCashDailyStatements(howMany))
   }
 
 

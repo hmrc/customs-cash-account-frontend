@@ -181,7 +181,7 @@ class CashAccountV2Spec extends ViewTestHelper {
 
     val dailyStatements: Seq[CashDailyStatement] = Seq(dailyStatement1, dailyStatement2)
 
-    val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements, None)
+    val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
 
     val viewModelWithTransactions: CashAccountV2ViewModel =
       CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions)

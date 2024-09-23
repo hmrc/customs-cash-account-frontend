@@ -164,7 +164,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
 
     val dailyStatements: Seq[CashDailyStatement] = Seq(dailyStatement1, dailyStatement2)
 
-    val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements, None)
+    val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
 
     def createCashAccountV2ViewModel(eori: String,
                                      account: CashAccount,
