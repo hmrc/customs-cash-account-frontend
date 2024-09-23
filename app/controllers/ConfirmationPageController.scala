@@ -30,7 +30,7 @@ import helpers.Formatters.{dateAsDayMonthAndYear, dateAsMonthAndYear}
 import models.CashTransactionDates
 import play.api.i18n.Messages
 import models.request.IdentifierRequest
-import play.api.Logging
+import play.api.Logger
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,6 +44,8 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
                                            ec: ExecutionContext,
                                            appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 
+  private val log = Logger(this.getClass)
+
   def onPageLoad(): Action[AnyContent] = identify.async {
 
     implicit request =>
@@ -55,7 +57,9 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
       }
 
       result.recover {
-        case _: Exception => Redirect(routes.CashAccountController.showAccountUnavailable)
+        case e: Exception =>
+          log.error(s"filed to load ConfirmationPageController $e")
+          Redirect(routes.CashAccountController.showAccountUnavailable)
       }
   }
 
@@ -70,7 +74,9 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
 
         Ok(view(s"$startDate ${messages("month.to")} $endDate"))
 
-      case _ => Redirect(routes.CashAccountController.showAccountUnavailable)
+      case _ =>
+        log.error(s"filed to load checkDatesAndRedirect $optionalDates")
+        Redirect(routes.CashAccountController.showAccountUnavailable)
     }
   }
 }

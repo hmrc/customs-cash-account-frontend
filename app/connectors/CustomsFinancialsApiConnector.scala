@@ -18,10 +18,11 @@ package connectors
 
 import config.AppConfig
 import models.*
+import models.AccountsAndBalancesResponseContainer.accountResponseCommonReads
 import models.CashDailyStatement.*
 import models.request.{CashAccountStatementRequestDetail, CashDailyStatementRequest, IdentifierRequest}
 import org.slf4j.LoggerFactory
-import play.api.http.Status.{NOT_FOUND, REQUEST_ENTITY_TOO_LARGE, BAD_REQUEST, INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE}
+import play.api.http.Status.*
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.mvc.AnyContent
 import repositories.CacheRepository
@@ -29,7 +30,8 @@ import services.MetricsReporterService
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, UpstreamErrorResponse}
-import models.AccountsAndBalancesResponseContainer.accountResponseCommonReads
+import helpers.Constants._
+import utils.Utils.emptyString
 
 import java.time.LocalDate
 import java.util.UUID
@@ -178,15 +180,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
     httpClient.post(url"$retrieveCashAccountStatementsUrl")
       .withBody[CashAccountStatementRequestDetail](request)
       .execute[AccountResponseCommon]
-      .flatMap match {
-          case 003 =>
-            UpstreamErrorResponse(_, BAD_REQUEST, _, _) =>
-            logger.error ("BAD Request for postCashAccountStatements")
-            Left (BadRequest)
-
-        }
-      }
-      .map(Right(_))
+      .map(processStatusCode)
 
   }.recover {
     case UpstreamErrorResponse(_, BAD_REQUEST, _, _) =>
@@ -205,11 +199,43 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       logger.error(s"Unknown error for postCashAccountStatements :${e.getMessage}")
       Left(UnknownException)
   }
+
+  private def processStatusCode(response: AccountResponseCommon): Either[ErrorResponse, AccountResponseCommon] = {
+
+    response.statusText match {
+
+      case Some(helpers.Constants.REQUEST_COULD_NOT_BE_PROCESSED) =>
+        logger.error(s"REQUEST_COULD_NOT_BE_PROCESSED for the postCashAccountStatementRequest - processStatusCode")
+        Left(RequestCouldNotBeProcessed)
+
+      case Some(helpers.Constants.DUPLICATE_SUBMISSION) =>
+        logger.error(s"DUPLICATE_SUBMISSION for the postCashAccountStatementRequest - processStatusCode")
+        Left(DuplicateSubmissionAckRef)
+
+      case Some(helpers.Constants.ACCOUNT_DOES_NOT_EXIST) =>
+        logger.error(s"ACCOUNT_DOES_NOT_EXIST for the postCashAccountStatementRequest - processStatusCode")
+        Left(AccountDoesNotExist)
+
+      case Some(helpers.Constants.INVALID_EORI) =>
+        logger.error(s"INVALID_EORI for the postCashAccountStatementRequest - processStatusCode")
+        Left(InvalidEori)
+
+      case Some(helpers.Constants.ENTRY_ALREADY_EXISTS) =>
+        logger.error(s"ENTRY_ALREADY_EXISTS for the postCashAccountStatementRequest - processStatusCode")
+        Left(EntryAlreadyExists)
+
+      case Some(helpers.Constants.EXCEEDED_MAXIMUM) =>
+        logger.error(s"EXCEEDED_MAXIMUM for the postCashAccountStatementRequest - processStatusCode")
+        Left(ExceededMaximum)
+
+      case Some(emptyString) => Right(response)
+
+      case _ => Left(UnknownException)
+    }
+  }
 }
 
 sealed trait ErrorResponse
-
-case object RequestCouldNotBeProcessed extends errorResponse
 
 case object NoTransactionsAvailable extends ErrorResponse
 
@@ -219,13 +245,16 @@ case object BadRequest extends ErrorResponse
 
 case object UnknownException extends ErrorResponse
 
+case object RequestCouldNotBeProcessed extends ErrorResponse
 
-/*
-  Error Code Error Text
-  003 Request could not be processed
-  004 Duplicate submission acknowledgment reference
-  092 The account does not exist within ETMP
-  102 Invalid EORI number
-  124 Entry already exists for the same period
-  602 Exceeded maximum threshold of transactions
- */
+case object DuplicateSubmissionAckRef extends ErrorResponse
+
+case object AccountDoesNotExist extends ErrorResponse
+
+case object InvalidEori extends ErrorResponse
+
+case object EntryAlreadyExists extends ErrorResponse
+
+case object ExceededMaximum extends ErrorResponse
+
+

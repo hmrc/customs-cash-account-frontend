@@ -19,13 +19,15 @@ package connectors
 import config.AppConfig
 import models.*
 import models.request.{CashAccountStatementRequestDetail, CashDailyStatementRequest, IdentifierRequest}
-import org.mockito.ArgumentMatchers.anyString
-import play.api.{Application, inject}
+import org.mockito.ArgumentMatchers.{any, anyString, eq => eqTo}
+import org.mockito.Mockito.{verify, when}
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE}
 import play.api.inject.bind
 import play.api.test.Helpers.*
+import play.api.{Application, inject}
 import repositories.CacheRepository
 import services.MetricsReporterService
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpReads, SessionId, UpstreamErrorResponse}
 import utils.SpecBase
 
@@ -33,11 +35,6 @@ import java.net.URL
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.eq as eqTo
-import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 
 class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
@@ -350,7 +347,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(appWithMocks) {
         val result = await(connector(appWithMocks).postCashAccountStatementRequest(
-          "eori","can", fromDate, toDate))
+          "eori", "can", fromDate, toDate))
 
         result mustBe Right(accResponse)
       }

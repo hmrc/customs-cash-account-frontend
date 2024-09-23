@@ -1,0 +1,46 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package helpers
+
+import play.api.i18n.Messages
+
+import java.text.NumberFormat
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.time.{LocalDate, LocalDateTime}
+import java.util.Locale
+
+object Constants {
+
+  /*
+    Error Code Error Text for ACC45
+    003 Request could not be processed
+    004 Duplicate submission acknowledgment reference
+    092 The account does not exist within ETMP
+    102 Invalid EORI number
+    124 Entry already exists for the same period
+    602 Exceeded maximum threshold of transactions
+   */
+
+  val REQUEST_COULD_NOT_BE_PROCESSED: String = "003"
+  val DUPLICATE_SUBMISSION: String = "004"
+  val ACCOUNT_DOES_NOT_EXIST: String = "092"
+  val INVALID_EORI: String = "102"
+  val ENTRY_ALREADY_EXISTS: String = "124"
+  val EXCEEDED_MAXIMUM: String = "602"
+
+}
