@@ -22,9 +22,10 @@
         p: components.p,
         link: components.link,
         newTabLink: components.newTabLink,
+        cash_account_balance: components.cash_account_balance,
 )
 
-@(accountModel: CashAccountViewModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(account: CashAccountViewModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
     pageTitle = Some(messages("cf.cash-account.detail.title")),
@@ -32,30 +33,6 @@
     fullWidth = false,
     help = true
 ) {
-    @p("cf.cash-account.detail.no-transactions.p1")
 
-    @p("cf.cash-account.top-up.guidance")
-
-    @link(
-        linkMessageKey = "cf.cash-account.how-to-use.guidance.link.text",
-        location = appConfig.cashAccountForCdsDeclarationsUrl,
-        linkId = Some("cf.cash-account.how-to-use.guidance.link"),
-        preLinkMessage = Some("cf.cash-account.how-to-use.guidance.text.pre"),
-        postLinkMessage = Some("cf.cash-account.how-to-use.guidance.text.post")
-    )
-
-    @h2(
-        msg = "cf.cash-account.transactions.request.support.heading",
-        id = Some("help-and-support-heading"),
-        classes = "govuk-heading-m govuk-!-margin-top-9"
-    )
-    
-    @newTabLink(
-        linkMessage = "cf.cash-account.help-and-support.link.text",
-        href = appConfig.cashAccountForCdsDeclarationsUrl,
-        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre"),
-        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post"),
-        classes = "govuk-body govuk-!-margin-bottom-9"
-    )
     
 }

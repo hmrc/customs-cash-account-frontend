@@ -1,86 +1,78 @@
 package views
 
-import config.AppConfig
 import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import utils.SpecBase
-import org.scalatest.Assertion
 import play.api.Application
 import play.api.i18n.Messages
+import utils.Utils.singleSpace
 import views.html.cash_account_no_transactions_v2
 
 class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
 
-  "CashAccountNoTransactionsV2 view" should {
+  "view" should {
 
-    "populate the correct title and link" in new Setup {
+    "display correct contents" in new Setup {
       val viewDoc: Document = view(model)
+      
       titleShouldBeCorrect(viewDoc, "cf.cash-account.detail.title")
       shouldContainBackLinkUrl(viewDoc, appConfig.customsFinancialsFrontendHomepage)
+
+      shouldDisplayCorrectAccountDetails(viewDoc, accNumber)
+      shouldDisplayPayImportDutyAndTaxesGuidance(viewDoc)
+      shouldDisplayTopUpGuidance(viewDoc)
+      shouldDisplayFindOutHowLink(viewDoc)
+      shouldDisplayHelpAndSupportGuidance(viewDoc)
     }
 
-    "display the correct paragraphs and links" in new Setup {
-      val viewDoc: Document = view(model)
-      containsImportAndAuthoriseAgentText(viewDoc)
-      containsTopUpCashText(viewDoc)
-      containsCDSDeclarationsTextAndLink(viewDoc)
+  }
 
-      def containsImportAndAuthoriseAgentText(view: Document)(implicit pMsgKey: Messages): Assertion =
-      view.select("p").get(1).text() mustBe pMsgKey("cf.cash-account.detail.no-transactions.p1")
+  private def shouldDisplayCorrectAccountDetails(viewDoc: Document, accNumber: String)(implicit msgs: Messages) = {
+    viewDoc.getElementById("cash-account-number").text mustBe msgs("cf.cash-account.detail.account", accNumber)
+    viewDoc.getElementById("cash-account-header").text mustBe msgs("cf.cash-account.detail.title")
+    viewDoc.getElementById("zero-balance-display").text() mustBe s"£0$singleSpace${msgs("cf.cash-account.detail.available")}"
+  }
 
-      def containsTopUpCashText(view: Document)(implicit pMsgKey: Messages): Assertion =
-        view.select("p").get(2).text() mustBe pMsgKey("cf.cash-account.top-up.guidance")
+  private def shouldDisplayPayImportDutyAndTaxesGuidance(viewDoc: Document)(implicit msgs: Messages) = {
+    viewDoc.getElementById("cash-account-import-duties-guidance").text() mustBe msgs("cf.cash-account.detail.no-transactions.p1")
+  }
 
-      def containsCDSDeclarationsTextAndLink(view: Document)(implicit linkMsg: Messages, config: AppConfig): Assertion =
-        val linkElement = view.getElementById("cf.cash-account.how-to-use.guidance.link")
+  private def shouldDisplayTopUpGuidance(viewDoc: Document)(implicit msgs: Messages) = {
+    viewDoc.getElementById("cash-account-authorise-agent-guidance").text() mustBe msgs("cf.cash-account.top-up.guidance")
+  }
 
-        linkElement.attribute("href").getValue mustBe config.cashAccountForCdsDeclarationsUrl
-        linkElement.text() mustBe linkMsg("cf.cash-account.how-to-use.guidance.link.text")
+  private def shouldDisplayFindOutHowLink(viewDoc: Document)(implicit msgs: Messages) = {
+    viewDoc.getElementById("cash-account-top-up-guidance-pre").text() mustBe msgs("cf.cash-account.how-to-use.guidance.text.pre")
+    viewDoc.getElementById("cash-account-top-up-guidance-link").text() mustBe msgs("cf.cash-account.detail.link")
+    viewDoc.getElementById("cash-account-top-up-guidance-post").text() mustBe msgs("cf.cash-account.how-to-use.guidance.text.post")
+  }
 
-        view.text().contains(linkMsg("cf.cash-account.how-to-use.guidance.text.pre")) mustBe true
-        view.text().contains(linkMsg("cf.cash-account.how-to-use.guidance.text.post")) mustBe true
-        view.text().contains(linkMsg("cf.cash-account.how-to-use.guidance.link.text")) mustBe true
-    }
-
-    "Display the correct Support heading, text and link" in new Setup {
-      val viewDoc: Document = view(model)
-      containsHeadingAndSupportTitle(viewDoc)
-      containsContactHMRCTextAndLink(viewDoc)
-
-      def containsHeadingAndSupportTitle(view: Document)(implicit titleMsg: Messages): Assertion =
-        view.select("h2").get(1).text() mustBe titleMsg("cf.cash-account.transactions.request.support.heading")
-
-      def containsContactHMRCTextAndLink(view: Document)(implicit linkMsg: Messages, config: AppConfig): Assertion =
-        val linkElement = view.getElementsByClass("govuk-body govuk-!-margin-bottom-9")
-
-        linkElement.get(0).getElementsByTag("a").attr("href") mustBe config.cashAccountForCdsDeclarationsUrl
-
-        view.text().contains(linkMsg("cf.cash-account.help-and-support.link.text.pre")) mustBe true
-        view.text().contains(linkMsg("cf.cash-account.help-and-support.link.text.post")) mustBe true
-        view.text().contains(linkMsg("cf.cash-account.help-and-support.link.text")) mustBe true
-    }
+  private def shouldDisplayHelpAndSupportGuidance(viewDoc: Document)(implicit msgs: Messages) = {
+    viewDoc.getElementById("cash-account-help-and-support-guidance-header").text() mustBe msgs("cf.cash-account.transactions.request.support.heading")
+    viewDoc.getElementById("cash-account-help-and-support-guidance-text-pre").text() mustBe msgs("cf.cash-account.help-and-support.link.text.pre")
+    viewDoc.getElementById("cash-account-help-and-support-guidance-text-link").text() mustBe msgs("cf.cash-account.help-and-support.link.text")
+    viewDoc.getElementById("cash-account-help-and-support-guidance-text-post").text() mustBe msgs("cf.cash-account.help-and-support.link.text.post")
   }
 
 
-  trait Setup {
-    val eori = "GB123456"
-    val balances: CDSCashBalance = CDSCashBalance(None)
-    val accountNumber = "1111111"
 
-    val cashAccount: CashAccount = CashAccount(number = accountNumber,
+  trait Setup {
+    val app: Application = application.build()
+    implicit val msgs: Messages = messages(app)
+    
+    val eori = "test_eori"
+    val balances: CDSCashBalance = CDSCashBalance(None)
+    val accNumber = "12345678"
+
+    val cashAccount: CashAccount = CashAccount(number = accNumber,
       owner = eori,
       status = AccountStatusOpen,
       balances = balances)
 
     val model: CashAccountViewModel = CashAccountViewModel(eori, cashAccount)
 
-    val app: Application = application.build()
-    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
-    implicit val msgs: Messages = messages(app)
-
-    def view(accountModel: CashAccountViewModel): Document =
-      Jsoup.parse(app.injector.instanceOf[cash_account_no_transactions_v2].apply(accountModel).body)
-    }
+    def view(account: CashAccountViewModel): Document =
+      Jsoup.parse(app.injector.instanceOf[cash_account_no_transactions_v2].apply(account).body)
   }
+}
 
