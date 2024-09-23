@@ -29,9 +29,7 @@ case class TooManyTransactionsViewModel(pageTitle: String,
                                         backLink: String,
                                         sectionTitle: HtmlFormat.Appendable,
                                         cashAccountBalance: HtmlFormat.Appendable,
-                                        message01: HtmlFormat.Appendable,
-                                        message02: HtmlFormat.Appendable,
-                                        message03: HtmlFormat.Appendable,
+                                        downloadCSVFileLinkUrl: HtmlFormat.Appendable,
                                         helpAndSupportGuidance: GuidanceRow)
 
 object TooManyTransactionsViewModel {
@@ -53,9 +51,7 @@ object TooManyTransactionsViewModel {
       backLink = config.customsFinancialsFrontendHomepage,
       sectionTitle = sectionHeading,
       cashAccountBalance = cashAccountBalance,
-      message01 = linkMessage01,
-      message02 = requestCsvFileUrl,
-      message03 = linkMessage03,
+      downloadCSVFileLinkUrl = requestCsvFileUrl,
       helpAndSupportGuidance = helpAndSupport)
   }
 
@@ -65,8 +61,10 @@ object TooManyTransactionsViewModel {
       LinkComponentValues(
         pId = Some("download-scv-file"),
         location = controllers.routes.RequestTransactionsController.onPageLoad().url,
+        preLinkSentence = Some("cf.cash-account.transactions.too-many-transactions.hint01"),
         preLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint02"),
         linkMessageKey = "cf.cash-account.transactions.too-many-transactions.hint03",
+        postLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint04"),
         enableLineBreakBeforePostMessage = true))
   }
 

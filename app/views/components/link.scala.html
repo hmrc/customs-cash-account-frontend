@@ -25,6 +25,7 @@
         linkId: Option[String] = None,
         linkClass: String = "govuk-link",
         pWrapped: Boolean = true,
+        preLinkSentence: Option[String] = None,
         linkSentence: Boolean = false,
         preLinkMessage: Option[String] = None,
         postLinkMessage: Option[String] = None,
@@ -43,9 +44,13 @@
 
 @if(pWrapped){
  <p @{pId.fold(emptyString)(id => s"id=$id")} class="@pClass">
+      @if(preLinkSentence.isDefined) {
+        @preLinkSentence.map(m => messages(m)) @br
+      }
       @preLinkMessage.map(m => messages(m))
       @if(enableLineBreakBeforePostMessage){@link @br} else {@link}
-      @postLinkMessage.map(m => messages(m))
+
+     @postLinkMessage.map(m => messages(m))
  </p>
 } else {
      @link
