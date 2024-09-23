@@ -333,7 +333,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   "retrieveHistoricCashTransactions" must {
     "return a list of requested cash daily statements" in new Setup {
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
-      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements, None)
+      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
