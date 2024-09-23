@@ -197,6 +197,7 @@ cf.cash-account.transactions.request.support.link=cysylltwch â’r llinell gymo
 cf.cash-account.transactions.request.link.pre=Gallwch
 cf.cash-account.transactions.request.link.post=trwy chwilio o ystod dyddiad byrrach.
 cf.cash-account.transactions.request.link=chwilio am a lawrlwytho’ch trafodion fel ffeil CSV
+cf.cash-account.transactions.request.link.previous=chwilio am a lawrlwytho unrhyw drafodion blaenorol fel ffeil CSV
 cf.cash-account.transactions.request.title=Pa drafodion cyfrif arian parod sydd eu hangen arnoch?
 cf.cash-account.transactions.request.legend.hidden.start=pa ddyddiad dechrau sydd ei angen arnoch ar gyfer trafodion cyfrif arian parod?
 cf.cash-account.transactions.request.legend.hidden.end=pa ddyddiad dod i ben sydd ei angen arnoch ar gyfer trafodion cyfrif arian parod?

@@ -45,7 +45,7 @@
     @cash_account_balance(accountModel)
 
     @if(transactionsTimeout) {
-        <div class="govuk-inset-text" id="no-transactions-available">
+        <div class="govuk-inset-text govuk-!-margin-top-7" id="no-transactions-available">
             @messages("cf.cash-account.detail.transactions-not-available.first")
             <br> <br>
             @messages("cf.cash-account.detail.transactions-not-available.second")
@@ -54,14 +54,18 @@
         @h2(msg = "cf.cash-account.transactions.request.link.heading", id = Some("missing-documents-guidance-heading"))
         
         @link(
-            "cf.cash-account.transactions.request.link",
+            "cf.cash-account.transactions.request.link.previous",
             controllers.routes.RequestTransactionsController.onPageLoad().url,
             preLinkMessage = Some("cf.cash-account.transactions.request.link.pre"),
             pClass = "govuk-body govuk-!-margin-bottom-9",
             linkSentence = true
         )
     } else {
-        @p("cf.cash-account.detail.transactions-not-available", id = Some("no-transactions-available"))
+        @p(
+            "cf.cash-account.detail.transactions-not-available",
+            id = Some("no-transactions-available"),
+            classes = "govuk-body govuk-!-margin-top-7"
+        )
     }
 
     @h2(

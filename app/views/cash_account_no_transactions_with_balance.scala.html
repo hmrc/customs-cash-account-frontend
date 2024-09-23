@@ -38,6 +38,7 @@
     @p(
         "cf.cash-account.detail.no-transactions-with-balance.p1",
         id = Some("transactions-not-available"),
+        classes = "govuk-body govuk-!-margin-top-7"
     )
 
     @h2(
@@ -47,7 +48,7 @@
     )
 
     @link(
-        "cf.cash-account.transactions.request.link",
+        "cf.cash-account.transactions.request.link.previous",
         controllers.routes.RequestTransactionsController.onPageLoad().url,
         preLinkMessage = Some("cf.cash-account.transactions.request.link.pre"),
         pClass = "govuk-body govuk-!-margin-bottom-9",

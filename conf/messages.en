@@ -201,6 +201,7 @@ cf.cash-account.transactions.request.support.link=contact the HMRC accounting ce
 cf.cash-account.transactions.request.link.pre=You can
 cf.cash-account.transactions.request.link.post=by searching from a shorter date range.
 cf.cash-account.transactions.request.link=search and download your transactions as a CSV file
+cf.cash-account.transactions.request.link.previous=search and download any previous transactions as a CSV file
 cf.cash-account.transactions.request.title=Which cash account transactions do you need?
 cf.cash-account.transactions.request.legend.hidden.start=what start date do you need cash account transactions?
 cf.cash-account.transactions.request.legend.hidden.end=what end date do you need cash account transactions?
