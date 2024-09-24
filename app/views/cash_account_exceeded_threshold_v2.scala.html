@@ -1,0 +1,87 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import viewmodels.TooManyTransactionsViewModel
+@import utils.Utils.{InputTextHint, LabelHint}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
+
+@this(
+        main_template: Layout,
+        formHelper: FormWithCSRF,
+        errorSummary: components.errorSummary,
+        button: components.button,
+        inputText: components.inputText,
+        h2: components.h2,
+        p: components.p,
+        link: components.link,
+        newTabLink: components.newTabLink
+)
+
+@(
+    form: Form[_],
+    model: TooManyTransactionsViewModel
+)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@main_template(
+    pageTitle = Some(messages("cf.cash-account.detail.title")),
+    backLink = Some(appConfig.customsFinancialsFrontendHomepage),
+    fullWidth = true,
+    help = true
+) {
+    @model.cashAccountBalance
+
+    @formHelper(action = controllers.routes.CashAccountV2Controller.onSubmit(None)) {
+        @errorSummary(form.errors, None)
+
+        @inputText(
+            form,
+            id = "search-transactions",
+            name = "value",
+            label = "cf.cash-account.transactions.search-for-transactions.heading",
+            hint = Some(InputTextHint(
+                            labelHint =Some(LabelHint(
+                                                    "cf.cash-account.transactions.search-for-transactions.hint",
+                                                    "govuk-hint govuk-!-margin-top-2")))),
+            formGroup = FormGroup(afterInput = Some(HtmlContent(button(msg = "site.search", classes = "inline-button")))),
+            isPageHeading = false,
+            classes = Some("govuk-!-width-one-third"),
+            labelClasses = Some("govuk-label--m govuk-!-margin-bottom-3")
+        )
+    }
+
+    @h2(
+        msg = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
+        id = Some("last-six-month-transactions-heading"),
+        classes = "govuk-heading-m govuk-!-padding-top-1")
+
+    @p(
+        "cf.cash-account.transactions.too-many-transactions.hint01",
+        classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7",
+        id = Some("exceeded-threshold"))
+
+    @model.downloadCSVFileLinkUrl
+
+    @h2(
+        msg = "cf.cash-account.transactions.request.support.heading",
+        id = Some("missing-documents-guidance-heading"),
+        classes = "govuk-heading-m govuk-!-padding-top-9")
+
+    @newTabLink(
+        preLinkMessage = Some("cf.cash-account.transactions.request.support.pre"),
+        linkMessage = "cf.cash-account.transactions.request.support.link",
+        href = appConfig.cashAccountForCdsDeclarationsUrl,
+        classes = "govuk-body govuk-!-margin-bottom-9")
+}

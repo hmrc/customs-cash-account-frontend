@@ -260,6 +260,27 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
+    "display too many results page if maxTransactionsExceeded value is true" in new Setup {
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(Right(cashTransactionResponse02)))
+
+      val app: Application = application
+        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+        .build()
+
+      running(app) {
+        val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.CashAccountV2Controller.tooManyTransactions().url
+      }
+    }
+
     "return Page Not Found if account does not exist" in new Setup {
 
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
@@ -505,6 +526,9 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
     val cashTransactionResponse: CashTransactions = CashTransactions(
       listOfPendingTransactions, cashDailyStatements)
+
+    val cashTransactionResponse02: CashTransactions = CashTransactions(
+      listOfPendingTransactions, cashDailyStatements, Some(true))
   }
 
   def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
