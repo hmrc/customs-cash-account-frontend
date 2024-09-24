@@ -16,19 +16,20 @@
 
 package controllers
 
+import cats.data.EitherT
 import cats.data.EitherT.*
 import cats.instances.future.*
 import config.{AppConfig, ErrorHandler}
-import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested}
+import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, SdesConnector, TooManyTransactionsRequested}
 import controllers.actions.{EmailAction, IdentifierAction}
 import helpers.CashAccountUtils
 import models.*
 import models.request.IdentifierRequest
 import org.slf4j.LoggerFactory
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, RequestHeader, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import viewmodels.{CashTransactionsViewModel, CashAccountV2ViewModel}
+import viewmodels.CashAccountV2ViewModel
 import views.html.*
 
 import java.time.LocalDate
@@ -36,10 +37,12 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import forms.SearchTransactionsFormProvider
 import play.api.data.Form
+import uk.gov.hmrc.http.HeaderCarrier
 
 class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
                                         verifyEmail: EmailAction,
                                         apiConnector: CustomsFinancialsApiConnector,
+                                        sdesConnector: SdesConnector,
                                         showAccountsView: cash_account_v2,
                                         unavailable: cash_account_not_available,
                                         transactionsUnavailable: cash_account_transactions_not_available,
@@ -62,10 +65,15 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
 
       val eventualMaybeCashAccount = apiConnector.getCashAccount(request.eori)
 
+      val (from, to) = cashAccountUtils.transactionDateRange()
+      val eventualStatements = getStatementsForEori(request.eori, from, to)
+      val transformedStatements = EitherT.liftF(eventualStatements)
+
       val result = for {
         cashAccount <- fromOptionF[Future, Result, CashAccount](eventualMaybeCashAccount, NotFound(eh.notFoundTemplate))
+        statements <- transformedStatements
         (from, to) = cashAccountUtils.transactionDateRange()
-        page <- liftF[Future, Result, Result](showAccountWithTransactionDetails(cashAccount, from, to, page))
+        page <- liftF[Future, Result, Result](showAccountWithTransactionDetails(cashAccount, from, to, page, statements))
       } yield page
 
       result.merge.recover {
@@ -82,7 +90,8 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
   private def showAccountWithTransactionDetails(account: CashAccount,
                                                 from: LocalDate,
                                                 to: LocalDate,
-                                                page: Option[Int])
+                                                page: Option[Int],
+                                                statements: Seq[CashStatementsForEori])
                                                (implicit req: IdentifierRequest[AnyContent],
                                                 appConfig: AppConfig): Future[Result] = {
     apiConnector.retrieveCashTransactions(account.number, from, to).map {
@@ -102,9 +111,7 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
 
       case Right(cashTransactions) =>
         if (cashTransactions.availableTransactions) {
-          Ok(
-            showAccountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions))
-          )
+          Ok(showAccountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions, statements)))
         } else {
           Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
         }
@@ -122,6 +129,23 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
                 request.eori,
                 CashAccount(account.number, account.owner, account.status, account.balances)))
           ))
+    }
+  }
+
+  private def getStatementsForEori(eori: String, from: LocalDate, to: LocalDate)
+                                  (implicit hc: HeaderCarrier, request: RequestHeader, ec: ExecutionContext
+                                  ): Future[Seq[CashStatementsForEori]] = {
+    sdesConnector.getCashStatements(eori).map { statementFiles =>
+      val eoriHistory: EoriHistory = EoriHistory(eori, Some(from), Some(to))
+
+      val groupedStatements = statementFiles.groupBy(_.monthAndYear).map {
+        case (month, filesForMonth) =>
+          CashStatementsByMonth(month, filesForMonth)
+      }.toList
+
+      val (requested, current) = groupedStatements.partition(_.files.exists(_.metadata.statementRequestId.isDefined))
+
+      Seq(CashStatementsForEori(eoriHistory, current, requested))
     }
   }
 

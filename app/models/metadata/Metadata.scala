@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package viewmodels
+package models.metadata
 
-import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Value}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Actions
-import utils.SpecBase
+import play.api.libs.json.*
 
-class SummaryListRowHelperSpec extends SpecBase with SummaryListRowHelper {
+case class Metadata(items: Seq[MetadataItem]) {
+  val asMap: Map[String, String] = items.map(item => (item.key, item.value)).toMap
+}
 
-  "summaryListRow" should {
-    "correctly return a summary list row" in {
-      val result = summaryListRow("something", Some("something"), Actions())
+object Metadata {
+  implicit val metadataReads: Reads[Metadata] = __.read[List[MetadataItem]].map(Metadata.apply)
 
-      result.actions mustBe Some(Actions())
-      result.value mustBe Value(HtmlContent("something"))
-      result.secondValue mustBe Some(Value(HtmlContent("something"), classes = ""))
-    }
-  }
+  implicit val metadataWrites: Writes[Metadata] = (o: Metadata) => JsArray(o.items.map(
+    item => Json.obj(("metadata", item.key), ("value", item.value))))
 }

@@ -17,15 +17,13 @@
 package viewmodels
 
 import config.AppConfig
-import models.CashAccount
+import models.FileRole.CashStatement
+import models.{CashAccount, CashAccountViewModel, CashStatementsForEori, CashTransactions}
 import models.domain.EORI
 import utils.Utils.*
-import models.CashTransactions
-import play.twirl.api.{Html, HtmlFormat}
-import views.html.components.{cash_account_balance, daily_statements_v2, h1}
-import models.CashAccountViewModel
+import play.twirl.api.HtmlFormat
+import views.html.components.{cash_account_balance, daily_statements_v2}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
 
 case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
                        link: Option[HtmlFormat.Appendable] = None,
@@ -37,13 +35,27 @@ case class CashAccountV2ViewModel(pageTitle: String,
                                   dailyStatements: HtmlFormat.Appendable,
                                   requestTransactionsHeading: HtmlFormat.Appendable,
                                   downloadCSVFileLinkUrl: HtmlFormat.Appendable,
-                                  helpAndSupportGuidance: GuidanceRow)
+                                  helpAndSupportGuidance: GuidanceRow,
+                                  hasRequestedStatements: Boolean,
+                                  cashStatementNotification: HtmlFormat.Appendable)
 
 object CashAccountV2ViewModel {
 
   def apply(eori: EORI,
             account: CashAccount,
-            cashTrans: CashTransactions)(implicit msgs: Messages, config: AppConfig): CashAccountV2ViewModel = {
+            cashTrans: CashTransactions,
+            statements: Seq[CashStatementsForEori]
+           )(implicit msgs: Messages, config: AppConfig): CashAccountV2ViewModel = {
+
+    val hasRequestedStatements: Boolean = statements.exists(_.requestedStatements.nonEmpty)
+    val notificationPanel = if (hasRequestedStatements) {
+      notificationPanelComponent(
+        showNotification = true,
+        preMessage = msgs("cf.cash-account.requested.statements.available.text.pre"),
+        linkUrl = config.requestedStatements(CashStatement),
+        linkText = msgs("cf.cash-account.requested.statements.available.link.text"),
+        postMessage = msgs("cf.cash-account.requested.statements.available.text.post"))
+    } else { HtmlFormat.empty }
 
     val dailyStatementsComponent: HtmlFormat.Appendable =
       new daily_statements_v2(emptyGovUkTableComponent).apply(CashAccountDailyStatementsViewModel(cashTrans))
@@ -64,7 +76,9 @@ object CashAccountV2ViewModel {
       dailyStatements = dailyStatementsComponent,
       requestTransactionsHeading = requestTransactionsHeading,
       downloadCSVFileLinkUrl = downloadCSVFileLinkUrl,
-      helpAndSupportGuidance = helpAndSupport)
+      helpAndSupportGuidance = helpAndSupport,
+      hasRequestedStatements = hasRequestedStatements,
+      cashStatementNotification = notificationPanel)
   }
 
   private def downloadCSVFileLinkUrl(implicit msgs: Messages): HtmlFormat.Appendable = {

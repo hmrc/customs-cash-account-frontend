@@ -37,6 +37,22 @@ class AuditingServiceSpec extends SpecBase {
 
   "AuditingService" should {
 
+    "create the correct data event for auditing cash statements" in new Setup {
+      val eori = "GB1234567890"
+
+      await(auditingService.auditCashStatements(eori))
+
+      val dataEventCaptor = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
+      verify(mockAuditConnector).sendExtendedEvent(dataEventCaptor.capture())(any, any)
+      val dataEvent: ExtendedDataEvent = dataEventCaptor.getValue
+
+      dataEvent.auditSource should be(expectedAuditSource)
+      dataEvent.auditType should be("DisplayCashStatement")
+      dataEvent.detail.toString() should include(eori)
+      dataEvent.detail.toString() should include("false")
+      dataEvent.tags("transactionName") should be("Display Cash Statements")
+    }
+
     "create the correct data event for recording a successful audit event" in new Setup {
       val model: AuditModel = AuditModel("auditType", "transactionName", json.Json.toJson("the details"))
       await(auditingService.audit(model))

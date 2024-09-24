@@ -19,23 +19,14 @@ package viewmodels
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
-import models.{
-  AccountStatusOpen,
-  CDSCashBalance,
-  CashAccount,
-  CashAccountViewModel,
-  CashDailyStatement,
-  CashTransactions,
-  Declaration,
-  Payment,
-  Transaction,
-  Withdrawal
-}
+import models.*
+import models.FileRole.CashStatement
 import config.AppConfig
+import models.metadata.CashStatementFileMetadata
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
 import utils.TestData.*
-import utils.Utils.{LinkComponentValues, emptyH1Component, emptyH2InnerComponent, emptyPComponent, h2Component, hmrcNewTabLinkComponent, linkComponent}
+import utils.Utils._
 import views.html.components.{cash_account_balance, daily_statements_v2}
 
 import java.time.LocalDate
@@ -46,7 +37,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
 
     "return correct contents" in new Setup {
       val cashAccountViewModel: CashAccountV2ViewModel =
-        createCashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions)
+        createCashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions, cashStatementsForEori)
 
       shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
       shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
@@ -127,6 +118,14 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     val can = "12345678"
     val balance: BigDecimal = BigDecimal(8788.00)
 
+    val yearStart = 2024
+    val monthStart = 5
+    val dayStart = 5
+    val yearEnd = 2025
+    val monthEnd = 8
+    val dayEnd = 8
+    val size = 300L
+
     val app: Application = application.build()
 
     implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
@@ -166,10 +165,41 @@ class CashAccountV2ViewModelSpec extends SpecBase {
 
     val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
 
+    val eoriHistory: EoriHistory = EoriHistory(eori = eoriNumber, validFrom = Some(LocalDate.now()), validUntil = None)
+
+    val cashStatementFile: CashStatementFile = CashStatementFile(
+      filename = "statement1.pdf",
+      downloadURL = "statement1",
+      size = size,
+      metadata = CashStatementFileMetadata(
+        periodStartYear = yearStart,
+        periodStartMonth = monthStart,
+        periodStartDay = dayStart,
+        periodEndYear = yearEnd,
+        periodEndMonth = monthEnd,
+        periodEndDay = dayEnd,
+        fileFormat = FileFormat.Csv,
+        fileRole = CashStatement,
+        statementRequestId = Some("abc-defg-1234-abc")
+      ),
+      eori = eoriNumber
+    )
+
+    val currentStatements: Seq[CashStatementsByMonth] = Seq(CashStatementsByMonth(date1, Seq(cashStatementFile)))
+    val requestedStatements: Seq[CashStatementsByMonth] = Seq(CashStatementsByMonth(date2, Seq(cashStatementFile)))
+
+    val cashStatementsForEori: Seq[CashStatementsForEori] = Seq(
+      CashStatementsForEori(
+        eoriHistory = eoriHistory,
+        currentStatements = currentStatements,
+        requestedStatements = requestedStatements
+      )
+    )
+
     def createCashAccountV2ViewModel(eori: String,
                                      account: CashAccount,
-                                     cashTrans: CashTransactions): CashAccountV2ViewModel =
-      CashAccountV2ViewModel(eori, account, cashTrans)
+                                     cashTrans: CashTransactions,
+                                     statements: Seq[CashStatementsForEori]): CashAccountV2ViewModel =
+      CashAccountV2ViewModel(eori, account, cashTrans, statements)
   }
-
 }
