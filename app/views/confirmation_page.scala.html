@@ -24,6 +24,7 @@
         link: components.link,
         p: components.p,
         h1: components.h1,
+        h2: components.h2,
         govukPanel: GovukPanel
 )
 
@@ -48,21 +49,19 @@
         content = Text(dates)
     ))
 
-    @p(
-        message = messages(s"cf.cash-account.transactions.confirmation.next"),
+    @h2(
+        msg = messages(s"cf.cash-account.transactions.confirmation.next"),
         classes = "govuk-heading-s",
         id=Some("email-confirmation-subheader")
     )
 
     @p(
         message = s"${messages("cf.cash-account.transactions.confirmation.email")}",
-        classes = "govuk-body",
         id=Some("body-text-email")
     )
 
     @p(
         message = s"${messages("cf.cash-account.transactions.confirmation.download")}",
-        classes = "govuk-body",
         id=Some("body-text-download")
     )
 

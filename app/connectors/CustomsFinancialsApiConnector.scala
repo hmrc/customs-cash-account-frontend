@@ -228,9 +228,12 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
         logger.error(s"EXCEEDED_MAXIMUM for the postCashAccountStatementRequest - processStatusCode")
         Left(ExceededMaximum)
 
-      case Some(emptyString) => Right(accountResponseCommon)
+      case Some(_) =>
+        logger.error("unidentified error code")
+        Left(UnknownException)
 
-      case _ => Left(UnknownException)
+      case _ =>
+        Right(accountResponseCommon)
     }
   }
 }

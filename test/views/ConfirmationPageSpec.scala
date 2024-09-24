@@ -34,9 +34,14 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
         shouldContainBackLinkUrl(view, controllers.routes.SelectedTransactionsController.onPageLoad().url)
       }
 
-      "header is correct" in new Setup {
+      "header 1 is correct" in new Setup {
         view.getElementsByTag("h1").text() mustBe messages(
           "cf.cash-account.transactions.confirmation.statements")
+      }
+
+      "header 2 is correct" in new Setup {
+        view.getElementsByTag("h2").text() mustBe
+          "Help make GOV.UK better What happens next Support links"
       }
 
       "email confirmation is correct" in new Setup {

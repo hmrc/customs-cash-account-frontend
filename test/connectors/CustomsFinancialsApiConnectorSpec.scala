@@ -374,7 +374,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "return error when passing error" in new Setup {
+    "return RequestCouldNotBeProcessed when Request cant be processed error is populated" in new Setup {
 
       val expectedUrl = "apiEndpointUrl/accounts/cashaccountstatementrequest/v1"
 
@@ -540,7 +540,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     private val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
 
     val accResponse: AccountResponseCommon = AccountResponseCommon(
-      emptyString, Some(emptyString), emptyString, None)
+      emptyString, None, emptyString, None)
 
     val sessionId: SessionId = SessionId("session_1234")
     implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
