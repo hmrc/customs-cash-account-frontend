@@ -29,6 +29,7 @@ class NotificationPanelSpec extends SpecBase {
   "NotificationPanel component" should {
 
     "display the notification panel with correct contents" when {
+
       "showNotification is true" in new Setup {
         override val showNotification: Boolean = true
 
@@ -50,6 +51,7 @@ class NotificationPanelSpec extends SpecBase {
     }
 
     "not display the notification panel" when {
+
       "showNotification is false" in new Setup {
         override val showNotification: Boolean = false
 
