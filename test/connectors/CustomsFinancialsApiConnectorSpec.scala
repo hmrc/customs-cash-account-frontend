@@ -19,7 +19,7 @@ package connectors
 import config.AppConfig
 import models.*
 import models.request.{CashAccountStatementRequestDetail, CashDailyStatementRequest, IdentifierRequest}
-import org.mockito.ArgumentMatchers.{any, anyString, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, anyString, eq as eqTo}
 import org.mockito.Mockito.{verify, when}
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE}
 import play.api.inject.bind
@@ -374,6 +374,33 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
+    "return error when passing error" in new Setup {
+
+      val expectedUrl = "apiEndpointUrl/accounts/cashaccountstatementrequest/v1"
+
+      val requestCouldNotBeProcessed: AccountResponseCommon = AccountResponseCommon(
+        emptyString, Some("123"), emptyString, None)
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
+        .thenReturn(Future.successful(requestCouldNotBeProcessed))
+
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[RequestBuilder].toInstance(requestBuilder)
+        ).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).postCashAccountStatementRequest("eori", "can", fromDate, toDate).map {
+          _ mustBe Left(UnknownException)
+        }
+      }
+    }
+
     "return ErrorResponse when the backend POST fails with BAD_REQUEST" in new Setup {
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
@@ -411,7 +438,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(appWithMocks) {
         connector(appWithMocks).retrieveCashTransactionsDetail("can", fromDate, toDate).map {
-          _ mustBe Left(NoTransactionsAvailable)
+          _ mustBe Left(InternalServerErrorErrorResponse)
         }
       }
     }
@@ -432,7 +459,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(appWithMocks) {
         connector(appWithMocks).retrieveCashTransactionsDetail("can", fromDate, toDate).map {
-          _ mustBe Left(NoTransactionsAvailable)
+          _ mustBe Left(ServiceUnavailableErrorResponse)
         }
       }
     }
@@ -493,8 +520,10 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
+
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
       running(appWithHttpClient) {

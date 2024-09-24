@@ -23,36 +23,36 @@ class ConstantsSpec extends SpecBase {
 
   "ConstantsSpec" should {
     "REQUEST_COULD_NOT_BE_PROCESSED is 003" in new Setup {
-      helpers.Constants.REQUEST_COULD_NOT_BE_PROCESSED mustBe three
+      helpers.Constants.REQUEST_COULD_NOT_BE_PROCESSED mustBe request
     }
 
     "DUPLICATE_SUBMISSION is 004" in new Setup {
-      helpers.Constants.DUPLICATE_SUBMISSION mustBe four
+      helpers.Constants.DUPLICATE_SUBMISSION mustBe duplicate
     }
 
     "ACCOUNT_DOES_NOT_EXIST is 92" in new Setup {
-      helpers.Constants.ACCOUNT_DOES_NOT_EXIST mustBe ninetyTwo
+      helpers.Constants.ACCOUNT_DOES_NOT_EXIST mustBe account
     }
 
     "INVALID_EORI is 102" in new Setup {
-      helpers.Constants.INVALID_EORI mustBe hundredTwo
+      helpers.Constants.INVALID_EORI mustBe invalid
     }
 
     "ENTRY_ALREADY_EXISTS is 124" in new Setup {
-      helpers.Constants.ENTRY_ALREADY_EXISTS mustBe hundredTwentyFour
+      helpers.Constants.ENTRY_ALREADY_EXISTS mustBe entry
     }
 
     "EXCEEDED_MAXIMUM is 602" in new Setup {
-      helpers.Constants.EXCEEDED_MAXIMUM mustBe sixHundredTwo
+      helpers.Constants.EXCEEDED_MAXIMUM mustBe exceeded
     }
   }
 
   trait Setup {
-    val three = "003"
-    val four = "004"
-    val ninetyTwo = "092"
-    val hundredTwo = "102"
-    val hundredTwentyFour = "124"
-    val sixHundredTwo = "602"
+    val request: String = "003-Request could not be processed"
+    val duplicate: String = "004-Duplicate submission acknowledgment reference"
+    val account: String = "092-The account does not exist within ETMP"
+    val invalid: String = "102-Invalid EORI number"
+    val entry: String = "124-Entry already exists for the same period"
+    val exceeded: String = "602-Exceeded maximum threshold of transaction"
   }
 }

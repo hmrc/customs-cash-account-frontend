@@ -44,7 +44,7 @@ class CashAccountStatementRequestDetailSpec extends SpecBase {
     val dateFrom = "July 2022"
     val dateTo = "August 2022"
 
-    val expectedRes = CashAccountStatementRequestDetail(eori, can, dateFrom, dateTo)
+    val expectedRes: CashAccountStatementRequestDetail = CashAccountStatementRequestDetail(eori, can, dateFrom, dateTo)
 
     val requestJsValue: String =
      """{"eori": "GB123456789", "can": "123456789", "dateFrom": "July 2022","dateTo": "August 2022"}""".stripMargin

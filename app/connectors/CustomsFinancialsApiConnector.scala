@@ -17,6 +17,7 @@
 package connectors
 
 import config.AppConfig
+import helpers.Constants.*
 import models.*
 import models.AccountsAndBalancesResponseContainer.accountResponseCommonReads
 import models.CashDailyStatement.*
@@ -30,7 +31,6 @@ import services.MetricsReporterService
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, UpstreamErrorResponse}
-import helpers.Constants._
 import utils.Utils.emptyString
 
 import java.time.LocalDate
@@ -189,46 +189,46 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
 
     case UpstreamErrorResponse(_, INTERNAL_SERVER_ERROR, _, _) =>
       logger.error("No Transactions available for postCashAccountStatements")
-      Left(NoTransactionsAvailable)
+      Left(InternalServerErrorErrorResponse)
 
     case UpstreamErrorResponse(_, SERVICE_UNAVAILABLE, _, _) =>
       logger.error("SERVICE_UNAVAILABLE for postCashAccountStatements")
-      Left(NoTransactionsAvailable)
+      Left(ServiceUnavailableErrorResponse)
 
     case e =>
       logger.error(s"Unknown error for postCashAccountStatements :${e.getMessage}")
       Left(UnknownException)
   }
 
-  private def processStatusCode(response: AccountResponseCommon): Either[ErrorResponse, AccountResponseCommon] = {
+  private def processStatusCode(accountResponseCommon: AccountResponseCommon): Either[ErrorResponse, AccountResponseCommon] = {
 
-    response.statusText match {
+    accountResponseCommon.statusText match {
 
-      case Some(helpers.Constants.REQUEST_COULD_NOT_BE_PROCESSED) =>
+      case Some(REQUEST_COULD_NOT_BE_PROCESSED) =>
         logger.error(s"REQUEST_COULD_NOT_BE_PROCESSED for the postCashAccountStatementRequest - processStatusCode")
         Left(RequestCouldNotBeProcessed)
 
-      case Some(helpers.Constants.DUPLICATE_SUBMISSION) =>
+      case Some(DUPLICATE_SUBMISSION) =>
         logger.error(s"DUPLICATE_SUBMISSION for the postCashAccountStatementRequest - processStatusCode")
         Left(DuplicateSubmissionAckRef)
 
-      case Some(helpers.Constants.ACCOUNT_DOES_NOT_EXIST) =>
+      case Some(ACCOUNT_DOES_NOT_EXIST) =>
         logger.error(s"ACCOUNT_DOES_NOT_EXIST for the postCashAccountStatementRequest - processStatusCode")
         Left(AccountDoesNotExist)
 
-      case Some(helpers.Constants.INVALID_EORI) =>
+      case Some(INVALID_EORI) =>
         logger.error(s"INVALID_EORI for the postCashAccountStatementRequest - processStatusCode")
         Left(InvalidEori)
 
-      case Some(helpers.Constants.ENTRY_ALREADY_EXISTS) =>
+      case Some(ENTRY_ALREADY_EXISTS) =>
         logger.error(s"ENTRY_ALREADY_EXISTS for the postCashAccountStatementRequest - processStatusCode")
         Left(EntryAlreadyExists)
 
-      case Some(helpers.Constants.EXCEEDED_MAXIMUM) =>
+      case Some(EXCEEDED_MAXIMUM) =>
         logger.error(s"EXCEEDED_MAXIMUM for the postCashAccountStatementRequest - processStatusCode")
         Left(ExceededMaximum)
 
-      case Some(emptyString) => Right(response)
+      case Some(emptyString) => Right(accountResponseCommon)
 
       case _ => Left(UnknownException)
     }
@@ -238,6 +238,10 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
 sealed trait ErrorResponse
 
 case object NoTransactionsAvailable extends ErrorResponse
+
+case object InternalServerErrorErrorResponse extends ErrorResponse
+
+case object ServiceUnavailableErrorResponse extends ErrorResponse
 
 case object TooManyTransactionsRequested extends ErrorResponse
 
@@ -256,5 +260,3 @@ case object InvalidEori extends ErrorResponse
 case object EntryAlreadyExists extends ErrorResponse
 
 case object ExceededMaximum extends ErrorResponse
-
-

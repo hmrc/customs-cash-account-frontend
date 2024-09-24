@@ -26,21 +26,11 @@ import java.util.Locale
 
 object Constants {
 
-  /*
-    Error Code Error Text for ACC45
-    003 Request could not be processed
-    004 Duplicate submission acknowledgment reference
-    092 The account does not exist within ETMP
-    102 Invalid EORI number
-    124 Entry already exists for the same period
-    602 Exceeded maximum threshold of transactions
-   */
-
-  val REQUEST_COULD_NOT_BE_PROCESSED: String = "003"
-  val DUPLICATE_SUBMISSION: String = "004"
-  val ACCOUNT_DOES_NOT_EXIST: String = "092"
-  val INVALID_EORI: String = "102"
-  val ENTRY_ALREADY_EXISTS: String = "124"
-  val EXCEEDED_MAXIMUM: String = "602"
+  val REQUEST_COULD_NOT_BE_PROCESSED: String = "003-Request could not be processed"
+  val DUPLICATE_SUBMISSION: String = "004-Duplicate submission acknowledgment reference"
+  val ACCOUNT_DOES_NOT_EXIST: String = "092-The account does not exist within ETMP"
+  val INVALID_EORI: String = "102-Invalid EORI number"
+  val ENTRY_ALREADY_EXISTS: String = "124-Entry already exists for the same period"
+  val EXCEEDED_MAXIMUM: String = "602-Exceeded maximum threshold of transaction"
 
 }
