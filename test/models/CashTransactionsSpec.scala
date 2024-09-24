@@ -79,7 +79,6 @@ class CashTransactionsSpec extends SpecBase {
     val declarantReference: String = "UCR12345"
     val secureMovementReferenceNumber: String = "5a71a767"
 
-
     val taxTypes: Seq[TaxType] = Seq(TaxType(reasonForSecurity = Some("Reason"), taxTypeID = "50", amount = thousand))
 
     val declarations: Declaration = Declaration(

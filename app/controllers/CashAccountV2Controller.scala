@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import viewmodels.{CashAccountV2ViewModel, CashTransactionsViewModel, TooManyTransactionsViewModel}
+import viewmodels.{CashAccountV2ViewModel, TooManyTransactionsViewModel}
 import views.html.*
 
 import java.time.LocalDate
