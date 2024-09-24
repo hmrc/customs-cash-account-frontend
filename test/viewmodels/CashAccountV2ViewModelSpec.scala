@@ -20,14 +20,22 @@ import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
 import models.{
-  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement,
-  CashTransactions, Declaration, Payment, Transaction, Withdrawal
+  AccountStatusOpen,
+  CDSCashBalance,
+  CashAccount,
+  CashAccountViewModel,
+  CashDailyStatement,
+  CashTransactions,
+  Declaration,
+  Payment,
+  Transaction,
+  Withdrawal
 }
 import config.AppConfig
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
 import utils.TestData.*
-import utils.Utils.{LinkComponentValues, emptyH1Component, h2Component, hmrcNewTabLinkComponent, linkComponent}
+import utils.Utils.{LinkComponentValues, emptyH1Component, emptyH2InnerComponent, emptyPComponent, h2Component, hmrcNewTabLinkComponent, linkComponent}
 import views.html.components.{cash_account_balance, daily_statements_v2}
 
 import java.time.LocalDate
@@ -63,7 +71,8 @@ class CashAccountV2ViewModelSpec extends SpecBase {
                                                  account: CashAccount)
                                                 (implicit msgs: Messages, appConfig: AppConfig): Assertion = {
     val expectedAccBalance: HtmlFormat.Appendable =
-      new cash_account_balance(emptyH1Component).apply(model = CashAccountViewModel(eori, account))
+      new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
+        .apply(model = CashAccountViewModel(eori, account))
 
     accBalance mustBe expectedAccBalance
   }
@@ -96,7 +105,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     ),
       link = Some(hmrcNewTabLinkComponent(linkMessage = "cf.cash-account.help-and-support.link.text",
         href = config.cashAccountForCdsDeclarationsUrl,
-        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre"),
+        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
         postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")))
     )
 

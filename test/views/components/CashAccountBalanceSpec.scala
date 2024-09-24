@@ -48,6 +48,7 @@ class CashAccountBalanceSpec extends SpecBase {
         shouldDisplayAccountNumberWithText(componentView, accNumber)
         shouldDisplayCashAccountHeading(componentView)
         shouldDisplayCorrectAmountWithCorrectFormat(componentView, Some(BigDecimal(accountBalance)))
+        shouldDisplayLastTransactionsText(componentView)
       }
 
       "model has no available balance and showBalance is true" in new Setup {
@@ -63,6 +64,7 @@ class CashAccountBalanceSpec extends SpecBase {
         shouldDisplayAccountNumberWithText(componentView, accNumber)
         shouldDisplayCashAccountHeading(componentView)
         shouldDisplayCorrectAmountWithCorrectFormat(componentView)
+        shouldDisplayLastTransactionsText(componentView)
       }
 
       "model has available balance and showBalance is false" in new Setup {
@@ -80,6 +82,7 @@ class CashAccountBalanceSpec extends SpecBase {
         shouldDisplayAccountNumberWithText(componentView, accNumber)
         shouldDisplayCashAccountHeading(componentView)
         shouldNotDisplayAmountText(componentView)
+        shouldNotDisplayLastTransactionsText(componentView)
       }
 
       "model has no available balance and showBalance is false" in new Setup {
@@ -95,6 +98,7 @@ class CashAccountBalanceSpec extends SpecBase {
         shouldDisplayAccountNumberWithText(componentView, accNumber)
         shouldDisplayCashAccountHeading(componentView)
         shouldNotDisplayAmountText(componentView)
+        shouldNotDisplayLastTransactionsText(componentView)
       }
     }
   }
@@ -121,8 +125,17 @@ class CashAccountBalanceSpec extends SpecBase {
     }
   }
 
+  private def shouldDisplayLastTransactionsText(viewDoc: Document)(implicit msgs: Messages): Assertion = {
+    viewDoc.getElementById("last-transactions")
+      .text() mustBe msgs("cf.cash-account.detail.last-transactions")
+  }
+
   private def shouldNotDisplayAmountText(viewDoc: Document): Assertion = {
     Option(viewDoc.getElementById("balance-available")) mustBe empty
+  }
+
+  private def shouldNotDisplayLastTransactionsText(viewDoc: Document): Assertion = {
+    Option(viewDoc.getElementById("last-transactions")) mustBe empty
   }
 
   trait Setup {
@@ -139,5 +152,4 @@ class CashAccountBalanceSpec extends SpecBase {
              showBalance: Boolean = true): Document =
       Jsoup.parse(app.injector.instanceOf[cash_account_balance].apply(accountModel, showBalance).body)
   }
-
 }

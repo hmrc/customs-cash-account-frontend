@@ -49,7 +49,8 @@ object CashAccountV2ViewModel {
       new daily_statements_v2(emptyGovUkTableComponent).apply(CashAccountDailyStatementsViewModel(cashTrans))
 
     val cashAccountBalance: HtmlFormat.Appendable =
-      new cash_account_balance(emptyH1Component).apply(model = CashAccountViewModel(eori, account))
+      new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
+        .apply(model = CashAccountViewModel(eori, account))
 
     val requestTransactionsHeading: HtmlFormat.Appendable =
       h2Component(
@@ -85,7 +86,7 @@ object CashAccountV2ViewModel {
 
       link = Some(hmrcNewTabLinkComponent(linkMessage = "cf.cash-account.help-and-support.link.text",
         href = appConfig.cashAccountForCdsDeclarationsUrl,
-        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre"),
+        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
         postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")))
     )
   }

@@ -23,7 +23,8 @@
         p: components.p,
         cash_account_balance: components.cash_account_balance,
         inset: components.inset,
-        link: components.link
+        link: components.link,
+        newTabLink: components.newTabLink,
 )
 
 @(
@@ -44,7 +45,7 @@
     @cash_account_balance(accountModel)
 
     @if(transactionsTimeout) {
-        <div class="govuk-inset-text" id="no-transactions-available">
+        <div class="govuk-inset-text govuk-!-margin-top-7" id="no-transactions-available">
             @messages("cf.cash-account.detail.transactions-not-available.first")
             <br> <br>
             @messages("cf.cash-account.detail.transactions-not-available.second")
@@ -53,13 +54,31 @@
         @h2(msg = "cf.cash-account.transactions.request.link.heading", id = Some("missing-documents-guidance-heading"))
         
         @link(
-            "cf.cash-account.transactions.request.link",
+            "cf.cash-account.transactions.request.link.previous",
             controllers.routes.RequestTransactionsController.onPageLoad().url,
             preLinkMessage = Some("cf.cash-account.transactions.request.link.pre"),
             pClass = "govuk-body govuk-!-margin-bottom-9",
             linkSentence = true
         )
     } else {
-        @inset("cf.cash-account.detail.transactions-not-available", id = Some("no-transactions-available"))
+        @p(
+            "cf.cash-account.detail.transactions-not-available",
+            id = Some("no-transactions-available"),
+            classes = "govuk-body govuk-!-margin-top-7"
+        )
     }
+
+    @h2(
+        msg = "cf.cash-account.transactions.request.support.heading",
+        id = Some("help-and-support-heading"),
+        classes = "govuk-heading-m govuk-!-margin-top-9"
+    )
+
+    @newTabLink(
+        linkMessage = "cf.cash-account.help-and-support.link.text",
+        href = appConfig.cashAccountForCdsDeclarationsUrl,
+        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre"),
+        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post"),
+        classes = "govuk-body govuk-!-margin-bottom-9"
+    )
 }

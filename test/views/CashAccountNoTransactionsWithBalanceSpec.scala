@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,17 @@
 
 package views
 
-import models.domain.CAN
 import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
-import views.html.cash_account_exceeded_threshold
+import views.html.cash_account_no_transactions_with_balance
 
-class CashAccountExceededThresholdSpec extends ViewTestHelper {
+class CashAccountNoTransactionsWithBalanceSpec extends ViewTestHelper {
 
-  "view" should {
+  "CashAccountNoTransactionsWithBalance view" should {
 
-    "display correct contents and guidance" in new Setup {
+    "display correct contents" in new Setup {
       implicit val view: Document = viewDoc
 
       titleShouldBeCorrect(view, titleMsgKey = "cf.cash-account.detail.title")
@@ -36,13 +35,13 @@ class CashAccountExceededThresholdSpec extends ViewTestHelper {
 
       shouldContainCashAccountBalanceSection(model.account.number)
 
-      shouldContainExceededThresholdMsg
+      shouldContainTransactionsNotAvailableMsg
 
       shouldContainMissingDocHeadingMsg
 
-      shouldContainLink
+      shouldContainRequestTransactionsLink
 
-      shouldContainNewTabLink
+      shouldContainHelpAndSupportSection
     }
   }
 
@@ -59,10 +58,10 @@ class CashAccountExceededThresholdSpec extends ViewTestHelper {
     val model: CashAccountViewModel = CashAccountViewModel(eori, cashAcc)
 
     val viewDoc: Document =
-      Jsoup.parse(app.injector.instanceOf[cash_account_exceeded_threshold].apply(model).body)
+      Jsoup.parse(app.injector.instanceOf[cash_account_no_transactions_with_balance].apply(model).body)
   }
 
-  private def shouldContainCashAccountBalanceSection(accNumber: CAN)(implicit view: Document): Assertion = {
+  private def shouldContainCashAccountBalanceSection(accNumber: String)(implicit view: Document): Assertion = {
     view.getElementById("account-number").text() mustBe messages("cf.cash-account.detail.account", accNumber)
 
     view.getElementsByTag("h1").text() mustBe messages("cf.cash-account.detail.heading")
@@ -72,31 +71,32 @@ class CashAccountExceededThresholdSpec extends ViewTestHelper {
     ) mustBe true
   }
 
-  private def shouldContainExceededThresholdMsg(implicit view: Document): Assertion = {
-    view.getElementById("exceeded-threshold").text() mustBe
-      messages("cf.cash-account-detail.exceeded-threshold")
+  private def shouldContainTransactionsNotAvailableMsg(implicit view: Document): Assertion = {
+    view.getElementById("transactions-not-available").text() mustBe
+      messages("cf.cash-account.detail.no-transactions-with-balance.p1")
   }
 
   private def shouldContainMissingDocHeadingMsg(implicit view: Document): Assertion =
     view.getElementById("missing-documents-guidance-heading").text() mustBe
-      messages("cf.cash-account.transactions.request.support.heading")
+      messages("cf.cash-account.transactions.request.link.heading")
 
-  private def shouldContainLink(implicit view: Document): Assertion = {
+  private def shouldContainRequestTransactionsLink(implicit view: Document): Assertion = {
     val linkElement: String = view.getElementsByClass("govuk-!-margin-bottom-9").html()
 
-    linkElement.contains(messages("cf.cash-account.transactions.request.link")) mustBe true
+    linkElement.contains(messages("cf.cash-account.transactions.request.link.previous")) mustBe true
 
     linkElement.contains(messages("cf.cash-account.transactions.request.link.pre")) mustBe true
-
-    linkElement.contains(messages("cf.cash-account.transactions.request.link.post")) mustBe true
 
     linkElement.contains(controllers.routes.RequestTransactionsController.onPageLoad().url) mustBe true
   }
 
-  private def shouldContainNewTabLink(implicit view: Document): Assertion = {
+  private def shouldContainHelpAndSupportSection(implicit view: Document): Assertion = {
     val newTabLinkElement = view.getElementsByClass("govuk-!-margin-bottom-9").html()
 
-    newTabLinkElement.contains(messages("cf.cash-account.transactions.request.support.link")) mustBe true
+    view.getElementById("help-and-support-heading").text() mustBe
+      messages("cf.cash-account.transactions.request.support.heading")
+
+    newTabLinkElement.contains(messages("cf.cash-account.help-and-support.link.text")) mustBe true
 
     newTabLinkElement.contains(appConfig.cashAccountForCdsDeclarationsUrl) mustBe true
   }

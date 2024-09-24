@@ -112,7 +112,7 @@ class CashAccountV2Spec extends ViewTestHelper {
 
     viewDocument.html().contains("https://www.gov.uk/guidance/use-a-cash-account-for-cds-declarations") mustBe true
     viewDocument.html().contains(msgs("cf.cash-account.help-and-support.link.text")) mustBe true
-    viewDocument.html().contains(msgs("cf.cash-account.help-and-support.link.text.pre")) mustBe true
+    viewDocument.html().contains(msgs("cf.cash-account.help-and-support.link.text.pre.v2")) mustBe true
     viewDocument.html().contains(msgs("cf.cash-account.help-and-support.link.text.post")) mustBe true
   }
 

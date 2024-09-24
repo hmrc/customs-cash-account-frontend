@@ -78,7 +78,7 @@ cf.cash-account.detail.pending=(Ar y gweill)
 cf.cash-account.detail.transfer-in=Trosglwyddo o gyfrif arall
 cf.cash-account.detail.transfer-out=Trosglwyddo i gyfrif arall
 cf.cash-account.detail.account-not-available=Ni allwn ddangos eich cyfrif ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
-cf.cash-account.detail.transactions-not-available=Ni allwn ddangos eich taliadau ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
+cf.cash-account.detail.transactions-not-available=Mae problem wrth ddangos eich trafodion ar hyn o bryd.<br/> Gallwch roi cynnig arall arni nes ymlaen.
 cf.cash-account.detail.transactions-not-available.first=Mae’n ddrwg gennym – ni allwn ddangos eich trafodion ar hyn o bryd.
 cf.cash-account.detail.transactions-not-available.second=Gallwch chwilio am drafodion blaenorol a’u lawrlwytho gan ddefnyddio’r cysylltiad isod.
 cf.cash-account.detail.show-mrn=Dangos MRN
@@ -88,9 +88,10 @@ cf.cash-account.detail.label.mrn = Dangos MRN yn lle UCR
 cf.cash-account.detail.unable-download-csv=Mae’n ddrwg gennym – roedd problem wrth lawrlwytho’ch ffeil CSV.
 cf.cash-account.detail.try-again-later=Rhowch gynnig arall arni yn nes ymlaen.
 cf.cash-account-detail.back-to-cash-account=Yn ôl i ‘Cyfrif arian parod’
-cf.cash-account-detail.exceeded-threshold = <p>Mae gormod o drafodion o’r 6 mis diwethaf i’w harddangos yn olynol.</p><p>Bwrw golwg dros drafodion blaenorol o gyfnod byrrach gan ddefnyddio’r cysylltiad chwilio isod.</p>
+cf.cash-account-detail.exceeded-threshold = Mae gormod o drafodion o’r 6 mis diwethaf i’w harddangos.
 cf.cash-account.detail.declaration.title=Trafodiad datganiad
 cf.cash-account.detail.total.paid=Cyfanswm a dalwyd
+cf.cash-account.detail.last-transactions=Eich trafodion ar gyfer y chwe mis diwethaf
 
 # Timeout Messages
 # ----------------------------------------------------------
@@ -179,13 +180,14 @@ cf.cash-account.detail.link.pre = Ewch at i ddysgu sut i
 cf.cash-account.detail.link = ddefnyddio cyfrif arian parod ar gyfer datganiadau’r Gwasanaeth Datgan Tollau (CDS)
 cf.cash-account.detail.link.post = ar GOV.UK
 cf.cash-account.help-and-support.link.text.pre = Gallw ch
+cf.cash-account.help-and-support.link.text.pre.v2 = Gallwch
 cf.cash-account.help-and-support.link.text.post = os oes angen help arnoch
 cf.cash-account.help-and-support.link.text = gysylltu â chanolfan cyfrifyddu CThEF (yn agor tab newydd)
 cf.cash-account.how-to-use.guidance.text.pre = Dysgwch sut i
 cf.cash-account.how-to-use.guidance.text.post = ar GOV.UK.
 cf.cash-account.how-to-use.guidance.link.text = ddefnyddio cyfrif arian parod ar gyfer datganiadau’r Gwasanaeth Datgan Tollau (CDS)
 cf.cash-account.top-up.guidance = Bydd angen i chi ychwanegu at eich cyfrif arian parod cyn y gallwch ei ddefnyddio.
-cf.cash-account.detail.no-transactions-with-balance.p1=Nid oes unrhyw drafodion i’w gweld. Dim ond am y 6 mis blaenorol y gallwch fwrw golwg dros drafodion.
+cf.cash-account.detail.no-transactions-with-balance.p1=Nid oes unrhyw drafodion o’r 6 mis diwethaf i’w harddangos.
 
 # Cash Transactions Request
 # --------------------------------------------------------------
@@ -193,8 +195,10 @@ cf.cash-account.transactions.request.link.heading=Trafodion blaenorol
 cf.cash-account.transactions.request.support.heading=Help a chymorth
 cf.cash-account.transactions.request.support.pre=Os oes angen help arnoch
 cf.cash-account.transactions.request.support.link=cysylltwch â’r llinell gymorth Gymraeg ar gyfer Ymholiadau TAW, Tollau ac Ecséis (yn agor tab newydd)
-cf.cash-account.transactions.request.link.pre=Mae modd
-cf.cash-account.transactions.request.link=chwiliwch am drafodion blaenorol a’u lawrlwytho ar ffurf CSV
+cf.cash-account.transactions.request.link.pre=Gallwch
+cf.cash-account.transactions.request.link.post=trwy chwilio o ystod dyddiad byrrach.
+cf.cash-account.transactions.request.link=chwilio am a lawrlwytho’ch trafodion fel ffeil CSV
+cf.cash-account.transactions.request.link.previous=chwilio am a lawrlwytho unrhyw drafodion blaenorol fel ffeil CSV
 cf.cash-account.transactions.request.title=Pa drafodion cyfrif arian parod sydd eu hangen arnoch?
 cf.cash-account.transactions.request.legend.hidden.start=pa ddyddiad dechrau sydd ei angen arnoch ar gyfer trafodion cyfrif arian parod?
 cf.cash-account.transactions.request.legend.hidden.end=pa ddyddiad dod i ben sydd ei angen arnoch ar gyfer trafodion cyfrif arian parod?

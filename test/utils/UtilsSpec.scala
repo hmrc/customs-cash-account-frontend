@@ -22,7 +22,7 @@ import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
 import utils.Utils.*
-import views.html.components.{h1, h2, link, newTabLink, p}
+import views.html.components.{h1, h2, link, newTabLink, p, h2Inner}
 
 class UtilsSpec extends SpecBase {
   "Comma" should {
@@ -147,6 +147,12 @@ class UtilsSpec extends SpecBase {
   "emptyGovUkTableComponent" should {
     "return the empty GovukTable" in {
       emptyGovUkTableComponent mustBe new GovukTable()
+    }
+  }
+
+  "emptyH2InnerComponent" should {
+    "return the empty h2Inner component" in {
+      emptyH2InnerComponent mustBe new h2Inner()
     }
   }
 
