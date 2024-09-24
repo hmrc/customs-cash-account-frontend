@@ -39,8 +39,7 @@ class SelectTransactionsFormProvider @Inject()(implicit clock: Clock)
           beforeCurrentDate(errorKey = "cf.form.error.start-future-date")
         ).verifying(
           checkDates(
-            systemStartDateErrorKey =
-              "cf.form.error.startDate.date-earlier-than-system-start-date",
+            systemStartDateErrorKey = "cf.form.error.startDate.date-earlier-than-system-start-date",
             taxYearErrorKey = "cf.form.error.start.date-too-far-in-past",
             invalidLength = "cf.form.error.year.length"
           )
@@ -54,8 +53,7 @@ class SelectTransactionsFormProvider @Inject()(implicit clock: Clock)
           beforeCurrentDate(errorKey = "cf.form.error.end-future-date")
         ).verifying(
           checkDates(
-            systemStartDateErrorKey =
-              "cf.form.error.endDate.date-earlier-than-system-start-date",
+            systemStartDateErrorKey = "cf.form.error.endDate.date-earlier-than-system-start-date",
             taxYearErrorKey = "cf.form.error.end.date-too-far-in-past",
             invalidLength = "cf.form.error.year.length"
           )

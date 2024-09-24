@@ -162,6 +162,7 @@ month.9 = September
 month.10 = October
 month.11 = November
 month.12 = December
+month.to = to
 
 
 #Pagination
@@ -273,6 +274,13 @@ cf.cash-account.transactions.too-many-transactions.hint01 = There are too many t
 cf.cash-account.transactions.too-many-transactions.hint02 = but you can
 cf.cash-account.transactions.too-many-transactions.hint03 = request and download your transactions as a CSV file.
 cf.cash-account.transactions.too-many-transactions.hint04 = The CSV file will be available to download within 48 hours.
+
+cf.cash-account.transactions.confirmation.statements=We received your request for transactions
+cf.cash-account.transactions.confirmation.next=What happens next
+cf.cash-account.transactions.confirmation.email=We’ll send an email within 48 hours to someemail@mail.com when your request is processed.
+cf.cash-account.transactions.confirmation.download=You’ll be able to download your transactions from the cash account transactions page.
+cf.cash-account.transactions.confirmation.back=Back to cash account
+
 
 site.continue=Confirm and send
 

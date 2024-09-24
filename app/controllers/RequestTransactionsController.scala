@@ -32,12 +32,11 @@ import views.html._
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RequestTransactionsController @Inject()(
-                                               identify: IdentifierAction,
-                                               formProvider: CashTransactionsRequestPageFormProvider,
-                                               view: cash_transactions_request_page,
-                                               cache: RequestedTransactionsCache,
-                                               implicit val mcc: MessagesControllerComponents)
+class RequestTransactionsController @Inject()(identify: IdentifierAction,
+                                              formProvider: CashTransactionsRequestPageFormProvider,
+                                              view: cash_transactions_request_page,
+                                              cache: RequestedTransactionsCache,
+                                              implicit val mcc: MessagesControllerComponents)
                                              (implicit ec: ExecutionContext,
                                               appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
 

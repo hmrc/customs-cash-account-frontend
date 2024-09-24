@@ -23,8 +23,8 @@
     form: Form[_],
     legendContent: String,
     legendClasses: String,
-    id: String,
-    hintText: Option[String],
+    id: String = "value",
+    hintText: Option[String] = None,
     legendAsPageHeading: Boolean,
     legendHiddenContent: Option[String]
 )(implicit messages: Messages)

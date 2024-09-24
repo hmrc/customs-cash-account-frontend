@@ -16,8 +16,10 @@
 
 package helpers
 
-import helpers.Formatters.{ddMMyyyyDateFormatter, formatCurrencyAmount, yyyyMMddDateFormatter, yyyyMMddHHmmssDateFormatter}
+import helpers.Formatters._
 import utils.SpecBase
+import play.api.Application
+import play.api.i18n.Messages
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -111,4 +113,21 @@ class FormattersSpec extends SpecBase {
     }
   }
 
+  "dateAsMonth" should {
+    "return month as a valid value" in new Setup {
+      dateAsMonth(date) mustBe "July"
+    }
+  }
+
+  "dateAsMonthAndYear" should {
+    "return month and year as a valid value" in new Setup {
+      dateAsMonthAndYear(date) mustBe "July 2020"
+    }
+  }
+
+  trait Setup {
+    val app: Application = application.build()
+    implicit val msg: Messages = messages(app)
+    val date: LocalDate = LocalDate.parse("2020-07-21")
+  }
 }

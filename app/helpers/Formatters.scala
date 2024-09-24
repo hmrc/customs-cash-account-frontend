@@ -32,10 +32,14 @@ object Formatters {
   private val kbMin: Long = 1000
   private val kbMax: Long = 1000000
 
-  def dateAsMonth(date: LocalDate)(implicit messages: Messages): String = messages(s"month.${date.getMonthValue}")
+  def dateAsMonth(date: LocalDate)(implicit messages: Messages): String =
+    messages(s"month.${date.getMonthValue}")
 
   def dateAsDayMonthAndYear(date: LocalDate)(implicit messages: Messages): String =
     s"${date.getDayOfMonth} ${dateAsMonth(date)} ${date.getYear}"
+
+  def dateAsMonthAndYear(date: LocalDate)(implicit messages: Messages): String =
+      s"${dateAsMonth(date)} ${date.getYear}"
 
   def dateTimeAsIso8601(dateTime: LocalDateTime): String = {
     s"${DateTimeFormatter.ISO_DATE_TIME.format(dateTime.truncatedTo(ChronoUnit.SECONDS))}Z"
