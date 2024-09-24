@@ -28,9 +28,9 @@ class FileFormatSpec extends SpecBase {
       Pdf < Csv mustBe true
       Csv < UnknownFileFormat mustBe true
       UnknownFileFormat > Pdf mustBe true
-      Pdf compare Csv must be <0
-      Csv compare Pdf must be >0
-      UnknownFileFormat compare Csv must be >0
+      Pdf compare Csv must be < 0
+      Csv compare Pdf must be > 0
+      UnknownFileFormat compare Csv must be > 0
       Pdf compare Pdf mustBe 0
     }
   }

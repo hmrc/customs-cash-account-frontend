@@ -27,7 +27,8 @@ import utils.Utils.emptyString
 class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
   lazy val footerLinkItems: Seq[String] = config.getOptional[Seq[String]]("footerLinkItems").getOrElse(Seq())
 
-  lazy val sdesApi: String = servicesConfig.baseUrl("sdes") + config.get[String]("microservice.services.sdes.context")
+  lazy val sdesApi: String =
+    s"${servicesConfig.baseUrl("sdes")}${config.get[String]("microservice.services.sdes.context")}"
   lazy val xClientIdHeader: String = config.get[String]("microservice.services.sdes.x-client-id")
 
   lazy val customsFinancialsApi: String = servicesConfig.baseUrl("customs-financials-api") +
@@ -73,7 +74,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   def requestedStatements(fileRole: FileRole): String = {
     fileRole match {
-      case FileRole.CashStatement => requestedStatements + fileRole.featureName
+      case FileRole.CashStatement => s"$requestedStatements${fileRole.featureName}"
     }
   }
 

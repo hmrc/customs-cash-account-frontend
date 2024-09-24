@@ -50,8 +50,9 @@ class SdesConnectorSpec extends SpecBase {
         .thenReturn(requestBuilder)
 
       running(app) {
-        val result = await(sdesConnector.getCashStatements(someEori)(hc, messages))
-        result must be(cashStatementFiles)
+        sdesConnector.getCashStatements(someEori)(hc, messages).map { result =>
+          result must be(cashStatementFiles)
+        }
       }
     }
   }
@@ -68,8 +69,9 @@ class SdesConnectorSpec extends SpecBase {
 
     val mockAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
     val sdesConnector: SdesConnector = app.injector.instanceOf[SdesConnector]
-    implicit val hc: HeaderCarrier = HeaderCarrier()
 
+    implicit val hc: HeaderCarrier = HeaderCarrier()
+    implicit val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
     implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
     val someDan = "1234"
