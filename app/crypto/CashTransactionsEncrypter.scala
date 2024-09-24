@@ -36,7 +36,8 @@ class CashTransactionsEncrypter @Inject()(crypto: AesGCMCrypto) {
           dailyStatement.declarations.map(encryptDeclaration(_, key)),
           dailyStatement.otherTransactions
         )
-      )
+      ),
+      cashTransactions.maxTransactionsExceeded
     )
   }
 
@@ -53,7 +54,8 @@ class CashTransactionsEncrypter @Inject()(crypto: AesGCMCrypto) {
           encryptedDailyStatement.declarations.map(decryptDeclaration(_, key)),
           encryptedDailyStatement.otherTransactions
         )
-      )
+      ),
+      encryptedCashTransactions.maxTransactionsExceeded
     )
   }
 

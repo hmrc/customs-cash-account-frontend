@@ -236,9 +236,9 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
 
     val year = 2021
     val month = 10
-    val day: String = "1"
+    val day = 1
 
-    val validDate: LocalDate = LocalDate.of(year, month, 1)
+    val validDate: LocalDate = LocalDate.of(year, month, day)
     val futureYear: Int = LocalDate.now().getYear + 1
     val etmpStatementYear = 2019
     val taxYearDateOlderThan6Years: Int = LocalDate.now().getYear - 7
@@ -269,6 +269,6 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
     def populateFormValueMap(key: String,
                              month: String,
                              year: String): Map[String, String] =
-      Map(s"$key.day" -> day, s"$key.month" -> month, s"$key.year" -> year)
+      Map(s"$key.day" -> day.toString, s"$key.month" -> month, s"$key.year" -> year)
   }
 }

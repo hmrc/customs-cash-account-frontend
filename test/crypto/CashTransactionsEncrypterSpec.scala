@@ -50,6 +50,9 @@ class CashTransactionsEncrypterSpec extends SpecBase {
         Seq(Transaction(67.89, Payment, None))))
 
     val cashTransactions: CashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements)
+
+    val cashTransactions02: CashTransactions = CashTransactions(
+      listOfPendingTransactions, cashDailyStatements, Some(true))
   }
 
   "encrypt / decrypt cashTransactions" must {
@@ -61,6 +64,17 @@ class CashTransactionsEncrypterSpec extends SpecBase {
       val decryptedCashTransactions: CashTransactions =
         encrypter.decryptCashTransactions(encryptedCashTransactions, secretKey)
       decryptedCashTransactions mustEqual cashTransactions
+    }
+
+    "encrypt cashTransactions with maxTransactionsExceeded is set to true" in new Setup {
+      val encryptedCashTransactions: EncryptedCashTransactions =
+        encrypter.encryptCashTransactions(cashTransactions02, secretKey)
+
+      val decryptedCashTransactions: CashTransactions =
+        encrypter.decryptCashTransactions(encryptedCashTransactions, secretKey)
+
+      decryptedCashTransactions mustEqual cashTransactions02
+      decryptedCashTransactions.maxTransactionsExceeded mustEqual Some(true)
     }
 
     "decrypt cashTransactions" in new Setup {
