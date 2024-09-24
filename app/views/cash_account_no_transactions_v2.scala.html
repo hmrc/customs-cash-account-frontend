@@ -33,6 +33,36 @@
     fullWidth = false,
     help = true
 ) {
+    @cash_account_balance(account)
 
-    
+    @p(
+        message = "cf.cash-account.detail.no-transactions.p1",
+        id = Some("cash-account-import-duties-guidance")
+    )
+
+    @p(
+        message = "cf.cash-account.top-up.guidance",
+        id = Some("cash-account-authorise-agent-guidance")
+    )
+
+    @link(
+        location = appConfig.cashAccountForCdsDeclarationsUrl,
+        linkId = Some("cash-account-top-up-guidance-link"),
+        preLinkMessage = Some("cf.cash-account.how-to-use.guidance.text.pre"),
+        postLinkMessage = Some("cf.cash-account.how-to-use.guidance.text.post"),
+        linkMessage = Some("cf.cash-account.how-to-use.guidance.link"),
+    )
+
+    @h2(
+        msg = "cf.cash-account.transactions.request.support.heading",
+        id = Option("cash-account-help-and-support-guidance-header"),
+    )
+
+    @newTabLink(
+        linkMessage = "cf.cash-account.help-and-support.link.text",
+        href = appConfig.cashAccountForCdsDeclarationsUrl,
+        preLinkMessage = Option("cf.cash-account.help-and-support.link.text.pre"),
+        postLinkMessage = Option("cf.cash-account.help-and-support.link.text.post"),
+        classes = "govuk-body cash-account-help-and-support-guidance"
+    )
 }
