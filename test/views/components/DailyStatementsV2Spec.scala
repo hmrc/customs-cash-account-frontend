@@ -20,7 +20,6 @@ import models.{CashDailyStatement, CashTransactions, Declaration, Payment, Trans
 import play.api.i18n.Messages
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatest.Ignore
 import views.html.components.daily_statements_v2
 import viewmodels.CashAccountDailyStatementsViewModel
 import utils.TestData.*
@@ -28,7 +27,6 @@ import views.ViewTestHelper
 
 import java.time.LocalDate
 
-@Ignore
 class DailyStatementsV2Spec extends ViewTestHelper {
 
   "component" should {
