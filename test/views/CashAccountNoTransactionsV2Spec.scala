@@ -20,7 +20,6 @@ import config.AppConfig
 import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatest.Assertion
 import play.api.Application
 import play.api.i18n.Messages
 import utils.Utils.{period, singleSpace}
@@ -75,7 +74,7 @@ class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
     viewDoc.getElementById("cash-account-help-and-support-guidance-header").text() mustBe msgs("cf.cash-account.transactions.request.support.heading")
   }
 
-  private def shouldDisplayHelpAndSupportGuidance(viewDoc: Document)(implicit msgs: Messages, config: AppConfig): Assertion = {
+  private def shouldDisplayHelpAndSupportGuidance(viewDoc: Document)(implicit msgs: Messages, config: AppConfig) = {
 
     val elementLink = viewDoc.getElementsByClass("cash-account-help-and-support-guidance")
     elementLink.get(0).getElementsByTag("a").attr("href") mustBe config.cashAccountForCdsDeclarationsUrl
