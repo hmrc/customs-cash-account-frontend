@@ -22,8 +22,8 @@ import cats.implicits.*
 import config.{AppConfig, ErrorHandler}
 import connectors.{CustomsFinancialsApiConnector, ErrorResponse, NoTransactionsAvailable, TooManyTransactionsRequested}
 import controllers.actions.IdentifierAction
+import models.*
 import models.request.IdentifierRequest
-import models.{CashAccount, CashAccountViewModel, RequestedDateRange}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -63,10 +63,38 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
     }
   }
 
-  //TODO - Ticket 4900
-  // def onSubmit(): Action[AnyContent] = {
-  // Submit data to be added in ticket 4900
-  // Redirect we have recieved your requested statements page when it exists
+  def onSubmit(): Action[AnyContent] = identify.async { implicit request =>
+
+    val result: Future[Future[Result]] = for {
+      optionalAccount: Option[CashAccount] <- apiConnector.getCashAccount(request.eori)
+      optionalDates: Option[CashTransactionDates] <- cache.get(request.eori)
+    } yield {
+      checkAccountAndDatesThenRedirect(optionalAccount, optionalDates)
+    }
+
+    result.flatten.recover {
+      case _: Exception =>
+        logger.error("failed to submit data for SelectedTransactionsController")
+        Redirect(routes.CashAccountController.showAccountDetails(None))
+    }
+  }
+
+  private def checkAccountAndDatesThenRedirect(optionalAccount: Option[CashAccount],
+                                               optionalDates: Option[CashTransactionDates])
+                                              (implicit request: IdentifierRequest[AnyContent]) = {
+    (optionalAccount, optionalDates) match {
+      case (Some(cashAcc), Some(dates)) =>
+
+        apiConnector.postCashAccountStatementRequest(request.eori, cashAcc.number, dates.start, dates.end).map {
+          case Right(_) => Redirect(routes.ConfirmationPageController.onPageLoad())
+          case _ =>
+            logger.error(s"Error posting cash account statements")
+            Redirect(routes.CashAccountController.showAccountDetails(None))
+        }
+
+      case _ => Future.successful(Redirect(routes.CashAccountController.showAccountDetails(None)))
+    }
+  }
 
   private def showAccountWithTransactionDetails(account: CashAccount,
                                                 from: LocalDate,
@@ -78,11 +106,10 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
       case Left(errorResponse) => processErrorResponse(account, from, to, errorResponse)
 
       case Right(_) =>
-        Ok(
-          resultView(
-            new ResultsPageSummary(from, to, false),
-            controllers.routes.CashAccountController.showAccountDetails(None).url,
-            account.number)
+        Ok(resultView(
+          new ResultsPageSummary(from, to, false),
+          controllers.routes.CashAccountController.showAccountDetails(None).url,
+          account.number)
         )
     }
   }
@@ -90,8 +117,8 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
   private def processErrorResponse(account: CashAccount,
                                    from: LocalDate,
                                    to: LocalDate,
-                                   errorResponse: ErrorResponse)(
-    implicit request: IdentifierRequest[AnyContent], appConfig: AppConfig): Result = {
+                                   errorResponse: ErrorResponse)
+                                  (implicit request: IdentifierRequest[AnyContent], appConfig: AppConfig): Result = {
 
     errorResponse match {
 
@@ -107,10 +134,9 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
   def tooManyTransactionsSelected(dateRange: RequestedDateRange): Action[AnyContent] =
     identify {
       implicit req =>
-        Ok(
-          tooManyResults(
-            new ResultsPageSummary(dateRange.from, dateRange.to),
-            controllers.routes.SelectTransactionsController.onPageLoad().url)
+        Ok(tooManyResults(
+          new ResultsPageSummary(dateRange.from, dateRange.to),
+          controllers.routes.SelectTransactionsController.onPageLoad().url)
         )
     }
 }

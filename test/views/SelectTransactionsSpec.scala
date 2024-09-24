@@ -25,9 +25,9 @@ import forms.SelectTransactionsFormProvider
 
 import java.time.Clock
 
-class SelectTransactionsViewSpec extends ViewTestHelper {
+class SelectTransactionsSpec extends ViewTestHelper {
 
-  "SelectTransactionsView" should {
+  "SelectTransactions" should {
 
     "display correct information" when {
       "title is visible" in new Setup {
@@ -35,7 +35,7 @@ class SelectTransactionsViewSpec extends ViewTestHelper {
       }
 
       "backlink should take you back to request transactions" in new Setup {
-        shouldContainBackLinkUrl(view, controllers.routes.SelectTransactionsController.onPageLoad().url)
+        shouldContainBackLinkUrl(view, controllers.routes.CashAccountController.showAccountDetails(None).url)
       }
 
       "start field must be Displayed" in new Setup {
