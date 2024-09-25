@@ -73,7 +73,7 @@ object CashAccountV2ViewModel {
     val paginationModel = ListPaginationViewModel(
       totalNumberOfItems = totalDailyStatements.size,
       currentPage = pageNo.getOrElse(1),
-      numberOfItemsPerPage = 4,
+      numberOfItemsPerPage = 1,
       href = controllers.routes.CashAccountV2Controller.showAccountDetails(None).url)
 
     CashAccountV2ViewModel(
@@ -95,7 +95,7 @@ object CashAccountV2ViewModel {
 
   private def dailyStatementsBasedOnPage(statements: Seq[DailyStatementViewModel],
                                          pageNo: Int,
-                                         maxItemPerPage: Int = 4): Seq[DailyStatementViewModel] = {
+                                         maxItemPerPage: Int = 1): Seq[DailyStatementViewModel] = {
 
     if(pageNo == 1) {
       statements.slice(0, maxItemPerPage)

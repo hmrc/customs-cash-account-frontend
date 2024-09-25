@@ -63,31 +63,34 @@ object PaginationViewModel {
         href + s"&$key=$value"
     }
 
-    val previous: Option[PaginationLink] = if (currentPage > 1) {
+    val previous: Option[PaginationLink] = None
+    /*  if (currentPage > 1) {
       Some(PaginationLink(hrefWithParams(currentPage - 1)))
     } else {
       None
-    }
+    }*/
 
-    val next: Option[PaginationLink] = if (currentPage < results.totalPages) {
+    val next: Option[PaginationLink] = None
+
+ /*     if (currentPage < results.totalPages) {
       Some(PaginationLink(hrefWithParams(currentPage + 1)))
     } else {
       None
-    }
+    }*/
 
     val items = (1 to results.totalPages).foldLeft[Seq[PaginationItem]](Nil) {
       (acc, page) =>
-        if (page == 1 || (page >= currentPage - 1 && page <= currentPage + 1) || page == results.totalPages) {
+        //if (page == 1 || (page >= currentPage - 1 && page <= currentPage + 1) || page == results.totalPages) {
           acc :+ PaginationItem(
             href = hrefWithParams(page),
             number = Some(page.toString),
             current = Some(page == currentPage)
           )
-        } else if (acc.lastOption.flatMap(_.ellipsis).contains(true)) {
+       /* } else if (acc.lastOption.flatMap(_.ellipsis).contains(true)) {
           acc
         } else {
           acc :+ PaginationItem(ellipsis = Some(true))
-        }
+        }*/
     }
 
     f(results, previous, next, items)
