@@ -112,9 +112,7 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
       Redirect(routes.CashAccountV2Controller.tooManyTransactions())
     }
     else if (cashTransactions.availableTransactions) {
-      Ok(
-        showAccountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions))
-      )
+      Ok(showAccountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions)))
     } else {
       Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
     }
@@ -125,9 +123,8 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
       case None => Future.successful(NotFound(eh.notFoundTemplate))
       case Some(account) =>
         Future.successful(
-          Ok(
-            showAccountsExceededThresholdV2(form, TooManyTransactionsViewModel(request.eori, account))
-          ))
+          Ok(showAccountsExceededThresholdV2(form, TooManyTransactionsViewModel(request.eori, account)))
+        )
     }
   }
 
