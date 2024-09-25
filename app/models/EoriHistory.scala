@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package viewmodels
+package models
 
-import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Value}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Actions
-import utils.SpecBase
+import play.api.libs.json.*
 
-class SummaryListRowHelperSpec extends SpecBase with SummaryListRowHelper {
+import java.time.LocalDate
 
-  "summaryListRow" should {
-    "correctly return a summary list row" in {
-      val result = summaryListRow("something", Some("something"), Actions())
+case class EoriHistory(eori: String, validFrom: Option[LocalDate], validUntil: Option[LocalDate])
 
-      result.actions mustBe Some(Actions())
-      result.value mustBe Value(HtmlContent("something"))
-      result.secondValue mustBe Some(Value(HtmlContent("something"), classes = ""))
-    }
-  }
+object EoriHistory {
+  implicit val format: OFormat[EoriHistory] = Json.format[EoriHistory]
 }

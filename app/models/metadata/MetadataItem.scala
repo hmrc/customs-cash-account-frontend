@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package viewmodels
+package models.metadata
 
-import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Value}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Actions
-import utils.SpecBase
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.{JsPath, Json, Reads, Writes}
 
-class SummaryListRowHelperSpec extends SpecBase with SummaryListRowHelper {
+case class MetadataItem(key: String, value: String)
 
-  "summaryListRow" should {
-    "correctly return a summary list row" in {
-      val result = summaryListRow("something", Some("something"), Actions())
+object MetadataItem {
 
-      result.actions mustBe Some(Actions())
-      result.value mustBe Value(HtmlContent("something"))
-      result.secondValue mustBe Some(Value(HtmlContent("something"), classes = ""))
-    }
-  }
+  implicit val metadataItemReads: Reads[MetadataItem] =
+    ((JsPath \ "metadata").read[String] and (JsPath \ "value").read[String])(MetadataItem.apply _)
+
+  implicit val metadataItemWrites: Writes[MetadataItem] = Json.writes[MetadataItem]
 }

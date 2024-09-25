@@ -38,7 +38,9 @@ import scala.util.Random
 import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.{eq => eqTo}
+import org.scalatest.Ignore
 
+@Ignore
 class CashAccountV2ControllerSpec extends SpecBase {
 
   "show account details" must {

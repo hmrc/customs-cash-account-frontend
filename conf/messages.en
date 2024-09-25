@@ -228,6 +228,11 @@ cf.cash-account.transactions.result.no.data=We have no data within the periods
 cf.cash-account.transactions.result.transaction=Requested cash account transactions
 cf.cash-account.transactions.result.download.transactions=Download the CSV file of your requested transactions before you close this browser window.
 
+# Requested Cash Statement Notification Panel
+cf.cash-account.requested.statements.available.text.pre=Your
+cf.cash-account.requested.statements.available.link.text=requested transactions
+cf.cash-account.requested.statements.available.text.post=are now available
+
 cf.form.error.start.date-too-far-in-past=The from date cannot be older than 6 years from now.
 cf.form.error.end.date-too-far-in-past=The to date cannot be older than 6 years from now.
 cf.form.error.year.length = Year must include 4 numbers

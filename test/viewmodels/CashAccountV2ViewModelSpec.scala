@@ -19,18 +19,14 @@ package viewmodels
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
-import models.{
-  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel,
-  CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Withdrawal
-}
+import models._
+import models.FileRole.CashStatement
+import models.metadata.CashStatementFileMetadata
 import config.AppConfig
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
-import utils.TestData.*
-import utils.Utils.{
-  LinkComponentValues, emptyH1Component, emptyH2InnerComponent,
-  emptyPComponent, h2Component, hmrcNewTabLinkComponent, linkComponent, pComponent
-}
+import utils.TestData._
+import utils.Utils._
 import views.html.components.{cash_account_balance, daily_statements_v2}
 
 import java.time.LocalDate
@@ -39,32 +35,38 @@ class CashAccountV2ViewModelSpec extends SpecBase {
 
   "apply method" should {
 
-    "return correct contents when maxTransactionsExceeded is None" in new Setup {
-      val cashAccountViewModel: CashAccountV2ViewModel =
-        createCashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions)
+    "return correct contents" when {
 
-      shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
-      shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
-      shouldProduceCorrectAccountBalance(cashAccountViewModel.cashAccountBalance, eoriNumber, cashAccount)
-      shouldProduceCorrectRequestTransactionsHeading(cashAccountViewModel.requestTransactionsHeading)
-      shouldProduceCorrectDownloadCSVFileLink(cashAccountViewModel.downloadCSVFileLinkUrl)
-      shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
-      shouldContainCorrectDailyStatementsComponent(app, cashAccountViewModel.dailyStatements, cashTransactions)
+      "maxTransactionsExceeded is None" in new Setup {
+
+        val cashAccountViewModel: CashAccountV2ViewModel =
+          createCashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions, cashStatementsForEori)
+
+        shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
+        shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
+        shouldProduceCorrectAccountBalance(cashAccountViewModel.cashAccountBalance, eoriNumber, cashAccount)
+        shouldProduceCorrectRequestTransactionsHeading(cashAccountViewModel.requestTransactionsHeading)
+        shouldProduceCorrectDownloadCSVFileLink(cashAccountViewModel.downloadCSVFileLinkUrl)
+        shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
+        shouldContainCorrectDailyStatementsComponent(app, cashAccountViewModel.dailyStatements, cashTransactions)
+      }
+
+      "when maxTransactionsExceeded is true" in new Setup {
+
+        val cashAccountViewModel: CashAccountV2ViewModel =
+          createCashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions02, cashStatementsForEori)
+
+        shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
+        shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
+        shouldProduceCorrectAccountBalanceWithoutLastTxnHeading(cashAccountViewModel.cashAccountBalance,
+          eoriNumber, cashAccount)
+        shouldProduceCorrectTooManyTransactionsHeading(cashAccountViewModel.tooManyTransactionsHeading.get)
+        shouldProduceCorrectTooManyTransactionsStatement(cashAccountViewModel.tooManyTransactionsStatement.get)
+        shouldProduceCorrectDownloadCSVFileLinkForMaxTransactionExceeded(cashAccountViewModel.downloadCSVFileLinkUrl)
+        shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
+      }
     }
 
-    "return correct contents when maxTransactionsExceeded is true" in new Setup {
-      val cashAccountViewModel: CashAccountV2ViewModel =
-        createCashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions02)
-
-      shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
-      shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
-      shouldProduceCorrectAccountBalanceWithoutLastTxnHeading(cashAccountViewModel.cashAccountBalance,
-        eoriNumber, cashAccount)
-      shouldProduceCorrectTooManyTransactionsHeading(cashAccountViewModel.tooManyTransactionsHeading.get)
-      shouldProduceCorrectTooManyTransactionsStatement(cashAccountViewModel.tooManyTransactionsStatement.get)
-      shouldProduceCorrectDownloadCSVFileLinkForMaxTransactionExceeded(cashAccountViewModel.downloadCSVFileLinkUrl)
-      shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
-    }
   }
 
   private def shouldProduceCorrectTitle(title: String)(implicit msgs: Messages): Assertion = {
@@ -173,9 +175,17 @@ class CashAccountV2ViewModelSpec extends SpecBase {
 
   trait Setup {
 
-    val eoriNumber = "test_eori"
-    val can = "12345678"
+    val eoriNumber: String = "test_eori"
+    val can: String = "12345678"
     val balance: BigDecimal = BigDecimal(8788.00)
+
+    val yearStart: Int = 2024
+    val monthStart: Int = 5
+    val dayStart: Int = 5
+    val yearEnd: Int = 2025
+    val monthEnd: Int = 8
+    val dayEnd: Int = 8
+    val size: Long = 300L
 
     val app: Application = application.build()
 
@@ -218,10 +228,41 @@ class CashAccountV2ViewModelSpec extends SpecBase {
 
     val cashTransactions02: CashTransactions = CashTransactions(pendingTransactions, dailyStatements, Some(true))
 
+    val eoriHistory: EoriHistory = EoriHistory(eori = eoriNumber, validFrom = Some(LocalDate.now()), validUntil = None)
+
+    val cashStatementFile: CashStatementFile = CashStatementFile(
+      filename = "statement1.pdf",
+      downloadURL = "statement1",
+      size = size,
+      metadata = CashStatementFileMetadata(
+        periodStartYear = yearStart,
+        periodStartMonth = monthStart,
+        periodStartDay = dayStart,
+        periodEndYear = yearEnd,
+        periodEndMonth = monthEnd,
+        periodEndDay = dayEnd,
+        fileFormat = FileFormat.Csv,
+        fileRole = CashStatement,
+        statementRequestId = Some("abc-defg-1234-abc")
+      ),
+      eori = eoriNumber
+    )
+
+    val currentStatements: Seq[CashStatementsByMonth] = Seq(CashStatementsByMonth(date1, Seq(cashStatementFile)))
+    val requestedStatements: Seq[CashStatementsByMonth] = Seq(CashStatementsByMonth(date2, Seq(cashStatementFile)))
+
+    val cashStatementsForEori: Seq[CashStatementsForEori] = Seq(
+      CashStatementsForEori(
+        eoriHistory = eoriHistory,
+        currentStatements = currentStatements,
+        requestedStatements = requestedStatements
+      )
+    )
+
     def createCashAccountV2ViewModel(eori: String,
                                      account: CashAccount,
-                                     cashTrans: CashTransactions): CashAccountV2ViewModel =
-      CashAccountV2ViewModel(eori, account, cashTrans)
+                                     cashTrans: CashTransactions,
+                                     statements: Seq[CashStatementsForEori]): CashAccountV2ViewModel =
+      CashAccountV2ViewModel(eori, account, cashTrans, statements)
   }
-
 }

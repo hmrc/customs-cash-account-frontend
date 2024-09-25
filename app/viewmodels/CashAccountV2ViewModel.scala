@@ -17,13 +17,12 @@
 package viewmodels
 
 import config.AppConfig
-import models.CashAccount
+import models.FileRole.CashStatement
+import models.{CashAccount, CashAccountViewModel, CashStatementsForEori, CashTransactions}
 import models.domain.EORI
 import utils.Utils.*
-import models.CashTransactions
 import play.twirl.api.HtmlFormat
-import views.html.components.{cash_account_balance, daily_statements_v2, h1}
-import models.CashAccountViewModel
+import views.html.components.{cash_account_balance, daily_statements_v2}
 import play.api.i18n.Messages
 
 case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
@@ -39,13 +38,29 @@ case class CashAccountV2ViewModel(pageTitle: String,
                                   hasMaxTransactionsExceeded: Boolean,
                                   tooManyTransactionsHeading: Option[HtmlFormat.Appendable],
                                   tooManyTransactionsStatement: Option[HtmlFormat.Appendable],
+                                  hasRequestedStatements: Boolean,
+                                  cashStatementNotification: HtmlFormat.Appendable,
                                   helpAndSupportGuidance: GuidanceRow)
 
 object CashAccountV2ViewModel {
 
   def apply(eori: EORI,
             account: CashAccount,
-            cashTrans: CashTransactions)(implicit msgs: Messages, config: AppConfig): CashAccountV2ViewModel = {
+            cashTrans: CashTransactions,
+            statements: Seq[CashStatementsForEori]
+           )(implicit msgs: Messages, config: AppConfig): CashAccountV2ViewModel = {
+
+    val hasRequestedStatements: Boolean = statements.exists(_.requestedStatements.nonEmpty)
+    val notificationPanel = if (hasRequestedStatements) {
+      notificationPanelComponent(
+        showNotification = true,
+        preMessage = msgs("cf.cash-account.requested.statements.available.text.pre"),
+        linkUrl = config.requestedStatements(CashStatement),
+        linkText = msgs("cf.cash-account.requested.statements.available.link.text"),
+        postMessage = msgs("cf.cash-account.requested.statements.available.text.post"))
+    } else {
+      HtmlFormat.empty
+    }
 
     val hasMaxTransactionsExceeded: Boolean = cashTrans.maxTransactionsExceeded.getOrElse(false)
 
@@ -61,27 +76,6 @@ object CashAccountV2ViewModel {
         msgKey = "cf.cash-account.transactions.request-transactions.heading",
         id = Some("request-transactions-heading"))
 
-    val tooManyTransactionsHeading: Option[HtmlFormat.Appendable] = {
-      if (hasMaxTransactionsExceeded) {
-        Some(h2Component(
-          msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
-          id = Some("last-six-month-transactions-heading")))
-      } else {
-        None
-      }
-    }
-
-    val tooManyTransactionsStatement: Option[HtmlFormat.Appendable] = {
-      if (hasMaxTransactionsExceeded) {
-        Some(pComponent(
-          id = Some("exceeded-threshold-statement"),
-          messageKey = "cf.cash-account.transactions.too-many-transactions.hint01",
-          classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7"))
-      } else {
-        None
-      }
-    }
-
     CashAccountV2ViewModel(
       pageTitle = msgs("cf.cash-account.detail.title"),
       backLink = config.customsFinancialsFrontendHomepage,
@@ -90,9 +84,34 @@ object CashAccountV2ViewModel {
       requestTransactionsHeading = requestTransactionsHeading,
       downloadCSVFileLinkUrl = downloadCSVFileLinkUrl(hasMaxTransactionsExceeded),
       hasMaxTransactionsExceeded = hasMaxTransactionsExceeded,
-      tooManyTransactionsHeading = tooManyTransactionsHeading,
-      tooManyTransactionsStatement = tooManyTransactionsStatement,
+      tooManyTransactionsHeading = tooManyTransactionsHeading(hasMaxTransactionsExceeded),
+      tooManyTransactionsStatement = tooManyTransactionsStatement(hasMaxTransactionsExceeded),
+      hasRequestedStatements = hasRequestedStatements,
+      cashStatementNotification = notificationPanel,
       helpAndSupportGuidance = helpAndSupport)
+  }
+
+  private def tooManyTransactionsHeading(hasMaxTransactionsExceeded: Boolean
+                                        )(implicit msgs: Messages): Option[HtmlFormat.Appendable] = {
+    if (hasMaxTransactionsExceeded) {
+      Some(h2Component(
+        msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
+        id = Some("last-six-month-transactions-heading")))
+    } else {
+      None
+    }
+  }
+
+  private def tooManyTransactionsStatement(hasMaxTransactionsExceeded: Boolean
+                                          )(implicit msgs: Messages): Option[HtmlFormat.Appendable] = {
+    if (hasMaxTransactionsExceeded) {
+      Some(pComponent(
+        id = Some("exceeded-threshold-statement"),
+        messageKey = "cf.cash-account.transactions.too-many-transactions.hint01",
+        classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7"))
+    } else {
+      None
+    }
   }
 
   private def downloadCSVFileLinkUrl(hasMaxTransactionsExceeded: Boolean

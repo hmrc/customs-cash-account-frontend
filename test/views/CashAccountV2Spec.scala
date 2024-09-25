@@ -18,10 +18,7 @@ package views
 
 import play.api.i18n.Messages
 import html.cash_account_v2
-import models.{
-  AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions, Declaration,
-  Payment, Transaction, Withdrawal
-}
+import models._
 import viewmodels.CashAccountV2ViewModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
@@ -29,6 +26,8 @@ import utils.TestData.*
 
 import java.time.LocalDate
 import forms.SearchTransactionsFormProvider
+import models.FileRole.CashStatement
+import models.metadata.CashStatementFileMetadata
 import play.api.data.Form
 
 class CashAccountV2Spec extends ViewTestHelper {
@@ -172,6 +171,14 @@ class CashAccountV2Spec extends ViewTestHelper {
     val can = "12345678"
     val balance: BigDecimal = BigDecimal(8788.00)
 
+    val yearStart = 2024
+    val monthStart = 5
+    val dayStart = 5
+    val yearEnd = 2025
+    val monthEnd = 8
+    val dayEnd = 8
+    val size = 300L
+
     val cashAccount: CashAccount = CashAccount(number = can,
       owner = eoriNumber,
       status = AccountStatusOpen,
@@ -208,14 +215,39 @@ class CashAccountV2Spec extends ViewTestHelper {
 
     val cashTransactions02: CashTransactions = CashTransactions(pendingTransactions, dailyStatements, Some(true))
 
+    val eoriHistory: EoriHistory = EoriHistory(eori = eoriNumber, validFrom = Some(LocalDate.now()), validUntil = None)
+
+    val cashStatementFile: Seq[CashStatementsByMonth] = Seq(
+      CashStatementsByMonth(date1, Seq(CashStatementFile(
+        filename = "statement1.pdf",
+        downloadURL = "statement1",
+        size = size,
+        metadata = CashStatementFileMetadata(
+          periodStartYear = yearStart,
+          periodStartMonth = monthStart,
+          periodStartDay = dayStart,
+          periodEndYear = yearEnd,
+          periodEndMonth = monthEnd,
+          periodEndDay = dayEnd,
+          fileFormat = FileFormat.Csv,
+          fileRole = CashStatement,
+          statementRequestId = Some("abc-defg-1234-abc")
+        ),
+        eori = eoriNumber
+      )))
+    )
+
+    val statements: Seq[CashStatementsForEori] = Seq(
+      CashStatementsForEori(eoriHistory, cashStatementFile, cashStatementFile))
+
     val viewModelWithTransactions: CashAccountV2ViewModel =
-      CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions)
+      CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions, statements)
 
     val viewModelWithTooManyTransactions: CashAccountV2ViewModel =
-      CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions02)
+      CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions02, statements)
 
     val viewModelWithNoTransactions: CashAccountV2ViewModel =
-      CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions.copy(Seq(), Seq()))
+      CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions.copy(Seq(), Seq()), statements)
 
     val form: Form[String] = new SearchTransactionsFormProvider().apply()
 
