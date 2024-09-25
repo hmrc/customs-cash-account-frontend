@@ -37,8 +37,8 @@ case class CashAccountV2ViewModel(pageTitle: String,
                                   requestTransactionsHeading: HtmlFormat.Appendable,
                                   downloadCSVFileLinkUrl: HtmlFormat.Appendable,
                                   hasMaxTransactionsExceeded: Boolean,
-                                  tooManyTransactionsHeading: HtmlFormat.Appendable,
-                                  tooManyTransactionsStatement: HtmlFormat.Appendable,
+                                  tooManyTransactionsHeading: Option[HtmlFormat.Appendable],
+                                  tooManyTransactionsStatement: Option[HtmlFormat.Appendable],
                                   helpAndSupportGuidance: GuidanceRow)
 
 object CashAccountV2ViewModel {
@@ -61,16 +61,26 @@ object CashAccountV2ViewModel {
         msgKey = "cf.cash-account.transactions.request-transactions.heading",
         id = Some("request-transactions-heading"))
 
-    val tooManyTransactionsHeading: HtmlFormat.Appendable =
-      h2Component(
-        msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
-        id = Some("last-six-month-transactions-heading"))
+    val tooManyTransactionsHeading: Option[HtmlFormat.Appendable] = {
+      if (hasMaxTransactionsExceeded) {
+        Some(h2Component(
+          msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
+          id = Some("last-six-month-transactions-heading")))
+      } else {
+        None
+      }
+    }
 
-    val tooManyTransactionsStatement: HtmlFormat.Appendable =
-      pComponent(
-        id = Some("exceeded-threshold-statement"),
-        messageKey = "cf.cash-account.transactions.too-many-transactions.hint01",
-        classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7")
+    val tooManyTransactionsStatement: Option[HtmlFormat.Appendable] = {
+      if (hasMaxTransactionsExceeded) {
+        Some(pComponent(
+          id = Some("exceeded-threshold-statement"),
+          messageKey = "cf.cash-account.transactions.too-many-transactions.hint01",
+          classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7"))
+      } else {
+        None
+      }
+    }
 
     CashAccountV2ViewModel(
       pageTitle = msgs("cf.cash-account.detail.title"),

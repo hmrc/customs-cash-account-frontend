@@ -20,22 +20,17 @@ import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
 import models.{
-  AccountStatusOpen,
-  CDSCashBalance,
-  CashAccount,
-  CashAccountViewModel,
-  CashDailyStatement,
-  CashTransactions,
-  Declaration,
-  Payment,
-  Transaction,
-  Withdrawal
+  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel,
+  CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Withdrawal
 }
 import config.AppConfig
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
 import utils.TestData.*
-import utils.Utils.{LinkComponentValues, emptyH1Component, emptyH2InnerComponent, emptyPComponent, h2Component, hmrcNewTabLinkComponent, linkComponent}
+import utils.Utils.{
+  LinkComponentValues, emptyH1Component, emptyH2InnerComponent,
+  emptyPComponent, h2Component, hmrcNewTabLinkComponent, linkComponent, pComponent
+}
 import views.html.components.{cash_account_balance, daily_statements_v2}
 
 import java.time.LocalDate
@@ -44,7 +39,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
 
   "apply method" should {
 
-    "return correct contents" in new Setup {
+    "return correct contents when maxTransactionsExceeded is None" in new Setup {
       val cashAccountViewModel: CashAccountV2ViewModel =
         createCashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions)
 
@@ -52,9 +47,23 @@ class CashAccountV2ViewModelSpec extends SpecBase {
       shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
       shouldProduceCorrectAccountBalance(cashAccountViewModel.cashAccountBalance, eoriNumber, cashAccount)
       shouldProduceCorrectRequestTransactionsHeading(cashAccountViewModel.requestTransactionsHeading)
-      shouldProduceCorrectDownloadCSVFileLinkUrl(cashAccountViewModel.downloadCSVFileLinkUrl)
+      shouldProduceCorrectDownloadCSVFileLink(cashAccountViewModel.downloadCSVFileLinkUrl)
       shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
       shouldContainCorrectDailyStatementsComponent(app, cashAccountViewModel.dailyStatements, cashTransactions)
+    }
+
+    "return correct contents when maxTransactionsExceeded is true" in new Setup {
+      val cashAccountViewModel: CashAccountV2ViewModel =
+        createCashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions02)
+
+      shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
+      shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
+      shouldProduceCorrectAccountBalanceWithoutLastTxnHeading(cashAccountViewModel.cashAccountBalance,
+        eoriNumber, cashAccount)
+      shouldProduceCorrectTooManyTransactionsHeading(cashAccountViewModel.tooManyTransactionsHeading.get)
+      shouldProduceCorrectTooManyTransactionsStatement(cashAccountViewModel.tooManyTransactionsStatement.get)
+      shouldProduceCorrectDownloadCSVFileLinkForMaxTransactionExceeded(cashAccountViewModel.downloadCSVFileLinkUrl)
+      shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
     }
   }
 
@@ -77,6 +86,19 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     accBalance mustBe expectedAccBalance
   }
 
+  private def shouldProduceCorrectAccountBalanceWithoutLastTxnHeading(
+                                                                       accBalance: HtmlFormat.Appendable,
+                                                                       eori: String,
+                                                                       account: CashAccount
+                                                                     )(implicit msgs: Messages,
+                                                                       appConfig: AppConfig): Assertion = {
+    val expectedAccBalance: HtmlFormat.Appendable =
+      new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
+        .apply(model = CashAccountViewModel(eori, account), showLastTransactionsHeading = false)
+
+    accBalance mustBe expectedAccBalance
+  }
+
   private def shouldProduceCorrectRequestTransactionsHeading(heading: HtmlFormat.Appendable)
                                                             (implicit msgs: Messages): Assertion = {
     heading mustBe h2Component(
@@ -84,8 +106,23 @@ class CashAccountV2ViewModelSpec extends SpecBase {
       id = Some("request-transactions-heading"))
   }
 
-  private def shouldProduceCorrectDownloadCSVFileLinkUrl(link: HtmlFormat.Appendable)
-                                                        (implicit msgs: Messages): Assertion = {
+  private def shouldProduceCorrectTooManyTransactionsHeading(heading: HtmlFormat.Appendable)
+                                                            (implicit msgs: Messages): Assertion = {
+    heading mustBe h2Component(
+      msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
+      id = Some("last-six-month-transactions-heading"))
+  }
+
+  private def shouldProduceCorrectTooManyTransactionsStatement(heading: HtmlFormat.Appendable)
+                                                              (implicit msgs: Messages): Assertion = {
+    heading mustBe pComponent(
+      id = Some("exceeded-threshold-statement"),
+      messageKey = "cf.cash-account.transactions.too-many-transactions.hint01",
+      classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7")
+  }
+
+  private def shouldProduceCorrectDownloadCSVFileLink(link: HtmlFormat.Appendable)
+                                                     (implicit msgs: Messages): Assertion = {
     link mustBe linkComponent(
       LinkComponentValues(
         pId = Some("download-scv-file"),
@@ -94,6 +131,19 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
         enableLineBreakBeforePostMessage = true)
     )
+  }
+
+  private def shouldProduceCorrectDownloadCSVFileLinkForMaxTransactionExceeded(link: HtmlFormat.Appendable)
+                                                                              (implicit msgs: Messages): Assertion = {
+    link mustBe linkComponent(
+      LinkComponentValues(
+        pId = Some("download-scv-file"),
+        location = controllers.routes.RequestTransactionsController.onPageLoad().url,
+        preLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint02"),
+        linkMessageKey = "cf.cash-account.transactions.too-many-transactions.hint03",
+        postLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint04"),
+        enableLineBreakBeforePostMessage = true,
+        pClass = "govuk-body govuk-!-margin-bottom-9"))
   }
 
   private def shouldOutputCorrectHelpAndSupportGuidance(guidanceRow: GuidanceRow)
@@ -165,6 +215,8 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     val dailyStatements: Seq[CashDailyStatement] = Seq(dailyStatement1, dailyStatement2)
 
     val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
+
+    val cashTransactions02: CashTransactions = CashTransactions(pendingTransactions, dailyStatements, Some(true))
 
     def createCashAccountV2ViewModel(eori: String,
                                      account: CashAccount,

@@ -120,7 +120,6 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
               CashAccountViewModel(
                 request.eori,
                 CashAccount(account.number, account.owner, account.status, account.balances)))
-
           ))
     }
   }

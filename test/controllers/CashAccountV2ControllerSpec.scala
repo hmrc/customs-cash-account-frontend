@@ -272,8 +272,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
         val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
         val result = route(app, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.CashAccountV2Controller.tooManyTransactions().url
+        status(result) mustEqual OK
       }
     }
 

@@ -69,13 +69,13 @@
 
     }
 
-    @if(viewModel.hasMaxTransactionsExceeded){
+    @if(viewModel.hasMaxTransactionsExceeded) {
 
-            @viewModel.tooManyTransactionsHeading
+            @viewModel.tooManyTransactionsHeading.map(identity)
 
-            @viewModel.tooManyTransactionsStatement
+            @viewModel.tooManyTransactionsStatement.map(identity)
 
-        }else{
+    } else {
 
         @viewModel.dailyStatements
 
