@@ -29,7 +29,10 @@ import play.api.test.Helpers.*
 import services.AuditingService
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
-import views.html.{cash_account_no_transactions, cash_account_no_transactions_v2, cash_account_no_transactions_with_balance, cash_account_transactions_not_available}
+import views.html.{
+  cash_account_no_transactions_v2,
+  cash_account_no_transactions_with_balance, cash_account_transactions_not_available
+}
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -38,12 +41,11 @@ import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.eq as eqTo
 import play.api.mvc.{AnyContentAsEmpty, Result}
-import play.twirl.api.HtmlFormat
 
 class CashAccountV2ControllerSpec extends SpecBase {
 
   "show account details" must {
-    "return OK" ignore new Setup {
+    "return OK" in new Setup {
 
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
@@ -63,7 +65,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
-    "check view cash account details" ignore new Setup {
+    "check view cash account details" in new Setup {
 
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
@@ -82,7 +84,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
-    "display transactions unavailable if the call to ACC31 fails" ignore new Setup {
+    "display transactions unavailable if the call to ACC31 fails" in new Setup {
 
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
@@ -113,7 +115,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
     }
 
     "display no transactions if the call to ACC31 returns no transactions with balance " +
-      "if balance is greater than 0" ignore new Setup {
+      "if balance is greater than 0" in new Setup {
 
       private val availableAccountBalance: Int = 100
       val newCashAccount: CashAccount = cashAccount.copy(balances = CDSCashBalance(Some(availableAccountBalance)))
@@ -148,7 +150,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
-    "display no transactions if the call to ACC31 returns no cashDailyStatements and balance is empty" ignore new Setup {
+    "display no transactions if the call to ACC31 returns no cashDailyStatements and balance is empty" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount.copy(balances = CDSCashBalance(None)))))
 
@@ -160,7 +162,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
-      val view: cash_account_no_transactions = app.injector.instanceOf[cash_account_no_transactions]
+      val view: cash_account_no_transactions_v2 = app.injector.instanceOf[cash_account_no_transactions_v2]
       val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
       val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
@@ -179,7 +181,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
-    "display no transactions if the call to ACC31 returns no cashDailyStatements and balance is 0" ignore new Setup {
+    "display no transactions if the call to ACC31 returns no cashDailyStatements and balance is 0" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount.copy(balances = CDSCashBalance(Some(0))))))
 
@@ -191,7 +193,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
-      val view: cash_account_no_transactions = app.injector.instanceOf[cash_account_no_transactions]
+      val view: cash_account_no_transactions_v2 = app.injector.instanceOf[cash_account_no_transactions_v2]
       val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
       val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
@@ -212,7 +214,11 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
     "display cash account no transactions' page when user does not have Cash account and balance is zero" in new Setup {
 
-      val app: Application = application.build()
+      val app: Application = application
+        .overrides(
+          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
+        ).build()
+
       implicit val msgs: Messages = messages(app)
       implicit val config: AppConfig = appConfig(app)
 
@@ -241,7 +247,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
     }
 
-    "display balance and no transactions to ACC31 returns no cashDailyStatements or pending transactions" ignore new Setup {
+    "display balance and no transactions to ACC31 returns no cashDailyStatements or pending transactions" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
@@ -272,7 +278,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
-    "display too many results page if the call to ACC31 returns 091-the query has exceeded threshold error" ignore new Setup {
+    "display too many results page if the call to ACC31 returns 091-the query has exceeded threshold error" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
@@ -292,7 +298,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
-    "return Page Not Found if account does not exist" ignore new Setup {
+    "return Page Not Found if account does not exist" in new Setup {
 
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(None))
@@ -309,7 +315,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
-    "include a link to the cash transactions request page when feature switch is set to true" ignore new Setup {
+    "include a link to the cash transactions request page when feature switch is set to true" in new Setup {
 
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
@@ -330,7 +336,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
     }
 
     "redirect to the cash account unavailable page" when {
-      "ACC27 fails to fetch the user's account details" ignore new Setup {
+      "ACC27 fails to fetch the user's account details" in new Setup {
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any)).thenReturn(
           Future.failed(nonFatalResponse)
         )
@@ -349,7 +355,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
-    "redirect to 'verify your email' page when an unverified email response is received" ignore new Setup {
+    "redirect to 'verify your email' page when an unverified email response is received" in new Setup {
       when(mockDataStoreConnector.getEmail(any)(any))
         .thenReturn(Future.successful(Left(UnverifiedEmail)))
 
@@ -369,7 +375,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
-    "redirect to 'Undelivered email' page when an undelivered email response is received" ignore new Setup {
+    "redirect to 'Undelivered email' page when an undelivered email response is received" in new Setup {
       when(mockDataStoreConnector.getEmail(any)(any))
         .thenReturn(Future.successful(Left(UndeliverableEmail("test@test.com"))))
 
@@ -389,7 +395,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
-    "returns OK when an error occurs while retrieving the email" ignore new Setup {
+    "returns OK when an error occurs while retrieving the email" in new Setup {
       when(mockDataStoreConnector.getEmail(any)(any))
         .thenReturn(Future.failed(new RuntimeException("Error occurred")))
 
@@ -416,7 +422,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
   }
 
   "showAccountUnavailable" must {
-    "return OK" ignore new Setup {
+    "return OK" in new Setup {
       val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
@@ -432,7 +438,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
   "showUnableToDownloadCSV" must {
 
-    "return OK" ignore new Setup {
+    "return OK" in new Setup {
       val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
@@ -447,7 +453,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
   }
 
   "tooManyTransactions" must {
-    "return OK" ignore new Setup {
+    "return OK" in new Setup {
 
       val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
@@ -464,7 +470,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
-    "return NotFound" ignore new Setup {
+    "return NotFound" in new Setup {
 
       val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
@@ -484,7 +490,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
   "onSubmit" must {
 
-    "return NOT_IMPLEMENTED" ignore new Setup {
+    "return NOT_IMPLEMENTED" in new Setup {
       val app: Application = application.build()
 
       running(app) {
