@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import viewmodels.{CashAccountV2ViewModel, TooManyTransactionsViewModel}
+import viewmodels.CashAccountV2ViewModel
 import views.html.*
 
 import java.time.LocalDate
@@ -44,7 +44,7 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
                                         unavailable: cash_account_not_available,
                                         transactionsUnavailable: cash_account_transactions_not_available,
                                         noTransactions: cash_account_no_transactions,
-                                        showAccountsExceededThresholdV2: cash_account_exceeded_threshold_v2,
+                                        showAccountsExceededThreshold: cash_account_exceeded_threshold,
                                         noTransactionsWithBalance: cash_account_no_transactions_with_balance,
                                         cashAccountUtils: CashAccountUtils,
                                         formProvider: SearchTransactionsFormProvider)
@@ -100,21 +100,13 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
           appConfig.transactionsTimeoutFlag))
       }
 
-      case Right(cashTransactions) => handleSuccessScenarios(cashTransactions, account)
+      case Right(cashTransactions) =>
+        if (cashTransactions.availableTransactions) {
+          Ok(showAccountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions)))
+        } else {
+          Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
+        }
 
-    }
-  }
-
-  private def handleSuccessScenarios(cashTransactions: CashTransactions,
-                                     account: CashAccount)(implicit req: IdentifierRequest[AnyContent]): Result = {
-
-    if (cashTransactions.maxTransactionsExceeded.contains(true)) {
-      Redirect(routes.CashAccountV2Controller.tooManyTransactions())
-    }
-    else if (cashTransactions.availableTransactions) {
-      Ok(showAccountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions)))
-    } else {
-      Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
     }
   }
 
@@ -123,8 +115,13 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
       case None => Future.successful(NotFound(eh.notFoundTemplate))
       case Some(account) =>
         Future.successful(
-          Ok(showAccountsExceededThresholdV2(form, TooManyTransactionsViewModel(request.eori, account)))
-        )
+          Ok(
+            showAccountsExceededThreshold(
+              CashAccountViewModel(
+                request.eori,
+                CashAccount(account.number, account.owner, account.status, account.balances)))
+
+          ))
     }
   }
 
