@@ -33,7 +33,7 @@
     fullWidth = false,
     help = true
 ) {
-    @cash_account_balance(account)
+    @cash_account_balance(model = account, displayLastSixMonthsHeading = false)
 
     @p(
         message = "cf.cash-account.detail.no-transactions.p1",
@@ -50,7 +50,7 @@
         linkId = Some("cash-account-top-up-guidance-link"),
         preLinkMessage = Some("cf.cash-account.how-to-use.guidance.text.pre"),
         postLinkMessage = Some("cf.cash-account.how-to-use.guidance.text.post"),
-        linkMessage = Some("cf.cash-account.how-to-use.guidance.link"),
+        linkMessage = Some(messages("cf.cash-account.how-to-use.guidance.link.text"))
     )
 
     @h2(
