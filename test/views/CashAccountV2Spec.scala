@@ -63,6 +63,19 @@ class CashAccountV2Spec extends ViewTestHelper {
         shouldContainCorrectDownloadCSVFileLinkUrl(view)
         shouldContainCorrectHelpAndSupportGuidance(view)
       }
+
+      "transactions and maxTransactionExceeded flag are present in the model" in new Setup {
+        val view: Document = createView(viewModelWithTooManyTransactions)
+
+        titleShouldBeCorrect(view, "cf.cash-account.detail.title")
+        shouldContainBackLinkUrl(view, appConfig.customsFinancialsFrontendHomepage)
+        shouldContainCorrectAccountBalanceDetails(view, can)
+        shouldContainCorrectSearchForTransactionsInputTextDetails(view)
+        shouldContainSearchButton(view)
+        shouldNotContainCashAccountDailyStatements(view)
+        shouldContainCorrectDownloadCSVFileLinkForMaxTransactionExceededFlag(view)
+        shouldContainCorrectHelpAndSupportGuidance(view)
+      }
     }
   }
 
@@ -102,6 +115,16 @@ class CashAccountV2Spec extends ViewTestHelper {
       msgs("cf.cash-account.transactions.request-transactions.download-csv.url")
 
     element.html().contains(msgs("cf.cash-account.transactions.request-transactions.download-csv.url")) mustBe true
+  }
+
+  private def shouldContainCorrectDownloadCSVFileLinkForMaxTransactionExceededFlag(
+                                                                                    viewDocument: Document
+                                                                                  )(implicit msgs: Messages) = {
+    val element: Element = viewDocument.getElementById("download-scv-file")
+    element.getElementsByAttribute("href").text() mustBe
+      msgs("cf.cash-account.transactions.too-many-transactions.hint03")
+
+    element.html().contains(msgs("cf.cash-account.transactions.too-many-transactions.hint03")) mustBe true
   }
 
   private def shouldContainCorrectHelpAndSupportGuidance(viewDocument: Document)(implicit msgs: Messages) = {
@@ -190,6 +213,8 @@ class CashAccountV2Spec extends ViewTestHelper {
 
     val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
 
+    val cashTransactions02: CashTransactions = CashTransactions(pendingTransactions, dailyStatements, Some(true))
+
     val eoriHistory: EoriHistory = EoriHistory(eori = eoriNumber, validFrom = Some(LocalDate.now()), validUntil = None)
 
     val cashStatementFile: Seq[CashStatementsByMonth] = Seq(
@@ -217,6 +242,9 @@ class CashAccountV2Spec extends ViewTestHelper {
 
     val viewModelWithTransactions: CashAccountV2ViewModel =
       CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions, statements)
+
+    val viewModelWithTooManyTransactions: CashAccountV2ViewModel =
+      CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions02, statements)
 
     val viewModelWithNoTransactions: CashAccountV2ViewModel =
       CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions.copy(Seq(), Seq()), statements)

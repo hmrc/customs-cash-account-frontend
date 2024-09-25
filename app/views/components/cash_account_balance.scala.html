@@ -22,7 +22,10 @@
     p: components.p
 )
 
-@(model: CashAccountViewModel, showBalance: Boolean = true)(implicit messages: Messages, appConfig: AppConfig)
+@(
+    model: CashAccountViewModel,
+    showBalance: Boolean = true,
+    showLastTransactionsHeading: Boolean = true)(implicit messages: Messages, appConfig: AppConfig)
 
     @h2(
         msg = "cf.cash-account.detail.account",
@@ -42,10 +45,12 @@
             classes = "govuk-label govuk-label--l govuk-!-margin-bottom-7 govuk-!-margin-top-2",
             id = Some("balance-available")
         )
-        @h2(
-            msg = "cf.cash-account.detail.last-transactions", 
-            classes="govuk-heading-m",
-            id = Some("last-transactions")
-        )
+        @if(showLastTransactionsHeading){
+            @h2(
+                msg = "cf.cash-account.detail.last-transactions",
+                classes="govuk-heading-m",
+                id = Some("last-transactions")
+            )
+        }
     }
 

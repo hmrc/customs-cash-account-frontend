@@ -115,6 +115,7 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
         } else {
           Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
         }
+
     }
   }
 

@@ -33,7 +33,7 @@ class CashAccountBalanceSpec extends SpecBase {
 
     "display correct text" when {
 
-      "model has available balance and showBalance is true" in new Setup {
+      "model has available balance with showBalance as true and showLastTransactionsHeading as true" in new Setup {
         val balancesValue: CDSCashBalance = CDSCashBalance(Some(BigDecimal(accountBalance)))
 
         val cashAccount: CashAccount = CashAccount(number = accNumber,
@@ -49,6 +49,24 @@ class CashAccountBalanceSpec extends SpecBase {
         shouldDisplayCashAccountHeading(componentView)
         shouldDisplayCorrectAmountWithCorrectFormat(componentView, Some(BigDecimal(accountBalance)))
         shouldDisplayLastTransactionsText(componentView)
+      }
+
+      "model has available balance with showBalance as true and showLastTransactionsHeading as false" in new Setup {
+        val balancesValue: CDSCashBalance = CDSCashBalance(Some(BigDecimal(accountBalance)))
+
+        val cashAccount: CashAccount = CashAccount(number = accNumber,
+          owner = eori,
+          status = AccountStatusOpen,
+          balances = balancesValue)
+
+        val model: CashAccountViewModel = CashAccountViewModel(eori, cashAccount)
+
+        val componentView: Document = view02(model)
+
+        shouldDisplayAccountNumberWithText(componentView, accNumber)
+        shouldDisplayCashAccountHeading(componentView)
+        shouldDisplayCorrectAmountWithCorrectFormat(componentView, Some(BigDecimal(accountBalance)))
+        shouldNotDisplayLastTransactionsText(componentView)
       }
 
       "model has no available balance and showBalance is true" in new Setup {
@@ -143,13 +161,19 @@ class CashAccountBalanceSpec extends SpecBase {
     implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
     implicit val msgs: Messages = messages(app)
 
-    val eori = "test_eori"
-    val accountBalance = 6000
+    val eori: String = "test_eori"
+    val accountBalance: Int = 6000
     val balances: CDSCashBalance = CDSCashBalance(None)
-    val accNumber = "12345678"
+    val accNumber: String = "12345678"
 
     def view(accountModel: CashAccountViewModel,
              showBalance: Boolean = true): Document =
       Jsoup.parse(app.injector.instanceOf[cash_account_balance].apply(accountModel, showBalance).body)
+
+    def view02(accountModel: CashAccountViewModel,
+               showBalance: Boolean = true,
+               showLastTransactionsHeading: Boolean = false): Document =
+      Jsoup.parse(app.injector.instanceOf[cash_account_balance].apply(
+        accountModel, showBalance, showLastTransactionsHeading).body)
   }
 }

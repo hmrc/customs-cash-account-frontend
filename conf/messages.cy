@@ -265,6 +265,11 @@ cf.cash-account.transactions.request-transactions.download-csv.post-message = By
 cf.cash-account.transactions.search-for-transactions.heading = Chwilio am drafodion
 cf.cash-account.transactions.search-for-transactions.hint = Gallwch chwilio drwy MRN, UCR neu union swm taliad sy’n cynnwys ‘£’
 
+cf.cash-account.transactions.too-many-transactions.hint01 = Mae gormod o drafodion ar gyfer y mis hwn i’w dangos
+cf.cash-account.transactions.too-many-transactions.hint02 = ond gallwch
+cf.cash-account.transactions.too-many-transactions.hint03 = ofyn a lawrlwytho’ch trafodion fel ffeil CSV.
+cf.cash-account.transactions.too-many-transactions.hint04 = Bydd y ffeil CSV ar gael i’w lawrlwytho cyn pen 48 awr.
+
 site.continue=Cadarnhau ac anfon
 
 cf.cash-account.transactions.title=Pa drafodion cyfrif arian parod sydd eu hangen arnoch?

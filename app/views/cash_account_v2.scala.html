@@ -72,9 +72,18 @@
 
     }
 
-    @viewModel.dailyStatements
+    @if(viewModel.hasMaxTransactionsExceeded) {
 
-    @viewModel.requestTransactionsHeading
+        @viewModel.tooManyTransactionsHeading.map(identity)
+
+        @viewModel.tooManyTransactionsStatement.map(identity)
+
+    } else {
+
+        @viewModel.dailyStatements
+
+        @viewModel.requestTransactionsHeading
+    }
 
     @viewModel.downloadCSVFileLinkUrl
 

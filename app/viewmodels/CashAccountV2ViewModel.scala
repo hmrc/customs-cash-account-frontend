@@ -35,9 +35,12 @@ case class CashAccountV2ViewModel(pageTitle: String,
                                   dailyStatements: HtmlFormat.Appendable,
                                   requestTransactionsHeading: HtmlFormat.Appendable,
                                   downloadCSVFileLinkUrl: HtmlFormat.Appendable,
-                                  helpAndSupportGuidance: GuidanceRow,
+                                  hasMaxTransactionsExceeded: Boolean,
+                                  tooManyTransactionsHeading: Option[HtmlFormat.Appendable],
+                                  tooManyTransactionsStatement: Option[HtmlFormat.Appendable],
                                   hasRequestedStatements: Boolean,
-                                  cashStatementNotification: HtmlFormat.Appendable)
+                                  cashStatementNotification: HtmlFormat.Appendable,
+                                  helpAndSupportGuidance: GuidanceRow)
 
 object CashAccountV2ViewModel {
 
@@ -55,14 +58,18 @@ object CashAccountV2ViewModel {
         linkUrl = config.requestedStatements(CashStatement),
         linkText = msgs("cf.cash-account.requested.statements.available.link.text"),
         postMessage = msgs("cf.cash-account.requested.statements.available.text.post"))
-    } else { HtmlFormat.empty }
+    } else {
+      HtmlFormat.empty
+    }
+
+    val hasMaxTransactionsExceeded: Boolean = cashTrans.maxTransactionsExceeded.getOrElse(false)
 
     val dailyStatementsComponent: HtmlFormat.Appendable =
       new daily_statements_v2(emptyGovUkTableComponent).apply(CashAccountDailyStatementsViewModel(cashTrans))
 
     val cashAccountBalance: HtmlFormat.Appendable =
       new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
-        .apply(model = CashAccountViewModel(eori, account))
+        .apply(model = CashAccountViewModel(eori, account), showLastTransactionsHeading = !hasMaxTransactionsExceeded)
 
     val requestTransactionsHeading: HtmlFormat.Appendable =
       h2Component(
@@ -75,20 +82,61 @@ object CashAccountV2ViewModel {
       cashAccountBalance = cashAccountBalance,
       dailyStatements = dailyStatementsComponent,
       requestTransactionsHeading = requestTransactionsHeading,
-      downloadCSVFileLinkUrl = downloadCSVFileLinkUrl,
-      helpAndSupportGuidance = helpAndSupport,
+      downloadCSVFileLinkUrl = downloadCSVFileLinkUrl(hasMaxTransactionsExceeded),
+      hasMaxTransactionsExceeded = hasMaxTransactionsExceeded,
+      tooManyTransactionsHeading = tooManyTransactionsHeading(hasMaxTransactionsExceeded),
+      tooManyTransactionsStatement = tooManyTransactionsStatement(hasMaxTransactionsExceeded),
       hasRequestedStatements = hasRequestedStatements,
-      cashStatementNotification = notificationPanel)
+      cashStatementNotification = notificationPanel,
+      helpAndSupportGuidance = helpAndSupport)
   }
 
-  private def downloadCSVFileLinkUrl(implicit msgs: Messages): HtmlFormat.Appendable = {
-    linkComponent(
-      LinkComponentValues(
-        pId = Some("download-scv-file"),
-        linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
-        location = controllers.routes.RequestTransactionsController.onPageLoad().url,
-        postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
-        enableLineBreakBeforePostMessage = true))
+  private def tooManyTransactionsHeading(hasMaxTransactionsExceeded: Boolean
+                                        )(implicit msgs: Messages): Option[HtmlFormat.Appendable] = {
+    if (hasMaxTransactionsExceeded) {
+      Some(h2Component(
+        msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
+        id = Some("last-six-month-transactions-heading")))
+    } else {
+      None
+    }
+  }
+
+  private def tooManyTransactionsStatement(hasMaxTransactionsExceeded: Boolean
+                                          )(implicit msgs: Messages): Option[HtmlFormat.Appendable] = {
+    if (hasMaxTransactionsExceeded) {
+      Some(pComponent(
+        id = Some("exceeded-threshold-statement"),
+        messageKey = "cf.cash-account.transactions.too-many-transactions.hint01",
+        classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7"))
+    } else {
+      None
+    }
+  }
+
+  private def downloadCSVFileLinkUrl(hasMaxTransactionsExceeded: Boolean
+                                    )(implicit msgs: Messages): HtmlFormat.Appendable = {
+
+    if (hasMaxTransactionsExceeded) {
+      linkComponent(
+        LinkComponentValues(
+          pId = Some("download-scv-file"),
+          location = controllers.routes.RequestTransactionsController.onPageLoad().url,
+          preLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint02"),
+          linkMessageKey = "cf.cash-account.transactions.too-many-transactions.hint03",
+          postLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint04"),
+          enableLineBreakBeforePostMessage = true,
+          pClass = "govuk-body govuk-!-margin-bottom-9"))
+
+    } else {
+      linkComponent(
+        LinkComponentValues(
+          pId = Some("download-scv-file"),
+          linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
+          location = controllers.routes.RequestTransactionsController.onPageLoad().url,
+          postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
+          enableLineBreakBeforePostMessage = true))
+    }
   }
 
   private def helpAndSupport(implicit appConfig: AppConfig, messages: Messages): GuidanceRow = {

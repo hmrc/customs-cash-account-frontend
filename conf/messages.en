@@ -275,6 +275,11 @@ cf.cash-account.transactions.request-transactions.download-csv.post-message = Th
 cf.cash-account.transactions.search-for-transactions.heading = Search for transactions
 cf.cash-account.transactions.search-for-transactions.hint = You can search by MRN, UCR or exact payment amount that includes ‘£’
 
+cf.cash-account.transactions.too-many-transactions.hint01 = There are too many transactions for this month to display
+cf.cash-account.transactions.too-many-transactions.hint02 = but you can
+cf.cash-account.transactions.too-many-transactions.hint03 = request and download your transactions as a CSV file.
+cf.cash-account.transactions.too-many-transactions.hint04 = The CSV file will be available to download within 48 hours.
+
 cf.cash-account.transactions.confirmation.statements=We received your request for transactions
 cf.cash-account.transactions.confirmation.next=What happens next
 cf.cash-account.transactions.confirmation.email=We’ll send an email within 48 hours to someemail@mail.com when your request is processed.
