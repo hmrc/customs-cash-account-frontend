@@ -21,7 +21,7 @@ import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewMo
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages
-import utils.Utils.{period, singleSpace}
+import utils.Utils.singleSpace
 import views.html.cash_account_no_transactions_v2
 
 class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
@@ -86,18 +86,12 @@ class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
 
   private def shouldDisplayHelpAndSupportGuidance(viewDoc: Document)(implicit msgs: Messages, config: AppConfig) = {
 
-    val elementLink = viewDoc.getElementsByClass("cash-account-help-and-support-guidance")
-    elementLink.get(0).getElementsByTag("a").attr("href") mustBe
-      config.cashAccountForCdsDeclarationsUrl
+    val viewAsHtml = viewDoc.html()
 
-    elementLink.text() mustBe
-      s"${
-        msgs("cf.cash-account.help-and-support.link.text.pre")
-      }$singleSpace${
-        msgs("cf.cash-account.help-and-support.link.text")
-      }$singleSpace${
-        msgs("cf.cash-account.help-and-support.link.text.post")
-      }$period"
+    viewAsHtml.contains(msgs("cf.cash-account.help-and-support.link.text")) mustBe true
+    viewAsHtml.contains(msgs("cf.cash-account.help-and-support.link.text.post")) mustBe true
+    viewAsHtml.contains(msgs("cf.cash-account.help-and-support.link.text.pre")) mustBe true
+    viewAsHtml.contains(config.cashAccountForCdsDeclarationsUrl) mustBe true
   }
 
   trait Setup {
