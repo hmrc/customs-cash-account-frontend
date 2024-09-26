@@ -19,10 +19,7 @@ package controllers
 import cats.data.EitherT.*
 import cats.instances.future.*
 import config.{AppConfig, ErrorHandler}
-import connectors.{
-  CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested,
-  MaxTransactionsExceeded
-}
+import connectors.{CustomsFinancialsApiConnector, ErrorResponse, MaxTransactionsExceeded, NoTransactionsAvailable, TooManyTransactionsRequested}
 import controllers.actions.{EmailAction, IdentifierAction}
 import helpers.CashAccountUtils
 import models.*
@@ -31,7 +28,7 @@ import org.slf4j.LoggerFactory
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import viewmodels.{CashTransactionsViewModel, CashAccountV2ViewModel}
+import viewmodels.{CashAccountV2ViewModel, CashTransactionsViewModel}
 import views.html.*
 
 import java.time.LocalDate
@@ -43,7 +40,7 @@ import play.api.data.Form
 class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
                                         verifyEmail: EmailAction,
                                         apiConnector: CustomsFinancialsApiConnector,
-                                        showAccountsView: cash_account_v2,
+                                        accountsView: cash_account_v2,
                                         unavailable: cash_account_not_available,
                                         transactionsUnavailable: cash_account_transactions_not_available,
                                         noTransactions: cash_account_no_transactions_v2,
@@ -90,24 +87,33 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
                                                 appConfig: AppConfig): Future[Result] = {
     apiConnector.retrieveCashTransactions(account.number, from, to).map {
 
-      case Left(errorResponse) => errorResponse match {
-        case NoTransactionsAvailable => account.balances.AvailableAccountBalance match {
-          case Some(v) if v == 0 => Ok(noTransactions(CashAccountViewModel(req.eori, account)))
-          case Some(_) => Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
-          case None => Ok(noTransactions(CashAccountViewModel(req.eori, account)))
-        }
+      case Left(errorResponse) => processErrorResponse(account, errorResponse)
+      case Right(cashTransactions) => Ok(accountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions)))
+    }
+  }
 
-        case TooManyTransactionsRequested => Redirect(routes.CashAccountV2Controller.tooManyTransactions())
+  private def processErrorResponse(account: CashAccount, errorResponse: ErrorResponse)
+                                  (implicit request: IdentifierRequest[AnyContent], appConfig: AppConfig) = {
+    errorResponse match {
+      case NoTransactionsAvailable => checkBalanceAndDisplayNoTransactionsView(account)
 
-        case MaxTransactionsExceeded =>
-          Ok(showAccountsView(form, CashAccountV2ViewModel(req.eori, account, CashTransactions(Seq(), Seq()))))
+      case TooManyTransactionsRequested => Redirect(routes.CashAccountV2Controller.tooManyTransactions())
 
-        case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account),
-          appConfig.transactionsTimeoutFlag))
-      }
+      case MaxTransactionsExceeded =>
+        Ok(accountsView(form, CashAccountV2ViewModel(request.eori, account, CashTransactions(Seq(), Seq()))))
 
-      case Right(cashTransactions) =>
-          Ok(showAccountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions)))
+      case _ => Ok(transactionsUnavailable(CashAccountViewModel(request.eori, account), appConfig.transactionsTimeoutFlag))
+    }
+  }
+
+  private def checkBalanceAndDisplayNoTransactionsView(account: CashAccount)
+                                                      (implicit request: IdentifierRequest[AnyContent]) = {
+    val isBrandNewCashAccount = (balance: BigDecimal) => balance == 0
+
+    account.balances.AvailableAccountBalance match {
+      case Some(v) if isBrandNewCashAccount(v) => Ok(noTransactions(CashAccountViewModel(request.eori, account)))
+      case Some(_) => Ok(noTransactionsWithBalance(CashAccountViewModel(request.eori, account)))
+      case None => Ok(noTransactions(CashAccountViewModel(request.eori, account)))
     }
   }
 
