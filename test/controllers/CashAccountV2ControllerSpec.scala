@@ -19,7 +19,6 @@ package controllers
 import config.AppConfig
 import connectors.*
 import models.*
-import models.domain.EORI
 import models.email.{UndeliverableEmail, UnverifiedEmail}
 import play.api.Application
 import play.api.http.Status
@@ -30,7 +29,8 @@ import play.api.test.Helpers.*
 import services.AuditingService
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
-import views.html.{cash_account_no_transactions_v2, cash_account_no_transactions_with_balance, cash_account_transactions_not_available, cash_account_v2}
+import views.html.{cash_account_no_transactions_v2, cash_account_no_transactions_with_balance,
+  cash_account_transactions_not_available}
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -39,10 +39,6 @@ import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.eq as eqTo
 import play.api.mvc.{AnyContentAsEmpty, Result}
-import viewmodels.CashAccountV2ViewModel
-import forms.SearchTransactionsFormProvider
-import play.api.data.Form
-import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 
 class CashAccountV2ControllerSpec extends SpecBase {
 
@@ -229,10 +225,6 @@ class CashAccountV2ControllerSpec extends SpecBase {
         .build()
 
       implicit val msgs: Messages = messages(app)
-      implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
-
-      val view: cash_account_v2 = app.injector.instanceOf[cash_account_v2]
-      val form = new SearchTransactionsFormProvider().apply()
 
       running(app) {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
@@ -242,11 +234,8 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
 
-        /*contentAsString(result) mustEqual
-          view(form,
-            CashAccountV2ViewModel(eori = eori,
-              account = cashAccount,
-              cashTrans = cashTransactionsWithNoStatements))*/
+        contentAsString(result) must
+          include regex msgs("cf.cash-account.transactions.no-transactions-for-last-six-months")
       }
     }
 

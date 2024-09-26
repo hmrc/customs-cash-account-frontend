@@ -19,7 +19,10 @@ package controllers
 import cats.data.EitherT.*
 import cats.instances.future.*
 import config.{AppConfig, ErrorHandler}
-import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested, MaxTransactionsExceeded}
+import connectors.{
+  CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested,
+  MaxTransactionsExceeded
+}
 import controllers.actions.{EmailAction, IdentifierAction}
 import helpers.CashAccountUtils
 import models.*
