@@ -310,7 +310,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
         val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
         val result = route(app, request).value
 
-        contentAsString(result) must include regex "The CSV file will be available to download within 24 hours"
+        contentAsString(result) must include regex "The CSV file will be available to download within 48 hours"
       }
     }
 

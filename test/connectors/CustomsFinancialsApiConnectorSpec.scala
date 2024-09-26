@@ -21,7 +21,7 @@ import models.*
 import models.request.{CashAccountStatementRequestDetail, CashDailyStatementRequest, IdentifierRequest}
 import org.mockito.ArgumentMatchers.{any, anyString, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE}
+import play.api.http.Status._
 import play.api.inject.bind
 import play.api.test.Helpers.*
 import play.api.{Application, inject}

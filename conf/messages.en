@@ -271,7 +271,7 @@ cf.cash-account.transactions.request.review.account=Account:
 cf.cash-account.transactions.request-transactions.heading = Request transactions
 cf.cash-account.transactions.transactions-for-last-six-months.heading = Your transactions for the last 6 months
 cf.cash-account.transactions.request-transactions.download-csv.url = Request by date and download your transactions as a CSV file.
-cf.cash-account.transactions.request-transactions.download-csv.post-message = The CSV file will be available to download within 24 hours.
+cf.cash-account.transactions.request-transactions.download-csv.post-message = The CSV file will be available to download within 48 hours.
 cf.cash-account.transactions.search-for-transactions.heading = Search for transactions
 cf.cash-account.transactions.search-for-transactions.hint = You can search by MRN, UCR or exact payment amount that includes ‘£’
 
