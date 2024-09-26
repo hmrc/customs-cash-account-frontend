@@ -62,12 +62,8 @@ class DailyStatementsV2Spec extends ViewTestHelper {
       msgs("cf.cash-account.transactions.no-transactions-for-last-six-months")
   }
 
-  private def shouldNotDisplayNoTransactionsFromLastSixMonthsMessage(viewDocument: Document)(implicit msgs: Messages) = {
+  private def shouldNotDisplayNoTransactionsFromLastSixMonthsMessage(viewDocument: Document) = {
     Option(viewDocument.getElementById("no-transactions-for-last-six-months-text")) mustBe empty
-  }
-
-  private def shouldNotDisplayTransForLastSixMonthsHeading(viewDocument: Document) = {
-    Option(viewDocument.getElementById("transactions-for-last-six-months-heading")) mustBe empty
   }
 
   private def shouldDisplayTableHeaders(viewDocument: Document)(implicit msgs: Messages) = {
