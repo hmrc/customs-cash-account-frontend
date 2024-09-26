@@ -175,6 +175,8 @@ cf.pager.transactions=diwrnodau trafodion
 # ----------------------------------------------------------
 
 cf.cash-account.detail.no-transactions.p1 = Gallwch ddefnyddio’ch cyfrif arian parod i dalu trethi a thollau mewnforio. Gallwch hefyd awdurdodi asiant i ddefnyddio’r cyfrif ar eich rhan.
+cf.cash-account.detail.no-transactions.import-duties = Gallwch ddefnyddio’ch cyfrif arian parod i dalu trethi a thollau mewnforio.
+cf.cash-account.detail.no-transactions.authorise-an-agent = Gallwch hefyd ddefnyddio cyfrif arian parod asiant neu awdurdodi asiant i ddefnyddio’ch cyfrif ar eich rhan.
 cf.cash-account.detail.link.pre = Ewch at i ddysgu sut i
 cf.cash-account.detail.link = ddefnyddio cyfrif arian parod ar gyfer datganiadau’r Gwasanaeth Datgan Tollau (CDS)
 cf.cash-account.detail.link.post = ar GOV.UK

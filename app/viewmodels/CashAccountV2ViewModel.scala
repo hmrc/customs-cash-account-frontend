@@ -50,7 +50,7 @@ object CashAccountV2ViewModel {
 
     val cashAccountBalance: HtmlFormat.Appendable =
       new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
-        .apply(model = CashAccountViewModel(eori, account))
+        .apply(model = CashAccountViewModel(eori, account), displayLastSixMonthsHeading = false)
 
     val requestTransactionsHeading: HtmlFormat.Appendable =
       h2Component(

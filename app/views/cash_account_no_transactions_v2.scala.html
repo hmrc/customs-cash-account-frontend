@@ -36,8 +36,14 @@
     @cash_account_balance(model = account, displayLastSixMonthsHeading = false)
 
     @p(
-        message = "cf.cash-account.detail.no-transactions.p1",
-        id = Some("cash-account-import-duties-guidance")
+        message = "cf.cash-account.detail.no-transactions.import-duties",
+        id = Some("cash-account-import-duties-guidance"),
+        classes= "govuk-body govuk-!-margin-bottom-0"
+    )
+
+    @p(
+        message = "cf.cash-account.detail.no-transactions.authorise-an-agent",
+        id = Some("cash-account-authorise-an-agent")
     )
 
     @p(
