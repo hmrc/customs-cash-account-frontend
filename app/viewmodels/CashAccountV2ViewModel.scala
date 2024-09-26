@@ -55,7 +55,8 @@ object CashAccountV2ViewModel {
     val requestTransactionsHeading: HtmlFormat.Appendable =
       h2Component(
         msgKey = "cf.cash-account.transactions.request-transactions.heading",
-        id = Some("request-transactions-heading"))
+        id = Some("request-transactions-heading"),
+        classes = "govuk-heading-m govuk-!-margin-top-9")
 
     CashAccountV2ViewModel(
       pageTitle = msgs("cf.cash-account.detail.title"),

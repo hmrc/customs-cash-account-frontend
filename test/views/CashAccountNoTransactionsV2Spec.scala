@@ -36,6 +36,7 @@ class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
 
       shouldDisplayCorrectAccountDetails(viewDoc, accNumber)
       shouldDisplayPayImportDutyAndTaxesGuidance(viewDoc)
+      shouldDisplayAuthoriseAnAgentGuidance(viewDoc)
       shouldDisplayTopUpGuidance(viewDoc)
       shouldDisplayFindOutHowLink(viewDoc)
       shouldDisplayHelpAndSupportGuidanceHeader(viewDoc)
@@ -54,7 +55,12 @@ class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
 
   private def shouldDisplayPayImportDutyAndTaxesGuidance(viewDoc: Document)(implicit msgs: Messages) = {
     viewDoc.getElementById("cash-account-import-duties-guidance").text() mustBe
-      msgs("cf.cash-account.detail.no-transactions.p1")
+      msgs("cf.cash-account.detail.no-transactions.import-duties")
+  }
+
+  private def shouldDisplayAuthoriseAnAgentGuidance(viewDoc: Document)(implicit msgs: Messages) = {
+    viewDoc.getElementById("cash-account-authorise-an-agent").text() mustBe
+      msgs("cf.cash-account.detail.no-transactions.authorise-an-agent")
   }
 
   private def shouldDisplayTopUpGuidance(viewDoc: Document)(implicit msgs: Messages) = {
@@ -66,10 +72,10 @@ class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
 
     val elementLink = viewDoc.getElementById("cash-account-top-up-guidance-link")
     elementLink.attribute("href").getValue mustBe config.cashAccountForCdsDeclarationsUrl
-    elementLink.text() mustBe msgs("cf.cash-account.how-to-use.guidance.link")
+    elementLink.text() mustBe msgs("cf.cash-account.how-to-use.guidance.link.text")
 
     viewDoc.text().contains(msgs("cf.cash-account.how-to-use.guidance.text.pre")) mustBe true
-    viewDoc.text().contains(msgs("cf.cash-account.how-to-use.guidance.link")) mustBe true
+    viewDoc.text().contains(msgs("cf.cash-account.how-to-use.guidance.link.text")) mustBe true
     viewDoc.text().contains(msgs("cf.cash-account.how-to-use.guidance.text.post")) mustBe true
   }
 

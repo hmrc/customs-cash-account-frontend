@@ -76,7 +76,8 @@ class CashAccountV2ViewModelSpec extends SpecBase {
                                                             (implicit msgs: Messages): Assertion = {
     heading mustBe h2Component(
       msgKey = "cf.cash-account.transactions.request-transactions.heading",
-      id = Some("request-transactions-heading"))
+      id = Some("request-transactions-heading"),
+      classes = "govuk-heading-m govuk-!-margin-top-9")
   }
 
   private def shouldProduceCorrectDownloadCSVFileLinkUrl(link: HtmlFormat.Appendable)
