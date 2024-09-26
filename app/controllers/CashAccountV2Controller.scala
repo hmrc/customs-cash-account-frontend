@@ -104,13 +104,7 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
       }
 
       case Right(cashTransactions) =>
-        if (cashTransactions.availableTransactions) {
-          Ok(
-            showAccountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions.copy(cashDailyStatements = Seq())))
-          )
-        } else {
-          Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
-        }
+          Ok(showAccountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions)))
     }
   }
 
