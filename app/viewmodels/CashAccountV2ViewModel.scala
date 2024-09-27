@@ -29,15 +29,19 @@ case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
                        link: Option[HtmlFormat.Appendable] = None,
                        paragraph: Option[HtmlFormat.Appendable] = None)
 
+case class TooManyTransactionsSection(heading: HtmlFormat.Appendable,
+                                      paragraph: HtmlFormat.Appendable)
+
+case class DailyStatementsSection(dailyStatements: HtmlFormat.Appendable,
+                                  requestTransactionsHeading: HtmlFormat.Appendable)
+
 case class CashAccountV2ViewModel(pageTitle: String,
                                   backLink: String,
                                   cashAccountBalance: HtmlFormat.Appendable,
-                                  dailyStatements: HtmlFormat.Appendable,
-                                  requestTransactionsHeading: HtmlFormat.Appendable,
+                                  dailyStatementsSection: Option[DailyStatementsSection] = None,
                                   downloadCSVFileLinkUrl: HtmlFormat.Appendable,
                                   hasMaxTransactionsExceeded: Boolean,
-                                  tooManyTransactionsHeading: Option[HtmlFormat.Appendable],
-                                  tooManyTransactionsStatement: Option[HtmlFormat.Appendable],
+                                  tooManyTransactionsSection: Option[TooManyTransactionsSection] = None,
                                   hasRequestedStatements: Boolean,
                                   cashStatementNotification: HtmlFormat.Appendable,
                                   helpAndSupportGuidance: GuidanceRow)
@@ -52,7 +56,28 @@ object CashAccountV2ViewModel {
 
     val hasRequestedStatements: Boolean = statements.exists(_.requestedStatements.nonEmpty)
 
-    val notificationPanel = if (hasRequestedStatements) {
+    val hasMaxTransactionsExceeded: Boolean = cashTrans.maxTransactionsExceeded.getOrElse(false)
+
+    val cashAccountBalance: HtmlFormat.Appendable =
+      new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
+        .apply(model = CashAccountViewModel(eori, account), displayLastSixMonthsHeading = false)
+
+    CashAccountV2ViewModel(
+      pageTitle = msgs("cf.cash-account.detail.title"),
+      backLink = config.customsFinancialsFrontendHomepage,
+      cashAccountBalance = cashAccountBalance,
+      dailyStatementsSection = populateDailyStatementsSection(cashTrans),
+      downloadCSVFileLinkUrl = downloadCSVFileLinkUrl(hasMaxTransactionsExceeded),
+      hasMaxTransactionsExceeded = hasMaxTransactionsExceeded,
+      tooManyTransactionsSection = populateTooManyTransactionsSection(hasMaxTransactionsExceeded),
+      hasRequestedStatements = hasRequestedStatements,
+      cashStatementNotification = populateNotificationPanel(hasRequestedStatements),
+      helpAndSupportGuidance = helpAndSupport)
+  }
+
+  private def populateNotificationPanel(hasRequestedStatements: Boolean)
+                                       (implicit msgs: Messages, config: AppConfig)= {
+    if (hasRequestedStatements) {
       notificationPanelComponent(
         showNotification = true,
         preMessage = msgs("cf.cash-account.requested.statements.available.text.pre"),
@@ -62,35 +87,43 @@ object CashAccountV2ViewModel {
     } else {
       HtmlFormat.empty
     }
+  }
 
-    val hasMaxTransactionsExceeded: Boolean = cashTrans.maxTransactionsExceeded.getOrElse(false)
+  private def populateTooManyTransactionsSection(hasMaxTransactionsExceeded: Boolean)
+                                                (implicit msgs: Messages): Option[TooManyTransactionsSection] = {
+    if (hasMaxTransactionsExceeded) {
+      val heading = h2Component(
+        msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
+        id = Some("last-six-month-transactions-heading"))
 
-    val dailyStatementsComponent: HtmlFormat.Appendable =
-      new daily_statements_v2(emptyGovUkTableComponent).apply(CashAccountDailyStatementsViewModel(cashTrans))
+      val paragraph = pComponent(
+        id = Some("exceeded-threshold-statement"),
+        messageKey = "cf.cash-account.transactions.too-many-transactions.hint01",
+        classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7")
 
-    val cashAccountBalance: HtmlFormat.Appendable =
-      new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
-        .apply(model = CashAccountViewModel(eori, account), displayLastSixMonthsHeading = !hasMaxTransactionsExceeded)
+      Some(TooManyTransactionsSection(heading, paragraph))
+    } else {
+      None
+    }
+  }
 
-    val requestTransactionsHeading: HtmlFormat.Appendable =
-      h2Component(
+  private def populateDailyStatementsSection(cashTrans: CashTransactions)
+                                            (implicit msgs: Messages): Option[DailyStatementsSection] = {
+    val hasMaxTransactionsExceeded = cashTrans.maxTransactionsExceeded.getOrElse(false)
+
+    if (hasMaxTransactionsExceeded) {
+      None
+    } else {
+      val dailyStatements: HtmlFormat.Appendable =
+        new daily_statements_v2(emptyGovUkTableComponent).apply(CashAccountDailyStatementsViewModel(cashTrans))
+
+      val requestTransactionsHeading: HtmlFormat.Appendable = h2Component(
         msgKey = "cf.cash-account.transactions.request-transactions.heading",
         id = Some("request-transactions-heading"),
         classes = "govuk-heading-m govuk-!-margin-top-9")
 
-    CashAccountV2ViewModel(
-      pageTitle = msgs("cf.cash-account.detail.title"),
-      backLink = config.customsFinancialsFrontendHomepage,
-      cashAccountBalance = cashAccountBalance,
-      dailyStatements = dailyStatementsComponent,
-      requestTransactionsHeading = requestTransactionsHeading,
-      downloadCSVFileLinkUrl = downloadCSVFileLinkUrl(hasMaxTransactionsExceeded),
-      hasMaxTransactionsExceeded = hasMaxTransactionsExceeded,
-      tooManyTransactionsHeading = tooManyTransactionsHeading(hasMaxTransactionsExceeded),
-      tooManyTransactionsStatement = tooManyTransactionsStatement(hasMaxTransactionsExceeded),
-      hasRequestedStatements = hasRequestedStatements,
-      cashStatementNotification = notificationPanel,
-      helpAndSupportGuidance = helpAndSupport)
+      Some(DailyStatementsSection(dailyStatements, requestTransactionsHeading))
+    }
   }
 
   private def tooManyTransactionsHeading(hasMaxTransactionsExceeded: Boolean

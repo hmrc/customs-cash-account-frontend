@@ -52,10 +52,9 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
         shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
         shouldProduceCorrectAccountBalance(cashAccountViewModel.cashAccountBalance, eoriNumber, cashAccount)
-        shouldProduceCorrectRequestTransactionsHeading(cashAccountViewModel.requestTransactionsHeading)
         shouldProduceCorrectDownloadCSVFileLink(cashAccountViewModel.downloadCSVFileLinkUrl)
         shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
-        shouldContainCorrectDailyStatementsComponent(app, cashAccountViewModel.dailyStatements, cashTransactions)
+        shouldContainCorrectDailyStatementsSection(app, cashAccountViewModel.dailyStatementsSection.get, cashTransactions)
       }
 
       "when maxTransactionsExceeded is true" in new Setup {
@@ -67,8 +66,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
         shouldProduceCorrectAccountBalanceWithoutLastTxnHeading(cashAccountViewModel.cashAccountBalance,
           eoriNumber, cashAccount)
-        shouldProduceCorrectTooManyTransactionsHeading(cashAccountViewModel.tooManyTransactionsHeading.get)
-        shouldProduceCorrectTooManyTransactionsStatement(cashAccountViewModel.tooManyTransactionsStatement.get)
+        shouldProduceCorrectTooManyTransactionsSection(cashAccountViewModel.tooManyTransactionsSection.get)
         shouldProduceCorrectDownloadCSVFileLinkForMaxTransactionExceeded(cashAccountViewModel.downloadCSVFileLinkUrl)
         shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
       }
@@ -95,12 +93,11 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     accBalance mustBe expectedAccBalance
   }
 
-  private def shouldProduceCorrectAccountBalanceWithoutLastTxnHeading(
-                                                                       accBalance: HtmlFormat.Appendable,
-                                                                       eori: String,
-                                                                       account: CashAccount
-                                                                     )(implicit msgs: Messages,
-                                                                       appConfig: AppConfig): Assertion = {
+  private def shouldProduceCorrectAccountBalanceWithoutLastTxnHeading(accBalance: HtmlFormat.Appendable,
+                                                                      eori: String,
+                                                                      account: CashAccount)
+                                                                     (implicit msgs: Messages,
+                                                                      appConfig: AppConfig): Assertion = {
     val expectedAccBalance: HtmlFormat.Appendable =
       new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
         .apply(model = CashAccountViewModel(eori, account), displayLastSixMonthsHeading = false)
@@ -108,27 +105,17 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     accBalance mustBe expectedAccBalance
   }
 
-  private def shouldProduceCorrectRequestTransactionsHeading(heading: HtmlFormat.Appendable)
+  private def shouldProduceCorrectTooManyTransactionsSection(section: TooManyTransactionsSection)
                                                             (implicit msgs: Messages): Assertion = {
-    heading mustBe h2Component(
-      msgKey = "cf.cash-account.transactions.request-transactions.heading",
-      id = Some("request-transactions-heading"),
-      classes = "govuk-heading-m govuk-!-margin-top-9")
-  }
-
-  private def shouldProduceCorrectTooManyTransactionsHeading(heading: HtmlFormat.Appendable)
-                                                            (implicit msgs: Messages): Assertion = {
-    heading mustBe h2Component(
+    section.heading mustBe h2Component(
       msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
       id = Some("last-six-month-transactions-heading"))
-  }
 
-  private def shouldProduceCorrectTooManyTransactionsStatement(heading: HtmlFormat.Appendable)
-                                                              (implicit msgs: Messages): Assertion = {
-    heading mustBe pComponent(
+    section.paragraph mustBe pComponent(
       id = Some("exceeded-threshold-statement"),
       messageKey = "cf.cash-account.transactions.too-many-transactions.hint01",
       classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7")
+
   }
 
   private def shouldProduceCorrectDownloadCSVFileLink(link: HtmlFormat.Appendable)
@@ -171,14 +158,19 @@ class CashAccountV2ViewModelSpec extends SpecBase {
 
   }
 
-  private def shouldContainCorrectDailyStatementsComponent(app: Application,
-                                                           dailyStatementsComponent: HtmlFormat.Appendable,
-                                                           cashTransactions: CashTransactions)
-                                                          (implicit msgs: Messages): Assertion = {
+  private def shouldContainCorrectDailyStatementsSection(app: Application,
+                                                         section: DailyStatementsSection,
+                                                         cashTransactions: CashTransactions)
+                                                        (implicit msgs: Messages) = {
     val expectedDailyStatementsComponent =
       app.injector.instanceOf[daily_statements_v2].apply(CashAccountDailyStatementsViewModel(cashTransactions))
 
-    dailyStatementsComponent mustBe expectedDailyStatementsComponent
+    section.dailyStatements mustBe expectedDailyStatementsComponent
+
+    section.requestTransactionsHeading mustBe h2Component(
+      msgKey = "cf.cash-account.transactions.request-transactions.heading",
+      id = Some("request-transactions-heading"),
+      classes = "govuk-heading-m govuk-!-margin-top-9")
   }
 
   trait Setup {
