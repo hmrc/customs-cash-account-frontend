@@ -40,9 +40,7 @@ case class CashAccountV2ViewModel(pageTitle: String,
                                   cashAccountBalance: HtmlFormat.Appendable,
                                   dailyStatementsSection: Option[DailyStatementsSection] = None,
                                   downloadCSVFileLinkUrl: HtmlFormat.Appendable,
-                                  hasMaxTransactionsExceeded: Boolean,
                                   tooManyTransactionsSection: Option[TooManyTransactionsSection] = None,
-                                  hasRequestedStatements: Boolean,
                                   cashStatementNotification: HtmlFormat.Appendable,
                                   helpAndSupportGuidance: GuidanceRow)
 
@@ -68,15 +66,13 @@ object CashAccountV2ViewModel {
       cashAccountBalance = cashAccountBalance,
       dailyStatementsSection = populateDailyStatementsSection(cashTrans),
       downloadCSVFileLinkUrl = downloadCSVFileLinkUrl(hasMaxTransactionsExceeded),
-      hasMaxTransactionsExceeded = hasMaxTransactionsExceeded,
       tooManyTransactionsSection = populateTooManyTransactionsSection(hasMaxTransactionsExceeded),
-      hasRequestedStatements = hasRequestedStatements,
       cashStatementNotification = populateNotificationPanel(hasRequestedStatements),
       helpAndSupportGuidance = helpAndSupport)
   }
 
   private def populateNotificationPanel(hasRequestedStatements: Boolean)
-                                       (implicit msgs: Messages, config: AppConfig)= {
+                                       (implicit msgs: Messages, config: AppConfig) = {
     if (hasRequestedStatements) {
       notificationPanelComponent(
         showNotification = true,
@@ -86,24 +82,6 @@ object CashAccountV2ViewModel {
         postMessage = msgs("cf.cash-account.requested.statements.available.text.post"))
     } else {
       HtmlFormat.empty
-    }
-  }
-
-  private def populateTooManyTransactionsSection(hasMaxTransactionsExceeded: Boolean)
-                                                (implicit msgs: Messages): Option[TooManyTransactionsSection] = {
-    if (hasMaxTransactionsExceeded) {
-      val heading = h2Component(
-        msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
-        id = Some("last-six-month-transactions-heading"))
-
-      val paragraph = pComponent(
-        id = Some("exceeded-threshold-statement"),
-        messageKey = "cf.cash-account.transactions.too-many-transactions.hint01",
-        classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7")
-
-      Some(TooManyTransactionsSection(heading, paragraph))
-    } else {
-      None
     }
   }
 
@@ -123,6 +101,24 @@ object CashAccountV2ViewModel {
         classes = "govuk-heading-m govuk-!-margin-top-9")
 
       Some(DailyStatementsSection(dailyStatements, requestTransactionsHeading))
+    }
+  }
+
+  private def populateTooManyTransactionsSection(hasMaxTransactionsExceeded: Boolean)
+                                                (implicit msgs: Messages): Option[TooManyTransactionsSection] = {
+    if (hasMaxTransactionsExceeded) {
+      val heading = h2Component(
+        msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
+        id = Some("last-six-month-transactions-heading"))
+
+      val paragraph = pComponent(
+        id = Some("exceeded-threshold-statement"),
+        messageKey = "cf.cash-account.transactions.too-many-transactions.hint01",
+        classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7")
+
+      Some(TooManyTransactionsSection(heading, paragraph))
+    } else {
+      None
     }
   }
 
