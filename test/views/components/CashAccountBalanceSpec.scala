@@ -100,6 +100,24 @@ class CashAccountBalanceSpec extends SpecBase {
         shouldNotDisplayAmountText(componentView)
         shouldNotDisplayLastTransactionsText(componentView)
       }
+
+      "displayLastSixMonthsHeading is false and showBalance is true" in new Setup {
+        val balancesValue: CDSCashBalance = CDSCashBalance(Some(BigDecimal(accountBalance)))
+
+        val cashAccount: CashAccount = CashAccount(number = accNumber,
+          owner = eori,
+          status = AccountStatusOpen,
+          balances = balancesValue)
+
+        val model: CashAccountViewModel = CashAccountViewModel(eori, cashAccount)
+
+        val componentView: Document = view(model, displayLastSixMonthsHeading = false)
+
+        shouldDisplayAccountNumberWithText(componentView, accNumber)
+        shouldDisplayCashAccountHeading(componentView)
+        shouldDisplayCorrectAmountWithCorrectFormat(componentView, Some(BigDecimal(accountBalance)))
+        shouldNotDisplayLastTransactionsText(componentView)
+      }
     }
   }
 
@@ -149,7 +167,9 @@ class CashAccountBalanceSpec extends SpecBase {
     val accNumber = "12345678"
 
     def view(accountModel: CashAccountViewModel,
-             showBalance: Boolean = true): Document =
-      Jsoup.parse(app.injector.instanceOf[cash_account_balance].apply(accountModel, showBalance).body)
+             showBalance: Boolean = true,
+             displayLastSixMonthsHeading: Boolean = true): Document =
+      Jsoup.parse(app.injector.instanceOf[cash_account_balance]
+        .apply(accountModel, showBalance, displayLastSixMonthsHeading).body)
   }
 }

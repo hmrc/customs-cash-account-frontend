@@ -42,14 +42,12 @@
             classes = "govuk-label govuk-label--l govuk-!-margin-bottom-7 govuk-!-margin-top-2",
             id = Some("balance-available")
         )
-
-        @if(displayLastSixMonthsHeading) {
-
-            @p(
-                "cf.cash-account.detail.last-transactions",
-                classes="govuk-label govuk-label--m govuk-!-margin-bottom-7",
-                id = Some("last-transactions")
-            )
-        }
     }
 
+    @if(showBalance && displayLastSixMonthsHeading) {
+        @p(
+            "cf.cash-account.detail.last-transactions",
+            classes="govuk-label govuk-label--m govuk-!-margin-bottom-7",
+            id = Some("last-transactions")
+        )
+    }

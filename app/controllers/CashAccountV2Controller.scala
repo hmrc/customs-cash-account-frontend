@@ -92,16 +92,16 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
   }
 
   private def processErrorResponse(account: CashAccount, errorResponse: ErrorResponse)
-                                  (implicit request: IdentifierRequest[AnyContent], appConfig: AppConfig) = {
+                                  (implicit req: IdentifierRequest[AnyContent], appConfig: AppConfig) = {
     errorResponse match {
       case NoTransactionsAvailable => checkBalanceAndDisplayNoTransactionsView(account)
 
       case TooManyTransactionsRequested => Redirect(routes.CashAccountV2Controller.tooManyTransactions())
 
       case MaxTransactionsExceeded =>
-        Ok(accountsView(form, CashAccountV2ViewModel(request.eori, account, CashTransactions(Seq(), Seq()))))
+        Ok(accountsView(form, CashAccountV2ViewModel(req.eori, account, CashTransactions(Seq(), Seq()))))
 
-      case _ => Ok(transactionsUnavailable(CashAccountViewModel(request.eori, account), appConfig.transactionsTimeoutFlag))
+      case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
     }
   }
 
