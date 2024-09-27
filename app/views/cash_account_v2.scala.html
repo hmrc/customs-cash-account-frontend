@@ -50,7 +50,7 @@
 
     @viewModel.cashAccountBalance
 
-    @viewModel.cashStatementNotification
+    @viewModel.cashStatementNotification.map(identity)
 
     @formHelper(action = controllers.routes.CashAccountV2Controller.onSubmit(None)) {
         @errorSummary(form.errors, None)

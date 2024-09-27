@@ -20,9 +20,9 @@ import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
 import models.{
-  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement, CashStatementFile,
-  CashTransactions, Declaration, Payment, Transaction, Withdrawal, CashStatementsForEori, EoriHistory, FileFormat,
-  CashStatementsByMonth
+  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement,
+  CashStatementFile, CashStatementsByMonth, CashStatementsForEori, CashTransactions, Declaration, EoriHistory,
+  FileFormat, Payment, Transaction, Withdrawal
 }
 import models.metadata.CashStatementFileMetadata
 import models.FileRole.CashStatement
@@ -32,7 +32,7 @@ import play.twirl.api.HtmlFormat
 import utils.TestData.*
 import utils.Utils.{
   LinkComponentValues, emptyH1Component, emptyH2InnerComponent, emptyPComponent, h2Component,
-  hmrcNewTabLinkComponent, linkComponent, pComponent
+  hmrcNewTabLinkComponent, linkComponent, notificationPanelComponent, pComponent
 }
 import views.html.components.{cash_account_balance, daily_statements_v2}
 
@@ -57,7 +57,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         shouldContainCorrectDailyStatementsSection(app, cashAccountViewModel.dailyStatementsSection.get, cashTransactions)
       }
 
-      "when maxTransactionsExceeded is true" in new Setup {
+      "maxTransactionsExceeded is true" in new Setup {
 
         val cashAccountViewModel: CashAccountV2ViewModel =
           createCashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions02, cashStatementsForEori)
@@ -69,6 +69,20 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         shouldProduceCorrectTooManyTransactionsSection(cashAccountViewModel.tooManyTransactionsSection.get)
         shouldProduceCorrectDownloadCSVFileLinkForMaxTransactionExceeded(cashAccountViewModel.downloadCSVFileLinkUrl)
         shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
+      }
+
+      "statements are available and notification panel is displayed" in new Setup {
+
+        val cashAccountViewModel: CashAccountV2ViewModel =
+          createCashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions, cashStatementsForEori)
+
+        shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
+        shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
+        shouldProduceCorrectAccountBalance(cashAccountViewModel.cashAccountBalance, eoriNumber, cashAccount)
+        shouldContainNotificationPanel(cashAccountViewModel.cashStatementNotification.get)
+        shouldProduceCorrectDownloadCSVFileLink(cashAccountViewModel.downloadCSVFileLinkUrl)
+        shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
+        shouldContainCorrectDailyStatementsSection(app, cashAccountViewModel.dailyStatementsSection.get, cashTransactions)
       }
     }
 
@@ -91,6 +105,17 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         .apply(model = CashAccountViewModel(eori, account), displayLastSixMonthsHeading = false)
 
     accBalance mustBe expectedAccBalance
+  }
+
+  private def shouldContainNotificationPanel(notification: HtmlFormat.Appendable)
+                                            (implicit msgs: Messages, appConfig: AppConfig): Assertion = {
+
+    notification mustBe notificationPanelComponent(
+      showNotification = true,
+      preMessage = msgs("cf.cash-account.requested.statements.available.text.pre"),
+      linkUrl = appConfig.requestedStatements(CashStatement),
+      linkText = msgs("cf.cash-account.requested.statements.available.link.text"),
+      postMessage = msgs("cf.cash-account.requested.statements.available.text.post"))
   }
 
   private def shouldProduceCorrectAccountBalanceWithoutLastTxnHeading(accBalance: HtmlFormat.Appendable,

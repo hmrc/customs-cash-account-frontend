@@ -38,7 +38,7 @@ case class DailyStatementsSection(dailyStatements: HtmlFormat.Appendable,
 case class CashAccountV2ViewModel(pageTitle: String,
                                   backLink: String,
                                   cashAccountBalance: HtmlFormat.Appendable,
-                                  cashStatementNotification: HtmlFormat.Appendable,
+                                  cashStatementNotification: Option[HtmlFormat.Appendable] = None,
                                   dailyStatementsSection: Option[DailyStatementsSection] = None,
                                   tooManyTransactionsSection: Option[TooManyTransactionsSection] = None,
                                   downloadCSVFileLinkUrl: HtmlFormat.Appendable,
@@ -74,14 +74,14 @@ object CashAccountV2ViewModel {
   private def populateNotificationPanel(hasRequestedStatements: Boolean)
                                        (implicit msgs: Messages, config: AppConfig) = {
     if (hasRequestedStatements) {
-      notificationPanelComponent(
+      Some(notificationPanelComponent(
         showNotification = true,
         preMessage = msgs("cf.cash-account.requested.statements.available.text.pre"),
         linkUrl = config.requestedStatements(CashStatement),
         linkText = msgs("cf.cash-account.requested.statements.available.link.text"),
-        postMessage = msgs("cf.cash-account.requested.statements.available.text.post"))
+        postMessage = msgs("cf.cash-account.requested.statements.available.text.post")))
     } else {
-      HtmlFormat.empty
+      None
     }
   }
 
