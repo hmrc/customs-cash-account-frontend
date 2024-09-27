@@ -90,9 +90,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       Left(UnknownException)
   }
 
-  def retrieveCashTransactions(can: String,
-                               from: LocalDate,
-                               to: LocalDate)
+  def retrieveCashTransactions(can: String, from: LocalDate, to: LocalDate)
                               (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
