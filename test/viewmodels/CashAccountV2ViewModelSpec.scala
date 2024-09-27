@@ -149,7 +149,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
       LinkComponentValues(
         pId = Some("download-scv-file"),
         linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
-        location = controllers.routes.RequestTransactionsController.onPageLoad().url,
+        location = controllers.routes.SelectTransactionsController.onPageLoad().url,
         postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
         enableLineBreakBeforePostMessage = true)
     )
@@ -160,7 +160,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     link mustBe linkComponent(
       LinkComponentValues(
         pId = Some("download-scv-file"),
-        location = controllers.routes.RequestTransactionsController.onPageLoad().url,
+        location = controllers.routes.SelectTransactionsController.onPageLoad().url,
         preLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint02"),
         linkMessageKey = "cf.cash-account.transactions.too-many-transactions.hint03",
         postLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint04"),
