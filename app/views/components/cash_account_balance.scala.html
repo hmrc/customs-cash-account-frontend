@@ -22,7 +22,11 @@
     p: components.p
 )
 
-@(model: CashAccountViewModel, showBalance: Boolean = true, displayLastSixMonthsHeading: Boolean = true)(implicit messages: Messages, appConfig: AppConfig)
+@(
+    model: CashAccountViewModel,
+    showBalance: Boolean = true,
+    displayLastSixMonthsHeading: Boolean = true
+)(implicit messages: Messages, appConfig: AppConfig)
 
     @h2(
         msg = "cf.cash-account.detail.account",
