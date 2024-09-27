@@ -18,9 +18,9 @@ package utils
 
 import config.AppConfig
 import play.api.i18n.Messages
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
-import views.html.components.{h1, h2, inset, link, newTabLink, p, h2Inner}
+import views.html.components.{h1, h2, inset, link, newTabLink, p, h2Inner, notification_panel}
 import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
 
 object Utils {
@@ -44,6 +44,21 @@ object Utils {
                   classes: String = "govuk-heading-m",
                   extraContent: Option[String] = None)(implicit messages: Messages): HtmlFormat.Appendable = {
     new h2().apply(msg = msgKey, id = id, classes = classes, extraContent = extraContent)
+  }
+
+  def notificationPanelComponent(showNotification: Boolean,
+                                 preMessage: String,
+                                 linkUrl: String,
+                                 linkText: String,
+                                 postMessage: String)
+                                (implicit messages: Messages): HtmlFormat.Appendable = {
+    new notification_panel().apply(
+      showNotification = showNotification,
+      preMessage = preMessage,
+      linkUrl = linkUrl,
+      linkText = linkText,
+      postMessage = postMessage
+    )
   }
 
   def linkComponent(input: LinkComponentValues)(implicit messages: Messages): HtmlFormat.Appendable = {

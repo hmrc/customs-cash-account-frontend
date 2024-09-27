@@ -158,6 +158,7 @@ month.9=Medi
 month.10=Hydref
 month.11=Tachwedd
 month.12=Rhagfyr
+month.to=i
 
 
 #Pagination
@@ -199,6 +200,7 @@ cf.cash-account.transactions.request.support.link=cysylltwch â’r llinell gymo
 cf.cash-account.transactions.request.link.pre=Gallwch
 cf.cash-account.transactions.request.link.post=trwy chwilio o ystod dyddiad byrrach.
 cf.cash-account.transactions.request.link=chwilio am a lawrlwytho’ch trafodion fel ffeil CSV
+cf.cash-account.transactions.request.link.previous=chwilio am a lawrlwytho unrhyw drafodion blaenorol fel ffeil CSV
 cf.cash-account.transactions.request.title=Pa drafodion cyfrif arian parod sydd eu hangen arnoch?
 cf.cash-account.transactions.request.legend.hidden.start=pa ddyddiad dechrau sydd ei angen arnoch ar gyfer trafodion cyfrif arian parod?
 cf.cash-account.transactions.request.legend.hidden.end=pa ddyddiad dod i ben sydd ei angen arnoch ar gyfer trafodion cyfrif arian parod?
@@ -223,6 +225,11 @@ cf.cash-account.transactions.result.no.transactions=Dim trafodion cyfrif arian p
 cf.cash-account.transactions.result.no.data=Nid oes gennym ddata o fewn y cyfnodau
 cf.cash-account.transactions.result.transaction=Y trafodion cyfrif arian parod y gofynnwyd amdanynt
 cf.cash-account.transactions.result.download.transactions=Lawrlwythwch ffeil CSV eich trafodion y gofynnwyd amdanynt cyn i chi gau’r ffenestr porwr hon.
+
+# Requested Cash Statement Notification Panel
+cf.cash-account.requested.statements.available.text.pre=Mae’r
+cf.cash-account.requested.statements.available.link.text=trafodion y gwnaethoch gais amdanynt
+cf.cash-account.requested.statements.available.text.post=bellach ar gael
 
 cf.form.error.start.date-too-far-in-past=Ni all y dyddiad ‘o’ fod yn fwy na 6 o flynyddoedd ers nawr.
 cf.form.error.end.date-too-far-in-past=Ni all y dyddiad ‘i’ fod yn fwy na 6 o flynyddoedd ers nawr.
@@ -257,9 +264,14 @@ cf.cash-account.transactions.request-transactions.heading = Gofyn am drafodion
 cf.cash-account.transactions.transactions-for-last-six-months.heading = Eich trafodion ar gyfer y chwe mis diwethaf
 cf.cash-account.transactions.no-transactions-for-last-six-months = Nid oes unrhyw drafodion o’r 6 mis diwethaf i’w harddangos.
 cf.cash-account.transactions.request-transactions.download-csv.url = Gofynnwch yn ôl dyddiad a lawrlwytho’ch trafodion fel ffeil CSV.
-cf.cash-account.transactions.request-transactions.download-csv.post-message = Bydd y ffeil CSV ar gael i’w lawrlwytho cyn pen 24 awr.
+cf.cash-account.transactions.request-transactions.download-csv.post-message = Bydd y ffeil CSV ar gael i’w lawrlwytho cyn pen 48 awr.
 cf.cash-account.transactions.search-for-transactions.heading = Chwilio am drafodion
 cf.cash-account.transactions.search-for-transactions.hint = Gallwch chwilio drwy MRN, UCR neu union swm taliad sy’n cynnwys ‘£’
+
+cf.cash-account.transactions.too-many-transactions.hint01 = Mae gormod o drafodion ar gyfer y mis hwn i’w dangos
+cf.cash-account.transactions.too-many-transactions.hint02 = ond gallwch
+cf.cash-account.transactions.too-many-transactions.hint03 = ofyn a lawrlwytho’ch trafodion fel ffeil CSV.
+cf.cash-account.transactions.too-many-transactions.hint04 = Bydd y ffeil CSV ar gael i’w lawrlwytho cyn pen 48 awr.
 
 site.continue=Cadarnhau ac anfon
 
@@ -267,6 +279,12 @@ cf.cash-account.transactions.title=Pa drafodion cyfrif arian parod sydd eu hange
 cf.cash-account.transactions.heading=Pa drafodion cyfrif arian parod sydd eu hangen arnoch?
 cf.cash-account.transactions.request.date.hint-start-date.v2=Mae’n rhaid i’r dyddiad dechrau fod ar ôl Hydref 2019. Er enghraifft, 3 2021.
 cf.cash-account.transactions.request.date.hint-end-date.v2=Er enghraifft, 3 2021.
+
+cf.cash-account.transactions.confirmation.statements=Mae’ch cais am drafodion wedi dod i law
+cf.cash-account.transactions.confirmation.next=Yr hyn sy’n digwydd nesaf
+cf.cash-account.transactions.confirmation.email=Byddwn yn anfon e-bost at someemail@mail.com cyn pen 48 awr pan fydd eich cais wedi’i brosesu.
+cf.cash-account.transactions.confirmation.download=Byddwch yn gallu lawrlwytho’ch trafodion o’r dudalen trafodion cyfrifon arian parod.
+cf.cash-account.transactions.confirmation.back=Yn ôl i ‘cyfrif arian parod’
 
 cf.cash-account.detail.transactions= Trafodion
 cf.cash-account.detail.payments-caption=Eich taliadau ar gyfer {0}

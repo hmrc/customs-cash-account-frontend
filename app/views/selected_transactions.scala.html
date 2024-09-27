@@ -18,11 +18,11 @@
 
 @this(
         main_template: Layout,
+        formHelper: FormWithCSRF,
         h1: components.h1,
         h2: components.h2,
         p: components.p,
         summaryList: components.summaryList,
-        link: components.link,
         button: components.button,
 )
 
@@ -41,17 +41,19 @@
     fullWidth = false,
     help = true
 ) {
+    @formHelper(action = controllers.routes.SelectedTransactionsController.onSubmit(), Symbol("autoComplete") -> "off") {
 
-    @h2(
-        msg = "cf.cash-account.transactions.request.review.account",
-        id = Some("cash-account.number"),
-        classes = "govuk-caption-xl",
-        extraContent = Some(accountNumber)
-    )
+            @h2(
+                msg = "cf.cash-account.transactions.request.review.account",
+                id = Some("cash-account.number"),
+                classes = "govuk-caption-xl",
+                extraContent = Some(accountNumber)
+            )
 
-    @h1("cf.cash-account.transactions.request.review.heading")
+            @h1("cf.cash-account.transactions.request.review.heading")
 
-    @summaryList(summary, false, true)
+            @summaryList(summary, false, true)
 
-    @button("site.continue") <br>
+            @button(messages("site.continue"))
+    }
 }

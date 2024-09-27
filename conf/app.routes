@@ -20,8 +20,12 @@ GET         /undeliverable-email                    controllers.EmailController.
 
 GET         /request-cash-transactions/v2          controllers.SelectTransactionsController.onPageLoad()
 POST        /request-cash-transactions/v2          controllers.SelectTransactionsController.onSubmit()
+
 GET         /selected-cash-transactions            controllers.SelectedTransactionsController.onPageLoad()
+POST        /selected-cash-transactions            controllers.SelectedTransactionsController.onSubmit()
+
 GET         /too-many-selected-transactions        controllers.SelectedTransactionsController.tooManyTransactionsSelected(range: models.RequestedDateRange)
+GET         /selected-confirmation                 controllers.ConfirmationPageController.onPageLoad()
 
 GET         /account-unavailable                    controllers.CashAccountController.showAccountUnavailable
 GET         /v2/account-unavailable                 controllers.CashAccountV2Controller.showAccountUnavailable

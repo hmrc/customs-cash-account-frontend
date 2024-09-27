@@ -16,13 +16,20 @@
 
 package config
 
+import models.FileRole
+
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import utils.Utils.emptyString
 
 @Singleton
 class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
   lazy val footerLinkItems: Seq[String] = config.getOptional[Seq[String]]("footerLinkItems").getOrElse(Seq())
+
+  lazy val sdesApi: String =
+    s"${servicesConfig.baseUrl("sdes")}${config.get[String]("microservice.services.sdes.context")}"
+  lazy val xClientIdHeader: String = config.get[String]("microservice.services.sdes.x-client-id")
 
   lazy val customsFinancialsApi: String = servicesConfig.baseUrl("customs-financials-api") +
     config.getOptional[String]("customs-financials-api.context").getOrElse("/customs-financials-api")
@@ -48,6 +55,8 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val feedbackService: String = config.getOptional[String]("feedback.url").getOrElse("/feedback") +
     config.getOptional[String]("feedback.source").getOrElse("/CDS-FIN")
 
+  lazy val requestedStatements: String = config.get[String]("urls.requestedStatements")
+
   lazy val timeout: Int = config.get[Int]("timeout.timeout")
   lazy val countdown: Int = config.get[Int]("timeout.countdown")
 
@@ -62,4 +71,12 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val isCashAccountV2FeatureFlagEnabled: Boolean = config.get[Boolean]("features.cash-account-v2-enabled")
 
   lazy val helpMakeGovUkBetterUrl: String = config.get[String]("urls.helpMakeGovUkBetterUrl")
+
+  def requestedStatements(fileRole: FileRole): String = {
+    fileRole match {
+      case FileRole.CashStatement => s"$requestedStatements${fileRole.featureName}"
+    }
+  }
+
+  def filesUrl(fileRole: FileRole): String = s"$sdesApi/files-available/list/${fileRole.name}"
 }

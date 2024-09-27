@@ -49,9 +49,9 @@
     }
 
     @if(showBalance && displayLastSixMonthsHeading) {
-        @p(
-            "cf.cash-account.detail.last-transactions",
-            classes="govuk-label govuk-label--m govuk-!-margin-bottom-7",
+        @h2(
+            msg ="cf.cash-account.detail.last-transactions",
+            classes="govuk-heading-m",
             id = Some("last-transactions")
         )
     }

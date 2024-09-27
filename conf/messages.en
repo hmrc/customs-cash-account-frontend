@@ -162,6 +162,7 @@ month.9 = September
 month.10 = October
 month.11 = November
 month.12 = December
+month.to = to
 
 
 #Pagination
@@ -203,6 +204,7 @@ cf.cash-account.transactions.request.support.link=contact the HMRC accounting ce
 cf.cash-account.transactions.request.link.pre=You can
 cf.cash-account.transactions.request.link.post=by searching from a shorter date range.
 cf.cash-account.transactions.request.link=search and download your transactions as a CSV file
+cf.cash-account.transactions.request.link.previous=search and download any previous transactions as a CSV file
 cf.cash-account.transactions.request.title=Which cash account transactions do you need?
 cf.cash-account.transactions.request.legend.hidden.start=what start date do you need cash account transactions?
 cf.cash-account.transactions.request.legend.hidden.end=what end date do you need cash account transactions?
@@ -227,6 +229,11 @@ cf.cash-account.transactions.result.no.transactions=No cash account transactions
 cf.cash-account.transactions.result.no.data=We have no data within the periods
 cf.cash-account.transactions.result.transaction=Requested cash account transactions
 cf.cash-account.transactions.result.download.transactions=Download the CSV file of your requested transactions before you close this browser window.
+
+# Requested Cash Statement Notification Panel
+cf.cash-account.requested.statements.available.text.pre=Your
+cf.cash-account.requested.statements.available.link.text=requested transactions
+cf.cash-account.requested.statements.available.text.post=are now available
 
 cf.form.error.start.date-too-far-in-past=The from date cannot be older than 6 years from now.
 cf.form.error.end.date-too-far-in-past=The to date cannot be older than 6 years from now.
@@ -267,9 +274,20 @@ cf.cash-account.transactions.request-transactions.heading = Request transactions
 cf.cash-account.transactions.transactions-for-last-six-months.heading = Your transactions for the last 6 months
 cf.cash-account.transactions.no-transactions-for-last-six-months = There are no transactions from the last 6 months to display.
 cf.cash-account.transactions.request-transactions.download-csv.url = Request by date and download your transactions as a CSV file.
-cf.cash-account.transactions.request-transactions.download-csv.post-message = The CSV file will be available to download within 24 hours.
+cf.cash-account.transactions.request-transactions.download-csv.post-message = The CSV file will be available to download within 48 hours.
 cf.cash-account.transactions.search-for-transactions.heading = Search for transactions
 cf.cash-account.transactions.search-for-transactions.hint = You can search by MRN, UCR or exact payment amount that includes ‘£’
+
+cf.cash-account.transactions.too-many-transactions.hint01 = There are too many transactions for this month to display
+cf.cash-account.transactions.too-many-transactions.hint02 = but you can
+cf.cash-account.transactions.too-many-transactions.hint03 = request and download your transactions as a CSV file.
+cf.cash-account.transactions.too-many-transactions.hint04 = The CSV file will be available to download within 48 hours.
+
+cf.cash-account.transactions.confirmation.statements=We received your request for transactions
+cf.cash-account.transactions.confirmation.next=What happens next
+cf.cash-account.transactions.confirmation.email=We’ll send an email within 48 hours to someemail@mail.com when your request is processed.
+cf.cash-account.transactions.confirmation.download=You’ll be able to download your transactions from the cash account transactions page.
+cf.cash-account.transactions.confirmation.back=Back to cash account
 
 site.continue=Confirm and send
 

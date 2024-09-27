@@ -18,26 +18,23 @@ package connectors
 
 import config.AppConfig
 import models.*
-import models.request.{CashDailyStatementRequest, IdentifierRequest}
-import org.mockito.ArgumentMatchers.anyString
-import play.api.{Application, inject}
-import play.api.http.Status.{NOT_FOUND, REQUEST_ENTITY_TOO_LARGE}
+import models.request.{CashAccountStatementRequestDetail, CashDailyStatementRequest, IdentifierRequest}
+import org.mockito.ArgumentMatchers.{any, anyString, eq => eqTo}
+import org.mockito.Mockito.{verify, when}
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE}
 import play.api.inject.bind
 import play.api.test.Helpers.*
+import play.api.{Application, inject}
 import repositories.CacheRepository
 import services.MetricsReporterService
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpReads, SessionId, UpstreamErrorResponse}
 import utils.SpecBase
-import java.net.URL
 
+import java.net.URL
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.{eq => eqTo}
-import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 
 class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
@@ -330,6 +327,144 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
   }
 
+  "postCashAccountStatements" must {
+    "return success when calling the correct URL" in new Setup {
+
+      val expectedUrl = "apiEndpointUrl/accounts/cashaccountstatementrequest/v1"
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
+        .thenReturn(Future.successful(accResponse))
+
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[RequestBuilder].toInstance(requestBuilder)
+        ).build()
+
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).postCashAccountStatementRequest(
+          "eori", "can", fromDate, toDate))
+
+        result mustBe Right(accResponse)
+      }
+    }
+
+    "return failure when backend post fails" in new Setup {
+
+      private val responseCode: Int = 500
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
+        .thenReturn(Future.failed(new HttpException("It's broken", responseCode)))
+
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(bind[HttpClientV2].toInstance(mockHttpClient)).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).postCashAccountStatementRequest("eori", "can", fromDate, toDate).map {
+          _ mustBe Left(UnknownException)
+        }
+      }
+    }
+
+    "return RequestCouldNotBeProcessed when Request cant be processed error is populated" in new Setup {
+
+      val expectedUrl = "apiEndpointUrl/accounts/cashaccountstatementrequest/v1"
+
+      val requestCouldNotBeProcessed: AccountResponseCommon = AccountResponseCommon(
+        emptyString, Some("123"), emptyString, None)
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
+        .thenReturn(Future.successful(requestCouldNotBeProcessed))
+
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[RequestBuilder].toInstance(requestBuilder)
+        ).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).postCashAccountStatementRequest("eori", "can", fromDate, toDate).map {
+          _ mustBe Left(UnknownException)
+        }
+      }
+    }
+
+    "return ErrorResponse when the backend POST fails with BAD_REQUEST" in new Setup {
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", BAD_REQUEST)))
+
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient)
+        ).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).retrieveCashTransactionsDetail("can", fromDate, toDate).map {
+          _ mustBe Left(BadRequest)
+        }
+      }
+    }
+
+    "return ErrorResponse when the backend POST fails with INTERNAL_SERVER_ERROR" in new Setup {
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", INTERNAL_SERVER_ERROR)))
+
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient)
+        ).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).retrieveCashTransactionsDetail("can", fromDate, toDate).map {
+          _ mustBe Left(InternalServerErrorErrorResponse)
+        }
+      }
+    }
+
+    "return ErrorResponse when the backend POST fails with SERVICE_UNAVAILABLE" in new Setup {
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", SERVICE_UNAVAILABLE)))
+
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient)
+        ).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).retrieveCashTransactionsDetail("can", fromDate, toDate).map {
+          _ mustBe Left(ServiceUnavailableErrorResponse)
+        }
+      }
+    }
+  }
+
   "retrieveHistoricCashTransactions" must {
     "return a list of requested cash daily statements" in new Setup {
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
@@ -385,8 +520,10 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
+
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
       running(appWithHttpClient) {
@@ -401,6 +538,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     private val traderEori = "12345678"
     private val cashAccountNumber = "987654"
     private val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
+
+    val accResponse: AccountResponseCommon = AccountResponseCommon(
+      emptyString, None, emptyString, None)
 
     val sessionId: SessionId = SessionId("session_1234")
     implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
@@ -444,6 +584,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     )
 
     val cashDailyStatementRequest: CashDailyStatementRequest = CashDailyStatementRequest("can", fromDate, toDate)
+
+    val cashAccountStatementRequestDetail: CashAccountStatementRequestDetail =
+      CashAccountStatementRequestDetail(eori, "someCan", fromDate.toString, toDate.toString)
 
     private val otherTransactions =
       Seq(Transaction(123.45, Payment, None), Transaction(-432.87, Withdrawal, Some("77665544")))
