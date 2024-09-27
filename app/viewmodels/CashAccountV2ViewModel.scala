@@ -38,10 +38,10 @@ case class DailyStatementsSection(dailyStatements: HtmlFormat.Appendable,
 case class CashAccountV2ViewModel(pageTitle: String,
                                   backLink: String,
                                   cashAccountBalance: HtmlFormat.Appendable,
-                                  dailyStatementsSection: Option[DailyStatementsSection] = None,
-                                  downloadCSVFileLinkUrl: HtmlFormat.Appendable,
-                                  tooManyTransactionsSection: Option[TooManyTransactionsSection] = None,
                                   cashStatementNotification: HtmlFormat.Appendable,
+                                  dailyStatementsSection: Option[DailyStatementsSection] = None,
+                                  tooManyTransactionsSection: Option[TooManyTransactionsSection] = None,
+                                  downloadCSVFileLinkUrl: HtmlFormat.Appendable,
                                   helpAndSupportGuidance: GuidanceRow)
 
 object CashAccountV2ViewModel {
@@ -64,10 +64,10 @@ object CashAccountV2ViewModel {
       pageTitle = msgs("cf.cash-account.detail.title"),
       backLink = config.customsFinancialsFrontendHomepage,
       cashAccountBalance = cashAccountBalance,
-      dailyStatementsSection = populateDailyStatementsSection(cashTrans),
-      downloadCSVFileLinkUrl = downloadCSVFileLinkUrl(hasMaxTransactionsExceeded),
-      tooManyTransactionsSection = populateTooManyTransactionsSection(hasMaxTransactionsExceeded),
       cashStatementNotification = populateNotificationPanel(hasRequestedStatements),
+      dailyStatementsSection = populateDailyStatementsSection(cashTrans),
+      tooManyTransactionsSection = populateTooManyTransactionsSection(hasMaxTransactionsExceeded),
+      downloadCSVFileLinkUrl = downloadCSVFileLinkUrl(hasMaxTransactionsExceeded),
       helpAndSupportGuidance = helpAndSupport)
   }
 
