@@ -92,7 +92,7 @@ class CashAccountNoTransactionsSpec extends SpecBase {
 
   private def shouldContainHowToUseCashAccountGuidance(viewDoc: Document)(implicit msgs: Messages,
                                                                           config: AppConfig): Assertion = {
-    val linkElement = viewDoc.getElementById("cash-account-top-up-guidance-link")
+    val linkElement = viewDoc.getElementById("cf.cash-account.how-to-use.guidance.link")
 
     linkElement.attribute("href").getValue mustBe config.cashAccountForCdsDeclarationsUrl
     linkElement.text() mustBe msgs("cf.cash-account.how-to-use.guidance.link.text")

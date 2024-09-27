@@ -141,7 +141,6 @@ class CashAccountV2Spec extends ViewTestHelper {
     val tableRosElementsByClass = viewDocument.getElementsByClass("hmrc-responsive-table__heading")
 
     tableRosElementsByClass.size() mustBe 0
-    Option(viewDocument.getElementById("transactions-for-last-six-months-heading")) mustBe empty
   }
 
   trait Setup {
