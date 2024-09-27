@@ -126,29 +126,6 @@ object CashAccountV2ViewModel {
     }
   }
 
-  private def tooManyTransactionsHeading(hasMaxTransactionsExceeded: Boolean
-                                        )(implicit msgs: Messages): Option[HtmlFormat.Appendable] = {
-    if (hasMaxTransactionsExceeded) {
-      Some(h2Component(
-        msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
-        id = Some("last-six-month-transactions-heading")))
-    } else {
-      None
-    }
-  }
-
-  private def tooManyTransactionsStatement(hasMaxTransactionsExceeded: Boolean
-                                          )(implicit msgs: Messages): Option[HtmlFormat.Appendable] = {
-    if (hasMaxTransactionsExceeded) {
-      Some(pComponent(
-        id = Some("exceeded-threshold-statement"),
-        messageKey = "cf.cash-account.transactions.too-many-transactions.hint01",
-        classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7"))
-    } else {
-      None
-    }
-  }
-
   private def downloadCSVFileLinkUrl(hasMaxTransactionsExceeded: Boolean
                                     )(implicit msgs: Messages): HtmlFormat.Appendable = {
 
