@@ -60,7 +60,7 @@ class LayoutSpec extends SpecBase {
         shouldContainCorrectBanners(layoutView)
       }
     }
-
+    
     "display correct page-not-working-properly link and margin" in new Setup {
       val layoutView: Document = Jsoup.parse(app.injector.instanceOf[Layout].apply(
         fullWidth = true)(content).body)
@@ -109,7 +109,6 @@ class LayoutSpec extends SpecBase {
   private def shouldContainCorrectHMRCTechnicalHelper(viewDoc: Document) = {
     viewDoc.getElementsByClass("govuk-!-margin-top-9")
       .text() mustBe "Is this page not working properly? (opens in new tab)"
-
   }
 
   trait Setup {
