@@ -72,10 +72,10 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val helpMakeGovUkBetterUrl: String = config.get[String]("urls.helpMakeGovUkBetterUrl")
 
-  lazy val maxRecordsPerPage: Int = config.get[Int]("pagination.max-no-of-records-per-page")
+  lazy val numberOfRecordsPerPage: Int = config.get[Int]("pagination.no-of-records-per-page")
 
-  lazy val maxNumberOfRecordsNotToDisplayNavigationButtonsInPagination: Int =
-    config.get[Int]("max-no-of-records-not-to-display-navigation-buttons")
+  lazy val numberOfRecordsToDisableNavigationButtonsInPagination: Int =
+    config.get[Int]("pagination.no-of-records-to-disable-navigation-buttons")
 
   def requestedStatements(fileRole: FileRole): String = {
     fileRole match {

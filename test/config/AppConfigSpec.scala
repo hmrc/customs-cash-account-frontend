@@ -66,15 +66,15 @@ class AppConfigSpec extends SpecBase {
     }
   }
 
-  "maxRecordsPerPage" should {
+  "numberOfRecordsPerPage" should {
     "return the correct value" in new Setup {
-      appConfig.maxRecordsPerPage mustBe 30
+      appConfig.numberOfRecordsPerPage mustBe 30
     }
   }
 
-  "maxNumberOfRecordsNotToDisplayNavigationButtonsInPagination" should {
+  "numberOfRecordsToDisableNavigationButtonsInPagination" should {
     "return the correct value" in new Setup {
-      appConfig.maxNumberOfRecordsNotToDisplayNavigationButtonsInPagination mustBe 450
+      appConfig.numberOfRecordsToDisableNavigationButtonsInPagination mustBe 450
     }
   }
 
