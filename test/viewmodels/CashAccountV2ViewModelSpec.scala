@@ -158,10 +158,8 @@ class CashAccountV2ViewModelSpec extends SpecBase {
       link = Some(hmrcNewTabLinkComponent(linkMessage = "cf.cash-account.help-and-support.link.text",
         href = config.cashAccountForCdsDeclarationsUrl,
         preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
-        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post"),
-        classes = "govuk-body govuk-!-margin-bottom-9"))
+        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post"))),
     )
-
   }
 
   private def shouldContainCorrectDailyStatementsComponent(app: Application,
