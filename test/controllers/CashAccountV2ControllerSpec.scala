@@ -29,8 +29,10 @@ import play.api.test.Helpers.*
 import services.AuditingService
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
-import views.html.{cash_account_no_transactions_v2, cash_account_no_transactions_with_balance,
-  cash_account_transactions_not_available}
+import views.html.{
+  cash_account_no_transactions_v2, cash_account_no_transactions_with_balance,
+  cash_account_transactions_not_available
+}
 
 import java.time.LocalDate
 import scala.concurrent.Future
