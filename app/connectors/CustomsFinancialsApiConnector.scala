@@ -23,7 +23,7 @@ import models.AccountsAndBalancesResponseContainer.accountResponseCommonReads
 import models.CashDailyStatement.*
 import models.request.{CashAccountStatementRequestDetail, CashDailyStatementRequest, IdentifierRequest}
 import org.slf4j.LoggerFactory
-import play.api.http.Status.*
+import play.api.http.Status.{NOT_FOUND, REQUEST_ENTITY_TOO_LARGE, BAD_REQUEST, SERVICE_UNAVAILABLE, INTERNAL_SERVER_ERROR}
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.mvc.AnyContent
 import repositories.CacheRepository
@@ -76,7 +76,6 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
     httpClient.post(url"$retrieveCashTransactionsUrl")
       .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
       .execute[CashTransactions].map(Right(_))
-
   }.recover {
     case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
       logger.error(s"Entity too large to download")
@@ -91,9 +90,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       Left(UnknownException)
   }
 
-  def retrieveCashTransactions(can: String,
-                               from: LocalDate,
-                               to: LocalDate)
+  def retrieveCashTransactions(can: String, from: LocalDate, to: LocalDate)
                               (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
@@ -124,6 +121,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
               if (!successfulWrite) {
                 logger.error("Failed to store data in the session cache defaulting to the api response")
               }
+
               Right(transactionsWithUUID)
             }
           }
@@ -154,7 +152,6 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
       .execute[CashTransactions]
       .map(Right(_))
-
   }.recover {
     case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
       logger.error(s"Entity too large to download")

@@ -180,6 +180,8 @@ cf.pager.transactions=days of transactions
 # ----------------------------------------------------------
 
 cf.cash-account.detail.no-transactions.p1 = You can use your cash account to pay import duties and taxes. You can also authorise an agent to use the account on your behalf.
+cf.cash-account.detail.no-transactions.import-duties = You can use your cash account to pay import duties and taxes.
+cf.cash-account.detail.no-transactions.authorise-an-agent = You can also use an agent’s cash account or authorise an agent to use your account on your behalf.
 cf.cash-account.detail.link.pre = Find out how to
 cf.cash-account.detail.link = use a cash account for CDS declarations
 cf.cash-account.detail.link.post = on GOV.UK
@@ -270,6 +272,7 @@ cf.cash-account.transactions.request.review.account=Account:
 
 cf.cash-account.transactions.request-transactions.heading = Request transactions
 cf.cash-account.transactions.transactions-for-last-six-months.heading = Your transactions for the last 6 months
+cf.cash-account.transactions.no-transactions-for-last-six-months = There are no transactions from the last 6 months to display.
 cf.cash-account.transactions.request-transactions.download-csv.url = Request by date and download your transactions as a CSV file.
 cf.cash-account.transactions.request-transactions.download-csv.post-message = The CSV file will be available to download within 48 hours.
 cf.cash-account.transactions.search-for-transactions.heading = Search for transactions

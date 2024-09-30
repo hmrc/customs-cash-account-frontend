@@ -17,6 +17,7 @@
 package utils
 
 import com.codahale.metrics.MetricRegistry
+import config.AppConfig
 import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import controllers.actions.{FakeIdentifierAction, IdentifierAction}
 import org.scalatestplus.mockito.MockitoSugar
@@ -60,6 +61,8 @@ trait SpecBase extends AnyWordSpecLike
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(
     fakeRequest(emptyString, emptyString))
+
+  def appConfig(app: Application): AppConfig = app.injector.instanceOf[AppConfig]
 
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
 }

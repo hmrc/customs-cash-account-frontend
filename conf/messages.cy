@@ -176,6 +176,8 @@ cf.pager.transactions=diwrnodau trafodion
 # ----------------------------------------------------------
 
 cf.cash-account.detail.no-transactions.p1 = Gallwch ddefnyddio’ch cyfrif arian parod i dalu trethi a thollau mewnforio. Gallwch hefyd awdurdodi asiant i ddefnyddio’r cyfrif ar eich rhan.
+cf.cash-account.detail.no-transactions.import-duties = Gallwch ddefnyddio’ch cyfrif arian parod i dalu trethi a thollau mewnforio.
+cf.cash-account.detail.no-transactions.authorise-an-agent = Gallwch hefyd ddefnyddio cyfrif arian parod asiant neu awdurdodi asiant i ddefnyddio’ch cyfrif ar eich rhan.
 cf.cash-account.detail.link.pre = Ewch at i ddysgu sut i
 cf.cash-account.detail.link = ddefnyddio cyfrif arian parod ar gyfer datganiadau’r Gwasanaeth Datgan Tollau (CDS)
 cf.cash-account.detail.link.post = ar GOV.UK
@@ -260,6 +262,7 @@ cf.cash-account.transactions.request.review.account=Cyfrif:
 
 cf.cash-account.transactions.request-transactions.heading = Gofyn am drafodion
 cf.cash-account.transactions.transactions-for-last-six-months.heading = Eich trafodion ar gyfer y chwe mis diwethaf
+cf.cash-account.transactions.no-transactions-for-last-six-months = Nid oes unrhyw drafodion o’r 6 mis diwethaf i’w harddangos.
 cf.cash-account.transactions.request-transactions.download-csv.url = Gofynnwch yn ôl dyddiad a lawrlwytho’ch trafodion fel ffeil CSV.
 cf.cash-account.transactions.request-transactions.download-csv.post-message = Bydd y ffeil CSV ar gael i’w lawrlwytho cyn pen 48 awr.
 cf.cash-account.transactions.search-for-transactions.heading = Chwilio am drafodion
