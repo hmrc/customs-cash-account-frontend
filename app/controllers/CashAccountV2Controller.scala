@@ -20,7 +20,10 @@ import cats.data.EitherT
 import cats.data.EitherT.*
 import cats.instances.future.*
 import config.{AppConfig, ErrorHandler}
-import connectors.{CustomsFinancialsApiConnector, ErrorResponse, NoTransactionsAvailable, SdesConnector, TooManyTransactionsRequested}
+import connectors.{
+  CustomsFinancialsApiConnector, ErrorResponse, NoTransactionsAvailable, SdesConnector,
+  TooManyTransactionsRequested
+}
 import controllers.actions.{EmailAction, IdentifierAction}
 import helpers.CashAccountUtils
 import models.*
@@ -106,9 +109,7 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
                                   (implicit req: IdentifierRequest[AnyContent], appConfig: AppConfig) = {
     errorResponse match {
       case NoTransactionsAvailable => checkBalanceAndDisplayNoTransactionsView(account)
-
       case TooManyTransactionsRequested => Redirect(routes.CashAccountV2Controller.tooManyTransactions())
-
       case _ => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
     }
   }
