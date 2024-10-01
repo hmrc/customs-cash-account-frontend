@@ -99,6 +99,7 @@ object CashAccountDailyStatementsViewModel {
           transactionType = PaymentType(mrnLink = Some(linkComponent(
             LinkComponentValues(
               linkMessage = Some(declaration.movementReferenceNumber),
+              pWrapped = false,
               location = controllers.routes.DeclarationDetailController.displayDetails(
                 declaration.secureMovementReferenceNumber.getOrElse(emptyString), None).url)
           ))),
