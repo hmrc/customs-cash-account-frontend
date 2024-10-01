@@ -16,14 +16,14 @@
 
 package viewmodels
 
-import models.{CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Transfer, Withdrawal}
+import helpers.Formatters
+import models.*
 import org.scalatest.Assertion
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
 import utils.TestData.*
-import helpers.Formatters
-import utils.Utils.{LinkComponentValues, emptyPComponent, h2Component, linkComponent, pComponent}
+import utils.Utils.*
 
 import java.time.LocalDate
 
@@ -142,13 +142,20 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
         Some(PaymentType(textString = Some(msgs("cf.cash-account.detail.top-up.v2")))),
         credit = Some(Formatters.formatCurrencyAmount(123.45)), debit = None, balance = None)
 
+    val dailyStatementViewModel9: DailyStatementViewModel =
+      DailyStatementViewModel(date = Formatters.dateAsDayMonthAndYear(date1), balance = Some("123"))
+
+    val dailyStatementViewModel10: DailyStatementViewModel =
+      DailyStatementViewModel(date = Formatters.dateAsDayMonthAndYear(date2), balance = Some("123456"))
+
     val dailyStatementViewModel8: DailyStatementViewModel =
       DailyStatementViewModel(date = Formatters.dateAsDayMonthAndYear(date1), transactionType =
         Some(PaymentType(textString = Some(msgs("cf.cash-account.detail.withdrawal")))),
         credit = None, debit = Some(Formatters.formatCurrencyAmount(-432.87)), balance = None)
 
     Seq(dailyStatementViewModel1, dailyStatementViewModel3, dailyStatementViewModel5, dailyStatementViewModel6,
-      dailyStatementViewModel2, dailyStatementViewModel4, dailyStatementViewModel7, dailyStatementViewModel8)
+      dailyStatementViewModel2, dailyStatementViewModel4, dailyStatementViewModel7, dailyStatementViewModel8,
+      dailyStatementViewModel9, dailyStatementViewModel10)
   }
 
   trait Setup {
