@@ -157,7 +157,7 @@ object CashAccountV2ViewModel {
       link = Some(hmrcNewTabLinkComponent(linkMessage = "cf.cash-account.help-and-support.link.text",
         href = appConfig.cashAccountForCdsDeclarationsUrl,
         preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
-        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post"))),
+        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")))
     )
   }
 }
