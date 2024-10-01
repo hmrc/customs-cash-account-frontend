@@ -62,9 +62,8 @@ class LayoutSpec extends SpecBase {
     }
 
 
-    "display correct page-not-working-properly link and margin" in new Setup {
-      val layoutView: Document = Jsoup.parse(app.injector.instanceOf[Layout].apply(
-        fullWidth = true)(content).body)
+    "display correct page-not-working-properly link (desk-pro) and margin" in new Setup {
+      val layoutView: Document = Jsoup.parse(app.injector.instanceOf[Layout].apply(fullWidth = true)(content).body)
 
       shouldContainCorrectHMRCTechnicalHelper(layoutView)
     }
