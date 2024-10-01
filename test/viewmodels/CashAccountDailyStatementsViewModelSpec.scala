@@ -23,7 +23,7 @@ import play.api.i18n.Messages
 import utils.SpecBase
 import utils.TestData.*
 import helpers.Formatters
-import utils.Utils.{LinkComponentValues, h2Component, linkComponent}
+import utils.Utils.{LinkComponentValues, emptyPComponent, h2Component, linkComponent, pComponent}
 
 import java.time.LocalDate
 
@@ -31,7 +31,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
 
   "apply" should {
 
-    "return correct list of dailyStatements" when {
+    "return correct contents for the model" when {
 
       "cash transactions are available" in new Setup {
         val dailyStatementsViewModel: CashAccountDailyStatementsViewModel =
@@ -51,6 +51,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
         cashAccountDailyStatementsViewModelWithNoTransactions.dailyStatements mustBe empty
         cashAccountDailyStatementsViewModelWithNoTransactions.hasTransactions mustBe false
         shouldContainTransactionForLastSixMonthsHeading(cashAccountDailyStatementsViewModelWithNoTransactions)
+        shouldContainNoTransactionFromLastSixMonthsText(cashAccountDailyStatementsViewModelWithNoTransactions)
       }
     }
 
@@ -73,6 +74,15 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
       id = Some("transactions-for-last-six-months-heading"))
 
     dailyStatementsViewModel.transForLastSixMonthsHeading mustBe headingComponent
+  }
+
+  private def shouldContainNoTransactionFromLastSixMonthsText(dailyStatementsViewModel: CashAccountDailyStatementsViewModel)
+                                                             (implicit msgs: Messages): Assertion = {
+    val paragraphComponent = pComponent(
+      messageKey = "cf.cash-account.transactions.no-transactions-for-last-six-months",
+      id = Some("no-transactions-for-last-six-months-text"))
+
+    dailyStatementsViewModel.noTransFromLastSixMonthsText.getOrElse(emptyPComponent) mustBe paragraphComponent
   }
 
   private def populateDailyStatViewModelFromDailyCashTransactions()(

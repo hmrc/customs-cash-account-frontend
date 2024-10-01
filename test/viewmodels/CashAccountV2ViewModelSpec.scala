@@ -19,14 +19,21 @@ package viewmodels
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
-import models._
-import models.FileRole.CashStatement
+import models.{
+  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement,
+  CashStatementFile, CashStatementsByMonth, CashStatementsForEori, CashTransactions, Declaration, EoriHistory,
+  FileFormat, Payment, Transaction, Withdrawal
+}
 import models.metadata.CashStatementFileMetadata
+import models.FileRole.CashStatement
 import config.AppConfig
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
-import utils.TestData._
-import utils.Utils._
+import utils.TestData.*
+import utils.Utils.{
+  LinkComponentValues, emptyH1Component, emptyH2InnerComponent, emptyPComponent, h2Component,
+  hmrcNewTabLinkComponent, linkComponent, notificationPanelComponent, pComponent
+}
 import views.html.components.{cash_account_balance, daily_statements_v2}
 
 import java.time.LocalDate
@@ -45,13 +52,12 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
         shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
         shouldProduceCorrectAccountBalance(cashAccountViewModel.cashAccountBalance, eoriNumber, cashAccount)
-        shouldProduceCorrectRequestTransactionsHeading(cashAccountViewModel.requestTransactionsHeading)
         shouldProduceCorrectDownloadCSVFileLink(cashAccountViewModel.downloadCSVFileLinkUrl)
         shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
-        shouldContainCorrectDailyStatementsComponent(app, cashAccountViewModel.dailyStatements, cashTransactions)
+        shouldContainCorrectDailyStatementsSection(app, cashAccountViewModel.dailyStatementsSection.get, cashTransactions)
       }
 
-      "when maxTransactionsExceeded is true" in new Setup {
+      "maxTransactionsExceeded is true" in new Setup {
 
         val cashAccountViewModel: CashAccountV2ViewModel =
           createCashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions02, cashStatementsForEori)
@@ -60,10 +66,23 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
         shouldProduceCorrectAccountBalanceWithoutLastTxnHeading(cashAccountViewModel.cashAccountBalance,
           eoriNumber, cashAccount)
-        shouldProduceCorrectTooManyTransactionsHeading(cashAccountViewModel.tooManyTransactionsHeading.get)
-        shouldProduceCorrectTooManyTransactionsStatement(cashAccountViewModel.tooManyTransactionsStatement.get)
+        shouldProduceCorrectTooManyTransactionsSection(cashAccountViewModel.tooManyTransactionsSection.get)
         shouldProduceCorrectDownloadCSVFileLinkForMaxTransactionExceeded(cashAccountViewModel.downloadCSVFileLinkUrl)
         shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
+      }
+
+      "statements are available and notification panel is displayed" in new Setup {
+
+        val cashAccountViewModel: CashAccountV2ViewModel =
+          createCashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions, cashStatementsForEori)
+
+        shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
+        shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
+        shouldProduceCorrectAccountBalance(cashAccountViewModel.cashAccountBalance, eoriNumber, cashAccount)
+        shouldContainNotificationPanel(cashAccountViewModel.cashStatementNotification.get)
+        shouldProduceCorrectDownloadCSVFileLink(cashAccountViewModel.downloadCSVFileLinkUrl)
+        shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
+        shouldContainCorrectDailyStatementsSection(app, cashAccountViewModel.dailyStatementsSection.get, cashTransactions)
       }
     }
 
@@ -83,44 +102,45 @@ class CashAccountV2ViewModelSpec extends SpecBase {
                                                 (implicit msgs: Messages, appConfig: AppConfig): Assertion = {
     val expectedAccBalance: HtmlFormat.Appendable =
       new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
-        .apply(model = CashAccountViewModel(eori, account))
+        .apply(model = CashAccountViewModel(eori, account), displayLastSixMonthsHeading = false)
 
     accBalance mustBe expectedAccBalance
   }
 
-  private def shouldProduceCorrectAccountBalanceWithoutLastTxnHeading(
-                                                                       accBalance: HtmlFormat.Appendable,
-                                                                       eori: String,
-                                                                       account: CashAccount
-                                                                     )(implicit msgs: Messages,
-                                                                       appConfig: AppConfig): Assertion = {
+  private def shouldContainNotificationPanel(notification: HtmlFormat.Appendable)
+                                            (implicit msgs: Messages, appConfig: AppConfig): Assertion = {
+
+    notification mustBe notificationPanelComponent(
+      showNotification = true,
+      preMessage = msgs("cf.cash-account.requested.statements.available.text.pre"),
+      linkUrl = appConfig.requestedStatements(CashStatement),
+      linkText = msgs("cf.cash-account.requested.statements.available.link.text"),
+      postMessage = msgs("cf.cash-account.requested.statements.available.text.post"))
+  }
+
+  private def shouldProduceCorrectAccountBalanceWithoutLastTxnHeading(accBalance: HtmlFormat.Appendable,
+                                                                      eori: String,
+                                                                      account: CashAccount)
+                                                                     (implicit msgs: Messages,
+                                                                      appConfig: AppConfig): Assertion = {
     val expectedAccBalance: HtmlFormat.Appendable =
       new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
-        .apply(model = CashAccountViewModel(eori, account), showLastTransactionsHeading = false)
+        .apply(model = CashAccountViewModel(eori, account), displayLastSixMonthsHeading = false)
 
     accBalance mustBe expectedAccBalance
   }
 
-  private def shouldProduceCorrectRequestTransactionsHeading(heading: HtmlFormat.Appendable)
+  private def shouldProduceCorrectTooManyTransactionsSection(section: TooManyTransactionsSection)
                                                             (implicit msgs: Messages): Assertion = {
-    heading mustBe h2Component(
-      msgKey = "cf.cash-account.transactions.request-transactions.heading",
-      id = Some("request-transactions-heading"))
-  }
-
-  private def shouldProduceCorrectTooManyTransactionsHeading(heading: HtmlFormat.Appendable)
-                                                            (implicit msgs: Messages): Assertion = {
-    heading mustBe h2Component(
+    section.heading mustBe h2Component(
       msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
       id = Some("last-six-month-transactions-heading"))
-  }
 
-  private def shouldProduceCorrectTooManyTransactionsStatement(heading: HtmlFormat.Appendable)
-                                                              (implicit msgs: Messages): Assertion = {
-    heading mustBe pComponent(
+    section.paragraph mustBe pComponent(
       id = Some("exceeded-threshold-statement"),
       messageKey = "cf.cash-account.transactions.too-many-transactions.hint01",
       classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7")
+
   }
 
   private def shouldProduceCorrectDownloadCSVFileLink(link: HtmlFormat.Appendable)
@@ -129,7 +149,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
       LinkComponentValues(
         pId = Some("download-scv-file"),
         linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
-        location = controllers.routes.RequestTransactionsController.onPageLoad().url,
+        location = controllers.routes.SelectTransactionsController.onPageLoad().url,
         postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
         enableLineBreakBeforePostMessage = true)
     )
@@ -140,7 +160,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     link mustBe linkComponent(
       LinkComponentValues(
         pId = Some("download-scv-file"),
-        location = controllers.routes.RequestTransactionsController.onPageLoad().url,
+        location = controllers.routes.SelectTransactionsController.onPageLoad().url,
         preLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint02"),
         linkMessageKey = "cf.cash-account.transactions.too-many-transactions.hint03",
         postLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint04"),
@@ -163,14 +183,19 @@ class CashAccountV2ViewModelSpec extends SpecBase {
 
   }
 
-  private def shouldContainCorrectDailyStatementsComponent(app: Application,
-                                                           dailyStatementsComponent: HtmlFormat.Appendable,
-                                                           cashTransactions: CashTransactions)
-                                                          (implicit msgs: Messages): Assertion = {
+  private def shouldContainCorrectDailyStatementsSection(app: Application,
+                                                         section: DailyStatementsSection,
+                                                         cashTransactions: CashTransactions)
+                                                        (implicit msgs: Messages) = {
     val expectedDailyStatementsComponent =
       app.injector.instanceOf[daily_statements_v2].apply(CashAccountDailyStatementsViewModel(cashTransactions))
 
-    dailyStatementsComponent mustBe expectedDailyStatementsComponent
+    section.dailyStatements mustBe expectedDailyStatementsComponent
+
+    section.requestTransactionsHeading mustBe h2Component(
+      msgKey = "cf.cash-account.transactions.request-transactions.heading",
+      id = Some("request-transactions-heading"),
+      classes = "govuk-heading-m govuk-!-margin-top-9")
   }
 
   trait Setup {
