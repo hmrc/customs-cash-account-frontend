@@ -16,7 +16,11 @@
 
 package viewmodels.pagination
 
-case class MetaData(from: Int, to: Int, count: Int, currentPage: Int, totalPages: Int)
+case class MetaData(from: Int,
+                    to: Int,
+                    count: Int,
+                    currentPage: Int,
+                    totalPages: Int)
 
 object MetaData {
 
