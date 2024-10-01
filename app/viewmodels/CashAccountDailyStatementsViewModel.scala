@@ -16,11 +16,11 @@
 
 package viewmodels
 
-import models.{CashDailyStatement, CashTransactionType, CashTransactions, Declaration, Payment, Transaction, Transfer, Withdrawal}
+import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount}
+import models.*
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount}
-import utils.Utils.{LinkComponentValues, emptyString, h2Component, linkComponent, prependNegativeSignWithAmount}
+import utils.Utils.*
 
 import java.time.LocalDate
 
@@ -29,7 +29,7 @@ case class PaymentType(mrnLink: Option[HtmlFormat.Appendable] = None,
                        textString: Option[String] = None)
 
 case class DailyStatementViewModel(date: String,
-                                   transactionType: PaymentType,
+                                   transactionType: Option[PaymentType] = None,
                                    credit: Option[String] = None,
                                    debit: Option[String] = None,
                                    balance: Option[String]) extends Ordered[DailyStatementViewModel] {
@@ -69,14 +69,19 @@ object CashAccountDailyStatementsViewModel {
           populateViewModelFromDeclarations(date, dStat.declarations)
 
         val declarationDailyStatementViewModelWithAccBalance = declarationDailyStatementViewModel.zipWithIndex.map {
-          case (dStatViewModel, 0) => dStatViewModel.copy(balance = Some(formatCurrencyAmount(dStat.closingBalance)))
           case (dStatViewModel, _) => dStatViewModel
         }
+
+        val newRowWithOnlyBalance = DailyStatementViewModel(
+          date = dateAsDayMonthAndYear(dStat.date),
+          balance = Some(formatCurrencyAmount(dStat.closingBalance))
+        )
 
         val transferAndWithdrawDailyStatementViewModel: Seq[DailyStatementViewModel] =
           populateViewModelFromPaymentAndWithdrawals(date, dStat.otherTransactions)
 
-        transferAndWithdrawDailyStatementViewModel ++ declarationDailyStatementViewModelWithAccBalance.reverse
+        transferAndWithdrawDailyStatementViewModel ++
+          declarationDailyStatementViewModelWithAccBalance.reverse :+ newRowWithOnlyBalance
     }
 
     result.flatten.sortBy(_.date).reverse
@@ -89,12 +94,12 @@ object CashAccountDailyStatementsViewModel {
       declaration =>
         DailyStatementViewModel(
           date = dateAsDayMonthAndYear(date),
-          transactionType = PaymentType(mrnLink = Some(linkComponent(
+          transactionType = Some(PaymentType(mrnLink = Some(linkComponent(
             LinkComponentValues(
               linkMessage = Some(declaration.movementReferenceNumber),
               location = controllers.routes.DeclarationDetailController.displayDetails(
                 declaration.secureMovementReferenceNumber.getOrElse(emptyString), None).url)
-          ))),
+          )))),
           debit = Some(prependNegativeSignWithAmount(formatCurrencyAmount(declaration.amount))),
           balance = None
         )
@@ -108,7 +113,7 @@ object CashAccountDailyStatementsViewModel {
       paymentAndWithdrawal =>
         DailyStatementViewModel(
           date = dateAsDayMonthAndYear(date),
-          transactionType = PaymentType(textString = Some(populateTransactionTypeText(paymentAndWithdrawal))),
+          transactionType = Some(PaymentType(textString = Some(populateTransactionTypeText(paymentAndWithdrawal)))),
           credit = populateCreditAmount(paymentAndWithdrawal),
           debit = populateDebitAmount(paymentAndWithdrawal),
           balance = None
@@ -154,5 +159,4 @@ object CashAccountDailyStatementsViewModel {
         }
     }
   }
-
 }
