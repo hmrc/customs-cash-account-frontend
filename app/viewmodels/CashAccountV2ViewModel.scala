@@ -24,6 +24,7 @@ import utils.Utils.*
 import play.twirl.api.HtmlFormat
 import views.html.components.{cash_account_balance, daily_statements_v2}
 import play.api.i18n.Messages
+import viewmodels.pagination.ListPaginationViewModel
 
 case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
                        link: Option[HtmlFormat.Appendable] = None,
@@ -42,15 +43,16 @@ case class CashAccountV2ViewModel(pageTitle: String,
                                   dailyStatementsSection: Option[DailyStatementsSection] = None,
                                   tooManyTransactionsSection: Option[TooManyTransactionsSection] = None,
                                   downloadCSVFileLinkUrl: HtmlFormat.Appendable,
-                                  helpAndSupportGuidance: GuidanceRow)
+                                  helpAndSupportGuidance: GuidanceRow,
+                                  paginationModel: Option[ListPaginationViewModel] = None)
 
 object CashAccountV2ViewModel {
 
   def apply(eori: EORI,
             account: CashAccount,
             cashTrans: CashTransactions,
-            statements: Seq[CashStatementsForEori]
-           )(implicit msgs: Messages, config: AppConfig): CashAccountV2ViewModel = {
+            statements: Seq[CashStatementsForEori],
+            pageNo: Option[Int])(implicit msgs: Messages, config: AppConfig): CashAccountV2ViewModel = {
 
     val hasRequestedStatements: Boolean = statements.exists(_.requestedStatements.nonEmpty)
 
@@ -60,6 +62,14 @@ object CashAccountV2ViewModel {
       new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
         .apply(model = CashAccountViewModel(eori, account), displayLastSixMonthsHeading = false)
 
+    val totalDailyStatementsSize: Int = CashAccountDailyStatementsViewModel(cashTrans).dailyStatements.size
+
+    val paginationModelValue = ListPaginationViewModel(
+      totalNumberOfItems = totalDailyStatementsSize,
+      currentPage = pageNo.getOrElse(1),
+      numberOfItemsPerPage = config.numberOfRecordsPerPage,
+      href = controllers.routes.CashAccountV2Controller.showAccountDetails(pageNo).url)
+
     CashAccountV2ViewModel(
       pageTitle = msgs("cf.cash-account.detail.title"),
       backLink = config.customsFinancialsFrontendHomepage,
@@ -68,7 +78,8 @@ object CashAccountV2ViewModel {
       dailyStatementsSection = populateDailyStatementsSection(cashTrans),
       tooManyTransactionsSection = populateTooManyTransactionsSection(hasMaxTransactionsExceeded),
       downloadCSVFileLinkUrl = downloadCSVFileLinkUrl(hasMaxTransactionsExceeded),
-      helpAndSupportGuidance = helpAndSupport)
+      helpAndSupportGuidance = helpAndSupport,
+      paginationModel = Some(paginationModelValue))
   }
 
   private def populateNotificationPanel(hasRequestedStatements: Boolean)

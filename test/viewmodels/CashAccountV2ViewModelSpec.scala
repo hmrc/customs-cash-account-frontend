@@ -19,21 +19,15 @@ package viewmodels
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
-import models.{
-  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement,
-  CashStatementFile, CashStatementsByMonth, CashStatementsForEori, CashTransactions, Declaration, EoriHistory,
-  FileFormat, Payment, Transaction, Withdrawal
-}
+import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement, CashStatementFile, CashStatementsByMonth, CashStatementsForEori, CashTransactions, Declaration, EoriHistory, FileFormat, Payment, Transaction, Withdrawal}
 import models.metadata.CashStatementFileMetadata
 import models.FileRole.CashStatement
 import config.AppConfig
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
 import utils.TestData.*
-import utils.Utils.{
-  LinkComponentValues, emptyH1Component, emptyH2InnerComponent, emptyPComponent, h2Component,
-  hmrcNewTabLinkComponent, linkComponent, notificationPanelComponent, pComponent
-}
+import utils.Utils.{LinkComponentValues, emptyH1Component, emptyH2InnerComponent, emptyPComponent, h2Component, hmrcNewTabLinkComponent, linkComponent, notificationPanelComponent, pComponent}
+import viewmodels.pagination.ListPaginationViewModel
 import views.html.components.{cash_account_balance, daily_statements_v2}
 
 import java.time.LocalDate
@@ -84,6 +78,20 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
         shouldContainCorrectDailyStatementsSection(app, cashAccountViewModel.dailyStatementsSection.get, cashTransactions)
       }
+    }
+
+    "populate the pagination model correctly" in new Setup {
+      val cashAccountViewModel: CashAccountV2ViewModel =
+        createCashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions, cashStatementsForEori, Some(1))
+
+      shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
+      shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
+      shouldProduceCorrectAccountBalance(cashAccountViewModel.cashAccountBalance, eoriNumber, cashAccount)
+      shouldContainNotificationPanel(cashAccountViewModel.cashStatementNotification.get)
+      shouldProduceCorrectDownloadCSVFileLink(cashAccountViewModel.downloadCSVFileLinkUrl)
+      shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
+      shouldContainCorrectDailyStatementsSection(app, cashAccountViewModel.dailyStatementsSection.get, cashTransactions)
+      shouldContainCorrectPaginationModel(cashAccountViewModel.paginationModel.get)
     }
 
   }
@@ -186,7 +194,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
   private def shouldContainCorrectDailyStatementsSection(app: Application,
                                                          section: DailyStatementsSection,
                                                          cashTransactions: CashTransactions)
-                                                        (implicit msgs: Messages) = {
+                                                        (implicit msgs: Messages): Assertion = {
     val expectedDailyStatementsComponent =
       app.injector.instanceOf[daily_statements_v2].apply(CashAccountDailyStatementsViewModel(cashTransactions))
 
@@ -196,6 +204,12 @@ class CashAccountV2ViewModelSpec extends SpecBase {
       msgKey = "cf.cash-account.transactions.request-transactions.heading",
       id = Some("request-transactions-heading"),
       classes = "govuk-heading-m govuk-!-margin-top-9")
+  }
+
+  private def shouldContainCorrectPaginationModel(paginationModel: ListPaginationViewModel)
+                                                 (implicit config: AppConfig): Assertion = {
+    paginationModel mustBe
+      ListPaginationViewModel(8, 1, 30, controllers.routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
   }
 
   trait Setup {
@@ -211,6 +225,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     val monthEnd: Int = 8
     val dayEnd: Int = 8
     val size: Long = 300L
+    val totalElements = 8
 
     val app: Application = application.build()
 
@@ -287,7 +302,8 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     def createCashAccountV2ViewModel(eori: String,
                                      account: CashAccount,
                                      cashTrans: CashTransactions,
-                                     statements: Seq[CashStatementsForEori]): CashAccountV2ViewModel =
-      CashAccountV2ViewModel(eori, account, cashTrans, statements)
+                                     statements: Seq[CashStatementsForEori],
+                                     pageNo: Option[Int] = None): CashAccountV2ViewModel =
+      CashAccountV2ViewModel(eori, account, cashTrans, statements, pageNo)
   }
 }

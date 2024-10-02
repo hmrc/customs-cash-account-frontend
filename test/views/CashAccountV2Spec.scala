@@ -240,13 +240,13 @@ class CashAccountV2Spec extends ViewTestHelper {
       CashStatementsForEori(eoriHistory, cashStatementFile, cashStatementFile))
 
     val viewModelWithTransactions: CashAccountV2ViewModel =
-      CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions, statements)
+      CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions, statements, None)
 
     val viewModelWithTooManyTransactions: CashAccountV2ViewModel =
-      CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions02, statements)
+      CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions02, statements, None)
 
     val viewModelWithNoTransactions: CashAccountV2ViewModel =
-      CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions.copy(Seq(), Seq()), statements)
+      CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions.copy(Seq(), Seq()), statements, None)
 
     val form: Form[String] = new SearchTransactionsFormProvider().apply()
 
