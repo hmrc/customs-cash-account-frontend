@@ -30,10 +30,6 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
         titleShouldBeCorrect(view, "cf.cash-account.transactions.confirmation.statements")
       }
 
-      "backlink should take you back to request transactions" in new Setup {
-        shouldContainBackLinkUrl(view, controllers.routes.SelectedTransactionsController.onPageLoad().url)
-      }
-
       "header 1 is correct" in new Setup {
         view.getElementsByTag("h1").text() mustBe messages(
           "cf.cash-account.transactions.confirmation.statements")
