@@ -24,7 +24,9 @@ case class MetaData(from: Int,
 
 object MetaData {
 
-  def apply(totalNumberOfMovements: Int, numberOfMovementsPerPage: Int, currentPage: Int): MetaData = {
+  def apply(totalNumberOfMovements: Int,
+            numberOfMovementsPerPage: Int,
+            currentPage: Int): MetaData = {
 
     val totalNumberOfPages: Int = Math.ceil(totalNumberOfMovements.toDouble / numberOfMovementsPerPage).toInt
 

@@ -16,6 +16,7 @@
 
 package viewmodels.pagination
 
+import config.AppConfig
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination.{Pagination, PaginationItem, PaginationLink}
 
@@ -50,52 +51,69 @@ trait PaginationViewModel {
 object PaginationViewModel {
 
   def apply[T <: PaginationViewModel](
-    totalNumberOfItems: Int,
-    currentPage: Int,
-    numberOfItemsPerPage: Int,
-    href: String,
-    additionalParams: Seq[(String, String)]
-  )(
-    f: (MetaData, Option[PaginationLink], Option[PaginationLink], Seq[PaginationItem]) => T
-  ): T = {
+                                       totalNumberOfItems: Int,
+                                       currentPage: Int,
+                                       numberOfItemsPerPage: Int,
+                                       href: String,
+                                       additionalParams: Seq[(String, String)]
+                                     )(
+                                       f: (MetaData, Option[PaginationLink], Option[PaginationLink], Seq[PaginationItem]) => T
+                                     )(implicit config: AppConfig): T = {
 
     val results: MetaData = MetaData(totalNumberOfItems, numberOfItemsPerPage, currentPage)
+    val isTotalNumberOfItemsMoreThanTheLimit: Boolean =
+      totalNumberOfItems <= config.numberOfRecordsToDisableNavigationButtonsInPagination
 
-    def hrefWithParams(page: Int): String = additionalParams.foldLeft(s"$href?page=$page") {
-      case (href, (key, value)) =>
-        href + s"&$key=$value"
+    val hrefWithParams: Int => String = page => additionalParams.foldLeft(s"$href?page=$page") {
+      case (href, (key, value)) => href + s"&$key=$value"
     }
 
-    val previous: Option[PaginationLink] = None
-    /*  if (currentPage > 1) {
-      Some(PaginationLink(hrefWithParams(currentPage - 1)))
-    } else {
+    val previous: Option[PaginationLink] = if (isTotalNumberOfItemsMoreThanTheLimit) {
       None
-    }*/
-
-    val next: Option[PaginationLink] = None
-
- /*     if (currentPage < results.totalPages) {
-      Some(PaginationLink(hrefWithParams(currentPage + 1)))
     } else {
+      previousLinkForItemsGreaterThanAcceptedLimit(currentPage, hrefWithParams(currentPage - 1))
+    }
+
+    val next: Option[PaginationLink] = if (isTotalNumberOfItemsMoreThanTheLimit) {
       None
-    }*/
+    } else {
+      nextLinkForItemsGreaterThanAcceptedLimit(results.totalPages, currentPage, hrefWithParams(currentPage + 1))
+    }
 
     val items = (1 to results.totalPages).foldLeft[Seq[PaginationItem]](Nil) {
       (acc, page) =>
-        //if (page == 1 || (page >= currentPage - 1 && page <= currentPage + 1) || page == results.totalPages) {
-          acc :+ PaginationItem(
-            href = hrefWithParams(page),
-            number = Some(page.toString),
-            current = Some(page == currentPage)
-          )
-       /* } else if (acc.lastOption.flatMap(_.ellipsis).contains(true)) {
-          acc
+        if (isTotalNumberOfItemsMoreThanTheLimit) {
+          acc :+ PaginationItem(href = hrefWithParams(page), number = Some(page.toString), current = Some(page == currentPage))
         } else {
-          acc :+ PaginationItem(ellipsis = Some(true))
-        }*/
+          if (page == 1 || (page >= currentPage - 1 && page <= currentPage + 1) || page == results.totalPages) {
+            acc :+ PaginationItem(href = hrefWithParams(page), number = Some(page.toString), current = Some(page == currentPage))
+          } else if (acc.lastOption.flatMap(_.ellipsis).contains(true)) {
+            acc
+          } else {
+            acc :+ PaginationItem(ellipsis = Some(true))
+          }
+        }
     }
 
     f(results, previous, next, items)
+  }
+
+  private def previousLinkForItemsGreaterThanAcceptedLimit[T <: PaginationViewModel](currentPage: Int,
+                                                                                     hrefValue: String) = {
+    if (currentPage > 1) {
+      Some(PaginationLink(hrefValue))
+    } else {
+      None
+    }
+  }
+
+  private def nextLinkForItemsGreaterThanAcceptedLimit[T <: PaginationViewModel](totalPages: Int,
+                                                                                 currentPage: Int,
+                                                                                 hrefValue: String) = {
+    if (currentPage < totalPages) {
+      Some(PaginationLink(hrefValue))
+    } else {
+      None
+    }
   }
 }

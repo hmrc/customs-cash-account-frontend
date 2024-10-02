@@ -16,6 +16,7 @@
 
 package viewmodels.pagination
 
+import config.AppConfig
 import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination.*
 
 case class ListPaginationViewModel(results: MetaData,
@@ -30,7 +31,7 @@ object ListPaginationViewModel {
             currentPage: Int,
             numberOfItemsPerPage: Int,
             href: String,
-            additionalParams: Seq[(String, String)] = Seq.empty): ListPaginationViewModel =
+            additionalParams: Seq[(String, String)] = Seq.empty)(implicit config: AppConfig): ListPaginationViewModel =
     PaginationViewModel(
       totalNumberOfItems,
       currentPage,

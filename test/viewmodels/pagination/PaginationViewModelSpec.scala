@@ -16,6 +16,14 @@
 
 package viewmodels.pagination
 
+import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination.{PaginationItem, PaginationLink}
+import utils.SpecBase
+
 class PaginationViewModelSpec extends SpecBase {
 
+  "apply" should {
+
+    "populate the correct contents" in {
+    }
+  }
 }
