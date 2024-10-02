@@ -50,15 +50,13 @@ trait PaginationViewModel {
 
 object PaginationViewModel {
 
-  def apply[T <: PaginationViewModel](
-                                       totalNumberOfItems: Int,
-                                       currentPage: Int,
-                                       numberOfItemsPerPage: Int,
-                                       href: String,
-                                       additionalParams: Seq[(String, String)]
-                                     )(
-                                       f: (MetaData, Option[PaginationLink], Option[PaginationLink], Seq[PaginationItem]) => T
-                                     )(implicit config: AppConfig): T = {
+  def apply[T <: PaginationViewModel](totalNumberOfItems: Int,
+                                      currentPage: Int,
+                                      numberOfItemsPerPage: Int,
+                                      href: String,
+                                      additionalParams: Seq[(String, String)])
+                                     (f: (MetaData, Option[PaginationLink], Option[PaginationLink], Seq[PaginationItem]) => T)
+                                     (implicit config: AppConfig): T = {
 
     val results: MetaData = MetaData(totalNumberOfItems, numberOfItemsPerPage, currentPage)
     val isTotalNumberOfItemsMoreThanTheLimit: Boolean =
