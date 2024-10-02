@@ -20,7 +20,10 @@ import cats.data.EitherT
 import cats.data.EitherT.fromOptionF
 import cats.implicits.*
 import config.{AppConfig, ErrorHandler}
-import connectors.{CustomsFinancialsApiConnector, ErrorResponse, ExceededMaximum, NoTransactionsAvailable, TooManyTransactionsRequested}
+import connectors.{
+  CustomsFinancialsApiConnector, ErrorResponse,
+  ExceededMaximum, NoTransactionsAvailable, TooManyTransactionsRequested
+}
 import controllers.actions.IdentifierAction
 import models.*
 import models.request.IdentifierRequest
