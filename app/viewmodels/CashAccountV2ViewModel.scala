@@ -64,12 +64,6 @@ object CashAccountV2ViewModel {
 
     val totalDailyStatementsSize: Int = CashAccountDailyStatementsViewModel(cashTrans).dailyStatements.size
 
-    val paginationModelValue = ListPaginationViewModel(
-      totalNumberOfItems = totalDailyStatementsSize,
-      currentPage = pageNo.getOrElse(1),
-      numberOfItemsPerPage = config.numberOfRecordsPerPage,
-      href = controllers.routes.CashAccountV2Controller.showAccountDetails(pageNo).url)
-
     CashAccountV2ViewModel(
       pageTitle = msgs("cf.cash-account.detail.title"),
       backLink = config.customsFinancialsFrontendHomepage,
@@ -79,7 +73,17 @@ object CashAccountV2ViewModel {
       tooManyTransactionsSection = populateTooManyTransactionsSection(hasMaxTransactionsExceeded),
       downloadCSVFileLinkUrl = downloadCSVFileLinkUrl(hasMaxTransactionsExceeded),
       helpAndSupportGuidance = helpAndSupport,
-      paginationModel = Some(paginationModelValue))
+      paginationModel = Some(populatePaginationModel(pageNo, totalDailyStatementsSize)))
+  }
+
+  private def populatePaginationModel(pageNo: Option[Int],
+                                      totalDailyStatementsSize: Int)
+                                     (implicit config: AppConfig)= {
+    ListPaginationViewModel(
+      totalNumberOfItems = totalDailyStatementsSize,
+      currentPage = pageNo.getOrElse(1),
+      numberOfItemsPerPage = config.numberOfRecordsPerPage,
+      href = controllers.routes.CashAccountV2Controller.showAccountDetails(pageNo).url)
   }
 
   private def populateNotificationPanel(hasRequestedStatements: Boolean)
