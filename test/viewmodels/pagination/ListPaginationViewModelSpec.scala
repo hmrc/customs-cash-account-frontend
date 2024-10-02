@@ -18,8 +18,9 @@ package viewmodels.pagination
 
 import config.AppConfig
 import play.api.Application
+import play.api.i18n.Messages
 import utils.SpecBase
-import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination.PaginationItem
+import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination.{Pagination, PaginationItem}
 import utils.TestData.HREF
 
 class ListPaginationViewModelSpec extends SpecBase {
@@ -167,9 +168,64 @@ class ListPaginationViewModelSpec extends SpecBase {
     }
   }
 
+  "searchResult" should {
+
+    "return correct output" when {
+
+      "searchParam has some value" in new Setup {
+        ListPaginationViewModel(30, 2, 1, "href").searchResult(Some("2")) mustBe
+          msgs("cf.cash-account.number-of-movements.plural.with-search-param", "<b>30</b>", "2")
+      }
+
+      "searchParam has some value and results count is 1" in new Setup {
+        ListPaginationViewModel(1, 2, 1, "href").searchResult(Some("2")) mustBe
+          msgs("cf.cash-account.number-of-movements.singular.with-search-param", "<b>1</b>", "2")
+      }
+
+      "searchParam is None" in new Setup {
+        ListPaginationViewModel(30, 2, 1, "href").searchResult() mustBe
+          msgs("cf.cash-account.number-of-movements.plural", "<b>30</b>")
+      }
+
+      "searchParam is None and results count is 1" in new Setup {
+        ListPaginationViewModel(1, 2, 1, "href").searchResult() mustBe
+          msgs("cf.cash-account.number-of-movements.singular", "<b>1</b>")
+      }
+    }
+  }
+
+  "paginatedSearchResult" should {
+
+    "return correct output" when {
+
+      "searchParam has some value" in new Setup {
+        ListPaginationViewModel(30, 2, 1, "href").paginatedSearchResult(Some("2")) mustBe
+          msgs("pagination.results.search", "<b>2</b>", "<b>2</b>", "<b>30</b>", "2")
+      }
+
+      "searchParam is None" in new Setup {
+        ListPaginationViewModel(30, 2, 1, "href").paginatedSearchResult() mustBe
+          msgs("pagination.results", "<b>2</b>", "<b>2</b>", "<b>30</b>")
+      }
+    }
+  }
+
+  "pagination" should {
+
+    "return correct output" in new Setup {
+      ListPaginationViewModel(2, 2, 1, "href").pagination mustBe
+        Pagination(Some(
+          Seq(
+            PaginationItem("href?page=1", Some("1"), None, Some(false), None, Map()),
+            PaginationItem("href?page=2", Some("2"), None, Some(true), None, Map()))
+        ))
+    }
+  }
+
   trait Setup {
     val app: Application = application.build()
     implicit val config: AppConfig = appConfig(app)
+    implicit val msgs: Messages = messages(app)
   }
 
 }
