@@ -212,6 +212,10 @@ cf.cash-account.transactions.request.date.hint-start-date=Mae’n rhaid i’r dy
 cf.cash-account.transactions.request.date.hint=Er enghraifft, 31 3 2021.
 cf.cash-account.transactions.request.link.label=Yn ôl i ‘Cyfrif arian parod’
 
+cf.cash-account.transactions.requested.tooMany.transactions=Dychwelodd eich cais ormod o drafodion
+cf.cash-account.transactions.requested.statement.msg=Gwnaethoch gais am drafodion rhwng {0} ac {1}
+cf.cash-account.transactions.requested.tryAgain=Ceisiwch eto gydag amrediad dyddiadau byrrach.
+
 date.day=Diwrnod
 date.month=Mis
 date.year=Blwyddyn

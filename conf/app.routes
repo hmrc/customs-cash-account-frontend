@@ -24,6 +24,8 @@ POST        /request-cash-transactions/v2          controllers.SelectTransaction
 GET         /selected-cash-transactions            controllers.SelectedTransactionsController.onPageLoad()
 POST        /selected-cash-transactions            controllers.SelectedTransactionsController.onSubmit()
 
+GET         /too-many-transactions/v2              controllers.SelectedTransactionsController.tooManyTransactionsRequested()
+
 GET         /too-many-selected-transactions        controllers.SelectedTransactionsController.tooManyTransactionsSelected(range: models.RequestedDateRange)
 GET         /selected-confirmation                 controllers.ConfirmationPageController.onPageLoad()
 
