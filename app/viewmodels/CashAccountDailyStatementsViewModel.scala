@@ -17,14 +17,13 @@
 package viewmodels
 
 import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount}
-import models.*
+import models.{CashDailyStatement, CashTransactionType, CashTransactions, Declaration, Payment, Transaction, Transfer, Withdrawal}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount}
 import utils.Utils.{LinkComponentValues, emptyString, h2Component, linkComponent, pComponent, prependNegativeSignWithAmount}
 
 import java.time.LocalDate
-
 
 case class PaymentType(mrnLink: Option[HtmlFormat.Appendable] = None,
                        textString: Option[String] = None)
@@ -80,7 +79,7 @@ object CashAccountDailyStatementsViewModel {
           case (dStatViewModel, _) => dStatViewModel
         }
 
-        val newRowWithOnlyBalance = DailyStatementViewModel(
+        val closingBalanceOnlyRow = DailyStatementViewModel(
           date = dateAsDayMonthAndYear(dStat.date),
           balance = Some(formatCurrencyAmount(dStat.closingBalance))
         )
@@ -89,7 +88,7 @@ object CashAccountDailyStatementsViewModel {
           populateViewModelFromPaymentAndWithdrawals(date, dStat.otherTransactions)
 
         transferAndWithdrawDailyStatementViewModel ++
-          declarationDailyStatementViewModelWithAccBalance.reverse :+ newRowWithOnlyBalance
+          declarationDailyStatementViewModelWithAccBalance.reverse :+ closingBalanceOnlyRow
     }
 
     result.flatten.sortBy(_.date).reverse

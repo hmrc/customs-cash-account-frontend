@@ -16,14 +16,14 @@
 
 package viewmodels
 
+import models.{CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Transfer, Withdrawal}
 import helpers.Formatters
-import models.*
 import org.scalatest.Assertion
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
 import utils.TestData.*
-import utils.Utils.*
+import utils.Utils.{LinkComponentValues, emptyPComponent, h2Component, linkComponent, pComponent}
 
 import java.time.LocalDate
 
@@ -85,8 +85,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
     dailyStatementsViewModel.noTransFromLastSixMonthsText.getOrElse(emptyPComponent) mustBe paragraphComponent
   }
 
-  private def populateDailyStatViewModelFromDailyCashTransactions()(
-    implicit msgs: Messages): Seq[DailyStatementViewModel] = {
+  private def populateDailyStatViewModelFromDailyCashTransactions()(implicit msgs: Messages) = {
 
     val date1: LocalDate = LocalDate.parse("2020-07-18")
     val date2: LocalDate = LocalDate.parse("2020-07-20")
