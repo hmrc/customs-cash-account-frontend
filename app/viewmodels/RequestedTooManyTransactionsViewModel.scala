@@ -28,31 +28,32 @@ case class RequestedTooManyTransactionsViewModel(pageTitle: String,
                                                  backLink: String,
                                                  heading: HtmlFormat.Appendable,
                                                  tryAgainLink: HtmlFormat.Appendable,
-                                                 statement01: HtmlFormat.Appendable,
-                                                 helpAndSupportGuidance: GuidanceRow)
+                                                 statement01: HtmlFormat.Appendable)
 
 object RequestedTooManyTransactionsViewModel {
 
   def apply(from: LocalDate,
             to: LocalDate,
             tryAgainUrl: String,
-            backUrl: String)(implicit msgs: Messages, config: AppConfig): RequestedTooManyTransactionsViewModel = {
+            backUrl: String)(implicit messages: Messages, config: AppConfig): RequestedTooManyTransactionsViewModel = {
 
     RequestedTooManyTransactionsViewModel(
-      pageTitle = msgs("cf.cash-account.detail.title"),
+      pageTitle = messages("cf.cash-account.detail.title"),
       backLink = backUrl,
       heading = formHeading(),
       statement01 = formStatement(from, to),
-      tryAgainLink = formLink(tryAgainUrl),
-      helpAndSupportGuidance = helpAndSupport)
+      tryAgainLink = formLink(tryAgainUrl))
   }
 
   private def formHeading()(implicit msgs: Messages): HtmlFormat.Appendable = {
-    new h1().apply(msg = "cf.cash-account.transactions.requested.tooMany.transactions")
+    new h1().apply(
+      id = Some("requested-too-many-transactions-message-heading"),
+      msg = "cf.cash-account.transactions.requested.tooMany.transactions")
   }
 
   private def formStatement(from: LocalDate, to: LocalDate)(implicit msgs: Messages): HtmlFormat.Appendable = {
     new p1().apply(
+      id = Some("requested-too-many-transactions-message-statement"),
       content = Html(s"${
         msgs("cf.cash-account.transactions.requested.statement.msg",
           dateAsMonthAndYear(from), dateAsMonthAndYear(to))
@@ -73,17 +74,4 @@ object RequestedTooManyTransactionsViewModel {
         pClass = "govuk-body govuk-!-margin-bottom-9"))
   }
 
-  private def helpAndSupport(implicit appConfig: AppConfig, messages: Messages): GuidanceRow = {
-    GuidanceRow(
-      h2Heading = h2Component(
-        id = Some("search-transactions-support-message-heading"),
-        msgKey = "site.support.heading"
-      ),
-
-      link = Some(hmrcNewTabLinkComponent(linkMessage = "cf.cash-account.help-and-support.link.text",
-        href = appConfig.cashAccountForCdsDeclarationsUrl,
-        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
-        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")))
-    )
-  }
 }
