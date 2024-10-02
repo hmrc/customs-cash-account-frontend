@@ -29,7 +29,8 @@
         formHelper: FormWithCSRF,
         errorSummary: components.errorSummary,
         button: components.button,
-        inputText: components.inputText
+        inputText: components.inputText,
+        govukPagination: GovukPagination
 )
 
 @(
@@ -74,6 +75,11 @@
 
     @viewModel.dailyStatementsSection.map { section =>
         @section.dailyStatements
+
+        @if(!viewModel.shouldDisplayAllRecords) {
+            @viewModel.paginationModel.map(model => govukPagination(model.pagination))
+        }
+
         @section.requestTransactionsHeading
     }
 

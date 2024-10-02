@@ -16,6 +16,7 @@
 
 package viewmodels
 
+import config.AppConfig
 import models.{CashDailyStatement, CashTransactionType, CashTransactions, Declaration, Payment, Transaction, Transfer, Withdrawal}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -42,15 +43,33 @@ case class CashAccountDailyStatementsViewModel(dailyStatements: Seq[DailyStateme
                                                noTransFromLastSixMonthsText: Option[HtmlFormat.Appendable] = None)
 
 object CashAccountDailyStatementsViewModel {
-  def apply(transactions: CashTransactions)(implicit msgs: Messages): CashAccountDailyStatementsViewModel = {
+  def apply(transactions: CashTransactions,
+            pageNo: Option[Int])(implicit msgs: Messages, config: AppConfig): CashAccountDailyStatementsViewModel = {
 
     val dailyStatements: Seq[CashDailyStatement] = transactions.cashDailyStatements.sortBy(_.date).reverse
     val hasTransactions = dailyStatements.nonEmpty
 
-    CashAccountDailyStatementsViewModel(populateDailyStatementViewModelList(dailyStatements),
+    CashAccountDailyStatementsViewModel(
+      dailyStatementsBasedOnPage(
+        populateDailyStatementViewModelList(dailyStatements), pageNo, config.numberOfRecordsPerPage),
       hasTransactions,
       transForLastSixMonthsHeading,
       if(hasTransactions) None else Some(noTransFromLastSixMonthsText))
+  }
+
+  private def dailyStatementsBasedOnPage(statements: Seq[DailyStatementViewModel],
+                                         pageNo: Option[Int],
+                                         maxItemPerPage: Int): Seq[DailyStatementViewModel] = {
+
+    pageNo match {
+      case None => statements
+      case Some(pageNoValue) =>
+        if (pageNoValue == 1) {
+          statements.slice(0, maxItemPerPage)
+        } else {
+          statements.slice((pageNoValue - 1) * maxItemPerPage, pageNoValue * maxItemPerPage)
+        }
+    }
   }
 
   private def transForLastSixMonthsHeading(implicit msgs: Messages): HtmlFormat.Appendable = {
