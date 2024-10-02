@@ -30,6 +30,15 @@
     fullWidth = false,
     help = true
 ) {
-    @h1("cf.cash-account.detail.title")
-    @inset("cf.cash-account.detail.account-not-available", id=Some("account-not-available"))
+    @h1(
+        msg = "cf.cash-account.detail.title",
+        id = Some("account-header")
+    )
+
+    @inset(
+        msg = "cf.cash-account.detail.account-not-available",
+        id = Some("account-not-available")
+    )
+
+
 }
