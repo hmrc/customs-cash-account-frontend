@@ -17,47 +17,51 @@
 package viewmodels
 
 import config.AppConfig
-import utils.Utils._
-import play.twirl.api.HtmlFormat
-import views.html.components.{h1}
+import utils.Utils.*
+import play.twirl.api.{Html, HtmlFormat}
+import views.html.components.{h1, p1}
 import play.api.i18n.Messages
 
 import java.time.LocalDate
 
-case class TooManyTransactionsV2ViewModel(pageTitle: String,
-                                          backLink: String,
-                                          heading: HtmlFormat.Appendable,
-                                          tryAgainLink: HtmlFormat.Appendable,
-                                          statement01: String,
-                                          helpAndSupportGuidance: GuidanceRow)
+case class RequestedTooManyTransactionsViewModel(pageTitle: String,
+                                                 backLink: String,
+                                                 heading: HtmlFormat.Appendable,
+                                                 tryAgainLink: HtmlFormat.Appendable,
+                                                 statement01: HtmlFormat.Appendable,
+                                                 helpAndSupportGuidance: GuidanceRow)
 
-object TooManyTransactionsV2ViewModel {
+object RequestedTooManyTransactionsViewModel {
 
   def apply(from: LocalDate,
             to: LocalDate,
             tryAgainUrl: String,
-            backUrl: String)(implicit msgs: Messages, config: AppConfig): TooManyTransactionsV2ViewModel = {
+            backUrl: String)(implicit msgs: Messages, config: AppConfig): RequestedTooManyTransactionsViewModel = {
 
-    TooManyTransactionsV2ViewModel(
+    RequestedTooManyTransactionsViewModel(
       pageTitle = msgs("cf.cash-account.detail.title"),
       backLink = backUrl,
       heading = formHeading(),
       statement01 = formStatement(from, to),
       tryAgainLink = formLink(tryAgainUrl),
       helpAndSupportGuidance = helpAndSupport)
-
   }
 
   private def formHeading()(implicit msgs: Messages): HtmlFormat.Appendable = {
     new h1().apply(msg = "cf.cash-account.transactions.requested.tooMany.transactions")
   }
 
-  private def formStatement(from: LocalDate, to: LocalDate)(implicit msgs: Messages): String = {
-    s"${msgs("cf.cash-account.transactions.requested.statement.msg", dateAsMonthAndYear(from), dateAsMonthAndYear(to))}"
+  private def formStatement(from: LocalDate, to: LocalDate)(implicit msgs: Messages): HtmlFormat.Appendable = {
+    new p1().apply(
+      content = Html(s"${
+        msgs("cf.cash-account.transactions.requested.statement.msg",
+          dateAsMonthAndYear(from), dateAsMonthAndYear(to))
+      }"),
+      classes = Some("govuk-body")
+    )
   }
 
-
-  def dateAsMonthAndYear(date: LocalDate)(implicit messages: Messages): String = {
+  private def dateAsMonthAndYear(date: LocalDate)(implicit messages: Messages): String = {
     s"${messages(s"month.${date.getMonthValue}")} ${date.getYear}"
   }
 

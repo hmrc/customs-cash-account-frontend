@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import viewmodels.TooManyTransactionsV2ViewModel
+@import viewmodels.RequestedTooManyTransactionsViewModel
 
 @this(
         main_template: Layout,
@@ -24,7 +24,7 @@
 )
 
 @(
-        viewModel: TooManyTransactionsV2ViewModel
+        viewModel: RequestedTooManyTransactionsViewModel
 )(
         implicit request: Request[_],
         messages: Messages,
@@ -38,7 +38,7 @@
 ) {
     @viewModel.heading
 
-    <p class = "govuk-body">@viewModel.statement01</p>
+    @viewModel.statement01
 
     @viewModel.tryAgainLink
 }
