@@ -22,7 +22,7 @@ import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import views.html.cash_account_not_available
 
-class CashAccountNotAvailableSpec  extends ViewTestHelper {
+class CashAccountNotAvailableSpec extends ViewTestHelper {
 
   "view" should {
     "display correct contents" in new Setup {
@@ -60,5 +60,5 @@ class CashAccountNotAvailableSpec  extends ViewTestHelper {
 
   trait Setup {
     val view: Document = Jsoup.parse(app.injector.instanceOf[cash_account_not_available].apply().body)
-    }
   }
+}

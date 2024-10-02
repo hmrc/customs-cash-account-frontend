@@ -19,7 +19,8 @@
         h2: components.h2,
         p: components.p,
         h1: components.h1,
-        inset: components.inset
+        inset: components.inset,
+        newTabLink: components.newTabLink
 )
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -40,5 +41,16 @@
         id = Some("account-not-available")
     )
 
+    @h2(
+        msg = "cf.cash-account.transactions.request.support.heading",
+        id = Some("help-and-support-header"),
+        classes = "govuk-heading-m govuk-!-margin-top-9"
+    )
 
+    @newTabLink(
+        linkMessage = "cf.cash-account.help-and-support.link.text",
+        href = appConfig.cashAccountForCdsDeclarationsUrl,
+        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre"),
+        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")
+    )
 }
