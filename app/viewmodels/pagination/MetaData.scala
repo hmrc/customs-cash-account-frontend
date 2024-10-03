@@ -29,11 +29,9 @@ object MetaData {
             currentPage: Int): MetaData = {
 
     val totalNumberOfPages: Int = Math.ceil(totalNumberOfMovements.toDouble / numberOfMovementsPerPage).toInt
-    val from = numberOfMovementsPerPage * (currentPage - 1) + 1
+    val from: Int = numberOfMovementsPerPage * (currentPage - 1) + 1
 
-    val to = if (currentPage == 1) {
-      numberOfMovementsPerPage
-    } else {
+    val noOfMovementsWhenCurrentPageIsOtherThanOne: Int = {
       val roundedNumberOfMovementsPerPage = numberOfMovementsPerPage * currentPage
 
       if (roundedNumberOfMovementsPerPage > totalNumberOfMovements) {
@@ -41,6 +39,12 @@ object MetaData {
       } else {
         roundedNumberOfMovementsPerPage
       }
+    }
+
+    val to: Int = if (currentPage == 1) {
+      numberOfMovementsPerPage
+    } else {
+      noOfMovementsWhenCurrentPageIsOtherThanOne
     }
 
     MetaData(from, to, totalNumberOfMovements, currentPage, totalNumberOfPages)
