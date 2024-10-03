@@ -87,18 +87,35 @@ class CashAccountV2ViewModelSpec extends SpecBase {
       }
     }
 
-    "populate the pagination model correctly" in new Setup {
-      val cashAccountViewModel: CashAccountV2ViewModel =
-        createCashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions, cashStatementsForEori, Some(1))
+    "populate the pagination model correctly" when {
 
-      shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
-      shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
-      shouldProduceCorrectAccountBalance(cashAccountViewModel.cashAccountBalance, eoriNumber, cashAccount)
-      shouldContainNotificationPanel(cashAccountViewModel.cashStatementNotification.get)
-      shouldProduceCorrectDownloadCSVFileLink(cashAccountViewModel.downloadCSVFileLinkUrl)
-      shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
-      shouldContainCorrectDailyStatementsSection(app, cashAccountViewModel.dailyStatementsSection.get, cashTransactions)
-      shouldContainCorrectPaginationModel(cashAccountViewModel.paginationModel.get)
+      "daily statements are more than 30 in number" in new Setup {
+        val cashAccountViewModel: CashAccountV2ViewModel =
+          createCashAccountV2ViewModel(
+            eoriNumber, cashAccount, cashTransactionsWithMoreThan30Records, cashStatementsForEori, Some(1))
+
+        shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
+        shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
+        shouldProduceCorrectAccountBalance(cashAccountViewModel.cashAccountBalance, eoriNumber, cashAccount)
+        shouldContainNotificationPanel(cashAccountViewModel.cashStatementNotification.get)
+        shouldProduceCorrectDownloadCSVFileLink(cashAccountViewModel.downloadCSVFileLinkUrl)
+        shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
+        shouldContainCorrectPaginationModel(cashAccountViewModel.paginationModel.get)
+      }
+
+      "daily statements are less than 30 in number" in new Setup {
+        val cashAccountViewModel: CashAccountV2ViewModel =
+          createCashAccountV2ViewModel(
+            eoriNumber, cashAccount, cashTransactions, cashStatementsForEori, Some(1))
+
+        shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
+        shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
+        shouldProduceCorrectAccountBalance(cashAccountViewModel.cashAccountBalance, eoriNumber, cashAccount)
+        shouldContainNotificationPanel(cashAccountViewModel.cashStatementNotification.get)
+        shouldProduceCorrectDownloadCSVFileLink(cashAccountViewModel.downloadCSVFileLinkUrl)
+        shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
+        shouldNotContainPaginationModel(cashAccountViewModel.paginationModel)
+      }
     }
 
   }
@@ -216,7 +233,11 @@ class CashAccountV2ViewModelSpec extends SpecBase {
   private def shouldContainCorrectPaginationModel(paginationModel: ListPaginationViewModel)
                                                  (implicit config: AppConfig): Assertion = {
     paginationModel mustBe
-      ListPaginationViewModel(8, 1, 30, controllers.routes.CashAccountV2Controller.showAccountDetails(None).url)
+      ListPaginationViewModel(32, 1, 30, controllers.routes.CashAccountV2Controller.showAccountDetails(None).url)
+  }
+
+  private def shouldNotContainPaginationModel(paginationModel: Option[ListPaginationViewModel]): Assertion = {
+    paginationModel mustBe empty
   }
 
   trait Setup {
@@ -271,7 +292,14 @@ class CashAccountV2ViewModelSpec extends SpecBase {
 
     val dailyStatements: Seq[CashDailyStatement] = Seq(dailyStatement1, dailyStatement2)
 
+    val dailyStatementsMoreThan30: Seq[CashDailyStatement] =
+      Seq(dailyStatement1, dailyStatement2, dailyStatement1, dailyStatement2, dailyStatement1, dailyStatement2,
+        dailyStatement1, dailyStatement2)
+
     val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
+
+    val cashTransactionsWithMoreThan30Records: CashTransactions =
+      CashTransactions(pendingTransactions, dailyStatementsMoreThan30)
 
     val cashTransactions02: CashTransactions = CashTransactions(pendingTransactions, dailyStatements, Some(true))
 
