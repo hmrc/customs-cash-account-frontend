@@ -95,6 +95,24 @@ class CashAccountV2Spec extends ViewTestHelper {
         shouldNotDisplayPaginationComponent(view)
       }
     }
+
+    "display pagination component" when {
+
+      "records are more than maximum no of records per page (currently 30) " in new Setup {
+        val view: Document = createView(viewModelWithTransactionsGreaterThan30)
+
+        titleShouldBeCorrect(view, "cf.cash-account.detail.title")
+        shouldContainBackLinkUrl(view, appConfig.customsFinancialsFrontendHomepage)
+        shouldContainCorrectAccountBalanceDetails(view, can)
+        shouldContainCorrectSearchForTransactionsInputTextDetails(view)
+        shouldContainSearchButton(view)
+        shouldContainCashAccountDailyStatements(view)
+        shouldContainCorrectRequestTransactionsHeading(view)
+        shouldContainCorrectDownloadCSVFileLinkUrl(view)
+        shouldContainCorrectHelpAndSupportGuidance(view)
+        shouldDisplayPaginationComponent(view)
+      }
+    }
   }
 
   private def shouldContainCorrectAccountBalanceDetails(viewDocument: Document,
@@ -183,6 +201,10 @@ class CashAccountV2Spec extends ViewTestHelper {
     tableRosElementsByClass.size() mustBe 0
   }
 
+  private def shouldDisplayPaginationComponent(viewDocument: Document) = {
+    viewDocument.getElementsByClass("govuk-pagination").size() mustBe 1
+  }
+
   private def shouldNotDisplayPaginationComponent(viewDocument: Document) = {
     viewDocument.getElementsByClass("govuk-pagination").size() mustBe 0
   }
@@ -232,7 +254,15 @@ class CashAccountV2Spec extends ViewTestHelper {
 
     val dailyStatements: Seq[CashDailyStatement] = Seq(dailyStatement1, dailyStatement2)
 
+    val dailyStatementsMoteThan30Records: Seq[CashDailyStatement] =
+      Seq(dailyStatement1, dailyStatement2, dailyStatement1, dailyStatement2,
+        dailyStatement1, dailyStatement2, dailyStatement1, dailyStatement2,
+        dailyStatement1, dailyStatement2)
+
     val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
+
+    val cashTransactionsWithMoreThan30Records: CashTransactions =
+      CashTransactions(pendingTransactions, dailyStatementsMoteThan30Records)
 
     val cashTransactions02: CashTransactions = CashTransactions(pendingTransactions, dailyStatements, Some(true))
 
@@ -263,6 +293,9 @@ class CashAccountV2Spec extends ViewTestHelper {
 
     val viewModelWithTransactions: CashAccountV2ViewModel =
       CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions, statements, None)
+
+    val viewModelWithTransactionsGreaterThan30: CashAccountV2ViewModel =
+        CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactionsWithMoreThan30Records, statements, None)
 
     val viewModelWithTooManyTransactions: CashAccountV2ViewModel =
       CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions02, statements, None)
