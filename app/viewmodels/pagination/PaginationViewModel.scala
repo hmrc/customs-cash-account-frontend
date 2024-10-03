@@ -88,23 +88,20 @@ object PaginationViewModel {
       nextLinkForItemsGreaterThanAcceptedLimit(results.totalPages, currentPage, hrefWithParams(currentPage + 1))
     }
 
-    def populateItems(acc: Seq[PaginationItem], page: Int) = {
-      if (page == 1 || (page >= currentPage - 1 && page <= currentPage + 1) || page == results.totalPages) {
-        acc :+ PaginationItem(href = hrefWithParams(page), number = Some(page.toString), current = Some(page == currentPage))
-      } else if (acc.lastOption.flatMap(_.ellipsis).contains(true)) {
-        acc
-      } else {
-        acc :+ PaginationItem(ellipsis = Some(true))
+    def populateItems(acc: Seq[PaginationItem], pageNo: Int): Seq[PaginationItem] = {
+      (acc, pageNo) match {
+        case (acc, page) if page == 1 || (page >= currentPage - 1 && page <= currentPage + 1) || page == results.totalPages =>
+          acc :+ PaginationItem(href = hrefWithParams(page), number = Some(page.toString), current = Some(page == currentPage))
+
+        case (acc, _) if (acc.lastOption.flatMap(_.ellipsis).contains(true)) => acc
+        case _ => acc :+ PaginationItem(ellipsis = Some(true))
       }
     }
 
     val items = (1 to results.totalPages).foldLeft[Seq[PaginationItem]](Nil) {
       (acc, page) =>
         if (isNumberOfItemsWithInLimit) {
-          acc :+ PaginationItem(
-            href = hrefWithParams(page),
-            number = Some(page.toString),
-            current = Some(page == currentPage))
+          acc :+ PaginationItem(href = hrefWithParams(page), number = Some(page.toString), current = Some(page == currentPage))
         } else {
           populateItems(acc, page)
         }
