@@ -32,6 +32,10 @@ class ResultsPageSummary(from: LocalDate, to: LocalDate, day: Boolean = true)
     cashTransactionsResultRow(CashTransactionDates(from, to), fullStop, day)
   }
 
+  def rowsV2(fullStop: Boolean = true): SummaryListRow = {
+    cashTransactionsResultRowV2(CashTransactionDates(from, to), fullStop, day)
+  }
+
   private def cashTransactionsResultRow(dates: CashTransactionDates,
                                         fullStop: Boolean,
                                         day: Boolean): SummaryListRow = {
@@ -49,7 +53,23 @@ class ResultsPageSummary(from: LocalDate, to: LocalDate, day: Boolean = true)
         content = span(messages("cf.cash-account.detail.csv")),
         visuallyHiddenText = Some(messages("cf.cash-account.detail.csv-definition"))
       )))
+    )
+  }
 
+  private def cashTransactionsResultRowV2(dates: CashTransactionDates,
+                                          fullStop: Boolean,
+                                          day: Boolean): SummaryListRow = {
+    summaryListRow(
+      value = HtmlFormat.escape(
+        if (fullStop) {
+          rowResult(dates, day)
+        } else {
+          rowResultWithoutFullStop(dates, day)
+        }).toString(),
+      secondValue = None,
+      actions = Actions(items = Seq(ActionItem(
+        href = controllers.routes.SelectTransactionsController.onPageLoad().url
+      )))
     )
   }
 

@@ -31,14 +31,17 @@ class SummaryListSpec extends SpecBase {
   "component" should {
 
     "display correct contents" when {
+
       "when change is false" in new Setup {
-        summaryListComponent.getElementById(id).text() mustBe download
+        summaryListComponent.getElementById(downloadId).text() mustBe download
         summaryListComponent.getElementsByClass(classes).size() mustBe 1
+        Option(summaryListComponent.getElementById(changeId)) mustBe None
       }
 
       "change is true without fullstop" in new Setup {
-        summaryListComponentWithChange.getElementById(id).text() mustBe change
+        summaryListComponentWithChange.getElementById(changeId).text() mustBe change
         summaryListComponentWithChange.getElementsByClass(classes).size() mustBe 1
+        Option(summaryListComponentWithChange.getElementById(downloadId)) mustBe None
       }
     }
   }
@@ -55,7 +58,8 @@ class SummaryListSpec extends SpecBase {
     val download: String = "Download CSV"
     val change: String = "Change"
     val classes: String = "govuk-summary-list__actions"
-    val id: String = "downloadChange"
+    val downloadId: String = "downloadChange"
+    val changeId: String = "changeDates"
 
     val fromDate: LocalDate = LocalDate.of(year, month, day10th)
     val toDate: LocalDate = LocalDate.of(year, month, day11th)

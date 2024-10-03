@@ -34,15 +34,24 @@
         </dt>
 
         <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="@summary.rows(fullstop).actions.head.items.head.href">
-                <span class="govuk-visually-hidden">
-                    @summary.rows(fullstop).actions.head.items.head.visuallyHiddenText</span>
-                <span id="downloadChange">
-                    @Html(messages(
-                        if (change) "cf.cash-account.transactions.request.review.change"
-                        else "cf.cash-account.detail.csv.download"))
-                </span>
-            </a>
+
+            @if(change) {
+                <a class="govuk-link" href="@summary.rowsV2(fullstop).actions.head.items.head.href">
+                    <span class="govuk-visually-hidden">
+                        @summary.rows(fullstop).actions.head.items.head.visuallyHiddenText</span>
+                    <span id="changeDates">
+                        @Html(messages("cf.cash-account.transactions.request.review.change"))
+                    </span>
+                </a>
+            } else {
+                <a class="govuk-link" href="@summary.rows(fullstop).actions.head.items.head.href">
+                    <span class="govuk-visually-hidden">
+                        @summary.rows(fullstop).actions.head.items.head.visuallyHiddenText</span>
+                    <span id="downloadChange">
+                        @Html(messages("cf.cash-account.detail.csv.download"))
+                    </span>
+                </a>
+            }
         </dd>
     </div>
 </dl>
