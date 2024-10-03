@@ -70,37 +70,43 @@ object PaginationViewModel {
                                      (implicit config: AppConfig): T = {
 
     val results: MetaData = MetaData(totalNumberOfItems, numberOfItemsPerPage, currentPage)
-    val isTotalNumberOfItemsMoreThanTheLimit: Boolean =
-      totalNumberOfItems <= config.numberOfRecordsToDisableNavigationButtonsInPagination
+    val isNumberOfItemsWithInLimit = totalNumberOfItems <= config.numberOfRecordsToDisableNavigationButtonsInPagination
 
     val hrefWithParams: Int => String = page => additionalParams.foldLeft(s"$href?page=$page") {
       case (href, (key, value)) => href + s"&$key=$value"
     }
 
-    val previous: Option[PaginationLink] = if (isTotalNumberOfItemsMoreThanTheLimit) {
+    val previous: Option[PaginationLink] = if (isNumberOfItemsWithInLimit) {
       None
     } else {
       previousLinkForItemsGreaterThanAcceptedLimit(currentPage, hrefWithParams(currentPage - 1))
     }
 
-    val next: Option[PaginationLink] = if (isTotalNumberOfItemsMoreThanTheLimit) {
+    val next: Option[PaginationLink] = if (isNumberOfItemsWithInLimit) {
       None
     } else {
       nextLinkForItemsGreaterThanAcceptedLimit(results.totalPages, currentPage, hrefWithParams(currentPage + 1))
     }
 
+    def populateItems(acc: Seq[PaginationItem], page: Int) = {
+      if (page == 1 || (page >= currentPage - 1 && page <= currentPage + 1) || page == results.totalPages) {
+        acc :+ PaginationItem(href = hrefWithParams(page), number = Some(page.toString), current = Some(page == currentPage))
+      } else if (acc.lastOption.flatMap(_.ellipsis).contains(true)) {
+        acc
+      } else {
+        acc :+ PaginationItem(ellipsis = Some(true))
+      }
+    }
+
     val items = (1 to results.totalPages).foldLeft[Seq[PaginationItem]](Nil) {
       (acc, page) =>
-        if (isTotalNumberOfItemsMoreThanTheLimit) {
-          acc :+ PaginationItem(href = hrefWithParams(page), number = Some(page.toString), current = Some(page == currentPage))
+        if (isNumberOfItemsWithInLimit) {
+          acc :+ PaginationItem(
+            href = hrefWithParams(page),
+            number = Some(page.toString),
+            current = Some(page == currentPage))
         } else {
-          if (page == 1 || (page >= currentPage - 1 && page <= currentPage + 1) || page == results.totalPages) {
-            acc :+ PaginationItem(href = hrefWithParams(page), number = Some(page.toString), current = Some(page == currentPage))
-          } else if (acc.lastOption.flatMap(_.ellipsis).contains(true)) {
-            acc
-          } else {
-            acc :+ PaginationItem(ellipsis = Some(true))
-          }
+          populateItems(acc, page)
         }
     }
 
