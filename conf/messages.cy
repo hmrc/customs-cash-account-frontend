@@ -295,5 +295,19 @@ cf.cash-account.detail.available-balance=Y balans sydd ar gael {0}
 cf.cash-account.detail.payments-heading=Eich trafodion ar gyfer y chwe mis diwethaf
 
 #Pagination
+pagination.number-of-movements.singular.with-search-param = Yn dangos {0} canlyniad yn cyfateb i {1}
+pagination.number-of-movements.plural.with-search-param = Yn dangos {0} canlyniad yn cyfateb i {1}
+
+pagination.number-of-movements.singular = Yn dangos {0} canlyniad
+pagination.number-of-movements.plural = Yn dangos {0} canlyniad
+
+pagination.searchResults = Tudaleniad canlyniadau chwilio
+pagination.results = Yn dangos {0} i {1} o {2} canlyniad
+pagination.results.search = Yn dangos {0} i {1} o {2} canlyniad yn cyfateb i {3}
+
 pagination.previous = Blaenorol
+pagination.previous.hidden = Tudalen flaenorol
 pagination.next = Nesaf
+pagination.next.hidden = Tudalen nesaf
+pagination.ellipses = ...
+pagination.ellipses.hidden = Ellipses

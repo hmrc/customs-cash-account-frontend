@@ -174,22 +174,22 @@ class ListPaginationViewModelSpec extends SpecBase {
 
       "searchParam has some value" in new Setup {
         ListPaginationViewModel(30, 2, 1, "href").searchResult(Some("2")) mustBe
-          msgs("cf.cash-account.number-of-movements.plural.with-search-param", "<b>30</b>", "2")
+          msgs("pagination.number-of-movements.plural.with-search-param", "<b>30</b>", "2")
       }
 
       "searchParam has some value and results count is 1" in new Setup {
         ListPaginationViewModel(1, 2, 1, "href").searchResult(Some("2")) mustBe
-          msgs("cf.cash-account.number-of-movements.singular.with-search-param", "<b>1</b>", "2")
+          msgs("pagination.number-of-movements.singular.with-search-param", "<b>1</b>", "2")
       }
 
       "searchParam is None" in new Setup {
         ListPaginationViewModel(30, 2, 1, "href").searchResult() mustBe
-          msgs("cf.cash-account.number-of-movements.plural", "<b>30</b>")
+          msgs("pagination.number-of-movements.plural", "<b>30</b>")
       }
 
       "searchParam is None and results count is 1" in new Setup {
         ListPaginationViewModel(1, 2, 1, "href").searchResult() mustBe
-          msgs("cf.cash-account.number-of-movements.singular", "<b>1</b>")
+          msgs("pagination.number-of-movements.singular", "<b>1</b>")
       }
     }
   }

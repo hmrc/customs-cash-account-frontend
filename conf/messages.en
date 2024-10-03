@@ -299,15 +299,16 @@ cf.cash-account.topup.withdrawal.detail.text=Top-ups can take up to one working 
 cf.cash-account.detail.available-balance=Available balance {0}
 
 #Pagination
-cf.cash-account.number-of-movements.singular.with-search-param = Showing {0} result matching {1}
-cf.cash-account.number-of-movements.plural.with-search-param = Showing {0} results matching {1}
+pagination.number-of-movements.singular.with-search-param = Showing {0} result matching {1}
+pagination.number-of-movements.plural.with-search-param = Showing {0} results matching {1}
 
-cf.cash-account.number-of-movements.singular = Showing {0} result
-cf.cash-account.number-of-movements.plural = Showing {0} results
+pagination.number-of-movements.singular = Showing {0} result
+pagination.number-of-movements.plural = Showing {0} results
 
 pagination.searchResults = Search results pagination
 pagination.results = Showing {0} to {1} of {2} results
 pagination.results.search = Showing {0} to {1} of {2} results matching {3}
+
 pagination.page = Page {0}
 pagination.next = Next
 pagination.next.hidden = Next page

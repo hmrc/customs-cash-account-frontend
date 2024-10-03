@@ -31,13 +31,13 @@ trait PaginationViewModel {
   def searchResult(searchParam: Option[String] = None)(implicit messages: Messages): String =
     (searchParam, results.count) match {
       case (Some(value), 1) =>
-        messages("cf.cash-account.number-of-movements.singular.with-search-param", "<b>1</b>", value)
+        messages("pagination.number-of-movements.singular.with-search-param", "<b>1</b>", value)
 
       case (Some(value), x) =>
-        messages("cf.cash-account.number-of-movements.plural.with-search-param", s"<b>$x</b>", value)
+        messages("pagination.number-of-movements.plural.with-search-param", s"<b>$x</b>", value)
 
-      case (None, 1) => messages("cf.cash-account.number-of-movements.singular", "<b>1</b>")
-      case (None, x) => messages("cf.cash-account.number-of-movements.plural", s"<b>$x</b>")
+      case (None, 1) => messages("pagination.number-of-movements.singular", "<b>1</b>")
+      case (None, x) => messages("pagination.number-of-movements.plural", s"<b>$x</b>")
     }
 
   def paginatedSearchResult(searchParam: Option[String] = None)(implicit messages: Messages): String =
