@@ -75,11 +75,7 @@
 
     @viewModel.dailyStatementsSection.map { section =>
         @section.dailyStatements
-
-        @if(!viewModel.shouldDisplayAllRecords) {
-            @viewModel.paginationModel.map(model => govukPagination(model.pagination))
-        }
-
+        @viewModel.paginationModel.map(model => govukPagination(model.pagination))
         @section.requestTransactionsHeading
     }
 

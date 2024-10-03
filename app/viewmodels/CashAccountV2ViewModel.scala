@@ -46,8 +46,7 @@ case class CashAccountV2ViewModel(pageTitle: String,
                                   tooManyTransactionsSection: Option[TooManyTransactionsSection] = None,
                                   downloadCSVFileLinkUrl: HtmlFormat.Appendable,
                                   helpAndSupportGuidance: GuidanceRow,
-                                  paginationModel: Option[ListPaginationViewModel] = None,
-                                  shouldDisplayAllRecords: Boolean = false)
+                                  paginationModel: Option[ListPaginationViewModel] = None)
 
 object CashAccountV2ViewModel {
 
@@ -76,18 +75,24 @@ object CashAccountV2ViewModel {
       tooManyTransactionsSection = populateTooManyTransactionsSection(hasMaxTransactionsExceeded),
       downloadCSVFileLinkUrl = downloadCSVFileLinkUrl(hasMaxTransactionsExceeded),
       helpAndSupportGuidance = helpAndSupport,
-      paginationModel = Some(populatePaginationModel(pageNo, totalDailyStatementsSize)),
-      shouldDisplayAllRecords = totalDailyStatementsSize <= config.numberOfRecordsPerPage)
+      paginationModel = populatePaginationModel(pageNo, totalDailyStatementsSize))
   }
 
   private def populatePaginationModel(pageNo: Option[Int],
                                       totalDailyStatementsSize: Int)
-                                     (implicit config: AppConfig)= {
-    ListPaginationViewModel(
-      totalNumberOfItems = totalDailyStatementsSize,
-      currentPage = pageNo.getOrElse(1),
-      numberOfItemsPerPage = config.numberOfRecordsPerPage,
-      href = controllers.routes.CashAccountV2Controller.showAccountDetails(None).url)
+                                     (implicit config: AppConfig) = {
+    val shouldPaginationBeDisabledAndShowAllRecords = totalDailyStatementsSize <= config.numberOfRecordsPerPage
+
+    if (shouldPaginationBeDisabledAndShowAllRecords) {
+      None
+    } else {
+      Some(ListPaginationViewModel(
+        totalNumberOfItems = totalDailyStatementsSize,
+        currentPage = pageNo.getOrElse(1),
+        numberOfItemsPerPage = config.numberOfRecordsPerPage,
+        href = controllers.routes.CashAccountV2Controller.showAccountDetails(None).url))
+    }
+
   }
 
   private def populateNotificationPanel(hasRequestedStatements: Boolean)
