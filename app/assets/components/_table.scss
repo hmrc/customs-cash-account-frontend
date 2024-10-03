@@ -85,6 +85,7 @@ $color_hmrc-grey-4: #b1b4b6;
         justify-content: space-between;
         min-width: 1px;
         text-align: right;
+        padding-right: 0;
 
         @media (min-width: $mobile) {
           display: table-cell;
