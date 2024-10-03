@@ -17,7 +17,7 @@
 package viewmodels
 
 import config.AppConfig
-import utils.Utils.*
+import utils.Utils.{LinkComponentValues, linkComponent}
 import play.twirl.api.{Html, HtmlFormat}
 import views.html.components.{h1, p1}
 import play.api.i18n.Messages
