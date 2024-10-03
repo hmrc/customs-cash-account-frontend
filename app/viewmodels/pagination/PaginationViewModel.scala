@@ -70,19 +70,19 @@ object PaginationViewModel {
                                      (implicit config: AppConfig): T = {
 
     val results: MetaData = MetaData(totalNumberOfItems, numberOfItemsPerPage, currentPage)
-    val isNumberOfItemsWithInLimit = totalNumberOfItems <= config.numberOfRecordsToDisableNavigationButtonsInPagination
+    val isNumberOfItemsInsideLimit = totalNumberOfItems <= config.numberOfRecordsToDisableNavigationButtonsInPagination
 
     val hrefWithParams: Int => String = page => additionalParams.foldLeft(s"$href?page=$page") {
       case (href, (key, value)) => href + s"&$key=$value"
     }
 
-    val previous: Option[PaginationLink] = if (isNumberOfItemsWithInLimit) {
+    val previous: Option[PaginationLink] = if (isNumberOfItemsInsideLimit) {
       None
     } else {
       previousLinkForItemsGreaterThanAcceptedLimit(currentPage, hrefWithParams(currentPage - 1))
     }
 
-    val next: Option[PaginationLink] = if (isNumberOfItemsWithInLimit) {
+    val next: Option[PaginationLink] = if (isNumberOfItemsInsideLimit) {
       None
     } else {
       nextLinkForItemsGreaterThanAcceptedLimit(results.totalPages, currentPage, hrefWithParams(currentPage + 1))
@@ -91,7 +91,9 @@ object PaginationViewModel {
     def populateItems(acc: Seq[PaginationItem], pageNo: Int): Seq[PaginationItem] = {
       (acc, pageNo) match {
         case (acc, page) if page == 1 || (page >= currentPage - 1 && page <= currentPage + 1) || page == results.totalPages =>
-          acc :+ PaginationItem(href = hrefWithParams(page), number = Some(page.toString), current = Some(page == currentPage))
+          acc :+ PaginationItem(href = hrefWithParams(page),
+            number = Some(page.toString),
+            current = Some(page == currentPage))
 
         case (acc, _) if (acc.lastOption.flatMap(_.ellipsis).contains(true)) => acc
         case _ => acc :+ PaginationItem(ellipsis = Some(true))
@@ -100,8 +102,10 @@ object PaginationViewModel {
 
     val items = (1 to results.totalPages).foldLeft[Seq[PaginationItem]](Nil) {
       (acc, page) =>
-        if (isNumberOfItemsWithInLimit) {
-          acc :+ PaginationItem(href = hrefWithParams(page), number = Some(page.toString), current = Some(page == currentPage))
+        if (isNumberOfItemsInsideLimit) {
+          acc :+ PaginationItem(href = hrefWithParams(page),
+            number = Some(page.toString),
+            current = Some(page == currentPage))
         } else {
           populateItems(acc, page)
         }
