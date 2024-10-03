@@ -47,7 +47,8 @@
                                <span class="hmrc-responsive-table__heading" aria-hidden="true">
                                    ${messages("cf.cash-account.detail.transaction-type")}
                                </span>
-                               ${statement.transactionType.flatMap(_.mrnLink).getOrElse(statement.transactionType.flatMap(_.textString).getOrElse(emptyString))}
+                               ${statement.transactionType.flatMap(_.mrnLink).getOrElse(
+                                   statement.transactionType.flatMap(_.textString).getOrElse(emptyString))}
                             """
                        )
                     ),

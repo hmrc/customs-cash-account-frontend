@@ -81,8 +81,7 @@ object CashAccountDailyStatementsViewModel {
 
         val closingBalanceOnlyRow = DailyStatementViewModel(
           date = dateAsDayMonthAndYear(dStat.date),
-          balance = Some(formatCurrencyAmount(dStat.closingBalance))
-        )
+          balance = Some(formatCurrencyAmount(dStat.closingBalance)))
 
         val transferAndWithdrawDailyStatementViewModel: Seq[DailyStatementViewModel] =
           populateViewModelFromPaymentAndWithdrawals(date, dStat.otherTransactions)
