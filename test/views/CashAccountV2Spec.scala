@@ -77,6 +77,24 @@ class CashAccountV2Spec extends ViewTestHelper {
         shouldContainCorrectHelpAndSupportGuidance(view)
       }
     }
+
+    "not display pagination component" when {
+
+      "records are equal or less than maximum no of records per page (currently 30)" in new Setup {
+        val view: Document = createView(viewModelWithTransactions)
+
+        titleShouldBeCorrect(view, "cf.cash-account.detail.title")
+        shouldContainBackLinkUrl(view, appConfig.customsFinancialsFrontendHomepage)
+        shouldContainCorrectAccountBalanceDetails(view, can)
+        shouldContainCorrectSearchForTransactionsInputTextDetails(view)
+        shouldContainSearchButton(view)
+        shouldContainCashAccountDailyStatements(view)
+        shouldContainCorrectRequestTransactionsHeading(view)
+        shouldContainCorrectDownloadCSVFileLinkUrl(view)
+        shouldContainCorrectHelpAndSupportGuidance(view)
+        shouldNotDisplayPaginationComponent(view)
+      }
+    }
   }
 
   private def shouldContainCorrectAccountBalanceDetails(viewDocument: Document,
@@ -163,6 +181,10 @@ class CashAccountV2Spec extends ViewTestHelper {
     val tableRosElementsByClass = viewDocument.getElementsByClass("hmrc-responsive-table__heading")
 
     tableRosElementsByClass.size() mustBe 0
+  }
+
+  private def shouldNotDisplayPaginationComponent(viewDocument: Document) = {
+    viewDocument.getElementsByClass("govuk-pagination").size() mustBe 0
   }
 
   trait Setup {
