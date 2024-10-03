@@ -202,11 +202,11 @@ class CashAccountV2Spec extends ViewTestHelper {
   }
 
   private def shouldDisplayPaginationComponent(viewDocument: Document) = {
-    viewDocument.getElementsByClass("govuk-pagination").size() mustBe 1
+    shouldContainTheElement(view = viewDocument, classes = Some("govuk-pagination"))
   }
 
   private def shouldNotDisplayPaginationComponent(viewDocument: Document) = {
-    viewDocument.getElementsByClass("govuk-pagination").size() mustBe 0
+    shouldNotContainTheElement(view = viewDocument, classes = Some("govuk-pagination"))
   }
 
   trait Setup {
