@@ -52,7 +52,7 @@ class CashAccountNotAvailableSpec extends ViewTestHelper {
   private def shouldDisplayHelpAndSupportTextAndLink(view: Document)(implicit msgs: Messages, config: AppConfig) = {
     val viewAsHtml = view.html()
 
-    viewAsHtml.contains(msgs("cf.cash-account.help-and-support.link.text.pre")) mustBe true
+    viewAsHtml.contains(msgs("cf.cash-account.help-and-support.link.text.pre.v2")) mustBe true
     viewAsHtml.contains(msgs("cf.cash-account.help-and-support.link.text")) mustBe true
     viewAsHtml.contains(msgs("cf.cash-account.help-and-support.link.text.post")) mustBe true
     viewAsHtml.contains(config.cashAccountForCdsDeclarationsUrl) mustBe true
