@@ -180,7 +180,6 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
         postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")))
     )
-
   }
 
   private def shouldContainCorrectDailyStatementsSection(app: Application,

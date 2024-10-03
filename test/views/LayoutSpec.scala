@@ -61,6 +61,12 @@ class LayoutSpec extends SpecBase {
       }
     }
 
+
+    "display correct page-not-working-properly link (desk-pro) and margin" in new Setup {
+      val layoutView: Document = Jsoup.parse(app.injector.instanceOf[Layout].apply(fullWidth = true)(content).body)
+
+      shouldContainCorrectHMRCTechnicalHelper(layoutView)
+    }
   }
 
   private def shouldContainCorrectTitle(viewDoc: Document, title: String = emptyString)(implicit msgs: Messages) = {
@@ -98,6 +104,11 @@ class LayoutSpec extends SpecBase {
     viewDoc.getElementsByClass("hmrc-user-research-banner")
       .text() mustBe "Help make GOV.UK better Sign up to take part in research (opens in new tab)" +
       " Hide message Hide message. I do not want to take part in research"
+  }
+
+  private def shouldContainCorrectHMRCTechnicalHelper(viewDoc: Document) = {
+    viewDoc.getElementsByClass("govuk-!-margin-top-9")
+      .text() mustBe "Is this page not working properly? (opens in new tab)"
   }
 
   trait Setup {
