@@ -25,7 +25,7 @@ import views.html.components.h2Inner
 
 class H2InnerSpec extends SpecBase {
 
-  "H2 component" should {
+  "h2Inner component" should {
 
     "display correct contents" when {
 

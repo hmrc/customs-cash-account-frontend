@@ -14,23 +14,15 @@
  * limitations under the License.
  *@
 
-@import viewmodels.DeclarationDetailViewModel
+@import utils.Utils.emptyString
 
-@this(main_template: Layout, govukSummaryList: GovukSummaryList)
+@this()
 
-@(viewModel: DeclarationDetailViewModel, pageNumber: Option[Int])(implicit request: Request[_], messages: Messages)
+@(
+  msg: String,
+  innerMsg: String = emptyString,
+  id: Option[String] = None,
+  classes: String = "govuk-heading-xl"
+)(implicit messages: Messages)
 
-@main_template(
-  pageTitle = Some(messages("cf.cash-account.detail.title")),
-  backLink = Some(routes.CashAccountController.showAccountDetails(page = pageNumber).url),
-  fullWidth = false
-) {
-
-  @viewModel.subHeader
-
-  @viewModel.header
-
-  @govukSummaryList(viewModel.declarationSummaryList)
-
-  @govukSummaryList(viewModel.taxSummaryList)
-}
+<h1 class="@classes" @{id.fold(emptyString)(id => s"id=$id")}>@messages(msg, messages(innerMsg))</h1>

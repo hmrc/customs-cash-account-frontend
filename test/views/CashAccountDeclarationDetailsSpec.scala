@@ -74,12 +74,8 @@ class CashAccountDeclarationDetailsSpec extends ViewTestHelper {
     val declarantEori = "GB987654321000"
     val declarantReference: Option[String] = Some("UCR12345")
 
-    val taxTypes: Seq[TaxType] = Seq(
-      TaxType(
-        reasonForSecurity = Some("Reason"),
-        taxTypeID = "50",
-        amount = fourHundred
-      ))
+    val taxTypes: Seq[TaxType] =
+      Seq(TaxType(reasonForSecurity = Some("Reason"), taxTypeID = "50", amount = fourHundred))
 
     val declaration: Declaration = Declaration(
       movementReferenceNumber = movementReferenceNumber,
@@ -92,9 +88,7 @@ class CashAccountDeclarationDetailsSpec extends ViewTestHelper {
         TaxGroup(CustomsDuty, fiveHundred, taxTypes),
         TaxGroup(ImportVat, fourHundred, taxTypes),
         TaxGroup(ExciseDuty, hundred, taxTypes)
-      ),
-      secureMovementReferenceNumber = None
-    )
+      ), secureMovementReferenceNumber = None)
 
     val viewModel: DeclarationDetailViewModel = DeclarationDetailViewModel(
       eori = eori,
@@ -103,14 +97,16 @@ class CashAccountDeclarationDetailsSpec extends ViewTestHelper {
         owner = owner,
         status = AccountStatusOpen,
         balances = CDSCashBalance(Some(fiveHundred))
-      )
-    )
+      ),
+      cameViaSearch = false,
+      searchInput = emptyString,
+      declaration = declaration)(messages)
 
     val cashAccountDeclarationDetails: cash_account_declaration_details =
       app.injector.instanceOf[cash_account_declaration_details]
 
     val viewDoc: Document = Jsoup.parse(
-      cashAccountDeclarationDetails.apply(viewModel, declaration, pageNumber)(request, messages).body
+      cashAccountDeclarationDetails.apply(viewModel, pageNumber)(request, messages).body
     )
   }
 }

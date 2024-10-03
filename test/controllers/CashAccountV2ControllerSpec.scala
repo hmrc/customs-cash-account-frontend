@@ -17,15 +17,27 @@
 package controllers
 
 import config.AppConfig
-import connectors._
-import models._
+import connectors.{CustomsDataStoreConnector, CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested, UnknownException}
+import models.{
+  AccountStatusOpen,
+  CDSCashBalance,
+  CashAccount,
+  CashAccountViewModel,
+  CashDailyStatement,
+  CashTransactions,
+  Declaration,
+  Payment,
+  Transaction,
+  Transfer,
+  Withdrawal
+}
 import models.email.{UndeliverableEmail, UnverifiedEmail}
 import play.api.Application
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.AuditingService
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
@@ -34,11 +46,11 @@ import views.html.{cash_account_no_transactions, cash_account_no_transactions_wi
 import java.time.LocalDate
 import scala.concurrent.Future
 import scala.util.Random
-
 import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.{eq => eqTo}
 import org.scalatest.Ignore
+import play.api.mvc.Results.Redirect
 
 @Ignore
 class CashAccountV2ControllerSpec extends SpecBase {
@@ -469,14 +481,41 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
   "onSubmit" must {
 
-    "return NOT_IMPLEMENTED" in new Setup {
-      val app: Application = application.build()
+    "return SEE_OTHER when form submission is successful" in new Setup {
+      val app: Application = application
+        .overrides(bind[DeclarationDetailController].toInstance(mockDeclarationDetailController))
+        .build()
+
+      when(mockDeclarationDetailController.handleSearchRequest(any, any)(any))
+        .thenReturn(Future.successful(
+          Redirect(routes.DeclarationDetailController.displaySearchDetails(sMRN, Some(1), searchInput))))
 
       running(app) {
         val request = FakeRequest(POST, routes.CashAccountV2Controller.onSubmit(Some(1)).url)
+          .withFormUrlEncodedBody("value" -> "testValue")
+
         val result = route(app, request).value
 
-        status(result) mustEqual NOT_IMPLEMENTED
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result) mustBe Some(
+          routes.DeclarationDetailController.displaySearchDetails(sMRN, Some(1), searchInput).url
+        )
+      }
+    }
+
+    "return NOT_FOUND when form submission is unsuccessful" in new Setup {
+      val app: Application = application
+        .overrides(bind[DeclarationDetailController].toInstance(mockDeclarationDetailController))
+        .build()
+
+      running(app) {
+        val request = FakeRequest(POST, routes.CashAccountV2Controller.onSubmit(Some(1)).url)
+          .withFormUrlEncodedBody("value" -> emptyString)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual NOT_FOUND
+        contentAsString(result) must include("Page not found")
       }
     }
   }
@@ -487,10 +526,12 @@ class CashAccountV2ControllerSpec extends SpecBase {
     val eori = "exampleEori"
     val someCan = "1234567"
     val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
+    val searchInput = "21GB58YC1T444"
 
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
     val mockAuditingService: AuditingService = mock[AuditingService]
     val mockDataStoreConnector: CustomsDataStoreConnector = mock[CustomsDataStoreConnector]
+    val mockDeclarationDetailController: DeclarationDetailController = mock[DeclarationDetailController]
 
     val cashAccount: CashAccount = CashAccount(cashAccountNumber, eori, AccountStatusOpen,
       CDSCashBalance(Some(BigDecimal(123456.78))))

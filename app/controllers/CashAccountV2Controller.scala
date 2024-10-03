@@ -50,7 +50,8 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
                                         showAccountsExceededThreshold: cash_account_exceeded_threshold,
                                         noTransactionsWithBalance: cash_account_no_transactions_with_balance,
                                         cashAccountUtils: CashAccountUtils,
-                                        formProvider: SearchTransactionsFormProvider)
+                                        formProvider: SearchTransactionsFormProvider,
+                                        declarationDetailController: DeclarationDetailController)
                                        (implicit mcc: MessagesControllerComponents,
                                         ec: ExecutionContext,
                                         eh: ErrorHandler,
@@ -83,8 +84,10 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
       }
   }
 
-  def onSubmit(page: Option[Int]): Action[AnyContent] = Action.async {
-    Future.successful(NotImplemented("Needs to be implemented"))
+  def onSubmit(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    form.bindFromRequest().fold(
+      formWithErrors => Future.successful(NotFound(eh.notFoundTemplate)),
+      enteredValue => declarationDetailController.handleSearchRequest(page, enteredValue))
   }
 
   private def showAccountWithTransactionDetails(account: CashAccount,

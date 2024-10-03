@@ -18,15 +18,79 @@ package viewmodels
 
 import helpers.Formatters
 import models.{CashAccount, CustomsDuty, Declaration, ExciseDuty, ImportVat}
-import models.domain.EORI
 import play.api.i18n.Messages
+import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, SummaryList, SummaryListRow, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, Value}
-import utils.Utils.emptyString
+import utils.Utils.{emptyH1InnerComponent, emptyH2InnerComponent, emptyString}
 
-case class DeclarationDetailViewModel(eori: EORI, account: CashAccount)
+case class DeclarationDetailViewModel(eori: String,
+                                      account: CashAccount,
+                                      cameViaSearch: Boolean,
+                                      searchInput: String,
+                                      header: Html,
+                                      subHeader: Html,
+                                      declarationSummaryList: SummaryList,
+                                      taxSummaryList: SummaryList)
 
 object DeclarationDetailViewModel {
+
+  def apply(eori: String,
+            account: CashAccount,
+            cameViaSearch: Boolean,
+            searchInput: String,
+            declaration: Declaration)(implicit messages: Messages): DeclarationDetailViewModel = {
+
+    val headerHtml = header(DeclarationDetailViewModel(
+      eori,
+      account,
+      cameViaSearch,
+      searchInput,
+      Html(emptyString),
+      Html(emptyString),
+      SummaryList(Seq.empty),
+      SummaryList(Seq.empty)))
+
+    val subHeaderHtml = subHeader(DeclarationDetailViewModel(
+      eori,
+      account,
+      cameViaSearch,
+      searchInput,
+      Html(emptyString),
+      Html(emptyString),
+      SummaryList(Seq.empty),
+      SummaryList(Seq.empty)))
+
+    val declarationList = declarationSummaryList(declaration)
+    val taxList = taxSummaryList(declaration)
+
+    DeclarationDetailViewModel(
+      eori = eori,
+      account = account,
+      cameViaSearch = cameViaSearch,
+      searchInput = searchInput,
+      header = headerHtml,
+      subHeader = subHeaderHtml,
+      declarationSummaryList = declarationList,
+      taxSummaryList = taxList)
+  }
+
+  def header(viewModel: DeclarationDetailViewModel)(implicit messages: Messages): Html = {
+    if (viewModel.cameViaSearch && viewModel.searchInput.nonEmpty) {
+      emptyH1InnerComponent(msg = "cf.cash-account.detail.declaration.search-title", innerMsg = viewModel.searchInput)
+    } else {
+      emptyH1InnerComponent(msg = "cf.cash-account.detail.declaration.title")
+    }
+  }
+
+  def subHeader(viewModel: DeclarationDetailViewModel)(implicit messages: Messages): Html = {
+    emptyH2InnerComponent(
+      msg = "cf.cash-account.detail.account",
+      innerMsg = viewModel.account.number,
+      id = Some("account-number"),
+      classes = "govuk-caption-xl"
+    )
+  }
 
   def declarationSummaryList(declaration: Declaration)(implicit messages: Messages): SummaryList = {
     SummaryList(
