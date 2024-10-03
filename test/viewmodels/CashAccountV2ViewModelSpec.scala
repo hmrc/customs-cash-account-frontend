@@ -194,9 +194,9 @@ class CashAccountV2ViewModelSpec extends SpecBase {
   private def shouldContainCorrectDailyStatementsSection(app: Application,
                                                          section: DailyStatementsSection,
                                                          cashTransactions: CashTransactions)
-                                                        (implicit msgs: Messages): Assertion = {
+                                                        (implicit msgs: Messages, config: AppConfig): Assertion = {
     val expectedDailyStatementsComponent =
-      app.injector.instanceOf[daily_statements_v2].apply(CashAccountDailyStatementsViewModel(cashTransactions))
+      app.injector.instanceOf[daily_statements_v2].apply(CashAccountDailyStatementsViewModel(cashTransactions, None))
 
     section.dailyStatements mustBe expectedDailyStatementsComponent
 

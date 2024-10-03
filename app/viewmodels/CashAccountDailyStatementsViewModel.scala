@@ -50,17 +50,17 @@ object CashAccountDailyStatementsViewModel {
     val hasTransactions = dailyStatements.nonEmpty
 
     CashAccountDailyStatementsViewModel(
-      dailyStatementsBasedOnPage(
-        populateDailyStatementViewModelList(dailyStatements), pageNo, config.numberOfRecordsPerPage),
+      dailyStatementsBasedOnPageNoForPagination(
+        populateDailyStatementViewModelList(dailyStatements), pageNo, config.numberOfRecordsPerPage
+      ),
       hasTransactions,
       transForLastSixMonthsHeading,
-      if(hasTransactions) None else Some(noTransFromLastSixMonthsText))
+      if (hasTransactions) None else Some(noTransFromLastSixMonthsText))
   }
 
-  private def dailyStatementsBasedOnPage(statements: Seq[DailyStatementViewModel],
-                                         pageNo: Option[Int],
-                                         maxItemPerPage: Int): Seq[DailyStatementViewModel] = {
-
+  private def dailyStatementsBasedOnPageNoForPagination(statements: Seq[DailyStatementViewModel],
+                                                        pageNo: Option[Int],
+                                                        maxItemPerPage: Int): Seq[DailyStatementViewModel] = {
     pageNo match {
       case None => statements
       case Some(pageNoValue) =>

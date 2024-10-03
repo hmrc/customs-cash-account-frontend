@@ -16,6 +16,7 @@
 
 package viewmodels
 
+import config.AppConfig
 import models.{CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Transfer, Withdrawal}
 import org.scalatest.Assertion
 import play.api.Application
@@ -35,7 +36,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
 
       "cash transactions are available" in new Setup {
         val dailyStatementsViewModel: CashAccountDailyStatementsViewModel =
-          CashAccountDailyStatementsViewModel(cashTransactions)
+          CashAccountDailyStatementsViewModel(cashTransactions, None)
 
         dailyStatementsViewModel.dailyStatements.size must be > 0
         shouldContainCorrectContentsForDailyStatements(dailyStatementsViewModel.dailyStatements)
@@ -46,7 +47,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
       "cash transactions are not present" in new Setup {
         val cashAccountDailyStatementsViewModelWithNoTransactions: CashAccountDailyStatementsViewModel =
           CashAccountDailyStatementsViewModel(
-            cashTransactions.copy(pendingTransactions = Seq(), cashDailyStatements = Seq()))
+            cashTransactions.copy(pendingTransactions = Seq(), cashDailyStatements = Seq()), None)
 
         cashAccountDailyStatementsViewModelWithNoTransactions.dailyStatements mustBe empty
         cashAccountDailyStatementsViewModelWithNoTransactions.hasTransactions mustBe false
@@ -188,6 +189,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
 
     val app: Application = application.build()
     implicit val msgs: Messages = messages(app)
+    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
   }
 
 }
