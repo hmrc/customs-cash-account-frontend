@@ -41,7 +41,7 @@ import play.api.test.Helpers.*
 import services.AuditingService
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
-import views.html.{cash_account_no_transactions, cash_account_no_transactions_with_balance, cash_account_transactions_not_available}
+import views.html.{cash_account_no_transactions_v2, cash_account_no_transactions_with_balance, cash_account_transactions_not_available}
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -51,6 +51,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.{eq => eqTo}
 import org.scalatest.Ignore
 import play.api.mvc.Results.Redirect
+import play.api.mvc.{AnyContentAsEmpty, Result}
 
 @Ignore
 class CashAccountV2ControllerSpec extends SpecBase {
@@ -171,7 +172,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
-      val view: cash_account_no_transactions = app.injector.instanceOf[cash_account_no_transactions]
+      val view: cash_account_no_transactions_v2 = app.injector.instanceOf[cash_account_no_transactions_v2]
       val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
       val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
@@ -201,7 +202,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
-      val view: cash_account_no_transactions = app.injector.instanceOf[cash_account_no_transactions]
+      val view: cash_account_no_transactions_v2 = app.injector.instanceOf[cash_account_no_transactions_v2]
       val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
       val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
@@ -220,34 +221,68 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
-    "display balance and no transactions to ACC31 returns no cashDailyStatements or pending transactions" in new Setup {
+    "display page with no transactions for the last six months message when ACC31 call succeed" +
+      " but contains no dailyStatements" in new Setup {
+      val cashTransactionsWithNoStatements: CashTransactions = CashTransactions(Seq(), Seq())
+
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
-      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
-        .thenReturn(Future.successful(Right(CashTransactions(Seq.empty, Seq.empty))))
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(any, any, any)(any))
+        .thenReturn(Future.successful(Right(cashTransactionsWithNoStatements)))
 
       val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
-      val view: cash_account_no_transactions_with_balance =
-        app.injector.instanceOf[cash_account_no_transactions_with_balance]
-
-      val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-      val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
+      implicit val msgs: Messages = messages(app)
 
       running(app) {
-        val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
-        val result = route(app, request).value
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
+
+        val result: Future[Result] = route(app, request).value
 
         status(result) mustEqual OK
 
-        contentAsString(result) mustEqual view(CashAccountViewModel(
-          eori, cashAccount))(request, messages, appConfig).toString()
-
-        contentAsString(result) must include regex "search and download any previous transactions as a CSV file"
+        contentAsString(result) must
+          include regex msgs("cf.cash-account.transactions.no-transactions-for-last-six-months")
       }
+    }
+
+    "display cash account no transactions' page when user does not have Cash account and balance is zero" in new Setup {
+
+      val app: Application = application
+        .overrides(
+          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
+        ).build()
+
+      implicit val msgs: Messages = messages(app)
+      implicit val config: AppConfig = appConfig(app)
+
+      val cashAccountWithZeroBalance: CashAccount = cashAccount.copy(balances = CDSCashBalance(Some(0)))
+
+      val cashAccountNoTransactionsView: cash_account_no_transactions_v2 =
+        app.injector.instanceOf[cash_account_no_transactions_v2]
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccountWithZeroBalance)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(any, any, any)(any))
+        .thenReturn(Future.successful(Left(NoTransactionsAvailable)))
+
+      running(app) {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
+
+        val result: Future[Result] = route(app, request).value
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          cashAccountNoTransactionsView(CashAccountViewModel(eori, cashAccountWithZeroBalance)).toString
+      }
+
     }
 
     "display too many results page if the call to ACC31 returns 091-the query has exceeded threshold error" in new Setup {
@@ -306,6 +341,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
         status(result) mustEqual NOT_FOUND
       }
     }
+
     "include a link to the cash transactions request page when feature switch is set to true" in new Setup {
 
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
@@ -526,7 +562,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
     val eori = "exampleEori"
     val someCan = "1234567"
     val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
-    val searchInput = "21GB58YC1T444"
+    val searchInput = "testInput"
 
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
     val mockAuditingService: AuditingService = mock[AuditingService]

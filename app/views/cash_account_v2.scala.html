@@ -50,7 +50,7 @@
 
     @viewModel.cashAccountBalance
 
-    @viewModel.cashStatementNotification
+    @viewModel.cashStatementNotification.map(identity)
 
     @formHelper(action = controllers.routes.CashAccountV2Controller.onSubmit(None)) {
         @errorSummary(form.errors, None)
@@ -72,17 +72,14 @@
 
     }
 
-    @if(viewModel.hasMaxTransactionsExceeded) {
+    @viewModel.dailyStatementsSection.map { section =>
+        @section.dailyStatements
+        @section.requestTransactionsHeading
+    }
 
-        @viewModel.tooManyTransactionsHeading.map(identity)
-
-        @viewModel.tooManyTransactionsStatement.map(identity)
-
-    } else {
-
-        @viewModel.dailyStatements
-
-        @viewModel.requestTransactionsHeading
+    @viewModel.tooManyTransactionsSection.map { section =>
+        @section.heading
+        @section.paragraph
     }
 
     @viewModel.downloadCSVFileLinkUrl

@@ -20,7 +20,7 @@ import models.{CashDailyStatement, CashTransactionType, CashTransactions, Declar
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount}
-import utils.Utils.{LinkComponentValues, emptyString, h2Component, linkComponent, prependNegativeSignWithAmount}
+import utils.Utils.{LinkComponentValues, emptyString, h2Component, linkComponent, pComponent, prependNegativeSignWithAmount}
 
 import java.time.LocalDate
 
@@ -38,24 +38,31 @@ case class DailyStatementViewModel(date: String,
 
 case class CashAccountDailyStatementsViewModel(dailyStatements: Seq[DailyStatementViewModel],
                                                hasTransactions: Boolean,
-                                               transForLastSixMonthsHeading: HtmlFormat.Appendable)
+                                               transForLastSixMonthsHeading: HtmlFormat.Appendable,
+                                               noTransFromLastSixMonthsText: Option[HtmlFormat.Appendable] = None)
 
 object CashAccountDailyStatementsViewModel {
   def apply(transactions: CashTransactions)(implicit msgs: Messages): CashAccountDailyStatementsViewModel = {
 
-    val pendingTransactions = transactions.pendingTransactions.sortBy(_.date).reverse
     val dailyStatements: Seq[CashDailyStatement] = transactions.cashDailyStatements.sortBy(_.date).reverse
     val hasTransactions = dailyStatements.nonEmpty
 
     CashAccountDailyStatementsViewModel(populateDailyStatementViewModelList(dailyStatements),
       hasTransactions,
-      transForLastSixMonthsHeading)
+      transForLastSixMonthsHeading,
+      if(hasTransactions) None else Some(noTransFromLastSixMonthsText))
   }
 
   private def transForLastSixMonthsHeading(implicit msgs: Messages): HtmlFormat.Appendable = {
     h2Component(
       msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
       id = Some("transactions-for-last-six-months-heading"))
+  }
+
+  private def noTransFromLastSixMonthsText(implicit msgs: Messages): HtmlFormat.Appendable = {
+    pComponent(
+      messageKey = "cf.cash-account.transactions.no-transactions-for-last-six-months",
+      id = Some("no-transactions-for-last-six-months-text"))
   }
 
   private def populateDailyStatementViewModelList(dailyStatements: Seq[CashDailyStatement])
