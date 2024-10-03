@@ -22,7 +22,7 @@ import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
 import utils.Utils.*
-import views.html.components.{h1, h2, link, newTabLink, p, h2Inner}
+import views.html.components.{h1, h1Inner, h2, h2Inner, link, newTabLink, p}
 
 class UtilsSpec extends SpecBase {
   "Comma" should {
@@ -61,6 +61,12 @@ class UtilsSpec extends SpecBase {
     }
   }
 
+  "poundSymbol" should {
+    "return correct value" in {
+      poundSymbol mustBe "£"
+    }
+  }
+  
   "emptyH1Component" should {
     "return the empty h1 component" in {
       emptyH1Component mustBe new h1()
@@ -153,6 +159,12 @@ class UtilsSpec extends SpecBase {
   "emptyH2InnerComponent" should {
     "return the empty h2Inner component" in {
       emptyH2InnerComponent mustBe new h2Inner()
+    }
+  }
+
+  "emptyH1InnerComponent" should {
+    "return the empty h1Inner component" in {
+      emptyH1InnerComponent mustBe new h1Inner()
     }
   }
 

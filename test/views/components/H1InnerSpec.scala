@@ -65,6 +65,7 @@ class H1InnerSpec extends SpecBase {
       }
 
       "it handles empty class string" in new Setup {
+
         private val h1InnerComponentWithEmptyClassAsText = h1InnerComponentWithEmptyClass.text()
 
         h1InnerComponentWithEmptyClassAsText mustBe messages(app)(msgKey, messages(app)(innerMsgKey))

@@ -58,6 +58,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
     "return an OK view when a transaction is found" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
+
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
@@ -77,6 +78,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
     "return an OK view with no transactions when an error occurs during retrieval" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
+
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(new Exception("API error"))))
 
@@ -96,6 +98,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
     "return a NOT_FOUND when the transaction details not found in the retrieved data" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
+
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Right(CashTransactions(Seq.empty, Seq.empty))))
 
@@ -135,6 +138,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
     "return an OK view when a transaction is found" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
+
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
@@ -156,6 +160,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
     "return an OK view with no transactions when an error occurs during retrieval" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
+
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(new Exception("API error"))))
 
@@ -207,11 +212,14 @@ class DeclarationDetailControllerSpec extends SpecBase {
             otherTransactions = Seq.empty)))
 
       when(mockCashAccountUtils.transactionDateRange()).thenReturn((fromDate, toDate))
+
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
+
       when(mockCustomsFinancialsApiConnector
         .retrieveCashTransactions(eqTo(cashAccountNumber), eqTo(fromDate), eqTo(toDate))(any))
         .thenReturn(Future.successful(Right(cashTransactions)))
+
       when(mockErrorHandler.notFoundTemplate(any())).thenReturn(Html(notFoundText))
 
       val matchDeclaration: Declaration => Boolean = { declaration =>
@@ -368,8 +376,10 @@ class DeclarationDetailControllerSpec extends SpecBase {
             otherTransactions = Seq.empty)))
 
       when(mockCashAccountUtils.transactionDateRange()).thenReturn((fromDate, toDate))
+
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
+
       when(mockCustomsFinancialsApiConnector
         .retrieveCashTransactions(eqTo(cashAccountNumber), eqTo(fromDate), eqTo(toDate))(any))
         .thenReturn(Future.successful(Right(cashTransactions)))

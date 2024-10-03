@@ -69,6 +69,7 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
 
   def handleSearchRequest(page: Option[Int], searchInput: String)
                          (implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
+
     if (isValidMRNUCR(searchInput) || isValidPayment(searchInput)) {
       val searchType = determineSearchType(searchInput)
       searchDeclarations(page, searchInput, searchType)
@@ -91,11 +92,9 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
   def isValidMRNUCR(value: String): Boolean =
     mrnUCRRegex.findFirstIn(value).isDefined || superMRNUCRRegex.findFirstIn(value).isDefined
 
-  def isValidPayment(value: String): Boolean =
-    paymentRegex.findFirstIn(value).isDefined
+  def isValidPayment(value: String): Boolean = paymentRegex.findFirstIn(value).isDefined
 
-  def parsePaymentAmount(value: String): BigDecimal =
-    BigDecimal(value.replace(poundSymbol, emptyString).trim)
+  def parsePaymentAmount(value: String): BigDecimal = BigDecimal(value.replace(poundSymbol, emptyString).trim)
 
   def searchDeclarations(page: Option[Int],
                          searchInput: String,
