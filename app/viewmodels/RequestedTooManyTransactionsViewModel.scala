@@ -16,7 +16,6 @@
 
 package viewmodels
 
-import config.AppConfig
 import helpers.Formatters.dateAsMonthAndYear
 import utils.Utils.{LinkComponentValues, linkComponent}
 import play.twirl.api.{Html, HtmlFormat}
@@ -36,7 +35,7 @@ object RequestedTooManyTransactionsViewModel {
   def apply(from: LocalDate,
             to: LocalDate,
             tryAgainUrl: String,
-            backUrl: String)(implicit messages: Messages, config: AppConfig): RequestedTooManyTransactionsViewModel = {
+            backUrl: String)(implicit messages: Messages): RequestedTooManyTransactionsViewModel = {
 
     RequestedTooManyTransactionsViewModel(
       pageTitle = messages("cf.cash-account.detail.title"),

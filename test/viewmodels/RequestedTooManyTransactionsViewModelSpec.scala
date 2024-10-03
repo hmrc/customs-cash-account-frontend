@@ -16,13 +16,11 @@
 
 package viewmodels
 
-import config.AppConfig
 import controllers.routes
 import org.scalatest.Assertion
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
-
 import java.time.LocalDate
 
 class RequestedTooManyTransactionsViewModelSpec extends SpecBase {
@@ -41,11 +39,9 @@ class RequestedTooManyTransactionsViewModelSpec extends SpecBase {
       shouldProduceCorrectFromDateInInfoSection(viewModel.infoSection.body, fromDate)
       shouldProduceCorrectToDateInInfoSection(viewModel.infoSection.body, toDate)
     }
-
   }
 
-  private def shouldProduceCorrectTitle(pageTitle: String
-                                       )(implicit messages: Messages): Assertion = {
+  private def shouldProduceCorrectTitle(pageTitle: String)(implicit messages: Messages): Assertion = {
     pageTitle mustBe messages("cf.cash-account.detail.title")
   }
 
@@ -63,14 +59,14 @@ class RequestedTooManyTransactionsViewModelSpec extends SpecBase {
   }
 
   private def shouldProduceCorrectFromDateInInfoSection(statement: String,
-                                                          fromDate: LocalDate
-                                                         )(implicit messages: Messages): Assertion = {
+                                                        fromDate: LocalDate
+                                                       )(implicit messages: Messages): Assertion = {
 
     statement.contains(s"${messages(s"month.${fromDate.getMonthValue}")} ${fromDate.getYear}") mustBe true
   }
 
   private def shouldProduceCorrectToDateInInfoSection(statement: String,
-                                                        toDate: LocalDate)(implicit messages: Messages): Assertion = {
+                                                      toDate: LocalDate)(implicit messages: Messages): Assertion = {
     statement.contains(s"${messages(s"month.${toDate.getMonthValue}")} ${toDate.getYear}") mustBe true
   }
 
@@ -82,7 +78,6 @@ class RequestedTooManyTransactionsViewModelSpec extends SpecBase {
 
     val app: Application = application.build()
 
-    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
     implicit val msgs: Messages = messages(app)
   }
 }
