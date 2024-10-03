@@ -31,6 +31,6 @@ object Constants {
   val ACCOUNT_DOES_NOT_EXIST: String = "092-The account does not exist within ETMP"
   val INVALID_EORI: String = "102-Invalid EORI number"
   val ENTRY_ALREADY_EXISTS: String = "124-Entry already exists for the same period"
-  val EXCEEDED_MAXIMUM: String = "602-Exceeded maximum threshold of transaction"
+  val EXCEEDED_MAXIMUM: String = "602-Exceeded maximum threshold of transactions"
 
 }

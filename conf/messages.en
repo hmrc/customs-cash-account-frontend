@@ -216,6 +216,10 @@ cf.cash-account.transactions.request.date.hint-start-date=Start date must be aft
 cf.cash-account.transactions.request.date.hint=For example, 31 3 2021.
 cf.cash-account.transactions.request.link.label=Back to cash account
 
+cf.cash-account.transactions.requested.tooMany.transactions=Your request returned too many transactions
+cf.cash-account.transactions.requested.statement.msg=You requested transactions from {0} to {1}
+cf.cash-account.transactions.requested.tryAgain=Try again with a shorter date range.
+
 date.day=Day
 date.month=Month
 date.year=Year

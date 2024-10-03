@@ -53,6 +53,6 @@ class ConstantsSpec extends SpecBase {
     val account: String = "092-The account does not exist within ETMP"
     val invalid: String = "102-Invalid EORI number"
     val entry: String = "124-Entry already exists for the same period"
-    val exceeded: String = "602-Exceeded maximum threshold of transaction"
+    val exceeded: String = "602-Exceeded maximum threshold of transactions"
   }
 }

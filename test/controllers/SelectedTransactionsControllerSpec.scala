@@ -36,137 +36,228 @@ import scala.concurrent.Future
 
 class SelectedTransactionsControllerSpec extends SpecBase {
 
-  "redirect to request page if no requested data found in cache" in new Setup {
-    when(mockRequestedTransactionsCache.get(any))
-      .thenReturn(Future.successful(None))
+  "onPageLoad" must {
 
-    val request: FakeRequest[AnyContentAsEmpty.type] =
-      fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
+    "redirect to request page if no requested data found in cache" in new Setup {
 
-    running(app) {
-      val result = route(app, request).value
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).value mustBe routes.SelectTransactionsController.onPageLoad().url
+      when(mockRequestedTransactionsCache.get(any))
+        .thenReturn(Future.successful(None))
+
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
+
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.SelectTransactionsController.onPageLoad().url
+      }
+    }
+
+    "return status Ok when valid data has been submitted" in new Setup {
+
+      when(mockRequestedTransactionsCache.get(any))
+        .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveHistoricCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(Right(cashTransactionResponse)))
+
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
+
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe OK
+      }
+    }
+
+    "return No Transactions view when no data is returned for the search" in new Setup {
+
+      when(mockRequestedTransactionsCache.get(any))
+        .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveHistoricCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(Left(NoTransactionsAvailable)))
+
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
+
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe OK
+        contentAsString(result) must include regex "No cash account transactions"
+      }
+    }
+
+    "return Exceeded Threshold view when too many results returned for the search" in new Setup {
+
+      when(mockRequestedTransactionsCache.get(any))
+        .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveHistoricCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(Left(TooManyTransactionsRequested)))
+
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
+
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe SEE_OTHER
+      }
+    }
+
+    "return transaction unavailable for internal server error during search" in new Setup {
+
+      when(mockRequestedTransactionsCache.get(any))
+        .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveHistoricCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(Left(UnknownException)))
+
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
+
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe OK
+      }
+    }
+
+    "when too many results returned for the search" in new Setup {
+
+      val day = 30
+      val month = 3
+      val year = 2023
+
+      when(mockRequestedTransactionsCache.get(any))
+        .thenReturn(Future.successful(Some(CashTransactionDates(
+          LocalDate.of(year, month, day), LocalDate.of(year, month, day)))))
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveHistoricCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(Left(TooManyTransactionsRequested)))
+
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
+
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe SEE_OTHER
+      }
+    }
+
+    "redirect to account unavailable page when exception is thrown" in new Setup {
+
+      when(mockRequestedTransactionsCache.get(any))
+        .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveHistoricCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenThrow(new RuntimeException())
+
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
+
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe SEE_OTHER
+      }
     }
   }
 
-  "return status Ok when valid data has been submitted" in new Setup {
-    when(mockRequestedTransactionsCache.get(any))
-      .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
+  "OnSubmit" must {
 
-    when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-      .thenReturn(Future.successful(Some(cashAccount)))
+    "redirect to selected-confirmation page when cash account statement is submitted successfully" in new Setup {
 
-    when(mockCustomsFinancialsApiConnector.retrieveHistoricCashTransactions(eqTo(cashAccountNumber), any, any)(any))
-      .thenReturn(Future.successful(Right(cashTransactionResponse)))
+      when(mockRequestedTransactionsCache.get(any))
+        .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
 
-    val request: FakeRequest[AnyContentAsEmpty.type] =
-      fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
 
-    running(app) {
-      val result = route(app, request).value
-      status(result) mustBe OK
+      when(mockCustomsFinancialsApiConnector.postCashAccountStatementRequest(any, any, any, any)(any))
+        .thenReturn(Future.successful(Right(accountResCommon01)))
+
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(POST, routes.SelectedTransactionsController.onSubmit().url)
+
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.ConfirmationPageController.onPageLoad().url)
+      }
     }
+
+    "redirect to requested too many transactions page " when {
+
+      "cash account statement request responds with EXCEEDED_MAXIMUM in statusText" in new Setup {
+
+        when(mockRequestedTransactionsCache.get(any))
+          .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
+
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        when(mockCustomsFinancialsApiConnector.postCashAccountStatementRequest(any, any, any, any)(any))
+          .thenReturn(Future.successful(Left(ExceededMaximum)))
+
+        val request: FakeRequest[AnyContentAsEmpty.type] =
+          fakeRequest(POST, routes.SelectedTransactionsController.onSubmit().url)
+
+        running(app) {
+          val result = route(app, request).value
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.SelectedTransactionsController.requestedTooManyTransactions().url)
+        }
+      }
+    }
+
   }
 
-  "return No Transactions view when no data is returned for the search" in new Setup {
-    when(mockRequestedTransactionsCache.get(any))
-      .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
+  "requestedTooManyTransactions" must {
 
-    when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-      .thenReturn(Future.successful(Some(cashAccount)))
+    "return too many transactions requested page if dates are available in cache" in new Setup {
 
-    when(mockCustomsFinancialsApiConnector.retrieveHistoricCashTransactions(eqTo(cashAccountNumber), any, any)(any))
-      .thenReturn(Future.successful(Left(NoTransactionsAvailable)))
+      when(mockRequestedTransactionsCache.get(any))
+        .thenReturn(Future.successful(Some(CashTransactionDates(fromDate, toDate))))
 
-    val request: FakeRequest[AnyContentAsEmpty.type] =
-      fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.SelectedTransactionsController.requestedTooManyTransactions().url)
 
-    running(app) {
-      val result = route(app, request).value
-      status(result) mustBe OK
-      contentAsString(result) must include regex "No cash account transactions"
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe OK
+      }
     }
-  }
 
-  "return Exceeded Threshold view when too many results returned for the search" in new Setup {
-    when(mockRequestedTransactionsCache.get(any))
-      .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
+    "redirect to showAccountDetails page if dates are unavailable in cache" in new Setup {
 
-    when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-      .thenReturn(Future.successful(Some(cashAccount)))
+      when(mockRequestedTransactionsCache.get(any)).thenReturn(Future.successful(None))
 
-    when(mockCustomsFinancialsApiConnector.retrieveHistoricCashTransactions(eqTo(cashAccountNumber), any, any)(any))
-      .thenReturn(Future.successful(Left(TooManyTransactionsRequested)))
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.SelectedTransactionsController.requestedTooManyTransactions().url)
 
-    val request: FakeRequest[AnyContentAsEmpty.type] =
-      fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
-
-    running(app) {
-      val result = route(app, request).value
-      status(result) mustBe SEE_OTHER
-    }
-  }
-
-  "return transaction unavailable for internal server error during search" in new Setup {
-    when(mockRequestedTransactionsCache.get(any))
-      .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
-
-    when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-      .thenReturn(Future.successful(Some(cashAccount)))
-
-    when(mockCustomsFinancialsApiConnector.retrieveHistoricCashTransactions(eqTo(cashAccountNumber), any, any)(any))
-      .thenReturn(Future.successful(Left(UnknownException)))
-
-    val request: FakeRequest[AnyContentAsEmpty.type] =
-      fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
-
-    running(app) {
-      val result = route(app, request).value
-      status(result) mustBe OK
-    }
-  }
-
-  "when too many results returned for the search" in new Setup {
-    val day = 30
-    val month = 3
-    val year = 2023
-
-    when(mockRequestedTransactionsCache.get(any))
-      .thenReturn(Future.successful(Some(CashTransactionDates(
-        LocalDate.of(year, month, day), LocalDate.of(year, month, day)))))
-
-    when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-      .thenReturn(Future.successful(Some(cashAccount)))
-
-    when(mockCustomsFinancialsApiConnector.retrieveHistoricCashTransactions(eqTo(cashAccountNumber), any, any)(any))
-      .thenReturn(Future.successful(Left(TooManyTransactionsRequested)))
-
-    val request: FakeRequest[AnyContentAsEmpty.type] =
-      fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
-
-    running(app) {
-      val result = route(app, request).value
-      status(result) mustBe SEE_OTHER
-    }
-  }
-
-  "redirect to account unavailable page when exception is thrown" in new Setup {
-    when(mockRequestedTransactionsCache.get(any))
-      .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
-
-    when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-      .thenReturn(Future.successful(Some(cashAccount)))
-
-    when(mockCustomsFinancialsApiConnector.retrieveHistoricCashTransactions(eqTo(cashAccountNumber), any, any)(any))
-      .thenThrow(new RuntimeException())
-
-    val request: FakeRequest[AnyContentAsEmpty.type] =
-      fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
-
-    running(app) {
-      val result = route(app, request).value
-      status(result) mustBe SEE_OTHER
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.CashAccountController.showAccountDetails(None).url)
+      }
     }
   }
 
@@ -210,6 +301,12 @@ class SelectedTransactionsControllerSpec extends SpecBase {
 
     val cashTransactionResponse: CashTransactions =
       CashTransactions(listOfPendingTransactions, cashDailyStatements)
+
+    val accountResCommon01: AccountResponseCommon = AccountResponseCommon(
+      "OK", None, "2021-12-17T09:30:47Z", None)
+
+    val accountResCommon02: AccountResponseCommon = AccountResponseCommon(
+      "OK", Some("602-Exceeded maximum threshold of transactions"), "2021-12-17T09:30:47Z", None)
 
     val app: Application = application
       .overrides(
