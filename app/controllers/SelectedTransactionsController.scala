@@ -97,6 +97,7 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
         Redirect(routes.CashAccountController.showAccountDetails(None))
       }
     }
+
     result.recover {
       case _: Exception =>
         logger.error("failed to get dates from cache for tooManyTransactionsRequested")

@@ -221,6 +221,7 @@ class SelectedTransactionsControllerSpec extends SpecBase {
 
         running(app) {
           val result = route(app, request).value
+
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.SelectedTransactionsController.requestedTooManyTransactions().url)
         }

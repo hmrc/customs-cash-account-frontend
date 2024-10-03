@@ -35,15 +35,10 @@ class CashAccountRequestedTooManyTransactionsSpec extends ViewTestHelper {
       val statementMsg: String = view.getElementById("requested-too-many-transactions-message-statement").text()
 
       titleShouldBeCorrect(view, titleMsgKey = "cf.cash-account.detail.title")
-
       shouldContainBackLinkUrl(view, selectedTxnUrl)
-
       shouldContainCorrectHeading(view)
-
       shouldContainCorrectFromDateInStatement(statementMsg, fromDate)
-
       shouldContainCorrectToDateInStatement(statementMsg, toDate)
-
       shouldContainCorrectTryAgainLink(view)
     }
   }
@@ -70,11 +65,12 @@ class CashAccountRequestedTooManyTransactionsSpec extends ViewTestHelper {
 
   trait Setup {
 
-    val fromDate = LocalDate.parse("2020-07-18")
-    val toDate = LocalDate.parse("2020-07-20")
-    val selectedTxnUrl = controllers.routes.SelectedTransactionsController.onPageLoad().url
+    val fromDate: LocalDate = LocalDate.parse("2020-07-18")
+    val toDate: LocalDate = LocalDate.parse("2020-07-20")
+    val selectedTxnUrl: String = controllers.routes.SelectedTransactionsController.onPageLoad().url
 
-    val model = RequestedTooManyTransactionsViewModel(fromDate, toDate, selectedTxnUrl, selectedTxnUrl)
+    val model: RequestedTooManyTransactionsViewModel = RequestedTooManyTransactionsViewModel(
+      fromDate, toDate, selectedTxnUrl, selectedTxnUrl)
 
     val viewDoc: Document =
       Jsoup.parse(app.injector.instanceOf[cash_account_requested_too_many_transactions].apply(model).body)

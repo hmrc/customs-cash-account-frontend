@@ -17,6 +17,7 @@
 package viewmodels
 
 import config.AppConfig
+import helpers.Formatters.dateAsMonthAndYear
 import utils.Utils.{LinkComponentValues, linkComponent}
 import play.twirl.api.{Html, HtmlFormat}
 import views.html.components.{h1, p1}
@@ -28,7 +29,7 @@ case class RequestedTooManyTransactionsViewModel(pageTitle: String,
                                                  backLink: String,
                                                  heading: HtmlFormat.Appendable,
                                                  tryAgainLink: HtmlFormat.Appendable,
-                                                 statement01: HtmlFormat.Appendable)
+                                                 infoSection: HtmlFormat.Appendable)
 
 object RequestedTooManyTransactionsViewModel {
 
@@ -40,18 +41,19 @@ object RequestedTooManyTransactionsViewModel {
     RequestedTooManyTransactionsViewModel(
       pageTitle = messages("cf.cash-account.detail.title"),
       backLink = backUrl,
-      heading = formHeading(),
-      statement01 = formStatement(from, to),
-      tryAgainLink = formLink(tryAgainUrl))
+      heading = populateHeading(),
+      infoSection = populateInfoSection(from, to),
+      tryAgainLink = populateLink(tryAgainUrl))
   }
 
-  private def formHeading()(implicit msgs: Messages): HtmlFormat.Appendable = {
+  private def populateHeading()(implicit msgs: Messages): HtmlFormat.Appendable = {
     new h1().apply(
       id = Some("requested-too-many-transactions-message-heading"),
       msg = "cf.cash-account.transactions.requested.tooMany.transactions")
   }
 
-  private def formStatement(from: LocalDate, to: LocalDate)(implicit msgs: Messages): HtmlFormat.Appendable = {
+  private def populateInfoSection(from: LocalDate,
+                                  to: LocalDate)(implicit msgs: Messages): HtmlFormat.Appendable = {
     new p1().apply(
       id = Some("requested-too-many-transactions-message-statement"),
       content = Html(s"${
@@ -62,11 +64,7 @@ object RequestedTooManyTransactionsViewModel {
     )
   }
 
-  private def dateAsMonthAndYear(date: LocalDate)(implicit messages: Messages): String = {
-    s"${messages(s"month.${date.getMonthValue}")} ${date.getYear}"
-  }
-
-  private def formLink(tryAgainUrl: String)(implicit msgs: Messages): HtmlFormat.Appendable = {
+  private def populateLink(tryAgainUrl: String)(implicit msgs: Messages): HtmlFormat.Appendable = {
     linkComponent(
       LinkComponentValues(
         location = tryAgainUrl,

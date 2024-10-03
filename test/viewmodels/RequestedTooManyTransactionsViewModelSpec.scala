@@ -31,14 +31,15 @@ class RequestedTooManyTransactionsViewModelSpec extends SpecBase {
 
     "return correct view model object" in new Setup {
 
-      val viewModel = RequestedTooManyTransactionsViewModel(fromDate, toDate, selectedTxnUrl, selectedTxnUrl)
+      val viewModel: RequestedTooManyTransactionsViewModel = RequestedTooManyTransactionsViewModel(
+        fromDate, toDate, selectedTxnUrl, selectedTxnUrl)
 
       shouldProduceCorrectTitle(viewModel.pageTitle)
       shouldProduceCorrectBackLink(viewModel.backLink, selectedTxnUrl)
       shouldProduceCorrectHeading(viewModel.heading.body)
       shouldProduceCorrectTryAgainLink(viewModel.tryAgainLink.body, selectedTxnUrl)
-      shouldProduceCorrectFromDateInStatement(viewModel.statement01.body, fromDate)
-      shouldProduceCorrectToDateInStatement(viewModel.statement01.body, toDate)
+      shouldProduceCorrectFromDateInInfoSection(viewModel.infoSection.body, fromDate)
+      shouldProduceCorrectToDateInInfoSection(viewModel.infoSection.body, toDate)
     }
 
   }
@@ -61,27 +62,27 @@ class RequestedTooManyTransactionsViewModelSpec extends SpecBase {
     tryAgainLink.contains(url) mustBe true
   }
 
-  private def shouldProduceCorrectFromDateInStatement(statement: String,
-                                                      fromDate: LocalDate)(implicit messages: Messages): Assertion = {
+  private def shouldProduceCorrectFromDateInInfoSection(statement: String,
+                                                          fromDate: LocalDate
+                                                         )(implicit messages: Messages): Assertion = {
 
     statement.contains(s"${messages(s"month.${fromDate.getMonthValue}")} ${fromDate.getYear}") mustBe true
   }
 
-  private def shouldProduceCorrectToDateInStatement(statement: String,
-                                                    toDate: LocalDate)(implicit messages: Messages): Assertion = {
+  private def shouldProduceCorrectToDateInInfoSection(statement: String,
+                                                        toDate: LocalDate)(implicit messages: Messages): Assertion = {
     statement.contains(s"${messages(s"month.${toDate.getMonthValue}")} ${toDate.getYear}") mustBe true
   }
 
   trait Setup {
 
-    val fromDate = LocalDate.parse("2020-07-18")
-    val toDate = LocalDate.parse("2020-07-20")
-    val selectedTxnUrl = controllers.routes.SelectedTransactionsController.onPageLoad().url
+    val fromDate: LocalDate = LocalDate.parse("2020-07-18")
+    val toDate: LocalDate = LocalDate.parse("2020-07-20")
+    val selectedTxnUrl: String = controllers.routes.SelectedTransactionsController.onPageLoad().url
 
     val app: Application = application.build()
 
     implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
     implicit val msgs: Messages = messages(app)
-
   }
 }

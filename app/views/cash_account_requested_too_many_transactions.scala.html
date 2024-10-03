@@ -17,10 +17,7 @@
 @import viewmodels.RequestedTooManyTransactionsViewModel
 
 @this(
-        main_template: Layout,
-        h1: components.h1,
-        inset: components.inset,
-        link: components.link
+        main_template: Layout
 )
 
 @(
@@ -31,14 +28,14 @@
         appConfig: AppConfig
 )
 
-@main_template(pageTitle = Some(messages("cf.cash-account.detail.title")),
+@main_template(pageTitle = Some(viewModel.pageTitle),
     backLink = Some(viewModel.backLink),
     fullWidth = false,
     help = true
 ) {
     @viewModel.heading
 
-    @viewModel.statement01
+    @viewModel.infoSection
 
     @viewModel.tryAgainLink
 }
