@@ -44,6 +44,25 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
         dailyStatementsViewModel.hasTransactions mustBe true
       }
 
+      "cash transactions are available, max records per page is 30 and page no is one" in new Setup {
+        val dailyStatementsViewModel: CashAccountDailyStatementsViewModel =
+          CashAccountDailyStatementsViewModel(cashTransactions, Some(1))
+
+        dailyStatementsViewModel.dailyStatements.size must be > 0
+        shouldContainCorrectContentsForDailyStatements(dailyStatementsViewModel.dailyStatements)
+        shouldContainTransactionForLastSixMonthsHeading(dailyStatementsViewModel)
+        dailyStatementsViewModel.hasTransactions mustBe true
+      }
+
+      "cash transactions are available, max records per page is 30 and page no is other than one" in new Setup {
+        val dailyStatementsViewModel: CashAccountDailyStatementsViewModel =
+          CashAccountDailyStatementsViewModel(cashTransactions, Some(2))
+
+        dailyStatementsViewModel.dailyStatements.size must be(0)
+        shouldContainTransactionForLastSixMonthsHeading(dailyStatementsViewModel)
+        dailyStatementsViewModel.hasTransactions mustBe true
+      }
+
       "cash transactions are not present" in new Setup {
         val cashAccountDailyStatementsViewModelWithNoTransactions: CashAccountDailyStatementsViewModel =
           CashAccountDailyStatementsViewModel(

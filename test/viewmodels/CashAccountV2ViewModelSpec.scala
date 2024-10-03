@@ -19,14 +19,21 @@ package viewmodels
 import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
-import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement, CashStatementFile, CashStatementsByMonth, CashStatementsForEori, CashTransactions, Declaration, EoriHistory, FileFormat, Payment, Transaction, Withdrawal}
+import models.{
+  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement,
+  CashStatementFile, CashStatementsByMonth, CashStatementsForEori, CashTransactions, Declaration, EoriHistory,
+  FileFormat, Payment, Transaction, Withdrawal
+}
 import models.metadata.CashStatementFileMetadata
 import models.FileRole.CashStatement
 import config.AppConfig
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
 import utils.TestData.*
-import utils.Utils.{LinkComponentValues, emptyH1Component, emptyH2InnerComponent, emptyPComponent, h2Component, hmrcNewTabLinkComponent, linkComponent, notificationPanelComponent, pComponent}
+import utils.Utils.{
+  LinkComponentValues, emptyH1Component, emptyH2InnerComponent, emptyPComponent, h2Component,
+  hmrcNewTabLinkComponent, linkComponent, notificationPanelComponent, pComponent
+}
 import viewmodels.pagination.ListPaginationViewModel
 import views.html.components.{cash_account_balance, daily_statements_v2}
 
@@ -209,7 +216,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
   private def shouldContainCorrectPaginationModel(paginationModel: ListPaginationViewModel)
                                                  (implicit config: AppConfig): Assertion = {
     paginationModel mustBe
-      ListPaginationViewModel(8, 1, 30, controllers.routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
+      ListPaginationViewModel(8, 1, 30, controllers.routes.CashAccountV2Controller.showAccountDetails(None).url)
   }
 
   trait Setup {
