@@ -20,8 +20,8 @@ import config.{AppConfig, ErrorHandler}
 import connectors.CustomsFinancialsApiConnector
 import controllers.actions.{EmailAction, IdentifierAction}
 import helpers.CashAccountUtils
-import models.{CashAccount, Declaration}
-import models.request.IdentifierRequest
+import models.CashAccount
+import models.request.{CashAccountPaymentDetails, DeclarationDetailsSearch, IdentifierRequest, ParamName, SearchType}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -70,23 +70,23 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
   def handleSearchRequest(page: Option[Int], searchInput: String)
                          (implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
 
-    if (isValidMRNUCR(searchInput) || isValidPayment(searchInput)) {
-      val searchType = determineSearchType(searchInput)
-      searchDeclarations(page, searchInput, searchType)
+    if (isValidMRNUCR(searchInput)) {
+      val paramName = determineSearchType(searchInput)
+      val declarationDetailsSearch = DeclarationDetailsSearch(paramName, searchInput)
+
+      searchDeclarations(page, searchInput, SearchType.D, Some(declarationDetailsSearch), None)
+    } else if (isValidPayment(searchInput)) {
+      val paymentAmount = parsePaymentAmount(searchInput)
+      val cashAccountPaymentDetails = CashAccountPaymentDetails(amount = paymentAmount.toDouble)
+
+      searchDeclarations(page, searchInput, SearchType.P, None, Some(cashAccountPaymentDetails))
     } else {
       Future.successful(NotFound(errorHandler.notFoundTemplate))
     }
   }
 
-  def determineSearchType(searchInput: String): Declaration => Boolean = {
-    if (isValidMRNUCR(searchInput)) {
-      declaration =>
-        declaration.movementReferenceNumber.contains(searchInput) ||
-          declaration.declarantReference.contains(searchInput)
-    } else {
-      val paymentAmount = parsePaymentAmount(searchInput)
-      (declaration: Declaration) => declaration.amount == paymentAmount
-    }
+  def determineSearchType(searchInput: String): ParamName.Value = {
+    if (mrnUCRRegex.findFirstIn(searchInput).isDefined) ParamName.MRN else ParamName.UCR
   }
 
   def isValidMRNUCR(value: String): Boolean =
@@ -98,7 +98,9 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
 
   def searchDeclarations(page: Option[Int],
                          searchInput: String,
-                         matchDeclaration: Declaration => Boolean
+                         searchType: SearchType.Value,
+                         declarationDetails: Option[DeclarationDetailsSearch],
+                         cashAccountPaymentDetails: Option[CashAccountPaymentDetails]
                         )(implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
 
     val (from, to) = cashAccountUtils.transactionDateRange()
@@ -106,19 +108,32 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
     for {
       maybeAccount <- apiConnector.getCashAccount(request.eori)
       transactions <- maybeAccount match {
-        case Some(account) => apiConnector.retrieveCashTransactions(account.number, from, to)
+        case Some(account) =>
+          apiConnector.retrieveCashTransactionsBySearch(
+            account.number,
+            request.eori,
+            searchType,
+            declarationDetails,
+            cashAccountPaymentDetails)
         case None => Future.successful(Left(noTransactionsView))
       }
     } yield {
       transactions match {
-        case Right(transactions) =>
-          transactions.cashDailyStatements
-            .flatMap(_.declarations)
-            .find(matchDeclaration)
-            .flatMap(_.secureMovementReferenceNumber)
-            .filter(_.nonEmpty)
-            .map(uuid => Redirect(routes.DeclarationDetailController.displaySearchDetails(uuid, page, searchInput)))
-            .getOrElse(NotFound(errorHandler.notFoundTemplate))
+        case Right(transactionSearchResponse) =>
+          transactionSearchResponse.declarations
+            .getOrElse(Seq.empty)
+            .find { wrapper =>
+              declarationDetails match {
+                case Some(details) =>
+                  wrapper.declaration.declarationID == details.paramValue ||
+                    wrapper.declaration.declarantRef.contains(details.paramValue)
+                case None => true
+              }
+            }
+            .map(declaration => Redirect(
+              routes.DeclarationDetailController
+                .displaySearchDetails(declaration.declaration.declarationID, page, searchInput))
+            ).getOrElse(NotFound(errorHandler.notFoundTemplate))
 
         case Left(_) => Ok(noTransactionsView(ResultsPageSummary(from, to)))
       }

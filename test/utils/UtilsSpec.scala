@@ -66,7 +66,7 @@ class UtilsSpec extends SpecBase {
       poundSymbol mustBe "£"
     }
   }
-  
+
   "emptyH1Component" should {
     "return the empty h1 component" in {
       emptyH1Component mustBe new h1()

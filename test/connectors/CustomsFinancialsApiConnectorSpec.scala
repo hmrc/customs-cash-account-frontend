@@ -243,6 +243,168 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
   }
 
+  /* "retrieveCashTransactionSearch" must {
+    "call the correct URL and pass through the HeaderCarrier and CAN, " +
+      "return a list of cash daily statements while adding a UUID, and checking cache state" in new Setup {
+
+      val expectedUrl = "apiEndpointUrl/account/cash/transactions"
+      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
+
+      when(mockCacheRepository.get(any[String])).thenReturn(Future.successful(None))
+      when(mockCacheRepository.set(any[String], any[CashTransactions])).thenReturn(Future.successful(true))
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
+        .thenReturn(Future.successful(successResponse))
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[CacheRepository].toInstance(mockCacheRepository),
+          bind[RequestBuilder].toInstance(requestBuilder)
+        ).build()
+
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).retrieveCashTransactionSearch("can", fromDate, toDate))
+
+        result match {
+          case Right(actualTransactions) =>
+            verify(mockCacheRepository).set("can", actualTransactions)
+
+            actualTransactions.cashDailyStatements.zip(successResponse.cashDailyStatements).foreach {
+              case (actualStatement, expectedStatement) =>
+                actualStatement.declarations.zip(expectedStatement.declarations).foreach {
+                  case (actualDeclaration, expectedDeclaration) =>
+                    actualDeclaration.secureMovementReferenceNumber must not be empty
+
+                    actualDeclaration.copy(secureMovementReferenceNumber = None) mustEqual
+                      expectedDeclaration.copy(secureMovementReferenceNumber = None)
+                }
+            }
+
+          case Left(error) => fail(s"Expected successful result but got $error")
+        }
+      }
+    }
+
+    "log the error when failed to store data in the session cache call after getting response from the API " +
+      "call" in new Setup {
+
+      val expectedUrl = "apiEndpointUrl/account/cash/transactions"
+      private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
+
+      when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
+        .thenReturn(Future.successful(successResponse))
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
+
+      when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
+      when(mockCacheRepository.set("can", successResponse)).thenReturn(Future.successful(false))
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[MetricsReporterService].toInstance(mockMetricsReporterService),
+          bind[AppConfig].toInstance(mockConfig),
+          bind[CacheRepository].toInstance(mockCacheRepository)
+        ).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).retrieveCashTransactionSearch("can", fromDate, toDate).map {
+          _ mustBe Right(successResponse)
+        }
+      }
+    }
+
+    "call the correct URL and pass through the HeaderCarrier and CAN, " +
+      "and return a list of cash daily statements from the cacheRepository" in new Setup {
+      val successResponse: CashTransactions = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
+
+      when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
+
+      when(mockCacheRepository.get(anyString)).thenReturn(Future.successful(Some(successResponse)))
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[AppConfig].toInstance(mockConfig),
+          bind[CacheRepository].toInstance(mockCacheRepository)
+        ).build()
+
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).retrieveCashTransactionSearch("can", fromDate, toDate))
+        result mustBe Right(successResponse)
+      }
+    }
+
+    "propagate exceptions when the backend POST fails" in new Setup {
+
+      private val responseCode: Int = 500
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
+        .thenReturn(Future.failed(new HttpException("It's broken", responseCode)))
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
+
+      when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[CacheRepository].toInstance(mockCacheRepository)
+        ).build()
+
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).retrieveCashTransactionSearch("can", fromDate, toDate))
+        result mustBe Left(UnknownException)
+      }
+    }
+
+
+    "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" in new Setup {
+      when(mockCacheRepository.get(any)).thenReturn(Future.successful(None))
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", REQUEST_ENTITY_TOO_LARGE)))
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[CacheRepository].toInstance(mockCacheRepository)
+        ).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).retrieveCashTransactionSearch("can", fromDate, toDate).map {
+          _ mustBe Left(TooManyTransactionsRequested)
+        }
+      }
+    }
+
+    "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
+      when(mockCacheRepository.get(any)).thenReturn(Future.successful(None))
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
+      when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[CacheRepository].toInstance(mockCacheRepository)
+        ).build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).retrieveCashTransactionSearch("can", fromDate, toDate).map {
+          _ mustBe Left(NoTransactionsAvailable)
+        }
+      }
+    }
+  } */
+
   "retrieveCashTransactionsDetail" must {
     "call the correct URL and pass through the HeaderCarrier and CAN," +
       " and return a list of cash daily statements" in new Setup {
