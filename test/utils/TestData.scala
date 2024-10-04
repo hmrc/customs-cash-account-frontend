@@ -31,7 +31,7 @@ object TestData {
 
   val TAX_TYPE: TaxType = TaxType(Some("a"), "a", AMOUNT)
   val TAX_GROUP: TaxGroup = TaxGroup(ImportVat, AMOUNT, Seq(TAX_TYPE))
-  
+
   val HREF = "testHref"
 
   val PAGE_1 = 1
@@ -47,12 +47,28 @@ object TestData {
   val PAGE_20 = 20
   val PAGE_21 = 21
   val PAGE_30 = 30
+  val PAGE_32 = 32
   val PAGE_40 = 40
   val PAGE_50 = 50
   val PAGE_51 = 51
+  val PAGE_80 = 80
+  val PAGE_98 = 98
+  val PAGE_99 = 99
   val PAGE_100 = 100
   val PAGE_101 = 101
   val PAGE_150 = 150
+  val PAGE_200 = 200
   val PAGE_201 = 201
+  val PAGE_230 = 230
+  val PAGE_300 = 300
   val PAGE_400 = 400
+  val PAGE_450 = 450
+  val PAGE_451 = 451
+  val PAGE_460 = 460
+  val PAGE_600 = 600
+  val PAGE_650 = 650
+  val PAGE_720 = 720
+  val PAGE_800 = 800
+  val PAGE_880 = 880
+  val PAGE_1000 = 1000
 }

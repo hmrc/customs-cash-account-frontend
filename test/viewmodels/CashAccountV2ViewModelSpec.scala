@@ -233,7 +233,8 @@ class CashAccountV2ViewModelSpec extends SpecBase {
   private def shouldContainCorrectPaginationModel(paginationModel: ListPaginationViewModel)
                                                  (implicit config: AppConfig): Assertion = {
     paginationModel mustBe
-      ListPaginationViewModel(32, 1, 30, controllers.routes.CashAccountV2Controller.showAccountDetails(None).url)
+      ListPaginationViewModel(
+        PAGE_32, 1, PAGE_30, controllers.routes.CashAccountV2Controller.showAccountDetails(None).url)
   }
 
   private def shouldNotContainPaginationModel(paginationModel: Option[ListPaginationViewModel]): Assertion = {
