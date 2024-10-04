@@ -63,7 +63,9 @@ class ResultsPageSummary(from: LocalDate, to: LocalDate, isDay: Boolean = true)
     )
   }
 
-  private def populateSummaryListRowValue(dates: CashTransactionDates, isFullStop: Boolean, isDay: Boolean): String = {
+  private def populateSummaryListRowValue(dates: CashTransactionDates,
+                                          isFullStop: Boolean,
+                                          isDay: Boolean): String = {
     HtmlFormat.escape(
       if (isFullStop) {
         rowResult(dates, isDay)
