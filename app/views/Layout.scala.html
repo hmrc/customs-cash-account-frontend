@@ -76,11 +76,13 @@
     }
 
     @mainContent = {
-    @contentBlock
+        @contentBlock
 
-    @if(deskpro) {
-        @hmrcReportTechnicalIssueHelper()
-    }
+        @if(deskpro) {
+            <div class="govuk-!-margin-top-9">
+                @hmrcReportTechnicalIssueHelper()
+            </div>
+        }
     }
 
 @hmrcStandardPage(

@@ -212,7 +212,6 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
         postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")))
     )
-
   }
 
   private def shouldContainCorrectDailyStatementsSection(app: Application,
@@ -234,7 +233,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
                                                  (implicit config: AppConfig): Assertion = {
     paginationModel mustBe
       ListPaginationViewModel(
-        PAGE_32, 1, PAGE_30, controllers.routes.CashAccountV2Controller.showAccountDetails(None).url)
+        PAGE_40, 1, PAGE_30, controllers.routes.CashAccountV2Controller.showAccountDetails(None).url)
   }
 
   private def shouldNotContainPaginationModel(paginationModel: Option[ListPaginationViewModel]): Assertion = {

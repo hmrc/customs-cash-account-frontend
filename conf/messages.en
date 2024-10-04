@@ -71,7 +71,7 @@ cf.cash-account.detail.transaction-type = Transaction type
 cf.cash-account.detail.credit = Credit
 cf.cash-account.detail.debit = Debit
 cf.cash-account.detail.amount=Amount
-cf.cash-account.detail.balance=Balance
+cf.cash-account.detail.balance=Closing balance
 cf.cash-account.detail.top-up=Top-up
 cf.cash-account.detail.top-up.v2=Top up
 cf.cash-account.detail.withdrawal=Withdrawal
@@ -215,6 +215,10 @@ cf.cash-account.transactions.request.to=End date
 cf.cash-account.transactions.request.date.hint-start-date=Start date must be after October 2019. For example, 31 3 2021.
 cf.cash-account.transactions.request.date.hint=For example, 31 3 2021.
 cf.cash-account.transactions.request.link.label=Back to cash account
+
+cf.cash-account.transactions.requested.tooMany.transactions=Your request returned too many transactions
+cf.cash-account.transactions.requested.statement.msg=You requested transactions from {0} to {1}
+cf.cash-account.transactions.requested.tryAgain=Try again with a shorter date range.
 
 date.day=Day
 date.month=Month
