@@ -36,7 +36,7 @@ object TestData {
 
   val PAGE_1 = 1
   val PAGE_2 = 2
-  val PAGE_3 = 2
+  val PAGE_3 = 3
   val PAGE_4 = 4
   val PAGE_5 = 5
   val PAGE_6 = 6
