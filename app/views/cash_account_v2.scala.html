@@ -30,7 +30,7 @@
         errorSummary: components.errorSummary,
         button: components.button,
         inputText: components.inputText,
-        govukPagination: GovukPagination
+        pagination: GovukPagination
 )
 
 @(
@@ -75,7 +75,7 @@
 
     @viewModel.dailyStatementsSection.map { section =>
         @section.dailyStatements
-        @viewModel.paginationModel.map(model => govukPagination(model.pagination))
+        @viewModel.paginationModel.map(model => pagination(model.pagination))
         @section.requestTransactionsHeading
     }
 
