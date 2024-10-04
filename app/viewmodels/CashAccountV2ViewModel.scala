@@ -78,23 +78,6 @@ object CashAccountV2ViewModel {
       paginationModel = populatePaginationModel(pageNo, totalDailyStatementsSize))
   }
 
-  private def populatePaginationModel(pageNo: Option[Int],
-                                      totalDailyStatementsSize: Int)
-                                     (implicit config: AppConfig) = {
-    val shouldPaginationBeDisabledAndShowAllRecords = totalDailyStatementsSize <= config.numberOfRecordsPerPage
-
-    if (shouldPaginationBeDisabledAndShowAllRecords) {
-      None
-    } else {
-      Some(ListPaginationViewModel(
-        totalNumberOfItems = totalDailyStatementsSize,
-        currentPage = pageNo.getOrElse(1),
-        numberOfItemsPerPage = config.numberOfRecordsPerPage,
-        href = controllers.routes.CashAccountV2Controller.showAccountDetails(None).url))
-    }
-
-  }
-
   private def populateNotificationPanel(hasRequestedStatements: Boolean)
                                        (implicit msgs: Messages, config: AppConfig) = {
     if (hasRequestedStatements) {
@@ -185,5 +168,21 @@ object CashAccountV2ViewModel {
         preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
         postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")))
     )
+  }
+
+  private def populatePaginationModel(pageNo: Option[Int],
+                                      totalDailyStatementsSize: Int)
+                                     (implicit config: AppConfig) = {
+    val shouldPaginationBeDisabledAndShowAllRecords = totalDailyStatementsSize <= config.numberOfRecordsPerPage
+
+    if (shouldPaginationBeDisabledAndShowAllRecords) {
+      None
+    } else {
+      Some(ListPaginationViewModel(
+        totalNumberOfItems = totalDailyStatementsSize,
+        currentPage = pageNo.getOrElse(1),
+        numberOfItemsPerPage = config.numberOfRecordsPerPage,
+        href = controllers.routes.CashAccountV2Controller.showAccountDetails(None).url))
+    }
   }
 }
