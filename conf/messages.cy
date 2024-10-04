@@ -212,9 +212,9 @@ cf.cash-account.transactions.request.date.hint-start-date=Mae’n rhaid i’r dy
 cf.cash-account.transactions.request.date.hint=Er enghraifft, 31 3 2021.
 cf.cash-account.transactions.request.link.label=Yn ôl i ‘Cyfrif arian parod’
 
-cf.cash-account.transactions.requested.tooMany.transactions=Dychwelodd eich cais ormod o drafodion
-cf.cash-account.transactions.requested.statement.msg=Gwnaethoch gais am drafodion rhwng {0} ac {1}
-cf.cash-account.transactions.requested.tryAgain=Ceisiwch eto gydag amrediad dyddiadau byrrach.
+cf.cash-account.transactions.requested.tooMany.transactions=Mae gormod o drafodion yn sgil eich cais
+cf.cash-account.transactions.requested.statement.msg=Gwnaethoch gais i gael y trafodion o fis {0} i fis {1}
+cf.cash-account.transactions.requested.tryAgain=Rhowch gynnig arall arni gan ddefnyddio cyfnod byrrach.
 
 date.day=Diwrnod
 date.month=Mis
