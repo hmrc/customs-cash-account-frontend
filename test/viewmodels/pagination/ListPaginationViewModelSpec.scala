@@ -233,5 +233,4 @@ class ListPaginationViewModelSpec extends SpecBase {
 
     val testHref = "href"
   }
-
 }
