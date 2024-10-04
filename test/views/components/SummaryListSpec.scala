@@ -32,7 +32,7 @@ class SummaryListSpec extends SpecBase {
 
     "display correct contents" when {
 
-      "when change is false" in new Setup {
+      "change is false" in new Setup {
         summaryListComponent.getElementById(downloadId).text() mustBe download
         summaryListComponent.getElementsByClass(classes).size() mustBe 1
         Option(summaryListComponent.getElementById(changeId)) mustBe None
@@ -70,6 +70,6 @@ class SummaryListSpec extends SpecBase {
       app.injector.instanceOf[summaryList].apply(summary = summary).body)
 
     val summaryListComponentWithChange: Document = Jsoup.parse(
-      app.injector.instanceOf[summaryList].apply(summary = summary, change = true).body)
+      app.injector.instanceOf[summaryList].apply(summary = summary, isChange = true).body)
   }
 }

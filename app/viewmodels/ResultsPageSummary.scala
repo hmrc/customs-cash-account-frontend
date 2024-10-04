@@ -25,27 +25,22 @@ import utils.Utils.{emptyString, period}
 
 import java.time.LocalDate
 
-class ResultsPageSummary(from: LocalDate, to: LocalDate, day: Boolean = true)
+class ResultsPageSummary(from: LocalDate, to: LocalDate, isDay: Boolean = true)
                         (implicit messages: Messages) extends SummaryListRowHelper {
 
-  def rows(fullStop: Boolean = true): SummaryListRow = {
-    cashTransactionsResultRow(CashTransactionDates(from, to), fullStop, day)
+  def rows(isFullStop: Boolean = true): SummaryListRow = {
+    cashTransactionsResultRow(CashTransactionDates(from, to), isFullStop, isDay)
   }
 
-  def rowsV2(fullStop: Boolean = true): SummaryListRow = {
-    cashTransactionsResultRowV2(CashTransactionDates(from, to), fullStop, day)
+  def rowsV2(isFullStop: Boolean = true): SummaryListRow = {
+    cashTransactionsResultRowV2(CashTransactionDates(from, to), isFullStop, isDay)
   }
 
   private def cashTransactionsResultRow(dates: CashTransactionDates,
-                                        fullStop: Boolean,
-                                        day: Boolean): SummaryListRow = {
+                                        isFullStop: Boolean,
+                                        isDay: Boolean): SummaryListRow = {
     summaryListRow(
-      value = HtmlFormat.escape(
-        if (fullStop) {
-          rowResult(dates, day)
-        } else {
-          rowResultWithoutFullStop(dates, day)
-        }).toString(),
+      value = populateSummaryListRowValue(dates, isFullStop, isDay),
       secondValue = None,
       actions = Actions(items = Seq(ActionItem(
         href = controllers.routes.DownloadCsvController.downloadRequestedCsv(
@@ -57,41 +52,44 @@ class ResultsPageSummary(from: LocalDate, to: LocalDate, day: Boolean = true)
   }
 
   private def cashTransactionsResultRowV2(dates: CashTransactionDates,
-                                          fullStop: Boolean,
-                                          day: Boolean): SummaryListRow = {
+                                          isFullStop: Boolean,
+                                          isDay: Boolean): SummaryListRow = {
     summaryListRow(
-      value = HtmlFormat.escape(
-        if (fullStop) {
-          rowResult(dates, day)
-        } else {
-          rowResultWithoutFullStop(dates, day)
-        }).toString(),
+      value = populateSummaryListRowValue(dates, isFullStop, isDay),
       secondValue = None,
-      actions = Actions(items = Seq(ActionItem(
-        href = controllers.routes.SelectTransactionsController.onPageLoad().url
-      )))
+      actions = Actions(
+        items = Seq(ActionItem(href = controllers.routes.SelectTransactionsController.onPageLoad().url))
+      )
     )
   }
 
-  private def rowResult(dates: CashTransactionDates, day: Boolean): String = {
-    messages("date.range",
-      formatDate(dates.start, day),
-      formatDate(dates.end, day))
+  private def populateSummaryListRowValue(dates: CashTransactionDates, isFullStop: Boolean, isDay: Boolean): String = {
+    HtmlFormat.escape(
+      if (isFullStop) {
+        rowResult(dates, isDay)
+      } else {
+        rowResultWithoutFullStop(dates, isDay)
+      }).toString()
   }
 
-  private def rowResultWithoutFullStop(dates: CashTransactionDates, day: Boolean): String = {
+  private def rowResult(dates: CashTransactionDates, isDay: Boolean): String = {
     messages("date.range",
-      formatDate(dates.start, day),
-      formatDate(dates.end, day)).replace(period, emptyString)
+      formatDate(dates.start, isDay),
+      formatDate(dates.end, isDay))
   }
 
-  def formatDate(date: LocalDate, day: Boolean)(implicit messages: Messages): String =
-    if (day) {
+  private def rowResultWithoutFullStop(dates: CashTransactionDates, isDay: Boolean): String = {
+    messages("date.range",
+      formatDate(dates.start, isDay),
+      formatDate(dates.end, isDay)).replace(period, emptyString)
+  }
+
+  def formatDate(date: LocalDate, isDay: Boolean)(implicit messages: Messages): String =
+    if (isDay) {
       s"${dateAsDay(date)} ${dateAsMonth(date)} ${date.getYear}"
     } else {
       s"${dateAsMonth(date)} ${date.getYear}"
     }
-
 
   def dateAsDay(date: LocalDate): String = {
     val dayTenth = 10
