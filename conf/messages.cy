@@ -163,7 +163,6 @@ month.11=Tachwedd
 month.12=Rhagfyr
 month.to=i
 
-
 #Pagination
 # ----------------------------------------------------------
 cf.pager.prev=Blaenorol

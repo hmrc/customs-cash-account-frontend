@@ -17,7 +17,7 @@
 package viewmodels
 
 import config.AppConfig
-import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount}
+import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount, parseDateString}
 import models.{
   CashDailyStatement, CashTransactionType, CashTransactions, Declaration, Payment, Transaction,
   Transfer, Withdrawal
@@ -28,6 +28,7 @@ import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount}
 import utils.Utils.{LinkComponentValues, emptyString, h2Component, linkComponent, pComponent, prependNegativeSignWithAmount}
 
 import java.time.LocalDate
+import scala.math.Ordered.orderingToOrdered
 
 case class PaymentType(mrnLink: Option[HtmlFormat.Appendable] = None,
                        textString: Option[String] = None)
@@ -37,7 +38,7 @@ case class DailyStatementViewModel(date: String,
                                    credit: Option[String] = None,
                                    debit: Option[String] = None,
                                    balance: Option[String]) extends Ordered[DailyStatementViewModel] {
-  override def compare(that: DailyStatementViewModel): Int = LocalDate.parse(that.date).compareTo(LocalDate.parse(date))
+  override def compare(that: DailyStatementViewModel): Int = parseDateString(that.date).compareTo(parseDateString(date))
 }
 
 case class CashAccountDailyStatementsViewModel(dailyStatements: Seq[DailyStatementViewModel],
@@ -108,11 +109,11 @@ object CashAccountDailyStatementsViewModel {
         val transferAndWithdrawDailyStatementViewModel: Seq[DailyStatementViewModel] =
           populateViewModelFromPaymentAndWithdrawals(date, dStat.otherTransactions)
 
-        transferAndWithdrawDailyStatementViewModel ++
-          declarationDailyStatementViewModelWithAccBalance.reverse :+ closingBalanceOnlyRow
+        closingBalanceOnlyRow +:
+          (declarationDailyStatementViewModelWithAccBalance.reverse ++ transferAndWithdrawDailyStatementViewModel)
     }
 
-    result.flatten.sortBy(_.date).reverse
+    result.flatten.sorted
   }
 
   private def populateViewModelFromDeclarations(date: LocalDate,

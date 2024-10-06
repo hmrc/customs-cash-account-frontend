@@ -29,6 +29,24 @@ object TestData {
   val DATE: LocalDate = LocalDate.parse("2020-07-21")
   val DATE_1: LocalDate = LocalDate.parse("2020-08-21")
 
+  val DAY_1 = 1
+  val DAY_15 = 15
+  val DAY_10 = 10
+
+  val MONTH_1 = 1
+  val MONTH_2 = 2
+  val MONTH_3 = 3
+  val MONTH_4 = 4
+  val MONTH_5 = 5
+  val MONTH_6 = 6
+  val MONTH_7 = 7
+  val MONTH_8 = 8
+  val MONTH_9 = 9
+  val MONTH_10 = 10
+  val MONTH_11 = 11
+  val MONTH_12 = 12
+  val YEAR_2021 = 2021
+
   val TAX_TYPE: TaxType = TaxType(Some("a"), "a", AMOUNT)
   val TAX_GROUP: TaxGroup = TaxGroup(ImportVat, AMOUNT, Seq(TAX_TYPE))
 

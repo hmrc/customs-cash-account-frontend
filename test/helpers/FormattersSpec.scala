@@ -16,10 +16,14 @@
 
 package helpers
 
-import helpers.Formatters._
+import helpers.Formatters.*
 import utils.SpecBase
 import play.api.Application
 import play.api.i18n.Messages
+import utils.TestData.{
+  DAY_1, DAY_15, DAY_10, MONTH_1, MONTH_2, MONTH_3, MONTH_4, MONTH_5, MONTH_6, MONTH_7, MONTH_8, MONTH_9,
+  MONTH_10, MONTH_11, MONTH_12, YEAR_2021
+}
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -122,6 +126,46 @@ class FormattersSpec extends SpecBase {
   "dateAsMonthAndYear" should {
     "return month and year as a valid value" in new Setup {
       dateAsMonthAndYear(date) mustBe "July 2020"
+    }
+  }
+
+  "parseDateString" should {
+    "return correct date object for valid date string" in new Setup {
+      parseDateString("15 January 2021") mustBe LocalDate.of(YEAR_2021, MONTH_1, DAY_15)
+      parseDateString("15 February 2021") mustBe LocalDate.of(YEAR_2021, MONTH_2, DAY_15)
+      parseDateString("15 March 2021") mustBe LocalDate.of(YEAR_2021, MONTH_3, DAY_15)
+      parseDateString("15 April 2021") mustBe LocalDate.of(YEAR_2021, MONTH_4, DAY_15)
+      parseDateString("10 May 2021") mustBe LocalDate.of(YEAR_2021, MONTH_5, DAY_10)
+      parseDateString("15 June 2021") mustBe LocalDate.of(YEAR_2021, MONTH_6, DAY_15)
+      parseDateString("15 July 2021") mustBe LocalDate.of(YEAR_2021, MONTH_7, DAY_15)
+      parseDateString("10 August 2021") mustBe LocalDate.of(YEAR_2021, MONTH_8, DAY_10)
+      parseDateString("15 September 2021") mustBe LocalDate.of(YEAR_2021, MONTH_9, DAY_15)
+      parseDateString("15 October 2021") mustBe LocalDate.of(YEAR_2021, MONTH_10, DAY_15)
+      parseDateString("10 November 2021") mustBe LocalDate.of(YEAR_2021, MONTH_11, DAY_10)
+      parseDateString("15 December 2021") mustBe LocalDate.of(YEAR_2021, MONTH_12, DAY_15)
+
+      parseDateString("1 Ionawr 2021") mustBe LocalDate.of(YEAR_2021, MONTH_1, DAY_1)
+      parseDateString("15 Chwefror 2021") mustBe LocalDate.of(YEAR_2021, MONTH_2, DAY_15)
+      parseDateString("15 Mawrth 2021") mustBe LocalDate.of(YEAR_2021, MONTH_3, DAY_15)
+      parseDateString("15 Ebrill 2021") mustBe LocalDate.of(YEAR_2021, MONTH_4, DAY_15)
+      parseDateString("15 Mai 2021") mustBe LocalDate.of(YEAR_2021, MONTH_5, DAY_15)
+      parseDateString("15 Mehefin 2021") mustBe LocalDate.of(YEAR_2021, MONTH_6, DAY_15)
+      parseDateString("15 Gorffennaf 2021") mustBe LocalDate.of(YEAR_2021, MONTH_7, DAY_15)
+      parseDateString("15 Awst 2021") mustBe LocalDate.of(YEAR_2021, MONTH_8, DAY_15)
+      parseDateString("15 Medi 2021") mustBe LocalDate.of(YEAR_2021, MONTH_9, DAY_15)
+      parseDateString("15 Hydref 2021") mustBe LocalDate.of(YEAR_2021, MONTH_10, DAY_15)
+      parseDateString("15 Tachwedd 2021") mustBe LocalDate.of(YEAR_2021, MONTH_11, DAY_15)
+      parseDateString("15 Rhagfyr 2021") mustBe LocalDate.of(YEAR_2021, MONTH_12, DAY_15)
+    }
+
+    "throw exception for the invalid date string" in new Setup {
+      intercept[RuntimeException] {
+        parseDateString("2021 December 20")
+      }
+
+      intercept[RuntimeException] {
+        parseDateString("15 December2021")
+      }
     }
   }
 
