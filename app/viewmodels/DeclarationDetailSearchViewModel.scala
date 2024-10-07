@@ -17,36 +17,42 @@
 package viewmodels
 
 import helpers.Formatters
-import models.{CashAccount, CustomsDuty, Declaration, ExciseDuty, ImportVat}
+import models.*
+import models.response.DeclarationSearch
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, SummaryList, SummaryListRow, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, Value}
 import utils.Utils.{emptyH1InnerComponent, emptyH2InnerComponent, emptyString}
 
-case class DeclarationDetailViewModel(eori: String,
-                                      account: CashAccount,
-                                      header: Html,
-                                      subHeader: Html,
-                                      declarationSummaryList: SummaryList,
-                                      taxSummaryList: SummaryList)
+import java.time.LocalDate
 
-object DeclarationDetailViewModel {
+case class DeclarationDetailSearchViewModel(searchInput: String,
+                                            account: CashAccount,
+                                            eori: String,
+                                            header: Html,
+                                            subHeader: Html,
+                                            declarationSummaryList: SummaryList,
+                                            taxSummaryList: SummaryList)
 
-  def apply(account: CashAccount,
+object DeclarationDetailSearchViewModel {
+
+  def apply(searchInput: String,
+            account: CashAccount,
             eori: String,
-            declaration: Declaration
-           )(implicit messages: Messages): DeclarationDetailViewModel = {
+            declaration: DeclarationSearch
+           )(implicit messages: Messages): DeclarationDetailSearchViewModel = {
 
-    val headerHtml = header()
+    val headerHtml = header(searchInput)
     val subHeaderHtml = subHeader(account)
 
     val declarationList = declarationSummaryList(declaration)
     val taxList = taxSummaryList(declaration)
 
-    DeclarationDetailViewModel(
-      eori = eori,
+    DeclarationDetailSearchViewModel(
+      searchInput = searchInput,
       account = account,
+      eori = eori,
       header = headerHtml,
       subHeader = subHeaderHtml,
       declarationSummaryList = declarationList,
@@ -54,8 +60,12 @@ object DeclarationDetailViewModel {
     )
   }
 
-  def header()(implicit messages: Messages): Html = {
-    emptyH1InnerComponent(msg = "cf.cash-account.detail.declaration.title")
+  def header(searchInput: String)(implicit messages: Messages): Html = {
+    if (searchInput.nonEmpty) {
+      emptyH1InnerComponent(msg = "cf.cash-account.detail.declaration.search-title", innerMsg = searchInput)
+    } else {
+      Html(None)
+    }
   }
 
   def subHeader(account: CashAccount)(implicit messages: Messages): Html = {
@@ -67,59 +77,68 @@ object DeclarationDetailViewModel {
     )
   }
 
-  def declarationSummaryList(declaration: Declaration)(implicit messages: Messages): SummaryList = {
+  private def toBigDecimal(amount: Any): BigDecimal = amount match {
+    case bd: BigDecimal => bd
+    case d: Double => BigDecimal(d)
+    case s: String => BigDecimal(s)
+    case _ => BigDecimal(0)
+  }
+
+  def declarationSummaryList(declaration: DeclarationSearch)(implicit messages: Messages): SummaryList = {
+    val declarationDateParsed: LocalDate = LocalDate.parse(declaration.postingDate, Formatters.yyyyMMddDateFormatter)
+
     SummaryList(
       attributes = Map("id" -> "mrn"),
       rows = Seq(
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.date"))),
-          value = Value(content = HtmlContent(Formatters.dateAsDayMonthAndYear(declaration.date)))
+          value = Value(content = HtmlContent(Formatters.dateAsDayMonthAndYear(declarationDateParsed)))
         ),
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.movementReferenceNumber"))),
-          value = Value(content = HtmlContent(declaration.movementReferenceNumber))
+          value = Value(content = HtmlContent(declaration.declarationID))
         ),
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.uniqueConsignmentReference"))),
-          value = Value(content = HtmlContent(declaration.declarantReference.getOrElse(emptyString)))
+          value = Value(content = HtmlContent(declaration.declarantRef.getOrElse(emptyString)))
         ),
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.declarantEori"))),
-          value = Value(content = HtmlContent(declaration.declarantEori))
+          value = Value(content = HtmlContent(declaration.declarantEORINumber))
         ),
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.importerEori"))),
-          value = Value(content = HtmlContent(declaration.importerEori.getOrElse(emptyString)))
+          value = Value(content = HtmlContent(declaration.importersEORINumber))
         )
       )
     )
   }
 
-  def taxSummaryList(declaration: Declaration)(implicit messages: Messages): SummaryList = {
+  def taxSummaryList(declaration: DeclarationSearch)(implicit messages: Messages): SummaryList = {
     SummaryList(
       attributes = Map("id" -> "tax-details"),
       rows = Seq(
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.duty"))),
           value = Value(content = HtmlContent(
-            Formatters.formatCurrencyAmount(declaration.taxGroups.find(_.taxGroupDescription == CustomsDuty)
-              .map(_.amount)
-              .getOrElse(BigDecimal(0)))
-          ))
-        ),
+            Formatters.formatCurrencyAmount(declaration.taxGroups.find(_.taxGroup.taxGroupDescription == CustomsDuty.toString)
+              .map(taxGroup => toBigDecimal(taxGroup.taxGroup.amount))
+              .getOrElse(BigDecimal(0))
+            ))
+          )),
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.vat"))),
           value = Value(content = HtmlContent(
-            Formatters.formatCurrencyAmount(declaration.taxGroups.find(_.taxGroupDescription == ImportVat)
-              .map(_.amount)
-              .getOrElse(BigDecimal(0)))
-          ))
-        ),
+            Formatters.formatCurrencyAmount(declaration.taxGroups.find(_.taxGroup.taxGroupDescription == ImportVat.toString)
+              .map(taxGroup => toBigDecimal(taxGroup.taxGroup.amount))
+              .getOrElse(BigDecimal(0))
+            ))
+          )),
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.excise"))),
           value = Value(content = HtmlContent(
-            declaration.taxGroups.find(_.taxGroupDescription == ExciseDuty)
-              .map(_.amount)
+            declaration.taxGroups.find(_.taxGroup.taxGroupDescription == ExciseDuty.toString)
+              .map(_.taxGroup.amount)
               .fold(emptyString)(amount => Formatters.formatCurrencyAmount(amount))
           ))
         ),

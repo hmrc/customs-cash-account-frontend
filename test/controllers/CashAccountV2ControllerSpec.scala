@@ -17,13 +17,7 @@
 package controllers
 
 import config.AppConfig
-import connectors.{
-  CustomsDataStoreConnector,
-  CustomsFinancialsApiConnector,
-  NoTransactionsAvailable,
-  TooManyTransactionsRequested,
-  UnknownException
-}
+import connectors.{CustomsDataStoreConnector, CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested, UnknownException}
 import models.{
   AccountStatusOpen,
   CDSCashBalance,
@@ -56,7 +50,6 @@ import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.{eq => eqTo}
 import org.scalatest.Ignore
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContentAsEmpty, Result}
 
 @Ignore
@@ -528,20 +521,17 @@ class CashAccountV2ControllerSpec extends SpecBase {
         .overrides(bind[DeclarationDetailController].toInstance(mockDeclarationDetailController))
         .build()
 
-      when(mockDeclarationDetailController.handleSearchRequest(any, any)(any))
-        .thenReturn(Future.successful(
-          Redirect(routes.DeclarationDetailController.displaySearchDetails(sMRN, Some(1), searchInput))))
-
       running(app) {
-        val request = FakeRequest(POST, routes.CashAccountV2Controller.onSubmit(Some(1)).url)
+        val request = FakeRequest(POST, routes.CashAccountV2Controller.onSubmit(page).url)
           .withFormUrlEncodedBody("value" -> "testValue")
 
         val result = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result) mustBe Some(
-          routes.DeclarationDetailController.displaySearchDetails(sMRN, Some(1), searchInput).url
-        )
+
+        val expectedRedirectUrl = routes.DeclarationDetailController.displaySearchDetails(page, "testValue").url
+
+        redirectLocation(result).value mustEqual expectedRedirectUrl
       }
     }
 
@@ -551,7 +541,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-        val request = FakeRequest(POST, routes.CashAccountV2Controller.onSubmit(Some(1)).url)
+        val request = FakeRequest(POST, routes.CashAccountV2Controller.onSubmit(page).url)
           .withFormUrlEncodedBody("value" -> emptyString)
 
         val result = route(app, request).value
@@ -568,7 +558,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
     val eori = "exampleEori"
     val someCan = "1234567"
     val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
-    val searchInput = "testInput"
+    val page: Option[Int] = Some(1)
 
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
     val mockAuditingService: AuditingService = mock[AuditingService]

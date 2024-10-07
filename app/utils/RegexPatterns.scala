@@ -19,7 +19,6 @@ package utils
 import scala.util.matching.Regex
 
 object RegexPatterns {
-  val mrnUCRRegex: Regex = """^[A-Z]{2,4}\d{6,10}(?:[A-Z]{2}\d{6}|\s\d{4}-\d{4}-\d{3}\s\d{3}[A-Z])?$""".r
-  val superMRNUCRRegex: Regex = """^\d{2}[A-Z]{2}[A-Z\d]{10,18}$""".r
+  val mrnRegex: Regex = """^(\d{2}[A-Z]{2}[A-Z\d]{13,16}|[A-Z]{4}\d{6}[A-Z\d]{5,10})$""".r
   val paymentRegex: Regex = """^-?£\d+(\.\d{2})?$""".r
 }

@@ -21,7 +21,15 @@ import helpers.Constants.*
 import models.*
 import models.AccountsAndBalancesResponseContainer.accountResponseCommonReads
 import models.CashDailyStatement.*
-import models.request.{CashAccountPaymentDetails, CashAccountStatementRequestDetail, CashAccountTransactionSearchRequestDetails, CashDailyStatementRequest, DeclarationDetailsSearch, IdentifierRequest, SearchType}
+import models.request.{
+  CashAccountPaymentDetails,
+  CashAccountStatementRequestDetail,
+  CashAccountTransactionSearchRequestDetails,
+  CashDailyStatementRequest,
+  DeclarationDetailsSearch,
+  IdentifierRequest,
+  SearchType
+}
 import org.slf4j.LoggerFactory
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE}
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue

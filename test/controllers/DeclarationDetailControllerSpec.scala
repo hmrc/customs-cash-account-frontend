@@ -17,10 +17,19 @@
 package controllers
 
 import config.{AppConfig, ErrorHandler}
-import connectors.CustomsFinancialsApiConnector
+import connectors.{CustomsFinancialsApiConnector, UnknownException}
 import controllers.actions.{EmailAction, IdentifierAction}
 import helpers.CashAccountUtils
-import models.request.IdentifierRequest
+import models.request.{CashAccountPaymentDetails, DeclarationDetailsSearch, SearchType}
+import models.response.{
+  CashAccountTransactionSearchResponseDetail,
+  DeclarationSearch,
+  DeclarationWrapper,
+  TaxGroupSearch,
+  TaxGroupWrapper,
+  TaxTypeWithSecurity,
+  TaxTypeWithSecurityContainer
+}
 import models.{
   AccountStatusOpen,
   CDSCashBalance,
@@ -38,16 +47,16 @@ import models.{
 }
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.when
 import play.api.Application
 import play.api.inject.bind
-import play.api.mvc.{AnyContent, Result}
+import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import play.twirl.api.Html
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.SpecBase
-import viewmodels.ResultsPageSummary
-import views.html.{cash_account_declaration_details, cash_transactions_no_result}
+import views.html.{cash_account_declaration_details, cash_account_declaration_details_search, cash_transactions_no_result}
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
@@ -135,47 +144,101 @@ class DeclarationDetailControllerSpec extends SpecBase {
   }
 
   "Cash Account Declaration Transaction Search Details" must {
+
+    "return a NOT_FOUND when declarationsOpt is None" in new Setup {
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+        eqTo(cashAccountNumber),
+        eqTo(eori),
+        any[SearchType.Value],
+        any[Option[DeclarationDetailsSearch]],
+        any[Option[CashAccountPaymentDetails]]
+      )(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(CashAccountTransactionSearchResponseDetail(
+          can = cashAccountNumber,
+          eoriDetails = Seq.empty,
+          declarations = None,
+          paymentsWithdrawalsAndTransfers = None
+        ))))
+
+      when(mockErrorHandler.notFoundTemplate(any[Request[_]]))
+        .thenReturn(Html("Not Found"))
+
+      val app: Application = application
+        .overrides(
+          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
+          bind[ErrorHandler].toInstance(mockErrorHandler)
+        )
+        .build()
+
+      running(app) {
+        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+          .withSession("eori" -> eori)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual NOT_FOUND
+        contentAsString(result) mustEqual "Not Found"
+      }
+    }
+
     "return an OK view when a transaction is found" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
-      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
-        .thenReturn(Future.successful(Right(cashTransactionResponse)))
+      val mockCashAccountTransactionSearchResponseDetail: CashAccountTransactionSearchResponseDetail = CashAccountTransactionSearchResponseDetail(
+        can = cashAccountNumber,
+        eoriDetails = Seq.empty,
+        declarations = Some(Seq(declarationWrapper)),
+        paymentsWithdrawalsAndTransfers = None)
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+        eqTo(cashAccountNumber),
+        eqTo(eori),
+        any[SearchType.Value],
+        any[Option[DeclarationDetailsSearch]],
+        any[Option[CashAccountPaymentDetails]]
+      )(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(mockCashAccountTransactionSearchResponseDetail)))
 
       val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
       running(app) {
-        val request =
-          FakeRequest(GET, routes.DeclarationDetailController
-            .displaySearchDetails(sMRN, Some(1), searchInput).url)
-            .withSession("eori" -> eori)
+        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+          .withSession("eori" -> eori)
 
         val result = route(app, request).value
         status(result) mustEqual OK
       }
     }
 
-    "return an OK view with no transactions when an error occurs during retrieval" in new Setup {
+    "return an NOT_FOUND when an error occurs during retrieval" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
-      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
-        .thenReturn(Future.successful(Left(new Exception("API error"))))
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+        eqTo(cashAccountNumber),
+        eqTo(eori),
+        any[SearchType.Value],
+        any[Option[DeclarationDetailsSearch]],
+        any[Option[CashAccountPaymentDetails]]
+      )(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Left(UnknownException)))
 
       val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
       running(app) {
-        val request =
-          FakeRequest(GET, routes.DeclarationDetailController
-            .displaySearchDetails(sMRN, Some(1), searchInput).url)
-            .withSession("eori" -> eori)
+        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+          .withSession("eori" -> eori)
 
         val result = route(app, request).value
-        status(result) mustBe OK
+        status(result) mustEqual NOT_FOUND
       }
     }
 
@@ -188,211 +251,13 @@ class DeclarationDetailControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-        val request =
-          FakeRequest(GET, routes.DeclarationDetailController
-            .displaySearchDetails(sMRN, Some(1), emptyString).url)
-            .withSession("eori" -> eori)
+        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+          .withSession("eori" -> eori)
 
         val result = route(app, request).value
-        status(result) mustBe NOT_FOUND
+        status(result) mustEqual NOT_FOUND
       }
     }
-
-    /* "return a NOT_FOUND when a matching declaration has an empty secureMovementReferenceNumber" in new Setup {
-      val matchingDeclaration: Declaration = declaration.copy(secureMovementReferenceNumber = Some(emptyString))
-
-      val cashTransactions: CashTransactions = CashTransactions(
-        pendingTransactions = Seq.empty,
-        cashDailyStatements = Seq(
-          CashDailyStatement(
-            date = fromDate,
-            openingBalance = 0.0,
-            closingBalance = 1000.00,
-            declarations = Seq(matchingDeclaration),
-            otherTransactions = Seq.empty)))
-
-      when(mockCashAccountUtils.transactionsForThePastSixYears()).thenReturn((fromDate, toDate))
-
-      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-        .thenReturn(Future.successful(Some(cashAccount)))
-
-      when(mockCustomsFinancialsApiConnector
-        .retrieveCashTransactionSearch(eqTo(cashAccountNumber), eqTo(fromDate), eqTo(toDate))(any))
-        .thenReturn(Future.successful(Right(cashTransactions)))
-
-      when(mockErrorHandler.notFoundTemplate(any())).thenReturn(Html(notFoundText))
-
-      val matchDeclaration: Declaration => Boolean = { declaration =>
-        declaration.secureMovementReferenceNumber.exists(_.isEmpty)
-      }
-
-      implicit val request: IdentifierRequest[AnyContent] = IdentifierRequest(FakeRequest(), eori)
-      val result: Future[Result] = controller.searchDeclarations(page, searchInput, matchDeclaration)
-
-      status(result) mustBe NOT_FOUND
-      contentAsString(result) mustBe notFoundText
-      verify(mockErrorHandler).notFoundTemplate(any())
-    }
-  }
-
-  ".handleSearchRequest method" should {
-    "return NOT_FOUND when given an invalid search input" in new Setup {
-      when(mockErrorHandler.notFoundTemplate(any())).thenReturn(Html(notFoundText))
-
-      implicit val request: IdentifierRequest[AnyContent] = IdentifierRequest(FakeRequest(), eori)
-      val result: Future[Result] = controller.handleSearchRequest(page, invalidSearchInput)
-
-      status(result) mustBe NOT_FOUND
-      contentAsString(result) mustBe notFoundText
-      verify(mockErrorHandler).notFoundTemplate(any())
-    }
-  }
-
-  ".isValidMRNUCR method" should {
-    "return true for a valid input" in new Setup {
-      val validMRN = "MRN1234567890"
-      controller.isValidMRNUCR(validMRN) mustBe true
-    }
-
-    "return false for an invalid input" in new Setup {
-      val invalidInput = "INVALID123"
-      controller.isValidMRNUCR(invalidInput) mustBe false
-    }
-  }
-
-  ".isValidPayment method" should {
-    "return true for a valid payment input" in new Setup {
-      val validPayment = "£100.00"
-      controller.isValidPayment(validPayment) mustBe true
-    }
-
-    "return false for an invalid payment input" in new Setup {
-      val invalidPayment = "100 dollars"
-      controller.isValidPayment(invalidPayment) mustBe false
-    }
-  }
-
-  ".parsePaymentAmount method" should {
-    "correctly parse a valid payment" in new Setup {
-      val paymentString = "£123.45"
-      val expectedAmount: BigDecimal = BigDecimal(123.45)
-
-      controller.parsePaymentAmount(paymentString) mustBe expectedAmount
-    }
-
-    "handle correctly input with additional spaces" in new Setup {
-      val paymentString = " £  678.90 "
-      val expectedAmount: BigDecimal = BigDecimal(678.90)
-
-      controller.parsePaymentAmount(paymentString) mustBe expectedAmount
-    }
-
-    "throw an exception for invalid payment formats" in new Setup {
-      val invalidPaymentString = "123.45USD"
-      a[NumberFormatException] should be thrownBy controller.parsePaymentAmount(invalidPaymentString)
-    }
-  }
-
-  ".determineSearchType method" should {
-    "return a predicate that matches MRN when input is a valid" in new Setup {
-      val validMRN = "MRN1234567890"
-
-      val predicate: Declaration => Boolean = controller.determineSearchType(validMRN)
-
-      val declarationWithMatchingMRN: Declaration = declaration.copy(movementReferenceNumber = validMRN)
-      val declarationWithNonMatchingMRN: Declaration = declaration.copy(movementReferenceNumber = "21GB343TUG2")
-      val declarationWithNonMatchingUCR: Declaration =
-        declaration.copy(movementReferenceNumber = "21GB3ER1JB32", declarantReference = Some("22IH483-ANVR123"))
-
-      predicate(declarationWithMatchingMRN) mustBe true
-      predicate(declarationWithNonMatchingMRN) mustBe false
-      predicate(declarationWithNonMatchingUCR) mustBe false
-    }
-
-    "return a predicate that matches payment amounts when input is a valid" in new Setup {
-      val validPayment = "£100.00"
-
-      val predicate: Declaration => Boolean = controller.determineSearchType(validPayment)
-      val declaration1: Declaration = declaration.copy(amount = hundred)
-      val declaration2: Declaration = declaration.copy(amount = fiveHundred)
-      val declaration3: Declaration = declaration.copy(amount = fourHundred)
-
-      predicate(declaration1) mustBe true
-      predicate(declaration2) mustBe false
-      predicate(declaration3) mustBe false
-    }
-  }
-
-  ".searchDeclarations method" should {
-    "return an OK view with no transactions when no cash account is found" in new Setup {
-      when(mockCashAccountUtils.transactionsForThePastSixYears()).thenReturn((fromDate, toDate))
-
-      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-        .thenReturn(Future.successful(None))
-
-      implicit val appConfig: AppConfig = mock[AppConfig]
-
-      when(mockNoTransactionsView.apply(any[ResultsPageSummary])(any, any, any))
-        .thenReturn(Html(noTransactionsText))
-
-      implicit val request: IdentifierRequest[AnyContent] = IdentifierRequest(FakeRequest(), eori)
-      val result: Future[Result] = controller.searchDeclarations(page, searchInput, _ => false)
-
-      status(result) mustBe OK
-      contentAsString(result) must include(noTransactionsText)
-    }
-
-    "return an OK view no transaction page when the API returns a Left result" in new Setup {
-      when(mockCashAccountUtils.transactionsForThePastSixYears()).thenReturn((fromDate, toDate))
-
-      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-        .thenReturn(Future.successful(Some(cashAccount)))
-
-      when(mockCustomsFinancialsApiConnector
-        .retrieveCashTransactionSearch(eqTo(cashAccountNumber), eqTo(fromDate), eqTo(toDate))(any))
-        .thenReturn(Future.successful(Left(new Exception(noTransactionsText))))
-
-      when(mockNoTransactionsView.apply(any[ResultsPageSummary])(any, any, any))
-        .thenReturn(Html(noTransactionsText))
-
-      implicit val request: IdentifierRequest[AnyContent] = IdentifierRequest(FakeRequest(), eori)
-      val result: Future[Result] = controller.searchDeclarations(page, searchInput, _ => false)
-
-      status(result) mustBe OK
-      contentAsString(result) must include(noTransactionsText)
-    }
-
-    "redirect to displaySearchDetails when a matching declaration with a valid UUID is found" in new Setup {
-      val matchingDeclaration: Declaration = declaration.copy(secureMovementReferenceNumber = Some(sMRN))
-
-      val cashTransactions: CashTransactions = CashTransactions(
-        pendingTransactions = Seq.empty,
-        cashDailyStatements = Seq(
-          CashDailyStatement(
-            date = fromDate,
-            openingBalance = 0.0,
-            closingBalance = 1000.00,
-            declarations = Seq(matchingDeclaration),
-            otherTransactions = Seq.empty)))
-
-      when(mockCashAccountUtils.transactionsForThePastSixYears()).thenReturn((fromDate, toDate))
-
-      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-        .thenReturn(Future.successful(Some(cashAccount)))
-
-      when(mockCustomsFinancialsApiConnector
-        .retrieveCashTransactionSearch(eqTo(cashAccountNumber), eqTo(fromDate), eqTo(toDate))(any))
-        .thenReturn(Future.successful(Right(cashTransactions)))
-
-      val matchDeclaration: Declaration => Boolean = _.secureMovementReferenceNumber.contains(sMRN)
-
-      implicit val request: IdentifierRequest[AnyContent] = IdentifierRequest(FakeRequest(), eori)
-      val result: Future[Result] = controller.searchDeclarations(page, searchInput, matchDeclaration)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.DeclarationDetailController
-        .displaySearchDetails(sMRN, page, searchInput).url)
-    } */
   }
 
   trait Setup {
@@ -439,6 +304,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
       mockErrorHandler,
       stubMessagesControllerComponents(),
       mock[cash_account_declaration_details],
+      mock[cash_account_declaration_details_search],
       mockCashAccountUtils,
       mockNoTransactionsView
     )(ExecutionContext.global, mockAppConfig)
@@ -484,5 +350,35 @@ class DeclarationDetailControllerSpec extends SpecBase {
         Seq(Transaction(67.89, Payment, None))))
 
     val cashTransactionResponse: CashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements)
+
+    val declarationSearch: DeclarationSearch = DeclarationSearch(
+      declarationID = "MRN1234567890",
+      declarantEORINumber = "GB987654321000",
+      declarantRef = Some("UCR12345"),
+      c18OrOverpaymentReference = Some("C18Reference"),
+      importersEORINumber = "GB123456789000",
+      postingDate = "2024-04-29",
+      acceptanceDate = "2024-04-28",
+      amount = 500.00,
+      taxGroups = Seq(
+        TaxGroupWrapper(
+          TaxGroupSearch(
+            taxGroupDescription = "Import VAT",
+            amount = 100.00,
+            taxTypes = Seq(
+              TaxTypeWithSecurityContainer(
+                TaxTypeWithSecurity(
+                  reasonForSecurity = Some("Security Reason"),
+                  taxTypeID = "50",
+                  amount = 100.00
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+
+    val declarationWrapper: DeclarationWrapper = DeclarationWrapper(declarationSearch)
   }
 }

@@ -98,8 +98,6 @@ class CashAccountDeclarationDetailsSpec extends ViewTestHelper {
         status = AccountStatusOpen,
         balances = CDSCashBalance(Some(fiveHundred))
       ),
-      cameViaSearch = false,
-      searchInput = emptyString,
       declaration = declaration)(messages)
 
     val cashAccountDeclarationDetails: cash_account_declaration_details =

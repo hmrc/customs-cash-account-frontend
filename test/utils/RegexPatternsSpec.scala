@@ -16,57 +16,31 @@
 
 package utils
 
+import utils.RegexPatterns.{mrnRegex, paymentRegex}
+
 class RegexPatternsSpec extends SpecBase {
 
-  "MRN/UCR Regex" should {
+  "MRN Regex" should {
 
     "match valid regex" in {
       val validInputs: Seq[String] = Seq(
-        "AB123456",
-        "ABCD1234567890",
-        "AB123456AB123456",
-        "AB123456 1234-5678-123 456A",
-        "ABC123456 1234-5678-123 456A")
+        "ABCD123456789012",
+        "ABCD12345678901234",
+        "ABCD1234567890123456")
 
       validInputs.foreach { input =>
-        RegexPatterns.mrnUCRRegex.findFirstIn(input) mustBe Some(input)
+        mrnRegex.findFirstIn(input) mustBe Some(input)
       }
     }
 
     "not a match invalid regex" in {
       val invalidInputs: Seq[String] = Seq(
-        "A123456",
-        "ABCDE123456",
-        "AB12345",
-        "AB123456ABC1234567",
-        "AB123456 1234-5678-123-456A")
+        "AB12",
+        "ABCD123456789012345678",
+        "GHRT122317@DC239177")
 
       invalidInputs.foreach { input =>
-        RegexPatterns.mrnUCRRegex.findFirstIn(input) mustBe None
-      }
-    }
-  }
-
-  "Super MRN/UCR Regex" should {
-
-    "match valid regex" in {
-      val validInputs: Seq[String] = Seq(
-        "12AB123456789012",
-        "12AB12345678901234",
-        "12AB1234567890123456")
-
-      validInputs.foreach { input =>
-        RegexPatterns.superMRNUCRRegex.findFirstIn(input) mustBe Some(input)
-      }
-    }
-
-    "not match invalid regex" in {
-      val invalidInputs: Seq[String] = Seq(
-        "123AB123456789012",
-        "12AB123456")
-
-      invalidInputs.foreach { input =>
-        RegexPatterns.superMRNUCRRegex.findFirstIn(input) mustBe None
+        mrnRegex.findFirstIn(input) mustBe None
       }
     }
   }
@@ -81,7 +55,7 @@ class RegexPatternsSpec extends SpecBase {
         "-£123.45")
 
       validInputs.foreach { input =>
-        RegexPatterns.paymentRegex.findFirstIn(input) mustBe Some(input)
+        paymentRegex.findFirstIn(input) mustBe Some(input)
       }
     }
 
@@ -94,7 +68,7 @@ class RegexPatternsSpec extends SpecBase {
         "-£123.456")
 
       invalidInputs.foreach { input =>
-        RegexPatterns.paymentRegex.findFirstIn(input) mustBe None
+        paymentRegex.findFirstIn(input) mustBe None
       }
     }
   }
