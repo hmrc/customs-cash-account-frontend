@@ -25,7 +25,10 @@ import models.{
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount}
-import utils.Utils.{LinkComponentValues, emptyString, h2Component, linkComponent, pComponent, prependNegativeSignWithAmount}
+import utils.Utils.{
+  LinkComponentValues, emptyString, h2Component, linkComponent, pComponent,
+  prependNegativeSignWithAmount
+}
 
 import java.time.LocalDate
 import scala.math.Ordered.orderingToOrdered
@@ -48,7 +51,8 @@ case class CashAccountDailyStatementsViewModel(dailyStatements: Seq[DailyStateme
 
 object CashAccountDailyStatementsViewModel {
   def apply(transactions: CashTransactions,
-            pageNo: Option[Int])(implicit msgs: Messages, config: AppConfig): CashAccountDailyStatementsViewModel = {
+            pageNo: Option[Int])
+           (implicit msgs: Messages, config: AppConfig): CashAccountDailyStatementsViewModel = {
 
     val dailyStatements: Seq[CashDailyStatement] = transactions.cashDailyStatements.sortBy(_.date).reverse
     val hasTransactions = dailyStatements.nonEmpty

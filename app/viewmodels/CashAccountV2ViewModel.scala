@@ -173,9 +173,9 @@ object CashAccountV2ViewModel {
   private def populatePaginationModel(pageNo: Option[Int],
                                       totalDailyStatementsSize: Int)
                                      (implicit config: AppConfig) = {
-    val shouldPaginationBeDisabledAndShowAllRecords = totalDailyStatementsSize <= config.numberOfRecordsPerPage
+    val isPaginationDisabled = totalDailyStatementsSize <= config.numberOfRecordsPerPage
 
-    if (shouldPaginationBeDisabledAndShowAllRecords) {
+    if (isPaginationDisabled) {
       None
     } else {
       Some(ListPaginationViewModel(

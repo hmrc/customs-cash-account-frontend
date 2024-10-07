@@ -42,8 +42,8 @@ trait ViewTestHelper extends SpecBase {
   def shouldContainTheElement(view: Document,
                               id: Option[String] = None,
                               classes: Option[String] = None): Assertion = {
-    val isElementIdPresent = id.fold(false)(id => view.select(s"#$id").size() >= 0)
-    val isElementClassPresent = classes.fold(false)(classes => view.select(s".$classes").size() >= 0)
+    val isElementIdPresent = id.fold(false)(id => view.select(s"#$id").size() > 0)
+    val isElementClassPresent = classes.fold(false)(classes => view.select(s".$classes").size() > 0)
 
     assert(isElementIdPresent || isElementClassPresent)
   }
@@ -51,10 +51,10 @@ trait ViewTestHelper extends SpecBase {
   def shouldNotContainTheElement(view: Document,
                                  id: Option[String] = None,
                                  classes: Option[String] = None): Assertion = {
-    val isElementIdPresent = id.fold(false)(id => view.select(s"#$id").size() == 0)
-    val isElementClassPresent = classes.fold(false)(classes => view.select(s".$classes").size() == 0)
+    val isElementIdAbsent = id.fold(false)(id => view.select(s"#$id").size() == 0)
+    val isElementClassAbsent = classes.fold(false)(classes => view.select(s".$classes").size() == 0)
 
-    assert(isElementIdPresent || isElementClassPresent)
+    assert(isElementIdAbsent || isElementClassAbsent)
   }
 
 }
