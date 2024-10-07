@@ -91,8 +91,8 @@ object PaginationViewModel {
     def populateItems(acc: Seq[PaginationItem], pageNo: Int): Seq[PaginationItem] = {
       (acc, pageNo) match {
         case (acc, page) if page == 1 || (page >= currentPage - 1 && page <= currentPage + 1) || page == results.totalPages =>
-          acc :+ PaginationItem(href = hrefWithParams(page), number = Some(page.toString),
-            current = Some(page == currentPage))
+          acc :+ PaginationItem(
+            href = hrefWithParams(page), number = Some(page.toString), current = Some(page == currentPage))
 
         case (acc, _) if (acc.lastOption.flatMap(_.ellipsis).contains(true)) => acc
 
@@ -103,8 +103,8 @@ object PaginationViewModel {
     val items = (1 to results.totalPages).foldLeft[Seq[PaginationItem]](Nil) {
       (acc, page) =>
         if (isNumberOfItemsInsideLimit) {
-          acc :+ PaginationItem(href = hrefWithParams(page), number = Some(page.toString),
-            current = Some(page == currentPage))
+          acc :+ PaginationItem(
+            href = hrefWithParams(page), number = Some(page.toString), current = Some(page == currentPage))
         } else {
           populateItems(acc, page)
         }
