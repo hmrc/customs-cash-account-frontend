@@ -48,7 +48,8 @@ class SelectTransactionsFormProvider @Inject()(implicit clock: Clock)
           invalidKey = "cf.form.error.end.date-number-invalid",
           monthKey = "cf.form.error.end.date.invalid.month",
           yearKey = "cf.form.error.end.date.invalid.year",
-          invalidDateKey = "cf.form.error.end.date.invalid.real-date"
+          invalidDateKey = "cf.form.error.end.date.invalid.real-date",
+          useLastDayOfMonth = true
         ).verifying(
           beforeCurrentDate(errorKey = "cf.form.error.end-future-date")
         ).verifying(

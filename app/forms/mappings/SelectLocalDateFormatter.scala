@@ -20,35 +20,41 @@ import play.api.data.FormError
 import play.api.data.format.Formatter
 import play.api.{Logger, LoggerLike}
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.{LocalDate, LocalDateTime, YearMonth}
 import scala.util.{Failure, Success, Try}
 
 private[mappings] class SelectLocalDateFormatter(invalidKey: String,
                                                  monthKey: String,
                                                  yearKey: String,
                                                  invalidDateKey: String,
-                                                 args: Seq[String]) extends Formatter[LocalDate] with Formatters {
+                                                 args: Seq[String],
+                                                 useLastDayOfMonth: Boolean) extends Formatter[LocalDate] with Formatters {
 
   private val fieldKeys: List[String] = List("month", "year")
   val log: LoggerLike = Logger(this.getClass)
   val currentDate: LocalDate = LocalDateTime.now().toLocalDate
 
   private def toDate(key: String,
-                     month: Int,
-                     year: Int): Either[Seq[FormError], LocalDate] = {
-    //TODO - Update day to either be 1 or the last day of each month in 4900
-    Try(LocalDate.of(year, month, 1)) match {
-      case Success(date) => Right(date)
-      case Failure(_) =>
-        Left(
-          Seq(
-            FormError(
-              updateFormErrorKeys(key, month, year),
-              invalidDateKey,
-              args
+                   month: Int,
+                   year: Int): Either[Seq[FormError], LocalDate] = {
+    
+    if (month < 1 || month > 12) {
+      Left(Seq(FormError(s"$key.month", invalidDateKey, args)))
+    } else {
+      val day = if (useLastDayOfMonth) YearMonth.of(year, month).lengthOfMonth() else 1
+      Try(LocalDate.of(year, month, day)) match {
+        case Success(date) => Right(date)
+        case Failure(_) =>
+          Left(
+            Seq(
+              FormError(
+                updateFormErrorKeys(key, month, year),
+                invalidDateKey,
+                args
+              )
             )
           )
-        )
+      }
     }
   }
 

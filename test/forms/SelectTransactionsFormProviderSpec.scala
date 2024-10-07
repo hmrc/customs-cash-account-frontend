@@ -121,8 +121,9 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
 
     "populate CashTransactionDates form correctly (or with correct error) for input end date" when {
 
-      "end date is valid" in new SetUp {
-        form.bind(completeValidDates).get mustBe CashTransactionDates(start = validDate, end = validDate)
+      "end date is valid and uses the last day of the month" in new SetUp {
+        val expectedEndDate = LocalDate.of(2021, 10, 31)
+        form.bind(completeValidDates).get mustBe CashTransactionDates(start = validDate, end = expectedEndDate)
       }
 
       "the month of end date is blank" in new SetUp {
@@ -158,11 +159,11 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
           populateFormValueMap(startKey, month10AsString, year2021AsString)
 
         val endDate: Map[String, String] =
-          populateFormValueMap(endKey, month14AsString, year2021AsString)
+          Map(s"$endKey.month" -> month14AsString, s"$endKey.year" -> year2021AsString)
 
         val formData: Map[String, String] = validStartDate ++ endDate
 
-        val expectedErrors: Seq[FormError] = error("end.month", invalidDateMsgEndKey)
+        val expectedErrors: Seq[FormError] = Seq(FormError("end.month", invalidDateMsgEndKey))
 
         checkForError(form, formData, expectedErrors)
       }
@@ -264,7 +265,7 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
 
     lazy val completeValidDates: Map[String, String] =
       populateFormValueMap(startKey, month10AsString, year2021AsString) ++
-        populateFormValueMap(endKey, month10AsString, year2021AsString)
+        Map(s"$endKey.month" -> month10AsString, s"$endKey.year" -> year2021AsString)
 
     def populateFormValueMap(key: String,
                              month: String,
