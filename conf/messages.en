@@ -302,6 +302,25 @@ cf.cash-account.topup.withdrawal.detail.heading=Help with top-ups and withdrawls
 cf.cash-account.topup.withdrawal.detail.text=Top-ups can take up to one working day to show on this page. Funds are usually available to use within one hour of making the transfer from your bank. Withdrawals can take up to 15 working days for the money to reach your bank account.
 cf.cash-account.detail.available-balance=Available balance {0}
 
+#Pagination
+pagination.number-of-movements.singular.with-search-param = Showing {0} result matching {1}
+pagination.number-of-movements.plural.with-search-param = Showing {0} results matching {1}
+
+pagination.number-of-movements.singular = Showing {0} result
+pagination.number-of-movements.plural = Showing {0} results
+
+pagination.searchResults = Search results pagination
+pagination.results = Showing {0} to {1} of {2} results
+pagination.results.search = Showing {0} to {1} of {2} results matching {3}
+
+pagination.page = Page {0}
+pagination.next = Next
+pagination.next.hidden = Next page
+pagination.previous = Previous
+pagination.previous.hidden = Previous page
+pagination.ellipses = ...
+pagination.ellipses.hidden = Ellipses
+
 cf.cash-account.duplicate.header = A transactions request for the same date range already exists
 cf.cash-account.duplicate.message = You requested transactions from {0} to {1}
 cf.cash-account.duplicate.link = Try again with a different date range.

@@ -66,6 +66,19 @@ class AppConfigSpec extends SpecBase {
     }
   }
 
+  "numberOfRecordsPerPage" should {
+    "return the correct value" in new Setup {
+      appConfig.numberOfRecordsPerPage mustBe 30
+    }
+  }
+
+  "numberOfRecordsToDisableNavigationButtonsInPagination" should {
+    "return the correct value" in new Setup {
+      appConfig.numberOfRecordsToDisableNavigationButtonsInPagination mustBe 450
+    }
+  }
+
+
   trait Setup {
     val app: Application = application.build()
     val appConfig: AppConfig = app.injector.instanceOf[AppConfig]

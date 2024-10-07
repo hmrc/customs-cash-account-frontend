@@ -30,7 +30,7 @@
 
 @main_template(
     pageTitle = Some(title(form,messages("cf.cash-account.transactions.title"),section = None, titleMessageArgs = Seq())),
-    backLink = Some(controllers.routes.CashAccountController.showAccountDetails(None).url),
+    backLink = Some(controllers.routes.CashAccountV2Controller.showAccountDetails(None).url),
     fullWidth = false,
     help = true
 ) {
