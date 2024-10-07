@@ -178,22 +178,22 @@ class ListPaginationViewModelSpec extends SpecBase {
 
       "searchParam has some value" in new Setup {
         ListPaginationViewModel(PAGE_30, PAGE_2, PAGE_1, testHref).searchResult(Some("2")) mustBe
-          msgs("pagination.number-of-movements.plural.with-search-param", "<b>30</b>", "2")
+          msgs("pagination.number-of-movements.plural.with-search-param", "<strong>30</strong>", "2")
       }
 
       "searchParam has some value and results count is 1" in new Setup {
         ListPaginationViewModel(PAGE_1, PAGE_2, PAGE_1, testHref).searchResult(Some("2")) mustBe
-          msgs("pagination.number-of-movements.singular.with-search-param", "<b>1</b>", "2")
+          msgs("pagination.number-of-movements.singular.with-search-param", "<strong>1</strong>", "2")
       }
 
       "searchParam is None" in new Setup {
         ListPaginationViewModel(PAGE_30, PAGE_2, PAGE_1, testHref).searchResult() mustBe
-          msgs("pagination.number-of-movements.plural", "<b>30</b>")
+          msgs("pagination.number-of-movements.plural", "<strong>30</strong>")
       }
 
       "searchParam is None and results count is 1" in new Setup {
         ListPaginationViewModel(PAGE_1, PAGE_2, PAGE_1, testHref).searchResult() mustBe
-          msgs("pagination.number-of-movements.singular", "<b>1</b>")
+          msgs("pagination.number-of-movements.singular", "<strong>1</strong>")
       }
     }
   }
@@ -204,12 +204,12 @@ class ListPaginationViewModelSpec extends SpecBase {
 
       "searchParam has some value" in new Setup {
         ListPaginationViewModel(PAGE_30, PAGE_2, PAGE_1, testHref).paginatedSearchResult(Some("2")) mustBe
-          msgs("pagination.results.search", "<b>2</b>", "<b>2</b>", "<b>30</b>", "2")
+          msgs("pagination.results.search", "<strong>2</strong>", "<strong>2</strong>", "<strong>30</strong>", "2")
       }
 
       "searchParam is None" in new Setup {
         ListPaginationViewModel(PAGE_30, PAGE_2, PAGE_1, testHref).paginatedSearchResult() mustBe
-          msgs("pagination.results", "<b>2</b>", "<b>2</b>", "<b>30</b>")
+          msgs("pagination.results", "<strong>2</strong>", "<strong>2</strong>", "<strong>30</strong>")
       }
     }
   }
