@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime}
 import java.util.Locale
+import utils.Utils.singleSpace
 
 object Formatters {
 
@@ -32,6 +33,19 @@ object Formatters {
   private val kbMin: Long = 1000
   private val kbMax: Long = 1000000
 
+  private val month_1 = 1
+  private val month_2 = 2
+  private val month_3 = 3
+  private val month_4 = 4
+  private val month_5 = 5
+  private val month_6 = 6
+  private val month_7 = 7
+  private val month_8 = 8
+  private val month_9 = 9
+  private val month_10 = 10
+  private val month_11 = 11
+  private val month_12 = 12
+
   def dateAsMonth(date: LocalDate)(implicit messages: Messages): String =
     messages(s"month.${date.getMonthValue}")
 
@@ -39,7 +53,7 @@ object Formatters {
     s"${date.getDayOfMonth} ${dateAsMonth(date)} ${date.getYear}"
 
   def dateAsMonthAndYear(date: LocalDate)(implicit messages: Messages): String =
-      s"${dateAsMonth(date)} ${date.getYear}"
+    s"${dateAsMonth(date)} ${date.getYear}"
 
   def dateTimeAsIso8601(dateTime: LocalDateTime): String = {
     s"${DateTimeFormatter.ISO_DATE_TIME.format(dateTime.truncatedTo(ChronoUnit.SECONDS))}Z"
@@ -58,5 +72,31 @@ object Formatters {
     numberFormat.setMaximumFractionDigits(maxDecimalPlaces)
     numberFormat.setMinimumFractionDigits(maxDecimalPlaces)
     numberFormat.format(amount.abs)
+  }
+
+  def parseDateString(date: String): LocalDate = {
+    val dateArray: Array[String] = date.split(singleSpace)
+
+    val day = dateArray(0).toInt
+    val monthString = dateArray(1)
+    val year = dateArray(2).toInt
+
+    LocalDate.of(year, intValueForMonthString(monthString), day)
+  }
+
+  //scalastyle:off
+  private def intValueForMonthString(month: String) = month match {
+    case "January" | "Ionawr" => month_1
+    case "February" | "Chwefror" => month_2
+    case "March" | "Mawrth" => month_3
+    case "April" | "Ebrill" => month_4
+    case "May" | "Mai" => month_5
+    case "June" | "Mehefin" => month_6
+    case "July" | "Gorffennaf" => month_7
+    case "August" | "Awst" => month_8
+    case "September" | "Medi" => month_9
+    case "October" | "Hydref" => month_10
+    case "November" | "Tachwedd" => month_11
+    case "December" | "Rhagfyr" => month_12
   }
 }

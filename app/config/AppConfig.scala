@@ -72,6 +72,11 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   lazy val helpMakeGovUkBetterUrl: String = config.get[String]("urls.helpMakeGovUkBetterUrl")
 
+  lazy val numberOfRecordsPerPage: Int = config.get[Int]("pagination.no-of-records-per-page")
+
+  lazy val numberOfRecordsToDisableNavigationButtonsInPagination: Int =
+    config.get[Int]("pagination.no-of-records-to-disable-navigation-buttons")
+
   def requestedStatements(fileRole: FileRole): String = {
     fileRole match {
       case FileRole.CashStatement => s"$requestedStatements${fileRole.featureName}"

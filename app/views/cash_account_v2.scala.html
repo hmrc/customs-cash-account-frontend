@@ -29,7 +29,8 @@
         formHelper: FormWithCSRF,
         errorSummary: components.errorSummary,
         button: components.button,
-        inputText: components.inputText
+        inputText: components.inputText,
+        pagination: GovukPagination
 )
 
 @(
@@ -74,6 +75,7 @@
 
     @viewModel.dailyStatementsSection.map { section =>
         @section.dailyStatements
+        @viewModel.paginationModel.map(model => pagination(model.pagination))
         @section.requestTransactionsHeading
     }
 
