@@ -84,6 +84,7 @@ object Formatters {
     LocalDate.of(year, intValueForMonthString(monthString), day)
   }
 
+  //scalastyle:off
   private def intValueForMonthString(month: String) = month match {
     case "January" | "Ionawr" => month_1
     case "February" | "Chwefror" => month_2
