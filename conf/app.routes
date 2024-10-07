@@ -26,6 +26,8 @@ POST        /selected-cash-transactions            controllers.SelectedTransacti
 
 GET         /requested-too-many-transactions       controllers.SelectedTransactionsController.requestedTooManyTransactions()
 
+GET         /requested-duplicate-date              controllers.DuplicateDateController.onPageLoad()
+
 GET         /too-many-selected-transactions        controllers.SelectedTransactionsController.tooManyTransactionsSelected(range: models.RequestedDateRange)
 GET         /selected-confirmation                 controllers.ConfirmationPageController.onPageLoad()
 

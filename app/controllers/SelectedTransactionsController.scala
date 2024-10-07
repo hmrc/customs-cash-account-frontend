@@ -21,7 +21,7 @@ import cats.data.EitherT.fromOptionF
 import cats.implicits.*
 import config.{AppConfig, ErrorHandler}
 import connectors.{
-  CustomsFinancialsApiConnector, ErrorResponse,
+  CustomsFinancialsApiConnector, ErrorResponse, EntryAlreadyExists,
   ExceededMaximum, NoTransactionsAvailable, TooManyTransactionsRequested
 }
 import controllers.actions.IdentifierAction
@@ -112,7 +112,10 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
       case (Some(cashAcc), Some(dates)) =>
 
         apiConnector.postCashAccountStatementRequest(request.eori, cashAcc.number, dates.start, dates.end).map {
+
           case Right(_) => Redirect(routes.ConfirmationPageController.onPageLoad())
+
+          case Left(EntryAlreadyExists) => Redirect(routes.DuplicateDateController.onPageLoad())
 
           case Left(ExceededMaximum) => Redirect(routes.SelectedTransactionsController.requestedTooManyTransactions())
 
