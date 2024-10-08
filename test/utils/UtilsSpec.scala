@@ -201,6 +201,7 @@ class UtilsSpec extends SpecBase {
   }
 
   trait Setup {
+
     val app: Application = application.build()
     implicit val msgs: Messages = messages(app)
     implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
@@ -210,8 +211,6 @@ class UtilsSpec extends SpecBase {
     val testId = "test_id"
     val testClass = "test_class"
     val testLocation = "test_location"
-    val testHref = "http://www.test.com"
-    val testLang = "en"
 
     val linkMessage: String = "go to test page"
     val href = "www.test.com"
