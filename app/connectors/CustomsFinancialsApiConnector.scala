@@ -21,9 +21,17 @@ import helpers.Constants.*
 import models.*
 import models.AccountsAndBalancesResponseContainer.accountResponseCommonReads
 import models.CashDailyStatement.*
-import models.request.{CashAccountStatementRequestDetail, CashDailyStatementRequest, IdentifierRequest}
+import models.request.{
+  CashAccountPaymentDetails,
+  CashAccountStatementRequestDetail,
+  CashAccountTransactionSearchRequestDetails,
+  CashDailyStatementRequest,
+  DeclarationDetailsSearch,
+  IdentifierRequest,
+  SearchType
+}
 import org.slf4j.LoggerFactory
-import play.api.http.Status.{NOT_FOUND, REQUEST_ENTITY_TOO_LARGE, BAD_REQUEST, SERVICE_UNAVAILABLE, INTERNAL_SERVER_ERROR}
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE}
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.mvc.AnyContent
 import repositories.CacheRepository
@@ -31,12 +39,14 @@ import services.MetricsReporterService
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, UpstreamErrorResponse}
-import utils.Utils.emptyString
 
 import java.time.LocalDate
 import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import models.request.CashAccountStatementRequestDetail.jsonBodyWritable
+import models.response.CashAccountTransactionSearchResponseDetail
+import play.api.libs.json.Json
 
 class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
                                               appConfig: AppConfig,
@@ -50,6 +60,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
   private val retrieveCashTransactionsUrl = s"$baseUrl/account/cash/transactions"
   private val retrieveCashTransactionsDetailUrl = s"$baseUrl/account/cash/transactions-detail"
   private val retrieveCashAccountStatementsUrl = s"$baseUrl/accounts/cashaccountstatementrequest/v1"
+  private val retrieveCashAccountStatementSearchUrl = s"$baseUrl/account/cash/transaction-search"
 
 
   def getCashAccount(eori: String)(implicit hc: HeaderCarrier,
@@ -94,18 +105,6 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
                               (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
-    def addUUIDToCashTransaction(response: CashTransactions): CashTransactions = {
-      response.copy(
-        cashDailyStatements = response.cashDailyStatements.map { statement =>
-          statement.copy(
-            declarations = statement.declarations.map { declaration =>
-              declaration.copy(secureMovementReferenceNumber = Some(UUID.randomUUID().toString))
-            }
-          )
-        }
-      )
-    }
-
     cacheRepository.get(can).flatMap {
       case Some(value) => Future.successful(Right(value))
 
@@ -139,6 +138,39 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
         logger.error(s"Unable to retrieve cash transactions: ${e.getMessage}")
         Left(UnknownException)
     }
+  }
+
+  def retrieveCashTransactionsBySearch(can: String,
+                                       ownerEORI: String,
+                                       searchType: SearchType.Value,
+                                       declarationDetails: Option[DeclarationDetailsSearch] = None,
+                                       cashAccountPaymentDetails: Option[CashAccountPaymentDetails] = None
+                                      )(implicit hc: HeaderCarrier
+                                      ): Future[Either[ErrorResponse, CashAccountTransactionSearchResponseDetail]] = {
+
+    val request = CashAccountTransactionSearchRequestDetails(
+      can, ownerEORI, searchType, declarationDetails, cashAccountPaymentDetails)
+
+    httpClient.post(url"$retrieveCashAccountStatementSearchUrl")
+      .withBody[CashAccountTransactionSearchRequestDetails](request)
+      .execute[CashAccountTransactionSearchResponseDetail]
+      .map(Right(_))
+  }.recover {
+    case UpstreamErrorResponse(_, BAD_REQUEST, _, _) =>
+      logger.error("BAD Request for retrieveCashTransactionsBySearch")
+      Left(BadRequest)
+
+    case UpstreamErrorResponse(_, INTERNAL_SERVER_ERROR, _, _) =>
+      logger.error("No Transactions available for retrieveCashTransactionsBySearch")
+      Left(InternalServerErrorErrorResponse)
+
+    case UpstreamErrorResponse(_, SERVICE_UNAVAILABLE, _, _) =>
+      logger.error("SERVICE_UNAVAILABLE for retrieveCashTransactionsBySearch")
+      Left(ServiceUnavailableErrorResponse)
+
+    case e =>
+      logger.error(s"Unknown error for retrieveCashTransactionsBySearch :${e.getMessage}")
+      Left(UnknownException)
   }
 
   def retrieveCashTransactionsDetail(can: String,
@@ -232,6 +264,18 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       case _ =>
         Right(accountResponseCommon)
     }
+  }
+
+  private def addUUIDToCashTransaction(response: CashTransactions): CashTransactions = {
+    response.copy(
+      cashDailyStatements = response.cashDailyStatements.map { statement =>
+        statement.copy(
+          declarations = statement.declarations.map { declaration =>
+            declaration.copy(secureMovementReferenceNumber = Some(UUID.randomUUID().toString))
+          }
+        )
+      }
+    )
   }
 }
 

@@ -38,6 +38,11 @@ trait ViewTestHelper extends SpecBase {
 
   def shouldContainBackLinkUrl(view: Document,
                                url: String): Assertion = view.html().contains(url) mustBe true
+  
+  def shouldNotContainBackLink(view: Document, className: String): Assertion = {
+    val backlink = view.select(s".$className")
+    backlink.isEmpty mustBe true
+  }
 
   def shouldContainTheElement(view: Document,
                               id: Option[String] = None,

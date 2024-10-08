@@ -14,32 +14,23 @@
  * limitations under the License.
  *@
 
-@import helpers.Formatters
 @import viewmodels.DeclarationDetailViewModel
 
-@this(main_template: Layout, govukSummaryList: GovukSummaryList, h1: components.h1, h2: components.h2Inner)
+@this(main_template: Layout, govukSummaryList: GovukSummaryList)
 
-@(viewModel: DeclarationDetailViewModel,
-  declarationDetails: Declaration,
-  pageNumber: Option[Int]
-)(implicit request: Request[_], messages: Messages)
+@(viewModel: DeclarationDetailViewModel, pageNumber: Option[Int])(implicit request: Request[_], messages: Messages)
 
 @main_template(
   pageTitle = Some(messages("cf.cash-account.detail.title")),
-  backLink = Some(routes.CashAccountController.showAccountDetails(page = pageNumber).url),
+  backLink = Some(routes.CashAccountV2Controller.showAccountDetails(page = pageNumber).url),
   fullWidth = false
 ) {
 
-  @h2(msg = "cf.cash-account.detail.account",
-      innerMsg = viewModel.account.number,
-      id = Some("account-number"),
-      classes = "govuk-caption-xl"
-  )
+  @viewModel.subHeader
 
-  @h1(msg="cf.cash-account.detail.declaration.title")
+  @viewModel.header
 
-  @govukSummaryList(DeclarationDetailViewModel.declarationSummaryList(declarationDetails))
+  @govukSummaryList(viewModel.declarationSummaryList)
 
-  @govukSummaryList(DeclarationDetailViewModel.taxSummaryList(declarationDetails))
-
+  @govukSummaryList(viewModel.taxSummaryList)
 }

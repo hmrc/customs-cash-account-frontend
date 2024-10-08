@@ -18,7 +18,8 @@ package connectors
 
 import config.AppConfig
 import models.*
-import models.request.{CashAccountStatementRequestDetail, CashDailyStatementRequest, IdentifierRequest}
+import models.request.{CashAccountStatementRequestDetail, CashDailyStatementRequest, IdentifierRequest, SearchType}
+import models.response.{CashAccountTransactionSearchResponseDetail, EoriData, EoriDataContainer}
 import org.mockito.ArgumentMatchers.{any, anyString, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE}
@@ -239,6 +240,114 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         connector(appWithMocks).retrieveCashTransactions("can", fromDate, toDate).map {
           _ mustBe Left(NoTransactionsAvailable)
         }
+      }
+    }
+  }
+
+  "retrieveCashTransactionsBySearch" must {
+    "call the correct URL and return a valid response for the given request" in new Setup {
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[CashAccountTransactionSearchResponseDetail]], any[ExecutionContext]))
+        .thenReturn(Future.successful(transactionSearchResponseDetail))
+
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[RequestBuilder].toInstance(requestBuilder)
+        ).build()
+
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
+          "testCAN", "GB123456789012", SearchType.D, None, None))
+
+        result mustBe Right(transactionSearchResponseDetail)
+      }
+    }
+
+    "return BadRequest error when backend responds with BAD_REQUEST" in new Setup {
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[CashAccountTransactionSearchResponseDetail]], any[ExecutionContext]))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Bad request", BAD_REQUEST)))
+
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient)
+        ).build()
+
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
+          "testCAN", "GB123456789012", SearchType.D, None, None))
+
+        result mustBe Left(BadRequest)
+      }
+    }
+
+    "return InternalServerErrorErrorResponse when backend responds with INTERNAL_SERVER_ERROR" in new Setup {
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[CashAccountTransactionSearchResponseDetail]], any[ExecutionContext]))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Internal server error", INTERNAL_SERVER_ERROR)))
+
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient)
+        ).build()
+
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
+          "testCAN", "GB123456789012", SearchType.D, None, None))
+
+        result mustBe Left(InternalServerErrorErrorResponse)
+      }
+    }
+
+    "return ServiceUnavailableErrorResponse when backend responds with SERVICE_UNAVAILABLE" in new Setup {
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[CashAccountTransactionSearchResponseDetail]], any[ExecutionContext]))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Service unavailable", SERVICE_UNAVAILABLE)))
+
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient)
+        ).build()
+
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
+          "testCAN", "GB123456789012", SearchType.D, None, None))
+
+        result mustBe Left(ServiceUnavailableErrorResponse)
+      }
+    }
+
+    "return UnknownException when an unexpected error occurs" in new Setup {
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[CashAccountTransactionSearchResponseDetail]], any[ExecutionContext]))
+        .thenReturn(Future.failed(new RuntimeException("Unexpected error")))
+
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = application
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient)
+        ).build()
+
+      running(appWithMocks) {
+        val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
+          "testCAN", "GB123456789012", SearchType.D, None, None))
+
+        result mustBe Left(UnknownException)
       }
     }
   }
@@ -599,15 +708,23 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         Seq(Declaration("mrn1", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
           LocalDate.parse("2020-07-18"), -84.00, Nil, Some(sMRN)),
           Declaration("mrn2", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
-            LocalDate.parse("2020-07-18"), -65.00, Nil, Some(sMRN))),
-        otherTransactions),
+            LocalDate.parse("2020-07-18"), -65.00, Nil, Some(sMRN))), otherTransactions),
 
       CashDailyStatement(LocalDate.parse("2020-07-20"), 600.0, 1200.00,
         Seq(Declaration("mrn3", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
           LocalDate.parse("2020-07-20"), -90.00, Nil, Some(sMRN)),
           Declaration("mrn4", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
-            LocalDate.parse("2020-07-20"), -30.00, Nil, Some(sMRN))), Nil)
-    )
+            LocalDate.parse("2020-07-20"), -30.00, Nil, Some(sMRN))), Nil))
+
+    val transactionSearchResponseDetail: CashAccountTransactionSearchResponseDetail =
+      CashAccountTransactionSearchResponseDetail(
+        can = "testCAN",
+        eoriDetails = Seq(
+          EoriDataContainer(
+            eoriData = EoriData(
+              eoriNumber = "GB123456789012",
+              name = "Test Importer"))
+        ), declarations = Some(Seq.empty))
 
     val appWithHttpClient: Application = application
       .overrides(
