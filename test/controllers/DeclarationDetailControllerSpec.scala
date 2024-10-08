@@ -16,10 +16,8 @@
 
 package controllers
 
-import config.{AppConfig, ErrorHandler}
+import config.ErrorHandler
 import connectors.{CustomsFinancialsApiConnector, UnknownException}
-import controllers.actions.{EmailAction, IdentifierAction}
-import helpers.CashAccountUtils
 import models.request.{CashAccountPaymentDetails, DeclarationDetailsSearch, SearchType}
 import models.response.{
   CashAccountTransactionSearchResponseDetail,
@@ -36,12 +34,8 @@ import models.{
   CashAccount,
   CashDailyStatement,
   CashTransactions,
-  CustomsDuty,
   Declaration,
-  ImportVat,
   Payment,
-  TaxGroup,
-  TaxType,
   Transaction,
   Withdrawal
 }
@@ -56,10 +50,9 @@ import play.api.test.Helpers.*
 import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.SpecBase
-import views.html.{cash_account_declaration_details, cash_account_declaration_details_search, cash_transactions_no_result}
 
 import java.time.LocalDate
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class DeclarationDetailControllerSpec extends SpecBase {
 
@@ -188,11 +181,12 @@ class DeclarationDetailControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
-      val mockCashAccountTransactionSearchResponseDetail: CashAccountTransactionSearchResponseDetail = CashAccountTransactionSearchResponseDetail(
-        can = cashAccountNumber,
-        eoriDetails = Seq.empty,
-        declarations = Some(Seq(declarationWrapper)),
-        paymentsWithdrawalsAndTransfers = None)
+      val cashAccountTransactionSearchResponseDetail: CashAccountTransactionSearchResponseDetail =
+        CashAccountTransactionSearchResponseDetail(
+          can = cashAccountNumber,
+          eoriDetails = Seq.empty,
+          declarations = Some(Seq(declarationWrapper)),
+          paymentsWithdrawalsAndTransfers = None)
 
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
         eqTo(cashAccountNumber),
@@ -201,7 +195,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
         any[Option[DeclarationDetailsSearch]],
         any[Option[CashAccountPaymentDetails]]
       )(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right(mockCashAccountTransactionSearchResponseDetail)))
+        .thenReturn(Future.successful(Right(cashAccountTransactionSearchResponseDetail)))
 
       val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
@@ -262,66 +256,13 @@ class DeclarationDetailControllerSpec extends SpecBase {
 
   trait Setup {
 
-    val year2024 = 2024
-    val month4 = 4
-    val day4 = 29
-    val date: LocalDate = LocalDate.of(year2024, month4, day4)
-
-    val fiveHundred: BigDecimal = BigDecimal(500.00)
-    val fourHundred: BigDecimal = BigDecimal(400.00)
-    val hundred: BigDecimal = BigDecimal(100.00)
-
-    val movementReferenceNumber = "MRN1234567890"
-    val importerEori: Option[String] = Some("GB123456789000")
-    val declarantEori = "GB987654321000"
-    val declarantReference: Option[String] = Some("UCR12345")
-    val secureMovementReferenceNumber: Option[String] = Some("5a71a767-5c1c-4df8-8eef-2b83769b8fda")
-
     val cashAccountNumber = "1234567"
     val eori = "exampleEori"
     val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
     val searchInput = "21GB399145852YAD23"
-    val invalidSearchInput = "-2?1G!B399.145852YAD23"
-    val page: Option[Int] = Some(1)
-    val notFoundText = "Not Found"
-    val noTransactionsText = "No Transactions"
-
-    val fromDate: LocalDate = LocalDate.parse("2019-10-08")
-    val toDate: LocalDate = LocalDate.parse("2020-04-08")
 
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
     val mockErrorHandler: ErrorHandler = mock[ErrorHandler]
-    val mockCashAccountUtils: CashAccountUtils = mock[CashAccountUtils]
-    val mockIdentifierAction: IdentifierAction = mock[IdentifierAction]
-    val mockEmailAction: EmailAction = mock[EmailAction]
-    val mockAppConfig: AppConfig = mock[AppConfig]
-    val mockNoTransactionsView: cash_transactions_no_result = mock[cash_transactions_no_result]
-
-    val controller = new DeclarationDetailController(
-      mockIdentifierAction,
-      mockEmailAction,
-      mockCustomsFinancialsApiConnector,
-      mockErrorHandler,
-      stubMessagesControllerComponents(),
-      mock[cash_account_declaration_details],
-      mock[cash_account_declaration_details_search],
-      mockCashAccountUtils,
-      mockNoTransactionsView
-    )(ExecutionContext.global, mockAppConfig)
-
-    val taxTypes: Seq[TaxType] = Seq(TaxType(reasonForSecurity = Some("Reason"), taxTypeID = "50", amount = hundred))
-
-    val declaration: Declaration = Declaration(
-      movementReferenceNumber = movementReferenceNumber,
-      importerEori = importerEori,
-      declarantEori = declarantEori,
-      declarantReference = declarantReference,
-      date = date,
-      amount = fiveHundred,
-      taxGroups = Seq(
-        TaxGroup(CustomsDuty, fourHundred, taxTypes),
-        TaxGroup(ImportVat, hundred, taxTypes)
-      ), secureMovementReferenceNumber = secureMovementReferenceNumber)
 
     val cashAccount: CashAccount = CashAccount(
       cashAccountNumber,

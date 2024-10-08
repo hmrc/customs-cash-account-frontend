@@ -149,25 +149,27 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
                                       ): Future[Either[ErrorResponse, CashAccountTransactionSearchResponseDetail]] = {
 
     val request = CashAccountTransactionSearchRequestDetails(
-      can, ownerEORI, searchType, declarationDetails, cashAccountPaymentDetails
-    )
-
-    logger.info(s"SENDING REQUEST TO THE BACKEND: ${Json.toJson(request)}")
+      can, ownerEORI, searchType, declarationDetails, cashAccountPaymentDetails)
 
     httpClient.post(url"$retrieveCashAccountStatementSearchUrl")
       .withBody[CashAccountTransactionSearchRequestDetails](request)
-      .execute[CashAccountTransactionSearchResponseDetail].map(Right(_))
+      .execute[CashAccountTransactionSearchResponseDetail]
+      .map(Right(_))
   }.recover {
-    case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
-      logger.error(s"Entity too large to download")
-      Left(TooManyTransactionsRequested)
+    case UpstreamErrorResponse(_, BAD_REQUEST, _, _) =>
+      logger.error("BAD Request for retrieveCashTransactionsBySearch")
+      Left(BadRequest)
 
-    case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
-      logger.error(s"No data found")
-      Left(NoTransactionsAvailable)
+    case UpstreamErrorResponse(_, INTERNAL_SERVER_ERROR, _, _) =>
+      logger.error("No Transactions available for retrieveCashTransactionsBySearch")
+      Left(InternalServerErrorErrorResponse)
+
+    case UpstreamErrorResponse(_, SERVICE_UNAVAILABLE, _, _) =>
+      logger.error("SERVICE_UNAVAILABLE for retrieveCashTransactionsBySearch")
+      Left(ServiceUnavailableErrorResponse)
 
     case e =>
-      logger.error(s"Unable to retrieve cash transactions :${e.getMessage}")
+      logger.error(s"Unknown error for retrieveCashTransactionsBySearch :${e.getMessage}")
       Left(UnknownException)
   }
 

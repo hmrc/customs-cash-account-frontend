@@ -32,7 +32,6 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.Logging
 import utils.RegexPatterns.{mrnRegex, paymentRegex}
-import utils.Utils.{emptyString, poundSymbol}
 import viewmodels.{DeclarationDetailSearchViewModel, DeclarationDetailViewModel, ResultsPageSummary}
 
 import java.time.LocalDate
@@ -52,6 +51,7 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
 
   def displaySearchDetails(page: Option[Int], searchInput: String): Action[AnyContent] =
     (authenticate andThen verifyEmail).async { implicit request =>
+
       apiConnector.getCashAccount(request.eori).flatMap {
         case Some(account) => prepareTransactionSearch(account, page, searchInput)
         case None => Future.successful(NotFound(errorHandler.notFoundTemplate))
@@ -60,8 +60,7 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
 
   private def prepareTransactionSearch(account: CashAccount,
                                        page: Option[Int],
-                                       searchInput: String
-                                      )(implicit request: IdentifierRequest[_]): Future[Result] = {
+                                       searchInput: String)(implicit request: IdentifierRequest[_]): Future[Result] = {
 
     val (paramName, searchType) = determineParamNameAndSearchType(searchInput)
     val declarationDetails = Some(DeclarationDetailsSearch(paramName, searchInput))
@@ -75,8 +74,7 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
   private def processTransactions(declarationsOpt: Option[Seq[DeclarationWrapper]],
                                   searchValue: String,
                                   account: CashAccount,
-                                  page: Option[Int]
-                                 )(implicit request: IdentifierRequest[_]): Result = {
+                                  page: Option[Int])(implicit request: IdentifierRequest[_]): Result = {
 
     declarationsOpt.flatMap(_.headOption.map(_.declaration)) match {
       case Some(declarationSearch) =>
@@ -86,18 +84,16 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
   }
 
   private def determineParamNameAndSearchType(searchInput: String): (ParamName.Value, SearchType.Value) = {
-    if (isValidMRN(searchInput)) {
-      (ParamName.MRN, SearchType.D)
-    } else {
-      (ParamName.UCR, SearchType.D)
+    searchInput match {
+      case input if isValidMRN(input) => (ParamName.MRN, SearchType.D)
+      case input if isValidPayment(input) => (ParamName.MRN, SearchType.P)
+      case _ => (ParamName.UCR, SearchType.D)
     }
   }
 
   private def isValidMRN(value: String): Boolean = mrnRegex.matches(value)
 
   private def isValidPayment(value: String): Boolean = paymentRegex.matches(value)
-
-  private def parsePaymentAmount(value: String): BigDecimal = BigDecimal(value.replace(poundSymbol, emptyString).trim)
 
   def displayDetails(ref: String,
                      page: Option[Int]
@@ -117,8 +113,8 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
                                                        from: LocalDate,
                                                        to: LocalDate,
                                                        ref: String,
-                                                       page: Option[Int]
-                                                      )(implicit request: IdentifierRequest[_]): Future[Result] = {
+                                                       page: Option[Int])
+                                                      (implicit request: IdentifierRequest[_]): Future[Result] = {
     apiConnector.retrieveCashTransactions(account.number, from, to).map {
       case Right(transactions) =>
         transactions.cashDailyStatements

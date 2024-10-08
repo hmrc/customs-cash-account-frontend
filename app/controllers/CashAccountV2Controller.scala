@@ -53,8 +53,7 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
                                         showAccountsExceededThreshold: cash_account_exceeded_threshold,
                                         noTransactionsWithBalance: cash_account_no_transactions_with_balance,
                                         cashAccountUtils: CashAccountUtils,
-                                        formProvider: SearchTransactionsFormProvider,
-                                        declarationDetailController: DeclarationDetailController)
+                                        formProvider: SearchTransactionsFormProvider)
                                        (implicit mcc: MessagesControllerComponents,
                                         ec: ExecutionContext,
                                         eh: ErrorHandler,
@@ -89,7 +88,7 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
 
   def onSubmit(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     form.bindFromRequest().fold(
-      formWithErrors => Future.successful(NotFound(eh.notFoundTemplate)),
+      _ => Future.successful(NotFound(eh.notFoundTemplate)),
       enteredValue => Future.successful {
         Redirect(routes.DeclarationDetailController.displaySearchDetails(page, enteredValue))
       }

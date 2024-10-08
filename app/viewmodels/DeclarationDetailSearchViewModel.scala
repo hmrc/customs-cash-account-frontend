@@ -121,7 +121,8 @@ object DeclarationDetailSearchViewModel {
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.duty"))),
           value = Value(content = HtmlContent(
-            Formatters.formatCurrencyAmount(declaration.taxGroups.find(_.taxGroup.taxGroupDescription == CustomsDuty.toString)
+            Formatters.formatCurrencyAmount(declaration.taxGroups
+              .find(_.taxGroup.taxGroupDescription == CustomsDuty.toString)
               .map(taxGroup => toBigDecimal(taxGroup.taxGroup.amount))
               .getOrElse(BigDecimal(0))
             ))
@@ -129,7 +130,8 @@ object DeclarationDetailSearchViewModel {
         SummaryListRow(
           key = Key(content = Text(messages("cf.cash-account.csv.vat"))),
           value = Value(content = HtmlContent(
-            Formatters.formatCurrencyAmount(declaration.taxGroups.find(_.taxGroup.taxGroupDescription == ImportVat.toString)
+            Formatters.formatCurrencyAmount(declaration.taxGroups
+              .find(_.taxGroup.taxGroupDescription == ImportVat.toString)
               .map(taxGroup => toBigDecimal(taxGroup.taxGroup.amount))
               .getOrElse(BigDecimal(0))
             ))

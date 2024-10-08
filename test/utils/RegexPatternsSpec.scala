@@ -33,7 +33,7 @@ class RegexPatternsSpec extends SpecBase {
       }
     }
 
-    "not a match invalid regex" in {
+    "not match invalid regex" in {
       val invalidInputs: Seq[String] = Seq(
         "AB12",
         "ABCD123456789012345678",
@@ -52,7 +52,11 @@ class RegexPatternsSpec extends SpecBase {
         "£123",
         "£123.45",
         "-£123",
-        "-£123.45")
+        "-£123.45",
+        "£1234",
+        "£1234.56",
+        "£12345",
+        "£12345.67")
 
       validInputs.foreach { input =>
         paymentRegex.findFirstIn(input) mustBe Some(input)
