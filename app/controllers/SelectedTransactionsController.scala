@@ -20,7 +20,10 @@ import cats.data.EitherT
 import cats.data.EitherT.fromOptionF
 import cats.implicits.*
 import config.{AppConfig, ErrorHandler}
-import connectors.{CustomsFinancialsApiConnector, ErrorResponse, NoTransactionsAvailable, TooManyTransactionsRequested}
+import connectors.{
+  CustomsFinancialsApiConnector, ErrorResponse,
+  ExceededMaximum, NoTransactionsAvailable, TooManyTransactionsRequested
+}
 import controllers.actions.IdentifierAction
 import models.*
 import models.request.IdentifierRequest
@@ -29,7 +32,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.RequestedTransactionsCache
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import viewmodels.ResultsPageSummary
+import viewmodels.{RequestedTooManyTransactionsViewModel, ResultsPageSummary}
 import views.html.*
 
 import java.time.LocalDate
@@ -40,6 +43,7 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
                                                apiConnector: CustomsFinancialsApiConnector,
                                                transactionsUnavailable: cash_account_transactions_not_available,
                                                tooManyResults: cash_transactions_too_many_results,
+                                               requestTooManyTransactionsView: cash_account_requested_too_many_transactions,
                                                noResults: cash_transactions_no_result,
                                                identify: IdentifierAction,
                                                eh: ErrorHandler,
@@ -79,6 +83,28 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
     }
   }
 
+  def requestedTooManyTransactions(): Action[AnyContent] = identify.async { implicit request =>
+    val result: Future[Result] = cache.get(request.eori).map { optionalDates =>
+      optionalDates.map { dates =>
+        Ok(requestTooManyTransactionsView(
+          RequestedTooManyTransactionsViewModel(
+            dates.start,
+            dates.end,
+            routes.SelectTransactionsController.onPageLoad().url,
+            routes.SelectedTransactionsController.onPageLoad().url))
+        )
+      }.getOrElse {
+        Redirect(routes.CashAccountController.showAccountDetails(None))
+      }
+    }
+
+    result.recover {
+      case _: Exception =>
+        logger.error("failed to get dates from cache for tooManyTransactionsRequested")
+        Redirect(routes.CashAccountController.showAccountDetails(None))
+    }
+  }
+
   private def checkAccountAndDatesThenRedirect(optionalAccount: Option[CashAccount],
                                                optionalDates: Option[CashTransactionDates])
                                               (implicit request: IdentifierRequest[AnyContent]) = {
@@ -87,6 +113,9 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
 
         apiConnector.postCashAccountStatementRequest(request.eori, cashAcc.number, dates.start, dates.end).map {
           case Right(_) => Redirect(routes.ConfirmationPageController.onPageLoad())
+
+          case Left(ExceededMaximum) => Redirect(routes.SelectedTransactionsController.requestedTooManyTransactions())
+
           case _ =>
             logger.error(s"Error posting cash account statements")
             Redirect(routes.CashAccountController.showAccountDetails(None))

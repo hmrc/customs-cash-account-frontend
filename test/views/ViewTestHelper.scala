@@ -37,6 +37,29 @@ trait ViewTestHelper extends SpecBase {
     view.title() mustBe s"${messages(titleMsgKey)} - ${messages("service.name")} - GOV.UK"
 
   def shouldContainBackLinkUrl(view: Document,
-                               url: String): Assertion =
-    view.html().contains(url) mustBe true
+                               url: String): Assertion = view.html().contains(url) mustBe true
+  
+  def shouldNotContainBackLink(view: Document, className: String): Assertion = {
+    val backlink = view.select(s".$className")
+    backlink.isEmpty mustBe true
+  }
+
+  def shouldContainTheElement(view: Document,
+                              id: Option[String] = None,
+                              classes: Option[String] = None): Assertion = {
+    val isElementIdPresent = id.fold(false)(id => view.select(s"#$id").size() > 0)
+    val isElementClassPresent = classes.fold(false)(classes => view.select(s".$classes").size() > 0)
+
+    assert(isElementIdPresent || isElementClassPresent)
+  }
+
+  def shouldNotContainTheElement(view: Document,
+                                 id: Option[String] = None,
+                                 classes: Option[String] = None): Assertion = {
+    val isElementIdAbsent = id.fold(false)(id => view.select(s"#$id").size() == 0)
+    val isElementClassAbsent = classes.fold(false)(classes => view.select(s".$classes").size() == 0)
+
+    assert(isElementIdAbsent || isElementClassAbsent)
+  }
+
 }

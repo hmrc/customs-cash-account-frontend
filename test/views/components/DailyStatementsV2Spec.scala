@@ -34,7 +34,7 @@ class DailyStatementsV2Spec extends ViewTestHelper {
     "display correct contents" when {
 
       "there are no transaction to display" in new Setup {
-        val view: Document = componentView(CashAccountDailyStatementsViewModel(CashTransactions(Seq(), Seq())))
+        val view: Document = componentView(CashAccountDailyStatementsViewModel(CashTransactions(Seq(), Seq()), None))
 
         shouldDisplayTransForLastSixMonthsHeading(view)
         shouldDisplayNoTransactionsFromLastSixMonthsMessage(view)
@@ -42,7 +42,7 @@ class DailyStatementsV2Spec extends ViewTestHelper {
       }
 
       "transactions are available to display" in new Setup {
-        val view: Document = componentView(CashAccountDailyStatementsViewModel(cashTransactions))
+        val view: Document = componentView(CashAccountDailyStatementsViewModel(cashTransactions, None))
 
         shouldDisplayTransForLastSixMonthsHeading(view)
         shouldNotDisplayNoTransactionsFromLastSixMonthsMessage(view)

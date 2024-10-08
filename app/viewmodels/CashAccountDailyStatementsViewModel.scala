@@ -16,14 +16,22 @@
 
 package viewmodels
 
-import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount}
-import models.{CashDailyStatement, CashTransactionType, CashTransactions, Declaration, Payment, Transaction, Transfer, Withdrawal}
+import config.AppConfig
+import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount, parseDateString}
+import models.{
+  CashDailyStatement, CashTransactionType, CashTransactions, Declaration, Payment, Transaction,
+  Transfer, Withdrawal
+}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount}
-import utils.Utils.{LinkComponentValues, emptyString, h2Component, linkComponent, pComponent, prependNegativeSignWithAmount}
+import utils.Utils.{
+  LinkComponentValues, emptyString, h2Component, linkComponent, pComponent,
+  prependNegativeSignWithAmount
+}
 
 import java.time.LocalDate
+import scala.math.Ordered.orderingToOrdered
 
 case class PaymentType(mrnLink: Option[HtmlFormat.Appendable] = None,
                        textString: Option[String] = None)
@@ -33,7 +41,7 @@ case class DailyStatementViewModel(date: String,
                                    credit: Option[String] = None,
                                    debit: Option[String] = None,
                                    balance: Option[String]) extends Ordered[DailyStatementViewModel] {
-  override def compare(that: DailyStatementViewModel): Int = LocalDate.parse(that.date).compareTo(LocalDate.parse(date))
+  override def compare(that: DailyStatementViewModel): Int = parseDateString(that.date).compareTo(parseDateString(date))
 }
 
 case class CashAccountDailyStatementsViewModel(dailyStatements: Seq[DailyStatementViewModel],
@@ -42,15 +50,34 @@ case class CashAccountDailyStatementsViewModel(dailyStatements: Seq[DailyStateme
                                                noTransFromLastSixMonthsText: Option[HtmlFormat.Appendable] = None)
 
 object CashAccountDailyStatementsViewModel {
-  def apply(transactions: CashTransactions)(implicit msgs: Messages): CashAccountDailyStatementsViewModel = {
+  def apply(transactions: CashTransactions,
+            pageNo: Option[Int])
+           (implicit msgs: Messages, config: AppConfig): CashAccountDailyStatementsViewModel = {
 
     val dailyStatements: Seq[CashDailyStatement] = transactions.cashDailyStatements.sortBy(_.date).reverse
     val hasTransactions = dailyStatements.nonEmpty
 
-    CashAccountDailyStatementsViewModel(populateDailyStatementViewModelList(dailyStatements),
+    CashAccountDailyStatementsViewModel(
+      dailyStatementsBasedOnPageNoForPagination(
+        populateDailyStatementViewModelList(dailyStatements), pageNo, config.numberOfRecordsPerPage
+      ),
       hasTransactions,
       transForLastSixMonthsHeading,
-      if(hasTransactions) None else Some(noTransFromLastSixMonthsText))
+      if (hasTransactions) None else Some(noTransFromLastSixMonthsText))
+  }
+
+  private def dailyStatementsBasedOnPageNoForPagination(statements: Seq[DailyStatementViewModel],
+                                                        pageNo: Option[Int],
+                                                        maxItemPerPage: Int): Seq[DailyStatementViewModel] = {
+    pageNo match {
+      case None => statements
+      case Some(pageNoValue) =>
+        if (pageNoValue == 1) {
+          statements.slice(0, maxItemPerPage)
+        } else {
+          statements.slice((pageNoValue - 1) * maxItemPerPage, pageNoValue * maxItemPerPage)
+        }
+    }
   }
 
   private def transForLastSixMonthsHeading(implicit msgs: Messages): HtmlFormat.Appendable = {
@@ -86,11 +113,11 @@ object CashAccountDailyStatementsViewModel {
         val transferAndWithdrawDailyStatementViewModel: Seq[DailyStatementViewModel] =
           populateViewModelFromPaymentAndWithdrawals(date, dStat.otherTransactions)
 
-        transferAndWithdrawDailyStatementViewModel ++
-          declarationDailyStatementViewModelWithAccBalance.reverse :+ closingBalanceOnlyRow
+        closingBalanceOnlyRow +:
+          (declarationDailyStatementViewModelWithAccBalance.reverse ++ transferAndWithdrawDailyStatementViewModel)
     }
 
-    result.flatten.sortBy(_.date).reverse
+    result.flatten.sorted
   }
 
   private def populateViewModelFromDeclarations(date: LocalDate,
@@ -166,4 +193,5 @@ object CashAccountDailyStatementsViewModel {
         }
     }
   }
+
 }

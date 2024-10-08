@@ -72,11 +72,14 @@ cf.cash-account.detail.debit = Debyd
 cf.cash-account.detail.amount=Swm
 cf.cash-account.detail.balance=Balans cau
 cf.cash-account.detail.top-up=Ychwanegu
+cf.cash-account.detail.top-up.v2=Ychwanegu
 cf.cash-account.detail.withdrawal=Codiad
 cf.cash-account.detail.withdrawal.account-ending=(i’r cyfrif sy’n gorffen gyda {0})
 cf.cash-account.detail.pending=(Ar y gweill)
 cf.cash-account.detail.transfer-in=Trosglwyddo o gyfrif arall
+cf.cash-account.detail.transfer-in.v2=Trosglwyddo o'r cyfrif Arian Parod
 cf.cash-account.detail.transfer-out=Trosglwyddo i gyfrif arall
+cf.cash-account.detail.transfer-out.v2 = Trosglwyddo i gyfrif Arian
 cf.cash-account.detail.account-not-available=Ni allwn ddangos eich cyfrif ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
 cf.cash-account.detail.transactions-not-available=Mae problem wrth ddangos eich trafodion ar hyn o bryd.<br/> Gallwch roi cynnig arall arni nes ymlaen.
 cf.cash-account.detail.transactions-not-available.first=Mae’n ddrwg gennym – ni allwn ddangos eich trafodion ar hyn o bryd.
@@ -161,7 +164,6 @@ month.11=Tachwedd
 month.12=Rhagfyr
 month.to=i
 
-
 #Pagination
 # ----------------------------------------------------------
 cf.pager.prev=Blaenorol
@@ -212,6 +214,10 @@ cf.cash-account.transactions.request.to=Dyddiad dod i ben
 cf.cash-account.transactions.request.date.hint-start-date=Mae’n rhaid i’r dyddiad dechrau fod ar ôl Hydref 2019. Er enghraifft, 31 3 2021.
 cf.cash-account.transactions.request.date.hint=Er enghraifft, 31 3 2021.
 cf.cash-account.transactions.request.link.label=Yn ôl i ‘Cyfrif arian parod’
+
+cf.cash-account.transactions.requested.tooMany.transactions=Mae gormod o drafodion yn sgil eich cais
+cf.cash-account.transactions.requested.statement.msg=Gwnaethoch gais i gael y trafodion o fis {0} i fis {1}
+cf.cash-account.transactions.requested.tryAgain=Rhowch gynnig arall arni gan ddefnyddio cyfnod byrrach.
 
 date.day=Diwrnod
 date.month=Mis
@@ -294,3 +300,21 @@ cf.cash-account.topup.withdrawal.detail.heading=Help gydag ychwanegiadau a chodi
 cf.cash-account.topup.withdrawal.detail.text=Gall ychwanegiadau gymryd hyd at un diwrnod gwaith i ddangos ar y dudalen hon. Mae arian fel arfer ar gael i’w ddefnyddio cyn pen awr ar ôl gwneud y trosglwyddiad o’ch banc. Gall codiadau arian gymryd hyd at 15 diwrnod gwaith i’r arian gyrraedd eich cyfrif banc.
 cf.cash-account.detail.available-balance=Y balans sydd ar gael {0}
 cf.cash-account.detail.payments-heading=Eich trafodion ar gyfer y chwe mis diwethaf
+
+#Pagination
+pagination.number-of-movements.singular.with-search-param = Yn dangos {0} canlyniad yn cyfateb i {1}
+pagination.number-of-movements.plural.with-search-param = Yn dangos {0} canlyniad yn cyfateb i {1}
+
+pagination.number-of-movements.singular = Yn dangos {0} canlyniad
+pagination.number-of-movements.plural = Yn dangos {0} canlyniad
+
+pagination.searchResults = Tudaleniad canlyniadau chwilio
+pagination.results = Yn dangos {0} i {1} o {2} canlyniad
+pagination.results.search = Yn dangos {0} i {1} o {2} canlyniad yn cyfateb i {3}
+
+pagination.previous = Blaenorol
+pagination.previous.hidden = Tudalen flaenorol
+pagination.next = Nesaf
+pagination.next.hidden = Tudalen nesaf
+pagination.ellipses = ...
+pagination.ellipses.hidden = Ellipses

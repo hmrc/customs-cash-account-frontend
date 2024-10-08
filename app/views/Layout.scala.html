@@ -94,7 +94,7 @@
                         signOutUrl = Some(routes.LogoutController.logout.url),
                         accessibilityStatementUrl = Some("/accessibility-statement/customs-financials")
                         ),
-        backLink = Some(BackLink(href = backLink.getOrElse(emptyString))),
+        backLink = backLink.filter(_.nonEmpty).map(BackLink(_)),
         templateOverrides = TemplateOverrides(
             additionalHeadBlock = Some(additionalHead),
             mainContentLayout = Some(if(fullWidth) fullWidthMainContent(_) else twoThirdsMainContent(_))

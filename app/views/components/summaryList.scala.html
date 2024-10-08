@@ -21,8 +21,8 @@
 
 @(
     summary: ResultsPageSummary,
-    fullstop: Boolean = true,
-    change: Boolean = false
+    isFullStop: Boolean = true,
+    isChange: Boolean = false
 )(
     implicit messages: Messages
 )
@@ -30,19 +30,28 @@
 <dl class="govuk-summary-list govuk-!margin-top-7 govuk-!-padding-bottom-7">
     <div class="govuk-summary-list__row govuk-!-margin-bottom-9">
         <dt class="govuk-summary-list__value">
-            @summary.rows(fullstop).value.content.asHtml
+            @summary.rows(isFullStop).value.content.asHtml
         </dt>
 
         <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="@summary.rows(fullstop).actions.head.items.head.href">
-                <span class="govuk-visually-hidden">
-                    @summary.rows(fullstop).actions.head.items.head.visuallyHiddenText</span>
-                <span id="downloadChange">
-                    @Html(messages(
-                        if (change) "cf.cash-account.transactions.request.review.change"
-                        else "cf.cash-account.detail.csv.download"))
-                </span>
-            </a>
+
+            @if(isChange) {
+                <a class="govuk-link" href="@summary.rowsV2(isFullStop).actions.head.items.head.href">
+                    <span class="govuk-visually-hidden">
+                        @summary.rows(isFullStop).actions.head.items.head.visuallyHiddenText</span>
+                    <span id="changeDates">
+                        @Html(messages("cf.cash-account.transactions.request.review.change"))
+                    </span>
+                </a>
+            } else {
+                <a class="govuk-link" href="@summary.rows(isFullStop).actions.head.items.head.href">
+                    <span class="govuk-visually-hidden">
+                        @summary.rows(isFullStop).actions.head.items.head.visuallyHiddenText</span>
+                    <span id="downloadChange">
+                        @Html(messages("cf.cash-account.detail.csv.download"))
+                    </span>
+                </a>
+            }
         </dd>
     </div>
 </dl>

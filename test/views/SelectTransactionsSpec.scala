@@ -35,7 +35,7 @@ class SelectTransactionsSpec extends ViewTestHelper {
       }
 
       "backlink should take you back to request transactions" in new Setup {
-        shouldContainBackLinkUrl(view, controllers.routes.CashAccountController.showAccountDetails(None).url)
+        shouldContainBackLinkUrl(view, controllers.routes.CashAccountV2Controller.showAccountDetails(None).url)
       }
 
       "start field must be Displayed" in new Setup {

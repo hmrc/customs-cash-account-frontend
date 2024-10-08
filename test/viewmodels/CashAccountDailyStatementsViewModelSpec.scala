@@ -16,6 +16,7 @@
 
 package viewmodels
 
+import config.AppConfig
 import models.{CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Transfer, Withdrawal}
 import helpers.Formatters
 import org.scalatest.Assertion
@@ -35,7 +36,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
 
       "cash transactions are available" in new Setup {
         val dailyStatementsViewModel: CashAccountDailyStatementsViewModel =
-          CashAccountDailyStatementsViewModel(cashTransactions)
+          CashAccountDailyStatementsViewModel(cashTransactions, None)
 
         dailyStatementsViewModel.dailyStatements.size must be > 0
         shouldContainCorrectContentsForDailyStatements(dailyStatementsViewModel.dailyStatements)
@@ -43,10 +44,29 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
         dailyStatementsViewModel.hasTransactions mustBe true
       }
 
+      "cash transactions are available, max records per page is 30 and page no is one" in new Setup {
+        val dailyStatementsViewModel: CashAccountDailyStatementsViewModel =
+          CashAccountDailyStatementsViewModel(cashTransactions, Some(1))
+
+        dailyStatementsViewModel.dailyStatements.size must be > 0
+        shouldContainCorrectContentsForDailyStatements(dailyStatementsViewModel.dailyStatements)
+        shouldContainTransactionForLastSixMonthsHeading(dailyStatementsViewModel)
+        dailyStatementsViewModel.hasTransactions mustBe true
+      }
+
+      "cash transactions are available, max records per page is 30 and page no is other than one" in new Setup {
+        val dailyStatementsViewModel: CashAccountDailyStatementsViewModel =
+          CashAccountDailyStatementsViewModel(cashTransactions, Some(2))
+
+        dailyStatementsViewModel.dailyStatements.size must be(0)
+        shouldContainTransactionForLastSixMonthsHeading(dailyStatementsViewModel)
+        dailyStatementsViewModel.hasTransactions mustBe true
+      }
+
       "cash transactions are not present" in new Setup {
         val cashAccountDailyStatementsViewModelWithNoTransactions: CashAccountDailyStatementsViewModel =
           CashAccountDailyStatementsViewModel(
-            cashTransactions.copy(pendingTransactions = Seq(), cashDailyStatements = Seq()))
+            cashTransactions.copy(pendingTransactions = Seq(), cashDailyStatements = Seq()), None)
 
         cashAccountDailyStatementsViewModelWithNoTransactions.dailyStatements mustBe empty
         cashAccountDailyStatementsViewModelWithNoTransactions.hasTransactions mustBe false
@@ -62,8 +82,6 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
 
     val expectedDailyStatements: Seq[DailyStatementViewModel] = populateDailyStatViewModelFromDailyCashTransactions()
 
-    //TODO To be uncommented once pending statements are added in daily statements
-    //actualStatements mustBe expectedDailyStatements
     actualStatements.size mustBe expectedDailyStatements.size
   }
 
@@ -196,6 +214,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
 
     val app: Application = application.build()
     implicit val msgs: Messages = messages(app)
+    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
   }
 
 }

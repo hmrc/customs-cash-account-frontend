@@ -24,6 +24,9 @@ import utils.Utils.*
 import play.twirl.api.HtmlFormat
 import views.html.components.{cash_account_balance, daily_statements_v2}
 import play.api.i18n.Messages
+import viewmodels.pagination.ListPaginationViewModel
+
+import scala.collection.Seq
 
 case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
                        link: Option[HtmlFormat.Appendable] = None,
@@ -42,15 +45,16 @@ case class CashAccountV2ViewModel(pageTitle: String,
                                   dailyStatementsSection: Option[DailyStatementsSection] = None,
                                   tooManyTransactionsSection: Option[TooManyTransactionsSection] = None,
                                   downloadCSVFileLinkUrl: HtmlFormat.Appendable,
-                                  helpAndSupportGuidance: GuidanceRow)
+                                  helpAndSupportGuidance: GuidanceRow,
+                                  paginationModel: Option[ListPaginationViewModel] = None)
 
 object CashAccountV2ViewModel {
 
   def apply(eori: EORI,
             account: CashAccount,
             cashTrans: CashTransactions,
-            statements: Seq[CashStatementsForEori]
-           )(implicit msgs: Messages, config: AppConfig): CashAccountV2ViewModel = {
+            statements: Seq[CashStatementsForEori],
+            pageNo: Option[Int])(implicit msgs: Messages, config: AppConfig): CashAccountV2ViewModel = {
 
     val hasRequestedStatements: Boolean = statements.exists(_.requestedStatements.nonEmpty)
 
@@ -60,15 +64,18 @@ object CashAccountV2ViewModel {
       new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
         .apply(model = CashAccountViewModel(eori, account), displayLastSixMonthsHeading = false)
 
+    val totalDailyStatementsSize: Int = CashAccountDailyStatementsViewModel(cashTrans, None).dailyStatements.size
+
     CashAccountV2ViewModel(
       pageTitle = msgs("cf.cash-account.detail.title"),
       backLink = config.customsFinancialsFrontendHomepage,
       cashAccountBalance = cashAccountBalance,
       cashStatementNotification = populateNotificationPanel(hasRequestedStatements),
-      dailyStatementsSection = populateDailyStatementsSection(cashTrans),
+      dailyStatementsSection = populateDailyStatementsSection(cashTrans, pageNo),
       tooManyTransactionsSection = populateTooManyTransactionsSection(hasMaxTransactionsExceeded),
       downloadCSVFileLinkUrl = downloadCSVFileLinkUrl(hasMaxTransactionsExceeded),
-      helpAndSupportGuidance = helpAndSupport)
+      helpAndSupportGuidance = helpAndSupport,
+      paginationModel = populatePaginationModel(pageNo, totalDailyStatementsSize))
   }
 
   private def populateNotificationPanel(hasRequestedStatements: Boolean)
@@ -85,15 +92,17 @@ object CashAccountV2ViewModel {
     }
   }
 
-  private def populateDailyStatementsSection(cashTrans: CashTransactions)
-                                            (implicit msgs: Messages): Option[DailyStatementsSection] = {
+  private def populateDailyStatementsSection(cashTrans: CashTransactions,
+                                             pageNo: Option[Int] = None)
+                                            (implicit msgs: Messages, config: AppConfig): Option[DailyStatementsSection] = {
     val hasMaxTransactionsExceeded = cashTrans.maxTransactionsExceeded.getOrElse(false)
 
     if (hasMaxTransactionsExceeded) {
       None
     } else {
       val dailyStatements: HtmlFormat.Appendable =
-        new daily_statements_v2(emptyGovUkTableComponent).apply(CashAccountDailyStatementsViewModel(cashTrans))
+        new daily_statements_v2(emptyGovUkTableComponent)
+          .apply(CashAccountDailyStatementsViewModel(cashTrans, Some(pageNo.getOrElse(1))))
 
       val requestTransactionsHeading: HtmlFormat.Appendable = h2Component(
         msgKey = "cf.cash-account.transactions.request-transactions.heading",
@@ -159,5 +168,21 @@ object CashAccountV2ViewModel {
         preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
         postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")))
     )
+  }
+
+  private def populatePaginationModel(pageNo: Option[Int],
+                                      totalDailyStatementsSize: Int)
+                                     (implicit config: AppConfig) = {
+    val isPaginationDisabled = totalDailyStatementsSize <= config.numberOfRecordsPerPage
+
+    if (isPaginationDisabled) {
+      None
+    } else {
+      Some(ListPaginationViewModel(
+        totalNumberOfItems = totalDailyStatementsSize,
+        currentPage = pageNo.getOrElse(1),
+        numberOfItemsPerPage = config.numberOfRecordsPerPage,
+        href = controllers.routes.CashAccountV2Controller.showAccountDetails(None).url))
+    }
   }
 }
