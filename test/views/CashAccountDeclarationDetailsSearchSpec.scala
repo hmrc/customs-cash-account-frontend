@@ -41,7 +41,7 @@ class CashAccountDeclarationDetailsSearchSpec extends ViewTestHelper {
 
       viewDoc.getElementsByTag("h1").text() mustBe s"Search results for $movementReferenceNumber"
 
-      val accountNumber = s"${messages("cf.cash-account.detail.account", viewModel.account.number)}"
+      val accountNumber = s"${messages("cf.cash-account.detail.account", number)}"
 
       viewDoc.getElementById("account-number").text() mustBe accountNumber
     }

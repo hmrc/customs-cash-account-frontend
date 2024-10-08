@@ -61,12 +61,6 @@ object CashAccountPaymentDetails {
 }
 
 object CashAccountTransactionSearchRequestDetails {
-
   implicit val format: OFormat[CashAccountTransactionSearchRequestDetails] =
-    Json.format[CashAccountTransactionSearchRequestDetails]
-}
-
-object CashAccountTransactionSearchRequest {
-  implicit val requestDetailFormat: OFormat[CashAccountTransactionSearchRequestDetails] =
     Json.format[CashAccountTransactionSearchRequestDetails]
 }

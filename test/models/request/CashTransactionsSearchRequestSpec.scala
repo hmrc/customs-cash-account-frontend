@@ -21,7 +21,7 @@ import utils.SpecBase
 
 class CashTransactionsSearchRequestSpec extends SpecBase {
 
-  "CashAccountTransactionSearchRequestDetailsSpec" must {
+  "CashAccountTransactionSearchRequestDetails" must {
 
     "generate correct output using the Reads" in new Setup {
       Json.parse(requestJsValue).validate[CashAccountTransactionSearchRequestDetails] mustBe JsSuccess(expectedDetails)

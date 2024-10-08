@@ -27,9 +27,7 @@ import utils.Utils.{emptyH1InnerComponent, emptyH2InnerComponent, emptyString}
 
 import java.time.LocalDate
 
-case class DeclarationDetailSearchViewModel(searchInput: String,
-                                            account: CashAccount,
-                                            header: Html,
+case class DeclarationDetailSearchViewModel(header: Html,
                                             subHeader: Html,
                                             declarationSummaryList: SummaryList,
                                             taxSummaryList: SummaryList)
@@ -38,8 +36,7 @@ object DeclarationDetailSearchViewModel {
 
   def apply(searchInput: String,
             account: CashAccount,
-            declaration: DeclarationSearch
-           )(implicit messages: Messages): DeclarationDetailSearchViewModel = {
+            declaration: DeclarationSearch)(implicit messages: Messages): DeclarationDetailSearchViewModel = {
 
     val headerHtml = header(searchInput)
     val subHeaderHtml = subHeader(account)
@@ -48,13 +45,10 @@ object DeclarationDetailSearchViewModel {
     val taxList = taxSummaryList(declaration)
 
     DeclarationDetailSearchViewModel(
-      searchInput = searchInput,
-      account = account,
       header = headerHtml,
       subHeader = subHeaderHtml,
       declarationSummaryList = declarationList,
-      taxSummaryList = taxList
-    )
+      taxSummaryList = taxList)
   }
 
   private def header(searchInput: String)(implicit messages: Messages): Html = {

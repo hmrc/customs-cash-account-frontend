@@ -22,17 +22,7 @@ import play.api.libs.json._
 
 class CashTransactionSearchResponseSpec extends SpecBase {
 
-  "CashAccountTransactionSearchResponseDetailSpec" must {
-
-    "populate correctly with all the fields" in new Setup {
-      val result: CashAccountTransactionSearchResponseDetail = CashAccountTransactionSearchResponseDetail(
-        can = can,
-        eoriDetails = eoriDetails,
-        declarations = Some(declarations),
-        paymentsWithdrawalsAndTransfers = Some(paymentsWithdrawalsAndTransfers))
-
-      result mustBe expectedResponseDetail
-    }
+  "CashAccountTransactionSearchResponseDetail" must {
 
     "generate correct output using Reads with all the fields" in new Setup {
       Json.parse(responseJsValue)
