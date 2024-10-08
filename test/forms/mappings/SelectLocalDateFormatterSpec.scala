@@ -122,6 +122,15 @@ class SelectLocalDateFormatterSpec extends SpecBase {
         formDataWithNonNumericYear
       ) shouldBe s"$key.year"
     }
+
+    "return the correct LocalDate when the supplied data is valid and useLastDayOfMonth is true" in new SetUp {
+
+      val lastDay: Int = 31
+
+      localDateFormatterWithLastDay.bind(key, bindDataValidForLastDay) shouldBe Right(
+        LocalDate.of(year, month, lastDay)
+      )
+    }
   }
 
   trait SetUp {
@@ -150,7 +159,17 @@ class SelectLocalDateFormatterSpec extends SpecBase {
       monthMsgKey,
       yearMsgKey,
       invalidRealDateMsgKey,
-      Seq()
+      Seq(),
+      useLastDayOfMonth = false
+    )
+
+    val localDateFormatterWithLastDay = new SelectLocalDateFormatter(
+      invalidMsgKey,
+      monthMsgKey,
+      yearMsgKey,
+      invalidRealDateMsgKey,
+      Seq(),
+      useLastDayOfMonth = true
     )
 
     val bindDataDateWithEmptyMonth: Map[String, String] =
@@ -167,5 +186,10 @@ class SelectLocalDateFormatterSpec extends SpecBase {
 
     val bindDataInValidYear: Map[String, String] =
       Map("start.day" -> "1", "start.month" -> "10", "start.year" -> "-")
+
+    val bindDataValidForLastDay: Map[String, String] = Map(
+      "start.month" -> month.toString,
+      "start.year" -> year.toString
+    )
   }
 }

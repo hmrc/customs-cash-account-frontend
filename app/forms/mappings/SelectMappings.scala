@@ -30,9 +30,10 @@ trait SelectMappings extends Formatters with Constraints {
   protected def localDate(invalidKey: String,
                           monthKey: String,
                           yearKey: String,
-                          invalidDateKey: String): FieldMapping[LocalDate] = {
+                          invalidDateKey: String,
+                          useLastDayOfMonth: Boolean = false): FieldMapping[LocalDate] = {
 
-    of(new SelectLocalDateFormatter(invalidKey, monthKey, yearKey, invalidDateKey, Seq.empty))
+    of(new SelectLocalDateFormatter(invalidKey, monthKey, yearKey, invalidDateKey, Seq.empty, useLastDayOfMonth))
   }
 
   protected def decimal(requiredKey: String = "error.required",
