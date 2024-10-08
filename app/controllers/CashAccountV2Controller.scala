@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, RequestHeader, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import viewmodels.{CashTransactionsViewModel, CashAccountV2ViewModel}
+import viewmodels.CashAccountV2ViewModel
 import views.html.*
 
 import java.time.LocalDate
@@ -86,8 +86,13 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
       }
   }
 
-  def onSubmit(page: Option[Int]): Action[AnyContent] = Action.async {
-    Future.successful(NotImplemented("Needs to be implemented"))
+  def onSubmit(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    form.bindFromRequest().fold(
+      _ => Future.successful(NotFound(eh.notFoundTemplate)),
+      enteredValue => Future.successful {
+        Redirect(routes.DeclarationDetailController.displaySearchDetails(page, enteredValue))
+      }
+    )
   }
 
   private def showAccountWithTransactionDetails(account: CashAccount,

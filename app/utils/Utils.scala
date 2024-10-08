@@ -20,7 +20,7 @@ import config.AppConfig
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
-import views.html.components.{h1, h2, inset, link, newTabLink, p, h2Inner, notification_panel}
+import views.html.components.{h1, h1Inner, h2, h2Inner, link, newTabLink, notification_panel, p}
 import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
 
 object Utils {
@@ -30,6 +30,7 @@ object Utils {
   val hyphen = "-"
   val singleSpace = " "
   val negativeSign = "-"
+  val poundSymbol = "£"
 
   val emptyH1Component: h1 = new h1()
   val emptyH2Component: h2 = new h2()
@@ -38,6 +39,7 @@ object Utils {
   val emptyHmrcNewTabLink: HmrcNewTabLink = new HmrcNewTabLink()
   val emptyGovUkTableComponent = new GovukTable()
   val emptyH2InnerComponent = new h2Inner()
+  val emptyH1InnerComponent = new h1Inner()
 
   def h2Component(msgKey: String,
                   id: Option[String] = None,

@@ -93,6 +93,7 @@ cf.cash-account.detail.try-again-later=Rhowch gynnig arall arni yn nes ymlaen.
 cf.cash-account-detail.back-to-cash-account=Yn ôl i ‘Cyfrif arian parod’
 cf.cash-account-detail.exceeded-threshold = Mae gormod o drafodion o’r 6 mis diwethaf i’w harddangos.
 cf.cash-account.detail.declaration.title=Trafodiad datganiad
+cf.cash-account.detail.declaration.search-title=Canlyniadau chwilio ar gyfer {0}
 cf.cash-account.detail.total.paid=Cyfanswm a dalwyd
 cf.cash-account.detail.last-transactions=Eich trafodion ar gyfer y chwe mis diwethaf
 

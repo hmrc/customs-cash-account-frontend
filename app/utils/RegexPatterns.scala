@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package helpers
+package utils
 
-object Constants {
+import scala.util.matching.Regex
 
-  val REQUEST_COULD_NOT_BE_PROCESSED: String = "003-Request could not be processed"
-  val DUPLICATE_SUBMISSION: String = "004-Duplicate submission acknowledgment reference"
-  val ACCOUNT_DOES_NOT_EXIST: String = "092-The account does not exist within ETMP"
-  val INVALID_EORI: String = "102-Invalid EORI number"
-  val ENTRY_ALREADY_EXISTS: String = "124-Entry already exists for the same period"
-  val EXCEEDED_MAXIMUM: String = "602-Exceeded maximum threshold of transactions"
-
+object RegexPatterns {
+  val mrnRegex: Regex = """^(\d{2}[A-Z]{2}[A-Z\d]{13,16}|[A-Z]{4}\d{6}[A-Z\d]{5,10})$""".r
+  val paymentRegex: Regex = """^-?£\d+(\.\d{2})?$""".r
 }

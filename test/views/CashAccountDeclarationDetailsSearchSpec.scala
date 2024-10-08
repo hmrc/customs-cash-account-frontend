@@ -16,26 +16,32 @@
 
 package views
 
-import models._
-import viewmodels.DeclarationDetailViewModel
-import views.html.cash_account_declaration_details
+import models.*
+import models.response.{
+  DeclarationSearch,
+  DeclarationWrapper,
+  TaxGroupSearch,
+  TaxGroupWrapper,
+  TaxTypeWithSecurity,
+  TaxTypeWithSecurityContainer
+}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
+import viewmodels.DeclarationDetailSearchViewModel
+import views.html.cash_account_declaration_details_search
 
-import java.time.LocalDate
+class CashAccountDeclarationDetailsSearchSpec extends ViewTestHelper {
 
-class CashAccountDeclarationDetailsSpec extends ViewTestHelper {
-
-  "CashAccountDeclarationDetails view" should {
+  "CashAccountDeclarationDetailsSearch view" should {
 
     "render the correct title and headings" in new Setup {
 
       titleShouldBeCorrect(viewDoc, "cf.cash-account.detail.title")
 
-      viewDoc.getElementsByTag("h1").text() mustBe messages("cf.cash-account.detail.declaration.title")
+      viewDoc.getElementsByTag("h1").text() mustBe s"Search results for $movementReferenceNumber"
 
-      val accountNumber = s"${messages("cf.cash-account.detail.account", viewModel.account.number)}"
+      val accountNumber = s"${messages("cf.cash-account.detail.account", number)}"
 
       viewDoc.getElementById("account-number").text() mustBe accountNumber
     }
@@ -63,53 +69,49 @@ class CashAccountDeclarationDetailsSpec extends ViewTestHelper {
 
   trait Setup {
 
-    val year2024 = 2024
-    val month4 = 4
-    val day4 = 4
-    val date: LocalDate = LocalDate.of(year2024, month4, day4)
-
     val fiveHundred: BigDecimal = BigDecimal(500.00)
-    val fourHundred: BigDecimal = BigDecimal(400.00)
-    val hundred: BigDecimal = BigDecimal(100.00)
-
     val pageNumber: Option[Int] = Some(1)
 
     val eori = "GB987654321000"
     val number = "123456789"
     val owner = "GB491235123123"
     val movementReferenceNumber = "MRN1234567890"
-    val importerEori: Option[String] = Some("GB123456789000")
-    val declarantEori = "GB987654321000"
-    val declarantReference: Option[String] = Some("UCR12345")
 
-    val taxTypes: Seq[TaxType] =
-      Seq(TaxType(reasonForSecurity = Some("Reason"), taxTypeID = "50", amount = fourHundred))
+    val declaration: Seq[DeclarationWrapper] = Seq(
+      DeclarationWrapper(DeclarationSearch(
+        declarationID = "18GB9JLC3CU1LFGVR8",
+        declarantEORINumber = "GB123456789",
+        importersEORINumber = "GB987654321",
+        postingDate = "2022-07-15",
+        acceptanceDate = "2022-07-01",
+        amount = 2500.0,
+        taxGroups = Seq(
+          TaxGroupWrapper(TaxGroupSearch(
+            taxGroupDescription = "VAT",
+            amount = 2000.0,
+            taxTypes = Seq(TaxTypeWithSecurityContainer(
+              TaxTypeWithSecurity(
+                reasonForSecurity = Some("Duty"),
+                taxTypeID = "A10",
+                amount = 2000.0
+              )))
+          ))
+        )
+      ))
+    )
 
-    val declaration: Declaration = Declaration(
-      movementReferenceNumber = movementReferenceNumber,
-      importerEori = importerEori,
-      declarantEori = declarantEori,
-      declarantReference = declarantReference,
-      date = date,
-      amount = hundred,
-      taxGroups = Seq(
-        TaxGroup(CustomsDuty, fiveHundred, taxTypes),
-        TaxGroup(ImportVat, fourHundred, taxTypes),
-        TaxGroup(ExciseDuty, hundred, taxTypes)
-      ), secureMovementReferenceNumber = None)
-
-    val viewModel: DeclarationDetailViewModel = DeclarationDetailViewModel(
-      eori = eori,
+    val singleDeclaration: DeclarationSearch = declaration.head.declaration
+    val viewModel: DeclarationDetailSearchViewModel = DeclarationDetailSearchViewModel(
+      searchInput = movementReferenceNumber,
       account = CashAccount(
         number = number,
         owner = owner,
         status = AccountStatusOpen,
         balances = CDSCashBalance(Some(fiveHundred))
-      ),
-      declaration = declaration)(messages)
+      ), declaration = singleDeclaration)(messages)
 
-    val cashAccountDeclarationDetails: cash_account_declaration_details =
-      app.injector.instanceOf[cash_account_declaration_details]
+    val cashAccountDeclarationDetails: cash_account_declaration_details_search =
+      app.injector.instanceOf[cash_account_declaration_details_search]
 
     val viewDoc: Document = Jsoup.parse(
       cashAccountDeclarationDetails.apply(viewModel, pageNumber)(request, messages).body
