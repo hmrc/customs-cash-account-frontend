@@ -14,6 +14,9 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
+@import views.html.Layout
+
 @this(
         layout: Layout,
         h1: components.h1,
@@ -21,22 +24,28 @@
         link: components.link
 )
 
-@(dates: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(
+    dates: String
+)(
+    implicit request: Request[_],
+    messages: Messages,
+    appConfig: AppConfig
+)
 
-    @layout(pageTitle = Some(messages("cf.cash-account.duplicate.header")),
-            backLink = Some(controllers.routes.SelectTransactionsController.onPageLoad().url),
-            fullWidth = false,
-            help = false)
-    {
+@layout(
+    pageTitle = Some(messages("cf.cash-account.duplicate.header")),
+    backLink = Some(controllers.routes.SelectTransactionsController.onPageLoad().url),
+    fullWidth = false,
+    help = false
+) {
+    @h1("cf.cash-account.duplicate.header")
 
-        @h1("cf.cash-account.duplicate.header")
+    @p(dates)
 
-        @p(dates)
-
-        @link(
-            linkMessageKey = "cf.cash-account.duplicate.link",
-            location = controllers.routes.SelectTransactionsController.onPageLoad().url,
-            linkClass = "govuk-link govuk-link--no-visited-state",
-            linkSentence = false
-        )
-    }
+    @link(
+        linkMessageKey = "cf.cash-account.duplicate.link",
+        location = controllers.routes.SelectTransactionsController.onPageLoad().url,
+        linkClass = "govuk-link govuk-link--no-visited-state",
+        linkSentence = false
+    )
+}
