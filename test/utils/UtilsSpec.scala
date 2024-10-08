@@ -22,7 +22,7 @@ import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
 import utils.Utils.*
-import views.html.components.{h1, h1Inner, h2, h2Inner, link, newTabLink, p}
+import views.html.components.{h1, h1Inner, h2, h2Inner, link, newTabLink, notification_panel, p}
 
 class UtilsSpec extends SpecBase {
   "Comma" should {
@@ -173,6 +173,30 @@ class UtilsSpec extends SpecBase {
       val testAmount = "400.00"
 
       prependNegativeSignWithAmount(testAmount) mustBe "-400.00"
+    }
+  }
+
+  "notificationPanelComponent" should {
+    "create the component correctly with provided input" in new Setup {
+      val showNotification = true
+      val preMessage = "preMessage"
+      val linkUrl = "linkUrl"
+      val linkText = "linkText"
+      val postMessage = "postMessage"
+
+      val result: HtmlFormat.Appendable = notificationPanelComponent(
+        showNotification = showNotification,
+        preMessage = preMessage,
+        linkUrl = linkUrl,
+        linkText = linkText,
+        postMessage = postMessage)
+
+      result mustBe new notification_panel().apply(
+        showNotification,
+        preMessage,
+        linkUrl,
+        linkText,
+        postMessage)
     }
   }
 
