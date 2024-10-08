@@ -57,6 +57,14 @@ class CashAccountDeclarationDetailsSearchSpec extends ViewTestHelper {
       val taxSummaryList: Element = summaryLists.get(1)
       taxSummaryList must not be None
     }
+
+    "have a backlink" in new Setup {
+
+      val expectedBackLinkUrl: String =
+        controllers.routes.CashAccountV2Controller.showAccountDetails(page = pageNumber).url
+
+      shouldContainBackLinkUrl(viewDoc, expectedBackLinkUrl)
+    }
   }
 
   trait Setup {
@@ -100,9 +108,7 @@ class CashAccountDeclarationDetailsSearchSpec extends ViewTestHelper {
         owner = owner,
         status = AccountStatusOpen,
         balances = CDSCashBalance(Some(fiveHundred))
-      ),
-      eori = eori,
-      declaration = singleDeclaration)(messages)
+      ), declaration = singleDeclaration)(messages)
 
     val cashAccountDeclarationDetails: cash_account_declaration_details_search =
       app.injector.instanceOf[cash_account_declaration_details_search]

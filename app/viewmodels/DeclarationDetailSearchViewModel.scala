@@ -29,7 +29,6 @@ import java.time.LocalDate
 
 case class DeclarationDetailSearchViewModel(searchInput: String,
                                             account: CashAccount,
-                                            eori: String,
                                             header: Html,
                                             subHeader: Html,
                                             declarationSummaryList: SummaryList,
@@ -39,7 +38,6 @@ object DeclarationDetailSearchViewModel {
 
   def apply(searchInput: String,
             account: CashAccount,
-            eori: String,
             declaration: DeclarationSearch
            )(implicit messages: Messages): DeclarationDetailSearchViewModel = {
 
@@ -52,7 +50,6 @@ object DeclarationDetailSearchViewModel {
     DeclarationDetailSearchViewModel(
       searchInput = searchInput,
       account = account,
-      eori = eori,
       header = headerHtml,
       subHeader = subHeaderHtml,
       declarationSummaryList = declarationList,
@@ -60,7 +57,7 @@ object DeclarationDetailSearchViewModel {
     )
   }
 
-  def header(searchInput: String)(implicit messages: Messages): Html = {
+  private def header(searchInput: String)(implicit messages: Messages): Html = {
     if (searchInput.nonEmpty) {
       emptyH1InnerComponent(msg = "cf.cash-account.detail.declaration.search-title", innerMsg = searchInput)
     } else {
@@ -68,7 +65,7 @@ object DeclarationDetailSearchViewModel {
     }
   }
 
-  def subHeader(account: CashAccount)(implicit messages: Messages): Html = {
+  private def subHeader(account: CashAccount)(implicit messages: Messages): Html = {
     emptyH2InnerComponent(
       msg = "cf.cash-account.detail.account",
       innerMsg = account.number,
@@ -84,7 +81,7 @@ object DeclarationDetailSearchViewModel {
     case _ => BigDecimal(0)
   }
 
-  def declarationSummaryList(declaration: DeclarationSearch)(implicit messages: Messages): SummaryList = {
+  private def declarationSummaryList(declaration: DeclarationSearch)(implicit messages: Messages): SummaryList = {
     val declarationDateParsed: LocalDate = LocalDate.parse(declaration.postingDate, Formatters.yyyyMMddDateFormatter)
 
     SummaryList(
@@ -114,7 +111,7 @@ object DeclarationDetailSearchViewModel {
     )
   }
 
-  def taxSummaryList(declaration: DeclarationSearch)(implicit messages: Messages): SummaryList = {
+  private def taxSummaryList(declaration: DeclarationSearch)(implicit messages: Messages): SummaryList = {
     SummaryList(
       attributes = Map("id" -> "tax-details"),
       rows = Seq(

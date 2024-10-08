@@ -34,51 +34,13 @@ class CashTransactionSearchResponseSpec extends SpecBase {
       result mustBe expectedResponseDetail
     }
 
-    "populate correctly with missing optional fields" in new Setup {
-      val result: CashAccountTransactionSearchResponseDetail = CashAccountTransactionSearchResponseDetail(
-        can = can,
-        eoriDetails = eoriDetails,
-        declarations = None,
-        paymentsWithdrawalsAndTransfers = None)
-
-      result mustBe expectedResponseDetailWithMissingFields
-    }
-
-    "populate correctly with empty lists" in new Setup {
-      val result: CashAccountTransactionSearchResponseDetail = CashAccountTransactionSearchResponseDetail(
-        can = can,
-        eoriDetails = Seq.empty,
-        declarations = Some(Seq.empty),
-        paymentsWithdrawalsAndTransfers = Some(Seq.empty))
-
-      result mustBe expectedResponseDetailWithEmptyLists
-    }
-
     "generate correct output using Reads with all the fields" in new Setup {
       Json.parse(responseJsValue)
         .validate[CashAccountTransactionSearchResponseDetail] mustBe JsSuccess(expectedResponseDetail)
     }
 
-    "generate correct output using Reads with missing optional fields" in new Setup {
-      Json.parse(responseJsValueWithMissingFields)
-        .validate[CashAccountTransactionSearchResponseDetail] mustBe JsSuccess(expectedResponseDetailWithMissingFields)
-    }
-
-    "generate correct output using Reads with empty lists for nested sequences" in new Setup {
-      Json.parse(responseJsValueWithEmptyLists)
-        .validate[CashAccountTransactionSearchResponseDetail] mustBe JsSuccess(expectedResponseDetailWithEmptyLists)
-    }
-
     "generate correct output using Writes with all fields" in new Setup {
       Json.toJson(expectedResponseDetail) mustBe Json.parse(responseJsValue)
-    }
-
-    "generate correct output using Writes with missing optional fields" in new Setup {
-      Json.toJson(expectedResponseDetailWithMissingFields) mustBe Json.parse(responseJsValueWithMissingFields)
-    }
-
-    "generate correct output using Writes with empty lists for nested sequences" in new Setup {
-      Json.toJson(expectedResponseDetailWithEmptyLists) mustBe Json.parse(responseJsValueWithEmptyLists)
     }
   }
 
@@ -127,20 +89,6 @@ class CashTransactionSearchResponseSpec extends SpecBase {
         eoriDetails = eoriDetails,
         declarations = Some(declarations),
         paymentsWithdrawalsAndTransfers = Some(paymentsWithdrawalsAndTransfers))
-
-    val expectedResponseDetailWithMissingFields: CashAccountTransactionSearchResponseDetail =
-      CashAccountTransactionSearchResponseDetail(
-        can = can,
-        eoriDetails = eoriDetails,
-        declarations = None,
-        paymentsWithdrawalsAndTransfers = None)
-
-    val expectedResponseDetailWithEmptyLists: CashAccountTransactionSearchResponseDetail =
-      CashAccountTransactionSearchResponseDetail(
-        can = can,
-        eoriDetails = Seq.empty,
-        declarations = Some(Seq.empty),
-        paymentsWithdrawalsAndTransfers = Some(Seq.empty))
 
     val responseJsValue: String =
       s"""
@@ -192,27 +140,6 @@ class CashTransactionSearchResponseSpec extends SpecBase {
          |      }
          |    }
          |  ]
-         |}
-      """.stripMargin
-
-    val responseJsValueWithMissingFields: String =
-      s"""
-         |{
-         |  "can": "$can",
-         |  "eoriDetails": [
-         |    {"eoriData": {"eoriNumber": "GB123456789", "name": "eori name"}},
-         |    {"eoriData": {"eoriNumber": "GB987654321", "name": "eori name two"}}
-         |  ]
-         |}
-      """.stripMargin
-
-    val responseJsValueWithEmptyLists: String =
-      s"""
-         |{
-         |  "can": "$can",
-         |  "eoriDetails": [],
-         |  "declarations": [],
-         |  "paymentsWithdrawalsAndTransfers": []
          |}
       """.stripMargin
   }

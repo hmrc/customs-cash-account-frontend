@@ -18,15 +18,6 @@ package models.request
 
 import play.api.libs.json.*
 
-case class CashAccountTransactionSearchRequestContainer(cashAccountTransactionSearchRequest: CashAccountTransactionSearchRequest)
-
-case class CashAccountTransactionSearchRequest(requestCommon: CashTransactionsRequestCommon,
-                                               requestDetail: CashAccountTransactionSearchRequestDetails)
-
-case class CashTransactionsRequestCommon(originatingSystem: String,
-                                         receiptDate: String,
-                                         acknowledgementReference: String)
-
 case class CashAccountTransactionSearchRequestDetails(can: String,
                                                       ownerEORI: String,
                                                       searchType: SearchType.Value,
@@ -76,14 +67,6 @@ object CashAccountTransactionSearchRequestDetails {
 }
 
 object CashAccountTransactionSearchRequest {
-  implicit val requestCommonWrites: OFormat[CashTransactionsRequestCommon] = Json.format[CashTransactionsRequestCommon]
   implicit val requestDetailFormat: OFormat[CashAccountTransactionSearchRequestDetails] =
     Json.format[CashAccountTransactionSearchRequestDetails]
-
-  implicit val format: OFormat[CashAccountTransactionSearchRequest] = Json.format[CashAccountTransactionSearchRequest]
-}
-
-object CashAccountTransactionSearchRequestContainer {
-  implicit val format: OFormat[CashAccountTransactionSearchRequestContainer] =
-    Json.format[CashAccountTransactionSearchRequestContainer]
 }

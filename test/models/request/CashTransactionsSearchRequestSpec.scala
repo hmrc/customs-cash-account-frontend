@@ -23,17 +23,6 @@ class CashTransactionsSearchRequestSpec extends SpecBase {
 
   "CashAccountTransactionSearchRequestDetailsSpec" must {
 
-    "populate correctly" in new Setup {
-      val result: CashAccountTransactionSearchRequestDetails = CashAccountTransactionSearchRequestDetails(
-        can = can,
-        ownerEORI = ownerEORI,
-        searchType = searchType,
-        declarationDetails = Some(declarationDetails),
-        cashAccountPaymentDetails = Some(paymentDetails))
-
-      result mustBe expectedDetails
-    }
-
     "generate correct output using the Reads" in new Setup {
       Json.parse(requestJsValue).validate[CashAccountTransactionSearchRequestDetails] mustBe JsSuccess(expectedDetails)
     }

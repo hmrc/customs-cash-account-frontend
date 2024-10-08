@@ -41,14 +41,11 @@ class DeclarationDetailSearchViewModelSpec extends SpecBase {
 
     "generate correct declarationSummaryList data" in new Setup {
 
-      val summaryList: _root_.uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList =
-        DeclarationDetailSearchViewModel.declarationSummaryList(declaration)
+      val viewModel: DeclarationDetailSearchViewModel =
+        DeclarationDetailSearchViewModel(searchInput, account, declaration)
 
-      val extractedResultData: Seq[(String, String)] = extractSummaryData(summaryList)
+      val extractedResultData: Seq[(String, String)] = extractSummaryData(viewModel.declarationSummaryList)
       val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-
-      val declarationWithParsedDate: DeclarationSearch = declaration.copy(
-        postingDate = LocalDate.parse(declaration.postingDate, dateFormatter).toString)
 
       val expectedDeclarationSummaryData: Seq[(String, String)] = Seq(
         messages("cf.cash-account.csv.date") ->
@@ -62,10 +59,10 @@ class DeclarationDetailSearchViewModelSpec extends SpecBase {
 
     "generate correct taxSummaryList data" in new Setup {
 
-      val summaryList: _root_.uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList =
-        DeclarationDetailSearchViewModel.taxSummaryList(declaration)
+      val viewModel: DeclarationDetailSearchViewModel =
+        DeclarationDetailSearchViewModel(searchInput, account, declaration)
 
-      val extractedResultData: Seq[(String, String)] = extractSummaryData(summaryList)
+      val extractedResultData: Seq[(String, String)] = extractSummaryData(viewModel.taxSummaryList)
 
       val zeroValue: String = Formatters.formatCurrencyAmount(BigDecimal(0))
 
@@ -84,10 +81,10 @@ class DeclarationDetailSearchViewModelSpec extends SpecBase {
         importersEORINumber = emptyString,
         declarantRef = None)
 
-      val summaryList: _root_.uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList =
-        DeclarationDetailSearchViewModel.declarationSummaryList(declarationWithMissingFields)
+      val viewModel: DeclarationDetailSearchViewModel =
+        DeclarationDetailSearchViewModel(searchInput, account, declarationWithMissingFields)
 
-      val extractedResultData: Seq[(String, String)] = extractSummaryData(summaryList)
+      val extractedResultData: Seq[(String, String)] = extractSummaryData(viewModel.declarationSummaryList)
 
       val expectedDeclarationSummaryData: Seq[(String, String)] = Seq(
         messages("cf.cash-account.csv.importerEori") -> emptyString,
@@ -110,22 +107,20 @@ class DeclarationDetailSearchViewModelSpec extends SpecBase {
         )
       )
 
-      val summaryList: _root_.uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList =
-        DeclarationDetailSearchViewModel.taxSummaryList(declarationWithExcise)
+      val viewModel: DeclarationDetailSearchViewModel =
+        DeclarationDetailSearchViewModel(searchInput, account, declarationWithExcise)
 
-      val extractedResultData: Seq[(String, String)] = extractSummaryData(summaryList)
-
-      val exciseValue: String = Formatters.formatCurrencyAmount(fifty)
+      val extractedResultData: Seq[(String, String)] = extractSummaryData(viewModel.taxSummaryList)
 
       extractedResultData must contain(messages("cf.cash-account.csv.excise") -> emptyString)
     }
 
     "handle missing excise duty correctly" in new Setup {
 
-      val summaryList: _root_.uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList =
-        DeclarationDetailSearchViewModel.taxSummaryList(declaration)
+      val viewModel: DeclarationDetailSearchViewModel =
+        DeclarationDetailSearchViewModel(searchInput, account, declaration)
 
-      val extractedResultData: Seq[(String, String)] = extractSummaryData(summaryList)
+      val extractedResultData: Seq[(String, String)] = extractSummaryData(viewModel.taxSummaryList)
 
       extractedResultData must contain(messages("cf.cash-account.csv.excise") -> emptyString)
     }
@@ -135,12 +130,17 @@ class DeclarationDetailSearchViewModelSpec extends SpecBase {
 
     val zero: BigDecimal = BigDecimal(0)
     val hundred: BigDecimal = BigDecimal(100.00)
-    val fifty: BigDecimal = BigDecimal(50.00)
+    val threeHundred: BigDecimal = BigDecimal(300.00)
 
     val movementReferenceNumber = "MRN1234567890"
     val importerEori: Option[String] = Some("GB123456789000")
     val declarantEori = "GB987654321000"
     val declarantReference: Option[String] = Some("UCR12345")
+    val eori = "GB123456789000"
+    val searchInput = "someInput"
+    val owner = "someOwner"
+
+    val account: CashAccount = CashAccount("Account123", owner, AccountStatusOpen, CDSCashBalance(Some(threeHundred)))
 
     val taxType1: TaxTypeWithSecurityContainer = TaxTypeWithSecurityContainer(
       TaxTypeWithSecurity(

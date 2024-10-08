@@ -78,7 +78,7 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
 
     declarationsOpt.flatMap(_.headOption.map(_.declaration)) match {
       case Some(declarationSearch) =>
-        Ok(searchView(DeclarationDetailSearchViewModel(searchValue, account, request.eori, declarationSearch), page))
+        Ok(searchView(DeclarationDetailSearchViewModel(searchValue, account, declarationSearch), page))
       case None => NotFound(errorHandler.notFoundTemplate)
     }
   }

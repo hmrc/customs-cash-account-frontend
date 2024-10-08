@@ -51,6 +51,14 @@ class CashAccountDeclarationDetailsSpec extends ViewTestHelper {
       val taxSummaryList: Element = summaryLists.get(1)
       taxSummaryList must not be None
     }
+
+    "have a backlink" in new Setup {
+
+      val expectedBackLinkUrl: String =
+        controllers.routes.CashAccountV2Controller.showAccountDetails(page = pageNumber).url
+
+      shouldContainBackLinkUrl(viewDoc, expectedBackLinkUrl)
+    }
   }
 
   trait Setup {
