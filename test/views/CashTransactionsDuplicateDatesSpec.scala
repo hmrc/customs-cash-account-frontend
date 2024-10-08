@@ -18,15 +18,20 @@ package views
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import views.html.duplicate_date
+import views.html.cash_transactions_duplicate_dates
 
 import java.time.Clock
 
-class DuplicateDateSpec extends ViewTestHelper {
+class CashTransactionsDuplicateDatesSpec extends ViewTestHelper {
 
-  "SelectTransactions" should {
+  "view" should {
 
     "display correct information" when {
+
+      "title is visible" in new Setup {
+        titleShouldBeCorrect(view, "cf.cash-account.duplicate.header")
+      }
+
       "backlink should take you back to request transactions" in new Setup {
         shouldContainBackLinkUrl(view, controllers.routes.SelectTransactionsController.onPageLoad().url)
       }
@@ -36,17 +41,25 @@ class DuplicateDateSpec extends ViewTestHelper {
       }
 
       "label is correct" in new Setup {
-        val msg = messages("cf.cash-account.duplicate.message", "Jan 2021", "Feb 2022")
-        view.getElementsByTag("p").text() mustBe s"$msg ${messages("cf.cash-account.duplicate.link")}"
+        val msg: String = messages("cf.cash-account.duplicate.message", "Jan 2021", "Feb 2021")
+        view.getElementById("duplicate.date.label").text() mustBe msg
+      }
+
+      "link is correct" in new Setup {
+        view.getElementById("duplicate.date.link").text() mustBe s"${messages("cf.cash-account.duplicate.link")}"
       }
     }
   }
 
   trait Setup {
-    val dateText = "Month Year"
-
     implicit val clk: Clock = Clock.systemUTC()
-    val displayDate = "You requested transactions from Jan 2021 to Feb 2022"
-    val view: Document = Jsoup.parse(app.injector.instanceOf[duplicate_date].apply(displayDate).body)
+
+    val displayedMsg = "You requested transactions from Jan 2021 to Feb 2021"
+    val startDate = "Jan 2021"
+    val endDate = "Feb 2021"
+
+    val view: Document = Jsoup.parse(
+      app.injector.instanceOf[cash_transactions_duplicate_dates].apply(
+        displayedMsg, startDate, endDate).body)
   }
 }

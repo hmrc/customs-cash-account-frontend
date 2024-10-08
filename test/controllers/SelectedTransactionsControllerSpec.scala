@@ -261,6 +261,26 @@ class SelectedTransactionsControllerSpec extends SpecBase {
     }
   }
 
+  "duplicateDates" must {
+
+    "return duplicate dates requested page if duplicate dates exist" in new Setup {
+
+      when(mockRequestedTransactionsCache.get(any))
+        .thenReturn(Future.successful(Some(CashTransactionDates(fromDate, toDate))))
+
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.SelectedTransactionsController.duplicateDates(
+          "someMsg","someDate","someDate").url)
+
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.SelectedTransactionsController.duplicateDates(
+          "someMsg","someDate","someDate").url)
+      }
+    }
+  }
+
   trait Setup {
     val sMRN: Option[String] = Some("ic62zbad-75fa-445f-962b-cc92311686b8e")
     val cashAccountNumber = "1234567"

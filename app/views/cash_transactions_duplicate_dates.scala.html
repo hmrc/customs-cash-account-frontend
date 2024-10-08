@@ -25,7 +25,9 @@
 )
 
 @(
-    dates: String
+    message: String,
+    startDate: String,
+    endDate: String
 )(
     implicit request: Request[_],
     messages: Messages,
@@ -40,11 +42,15 @@
 ) {
     @h1("cf.cash-account.duplicate.header")
 
-    @p(dates)
+    @p(
+        message = s"${messages(message, startDate, endDate)}",
+        id = Some("duplicate.date.label")
+    )
 
     @link(
         linkMessageKey = "cf.cash-account.duplicate.link",
         location = controllers.routes.SelectTransactionsController.onPageLoad().url,
+        linkId = Some("duplicate.date.link"),
         linkClass = "govuk-link govuk-link--no-visited-state",
         linkSentence = false
     )

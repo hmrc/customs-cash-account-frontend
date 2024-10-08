@@ -20,11 +20,14 @@ import cats.data.EitherT
 import cats.data.EitherT.fromOptionF
 import cats.implicits.*
 import config.{AppConfig, ErrorHandler}
+
 import connectors.{
-  CustomsFinancialsApiConnector, ErrorResponse, EntryAlreadyExists,
-  ExceededMaximum, NoTransactionsAvailable, TooManyTransactionsRequested
+  CustomsFinancialsApiConnector, EntryAlreadyExists, ErrorResponse, ExceededMaximum,
+  NoTransactionsAvailable, TooManyTransactionsRequested
 }
+
 import controllers.actions.IdentifierAction
+import helpers.Formatters.dateAsMonthAndYear
 import models.*
 import models.request.IdentifierRequest
 import play.api.Logging
@@ -43,6 +46,7 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
                                                apiConnector: CustomsFinancialsApiConnector,
                                                transactionsUnavailable: cash_account_transactions_not_available,
                                                tooManyResults: cash_transactions_too_many_results,
+                                               duplicateDatesView: cash_transactions_duplicate_dates,
                                                requestTooManyTransactionsView: cash_account_requested_too_many_transactions,
                                                noResults: cash_transactions_no_result,
                                                identify: IdentifierAction,
@@ -115,7 +119,14 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
 
           case Right(_) => Redirect(routes.ConfirmationPageController.onPageLoad())
 
-          case Left(EntryAlreadyExists) => Redirect(routes.DuplicateDateController.onPageLoad())
+          case Left(EntryAlreadyExists) =>
+
+            val startDate = dateAsMonthAndYear(dates.start)
+            val endDate = dateAsMonthAndYear(dates.end)
+
+            Redirect(routes.SelectedTransactionsController.duplicateDates(
+              "cf.cash-account.duplicate.message", startDate, endDate))
+
 
           case Left(ExceededMaximum) => Redirect(routes.SelectedTransactionsController.requestedTooManyTransactions())
 
@@ -162,6 +173,12 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
       case _ => Ok(transactionsUnavailable(CashAccountViewModel(request.eori, account), appConfig.transactionsTimeoutFlag))
     }
   }
+
+  def duplicateDates(displayMsg: String, startDate: String, endDate: String): Action[AnyContent] =
+    identify {
+      implicit req => Ok(duplicateDatesView(displayMsg, startDate, endDate))
+    }
+
 
   def tooManyTransactionsSelected(dateRange: RequestedDateRange): Action[AnyContent] =
     identify {
