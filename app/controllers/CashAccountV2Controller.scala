@@ -153,11 +153,15 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
       val groupedStatements = statementFiles.groupBy(_.monthAndYear).map {
         case (month, filesForMonth) =>
           CashStatementsByMonth(month, filesForMonth)
-      }.toList
+      }.toSeq
 
       val (requested, current) = groupedStatements.partition(_.files.exists(_.metadata.statementRequestId.isDefined))
 
       Seq(CashStatementsForEori(eoriHistory, current, requested))
+    }.recover {
+      case ex: Exception =>
+        logger.error(s"Error retrieving some non-requested statements: ${ex.getMessage}")
+        Seq.empty
     }
   }
 

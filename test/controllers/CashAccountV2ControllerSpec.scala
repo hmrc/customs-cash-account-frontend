@@ -17,7 +17,13 @@
 package controllers
 
 import config.AppConfig
-import connectors.{CustomsDataStoreConnector, CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested, UnknownException}
+import connectors.{
+  CustomsDataStoreConnector,
+  CustomsFinancialsApiConnector,
+  NoTransactionsAvailable,
+  TooManyTransactionsRequested,
+  UnknownException
+}
 import models.{
   AccountStatusOpen,
   CDSCashBalance,
@@ -38,10 +44,13 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import services.AuditingService
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
-import views.html.{cash_account_no_transactions_v2, cash_account_no_transactions_with_balance, cash_account_transactions_not_available}
+import views.html.{
+  cash_account_no_transactions_v2,
+  cash_account_no_transactions_with_balance,
+  cash_account_transactions_not_available
+}
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -49,10 +58,8 @@ import scala.util.Random
 import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.{eq => eqTo}
-import org.scalatest.Ignore
 import play.api.mvc.{AnyContentAsEmpty, Result}
 
-@Ignore
 class CashAccountV2ControllerSpec extends SpecBase {
 
   "show account details" must {
@@ -556,12 +563,10 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
     val cashAccountNumber = "1234567"
     val eori = "exampleEori"
-    val someCan = "1234567"
     val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
     val page: Option[Int] = Some(1)
 
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
-    val mockAuditingService: AuditingService = mock[AuditingService]
     val mockDataStoreConnector: CustomsDataStoreConnector = mock[CustomsDataStoreConnector]
     val mockDeclarationDetailController: DeclarationDetailController = mock[DeclarationDetailController]
 
@@ -571,9 +576,6 @@ class CashAccountV2ControllerSpec extends SpecBase {
     val listOfPendingTransactions: Seq[Declaration] =
       Seq(Declaration("pendingDeclarationID", Some("pendingImporterEORI"), "pendingDeclarantEORINumber",
         Some("pendingDeclarantReference"), LocalDate.parse("2020-07-21"), -100.00, Nil, Some(sMRN)))
-
-    val fromDate: LocalDate = LocalDate.parse("2019-10-08")
-    val toDate: LocalDate = LocalDate.parse("2020-04-08")
 
     val cashDailyStatements: Seq[CashDailyStatement] = Seq(
       CashDailyStatement(LocalDate.parse("2020-07-18"), 0.0, 1000.00,

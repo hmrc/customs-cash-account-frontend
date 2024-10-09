@@ -22,7 +22,7 @@ import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
 import utils.Utils.*
-import views.html.components.{h1, h1Inner, h2, h2Inner, link, newTabLink, p}
+import views.html.components.{h1, h1Inner, h2, h2Inner, link, newTabLink, notification_panel, p}
 
 class UtilsSpec extends SpecBase {
   "Comma" should {
@@ -176,7 +176,32 @@ class UtilsSpec extends SpecBase {
     }
   }
 
+  "notificationPanelComponent" should {
+    "create the component correctly with provided input" in new Setup {
+      val showNotification = true
+      val preMessage = "preMessage"
+      val linkUrl = "linkUrl"
+      val linkText = "linkText"
+      val postMessage = "postMessage"
+
+      val result: HtmlFormat.Appendable = notificationPanelComponent(
+        showNotification = showNotification,
+        preMessage = preMessage,
+        linkUrl = linkUrl,
+        linkText = linkText,
+        postMessage = postMessage)
+
+      result mustBe new notification_panel().apply(
+        showNotification,
+        preMessage,
+        linkUrl,
+        linkText,
+        postMessage)
+    }
+  }
+
   trait Setup {
+
     val app: Application = application.build()
     implicit val msgs: Messages = messages(app)
     implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
@@ -186,8 +211,6 @@ class UtilsSpec extends SpecBase {
     val testId = "test_id"
     val testClass = "test_class"
     val testLocation = "test_location"
-    val testHref = "http://www.test.com"
-    val testLang = "en"
 
     val linkMessage: String = "go to test page"
     val href = "www.test.com"
