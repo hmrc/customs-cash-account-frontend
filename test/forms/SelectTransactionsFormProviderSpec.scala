@@ -122,7 +122,7 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
     "populate CashTransactionDates form correctly (or with correct error) for input end date" when {
 
       "end date is valid and uses the last day of the month" in new SetUp {
-        val expectedEndDate: LocalDate = LocalDate.of(year, month, day + 30)
+        val expectedEndDate: LocalDate = LocalDate.of(year, month, day31)
         form.bind(completeValidDates).get mustBe CashTransactionDates(start = validDate, end = expectedEndDate)
       }
 
@@ -238,6 +238,7 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
     val year = 2021
     val month = 10
     val day = 1
+    val day31 = 31
 
     val validDate: LocalDate = LocalDate.of(year, month, day)
     val futureYear: Int = LocalDate.now().getYear + 1
