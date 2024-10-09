@@ -227,7 +227,6 @@ class SelectedTransactionsControllerSpec extends SpecBase {
         }
       }
     }
-
   }
 
   "requestedTooManyTransactions" must {
@@ -275,8 +274,10 @@ class SelectedTransactionsControllerSpec extends SpecBase {
       running(app) {
         val result = route(app, request).value
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.SelectedTransactionsController.duplicateDates(
-          "someMsg","someDate","someDate").url)
+
+        redirectLocation(result) mustBe Some(
+          routes.SelectedTransactionsController.duplicateDates(
+            "someMsg","someDate","someDate").url)
       }
     }
   }

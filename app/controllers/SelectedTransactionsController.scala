@@ -121,11 +121,9 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
 
           case Left(EntryAlreadyExists) =>
 
-            val startDate = dateAsMonthAndYear(dates.start)
-            val endDate = dateAsMonthAndYear(dates.end)
-
-            Redirect(routes.SelectedTransactionsController.duplicateDates(
-              "cf.cash-account.duplicate.message", startDate, endDate))
+            Redirect(
+              routes.SelectedTransactionsController.duplicateDates("cf.cash-account.duplicate.message",
+                dateAsMonthAndYear(dates.start), dateAsMonthAndYear(dates.end)))
 
 
           case Left(ExceededMaximum) => Redirect(routes.SelectedTransactionsController.requestedTooManyTransactions())
@@ -175,10 +173,10 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
   }
 
   def duplicateDates(displayMsg: String, startDate: String, endDate: String): Action[AnyContent] =
-    identify {
-      implicit req => Ok(duplicateDatesView(displayMsg, startDate, endDate))
+    identify.async {
+      implicit req =>
+        Future.successful(Ok(duplicateDatesView(displayMsg, startDate, endDate)))
     }
-
 
   def tooManyTransactionsSelected(dateRange: RequestedDateRange): Action[AnyContent] =
     identify {

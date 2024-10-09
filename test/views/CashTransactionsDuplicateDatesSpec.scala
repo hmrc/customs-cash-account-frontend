@@ -42,11 +42,11 @@ class CashTransactionsDuplicateDatesSpec extends ViewTestHelper {
 
       "label is correct" in new Setup {
         val msg: String = messages("cf.cash-account.duplicate.message", "Jan 2021", "Feb 2021")
-        view.getElementById("duplicate.date.label").text() mustBe msg
+        view.getElementById("duplicate-date-label").text() mustBe msg
       }
 
       "link is correct" in new Setup {
-        view.getElementById("duplicate.date.link").text() mustBe s"${messages("cf.cash-account.duplicate.link")}"
+        view.getElementById("duplicate-date-link").text() mustBe s"${messages("cf.cash-account.duplicate.link")}"
       }
     }
   }
