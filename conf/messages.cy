@@ -164,6 +164,7 @@ month.11=Tachwedd
 month.12=Rhagfyr
 month.to=i
 
+
 #Pagination
 # ----------------------------------------------------------
 cf.pager.prev=Blaenorol
@@ -300,6 +301,11 @@ cf.cash-account.topup.withdrawal.detail.heading=Help gydag ychwanegiadau a chodi
 cf.cash-account.topup.withdrawal.detail.text=Gall ychwanegiadau gymryd hyd at un diwrnod gwaith i ddangos ar y dudalen hon. Mae arian fel arfer ar gael i’w ddefnyddio cyn pen awr ar ôl gwneud y trosglwyddiad o’ch banc. Gall codiadau arian gymryd hyd at 15 diwrnod gwaith i’r arian gyrraedd eich cyfrif banc.
 cf.cash-account.detail.available-balance=Y balans sydd ar gael {0}
 cf.cash-account.detail.payments-heading=Eich trafodion ar gyfer y chwe mis diwethaf
+
+cf.cash-account.duplicate.header = Mae cais i gael trafodion ar gyfer yr un cyfnod yn bodoli eisoes
+cf.cash-account.duplicate.message = Gwnaethoch gais i gael y trafodion o fis {0} i {1}
+cf.cash-account.duplicate.link = Rhowch gynnig arall arni gan ddefnyddio cyfnod gwahanol.
+
 
 #Pagination
 pagination.number-of-movements.singular.with-search-param = Yn dangos {0} canlyniad yn cyfateb i {1}

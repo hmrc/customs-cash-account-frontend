@@ -227,7 +227,6 @@ class SelectedTransactionsControllerSpec extends SpecBase {
         }
       }
     }
-
   }
 
   "requestedTooManyTransactions" must {
@@ -257,6 +256,24 @@ class SelectedTransactionsControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(routes.CashAccountController.showAccountDetails(None).url)
+      }
+    }
+  }
+
+  "duplicateDates" must {
+
+    "return duplicate dates requested page if duplicate dates exist" in new Setup {
+
+      when(mockRequestedTransactionsCache.get(any))
+        .thenReturn(Future.successful(Some(CashTransactionDates(fromDate, toDate))))
+
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.SelectedTransactionsController.duplicateDates(
+          "someMsg","someDate","someDate").url)
+
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe OK
       }
     }
   }
