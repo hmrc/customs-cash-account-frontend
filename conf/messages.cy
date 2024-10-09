@@ -274,7 +274,7 @@ cf.cash-account.transactions.no-transactions-for-last-six-months = Nid oes unrhy
 cf.cash-account.transactions.request-transactions.download-csv.url = Gofynnwch yn ôl dyddiad a lawrlwytho’ch trafodion fel ffeil CSV.
 cf.cash-account.transactions.request-transactions.download-csv.post-message = Bydd y ffeil CSV ar gael i’w lawrlwytho cyn pen 48 awr.
 cf.cash-account.transactions.search-for-transactions.heading = Chwilio am drafodion
-cf.cash-account.transactions.search-for-transactions.hint = Gallwch chwilio drwy MRN, UCR neu union swm taliad sy’n cynnwys ‘£’
+cf.cash-account.transactions.search-for-transactions.hint = Gallwch chwilio yn ôl Cyfeirnod Symud (MRN), Cyfeirnod Unigryw y Llwyth (UCR) neu union swm y taliad sy’n cynnwys ‘£’
 
 cf.cash-account.transactions.too-many-transactions.hint01 = Mae gormod o drafodion ar gyfer y mis hwn i’w dangos
 cf.cash-account.transactions.too-many-transactions.hint02 = ond gallwch
