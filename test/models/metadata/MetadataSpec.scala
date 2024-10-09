@@ -23,7 +23,7 @@ import play.api.libs.json._
 
 class MetadataSpec extends SpecBase {
 
-  "MetadataSpec" must {
+  "MetaData" must {
 
     "convert items to map correctly" in {
       val metadataItems = Seq(MetadataItem("key1", "value1"), MetadataItem("key2", "value2"))
@@ -33,7 +33,7 @@ class MetadataSpec extends SpecBase {
       metadata.asMap mustBe expectedMap
     }
 
-    "serialize correctly" in {
+    "write the JSON correctly" in {
       val metadataItems = Seq(MetadataItem("key1", "value1"), MetadataItem("key2", "value2"))
       val metadata = Metadata(metadataItems)
 
@@ -45,7 +45,7 @@ class MetadataSpec extends SpecBase {
       Json.toJson(metadata) mustBe expectedJson
     }
 
-    "deserialize correctly" in {
+    "read the JSON correctly" in {
       val json = Json.arr(
         Json.obj("metadata" -> "key1", "value" -> "value1"),
         Json.obj("metadata" -> "key2", "value" -> "value2")

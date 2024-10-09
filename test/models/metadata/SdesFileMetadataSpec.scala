@@ -21,32 +21,32 @@ import utils.SpecBase
 
 class SdesFileMetadataSpec extends SpecBase {
 
-  "correctly convert CashStatementFileMetadata to a Map" in new Setup {
-    val metadata: CashStatementFileMetadata = CashStatementFileMetadata(
-      periodStartYear = periodStartYear,
-      periodStartMonth = periodStartMonth,
-      periodStartDay = periodStartDay,
-      periodEndYear = periodEndYear,
-      periodEndMonth = periodEndMonth,
-      periodEndDay = periodEndDay,
-      fileFormat = FileFormat.Pdf,
-      fileRole = FileRole(fileRoleName),
-      statementRequestId = statementRequestId
-    )
+  "toMap" must {
+    "correctly convert CashStatementFileMetadata to a Map" in new Setup {
+      val metadata: CashStatementFileMetadata = CashStatementFileMetadata(
+        periodStartYear = periodStartYear,
+        periodStartMonth = periodStartMonth,
+        periodStartDay = periodStartDay,
+        periodEndYear = periodEndYear,
+        periodEndMonth = periodEndMonth,
+        periodEndDay = periodEndDay,
+        fileFormat = FileFormat.Pdf,
+        fileRole = FileRole(fileRoleName),
+        statementRequestId = statementRequestId)
 
-    val result: Map[String, String] = metadata.toMap
+      val result: Map[String, String] = metadata.toMap
 
-    result mustEqual Map(
-      "periodStartYear" -> s"$periodStartYear",
-      "periodStartMonth" -> s"$periodStartMonth",
-      "periodStartDay" -> s"$periodStartDay",
-      "periodEndYear" -> s"$periodEndYear",
-      "periodEndMonth" -> s"$periodEndMonth",
-      "periodEndDay" -> s"$periodEndDay",
-      "fileFormat" -> s"${FileFormat.Pdf}",
-      "fileRole" -> s"${FileRole(fileRoleName)}",
-      "statementRequestId" -> s"$statementRequestId"
-    )
+      result mustEqual Map(
+        "periodStartYear" -> s"$periodStartYear",
+        "periodStartMonth" -> s"$periodStartMonth",
+        "periodStartDay" -> s"$periodStartDay",
+        "periodEndYear" -> s"$periodEndYear",
+        "periodEndMonth" -> s"$periodEndMonth",
+        "periodEndDay" -> s"$periodEndDay",
+        "fileFormat" -> s"${FileFormat.Pdf}",
+        "fileRole" -> s"${FileRole(fileRoleName)}",
+        "statementRequestId" -> s"$statementRequestId")
+    }
   }
 
   trait Setup {
