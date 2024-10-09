@@ -122,7 +122,7 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
     "populate CashTransactionDates form correctly (or with correct error) for input end date" when {
 
       "end date is valid and uses the last day of the month" in new SetUp {
-        val expectedEndDate = LocalDate.of(2021, 10, 31)
+        val expectedEndDate: LocalDate = LocalDate.of(year, month, day + 30)
         form.bind(completeValidDates).get mustBe CashTransactionDates(start = validDate, end = expectedEndDate)
       }
 
@@ -242,25 +242,18 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
     val validDate: LocalDate = LocalDate.of(year, month, day)
     val futureYear: Int = LocalDate.now().getYear + 1
     val etmpStatementYear = 2019
-    val taxYearDateOlderThan6Years: Int = LocalDate.now().getYear - 7
 
     val year2021AsString = "2021"
     val month10AsString = "10"
-    val month32AsString = "32"
-    val month40AsString = "40"
     val month14AsString = "14"
 
     val startKey = "start"
     val endKey = "end"
 
     val invalidMsgStartKey = "cf.form.error.start.date-number-invalid"
-    val monthMsgStartKey = "cf.form.error.start.date.invalid.month"
-    val yearMsgStartKey = "cf.form.error.start.date.invalid.year"
     val invalidDateMsgStartKey = "cf.form.error.start.date.invalid.real-date"
 
     val invalidMsgEndKey = "cf.form.error.end.date-number-invalid"
-    val monthMsgEndKey = "cf.form.error.end.date.invalid.month"
-    val yearMsgEndKey = "cf.form.error.end.date.invalid.year"
     val invalidDateMsgEndKey = "cf.form.error.end.date.invalid.real-date"
 
     lazy val completeValidDates: Map[String, String] =

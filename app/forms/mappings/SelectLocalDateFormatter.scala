@@ -35,9 +35,9 @@ private[mappings] class SelectLocalDateFormatter(invalidKey: String,
   val currentDate: LocalDate = LocalDateTime.now().toLocalDate
 
   private def toDate(key: String,
-                   month: Int,
-                   year: Int): Either[Seq[FormError], LocalDate] = {
-    
+                     month: Int,
+                     year: Int): Either[Seq[FormError], LocalDate] = {
+
     if (month < 1 || month > 12) {
       Left(Seq(FormError(s"$key.month", invalidDateKey, args)))
     } else {
