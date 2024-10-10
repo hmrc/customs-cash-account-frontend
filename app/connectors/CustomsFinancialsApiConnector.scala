@@ -22,16 +22,13 @@ import models.*
 import models.AccountsAndBalancesResponseContainer.accountResponseCommonReads
 import models.CashDailyStatement.*
 import models.request.{
-  CashAccountPaymentDetails,
-  CashAccountStatementRequestDetail,
-  CashAccountTransactionSearchRequestDetails,
-  CashDailyStatementRequest,
-  DeclarationDetailsSearch,
-  IdentifierRequest,
-  SearchType
+  CashAccountPaymentDetails, CashAccountStatementRequestDetail, CashAccountTransactionSearchRequestDetails,
+  CashDailyStatementRequest, DeclarationDetailsSearch, IdentifierRequest, SearchType
 }
 import org.slf4j.LoggerFactory
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE}
+import play.api.http.Status.{
+  BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE
+}
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.mvc.AnyContent
 import repositories.CacheRepository
@@ -39,6 +36,7 @@ import services.MetricsReporterService
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, UpstreamErrorResponse}
+import uk.gov.hmrc.http.HttpResponse
 
 import java.time.LocalDate
 import java.util.UUID
@@ -46,7 +44,8 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import models.request.CashAccountStatementRequestDetail.jsonBodyWritable
 import models.response.CashAccountTransactionSearchResponseDetail
-import play.api.libs.json.Json
+import play.api.libs.json.{JsResult, Json}
+import utils.EtmpErrorCode
 
 class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
                                               appConfig: AppConfig,
@@ -153,8 +152,8 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
 
     httpClient.post(url"$retrieveCashAccountStatementSearchUrl")
       .withBody[CashAccountTransactionSearchRequestDetails](request)
-      .execute[CashAccountTransactionSearchResponseDetail]
-      .map(Right(_))
+      .execute[HttpResponse]
+      .map(processResponseForCashTransactionsBySearch)
   }.recover {
     case UpstreamErrorResponse(_, BAD_REQUEST, _, _) =>
       logger.error("BAD Request for retrieveCashTransactionsBySearch")
@@ -266,6 +265,45 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
     }
   }
 
+  private def processResponseForCashTransactionsBySearch(response: HttpResponse): Either[ErrorResponse, CashAccountTransactionSearchResponseDetail] = {
+    import CashAccountTransactionSearchResponseDetail.format
+
+    response.status match {
+      case OK =>
+        val optTransSearchResDetail = Json.fromJson[CashAccountTransactionSearchResponseDetail](response.json).asOpt
+
+        optTransSearchResDetail.fold(Left(UnknownException))(Right(_))
+
+      /*if (optTransSearchResponseDetail.isDefined) {
+        Right(optTransSearchResponseDetail.get)
+      } else {
+        Left(UnknownException)
+      }*/
+      case CREATED => processEtmpBusinessErrors(response)
+      case BAD_REQUEST => Left(BadRequest)
+      case INTERNAL_SERVER_ERROR => Left(InternalServerErrorErrorResponse)
+      case _ => Left(ServiceUnavailableErrorResponse)
+    }
+  }
+
+  private def processEtmpBusinessErrors(response: HttpResponse): Either[ErrorResponse, CashAccountTransactionSearchResponseDetail] = {
+    val errorDetail: Option[ErrorDetail] = Json.fromJson[ErrorDetail](response.json).asOpt
+
+    errorDetail match {
+      case Some(errorDetail) =>
+        errorDetail.errorCode match {
+          case EtmpErrorCode.code001 => Left(InvalidCashAccount)
+          case EtmpErrorCode.code002 => Left(InvalidDeclarationReference)
+          case EtmpErrorCode.code003 => Left(DuplicateAckRef)
+          case EtmpErrorCode.code004 => Left(NoAssociatedDataFound)
+          case EtmpErrorCode.code005 => Left(InvalidEori)
+          case _ => Left(UnknownException)
+        }
+
+      case _ => Left(UnknownException)
+    }
+  }
+
   private def addUUIDToCashTransaction(response: CashTransactions): CashTransactions = {
     response.copy(
       cashDailyStatements = response.cashDailyStatements.map { statement =>
@@ -304,3 +342,11 @@ case object InvalidEori extends ErrorResponse
 case object EntryAlreadyExists extends ErrorResponse
 
 case object ExceededMaximum extends ErrorResponse
+
+case object InvalidCashAccount extends ErrorResponse
+
+case object InvalidDeclarationReference extends ErrorResponse
+
+case object DuplicateAckRef extends ErrorResponse
+
+case object NoAssociatedDataFound extends ErrorResponse
