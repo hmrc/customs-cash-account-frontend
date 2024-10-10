@@ -19,19 +19,16 @@ package viewmodels
 import config.AppConfig
 import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount, parseDateString}
 import models.{
-  CashDailyStatement, CashTransactionType, CashTransactions, Declaration, Payment, Transaction,
+  CashDailyStatement, CashTransactions, Declaration, Payment, Transaction,
   Transfer, Withdrawal
 }
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount}
 import utils.Utils.{
   LinkComponentValues, emptyString, h2Component, linkComponent, pComponent,
   prependNegativeSignWithAmount
 }
-
 import java.time.LocalDate
-import scala.math.Ordered.orderingToOrdered
 
 case class PaymentType(mrnLink: Option[HtmlFormat.Appendable] = None,
                        textString: Option[String] = None)
@@ -59,8 +56,7 @@ object CashAccountDailyStatementsViewModel {
 
     CashAccountDailyStatementsViewModel(
       dailyStatementsBasedOnPageNoForPagination(
-        populateDailyStatementViewModelList(dailyStatements), pageNo, config.numberOfRecordsPerPage
-      ),
+        populateDailyStatementViewModelList(dailyStatements), pageNo, config.numberOfRecordsPerPage),
       hasTransactions,
       transForLastSixMonthsHeading,
       if (hasTransactions) None else Some(noTransFromLastSixMonthsText))
@@ -116,7 +112,6 @@ object CashAccountDailyStatementsViewModel {
         closingBalanceOnlyRow +:
           (declarationDailyStatementViewModelWithAccBalance.reverse ++ transferAndWithdrawDailyStatementViewModel)
     }
-
     result.flatten.sorted
   }
 

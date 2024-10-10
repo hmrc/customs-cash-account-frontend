@@ -77,11 +77,15 @@ object Formatters {
   def parseDateString(date: String): LocalDate = {
     val dateArray: Array[String] = date.split(singleSpace)
 
-    val day = dateArray(0).toInt
-    val monthString = dateArray(1)
-    val year = dateArray(2).toInt
+    if (dateArray.size > 1) {
+      val day = dateArray(0).toInt
+      val monthString = dateArray(1)
+      val year = dateArray(2).toInt
 
-    LocalDate.of(year, intValueForMonthString(monthString), day)
+      LocalDate.of(year, intValueForMonthString(monthString), day)
+    } else {
+      LocalDate.parse(date, yyyyMMddDateFormatter);
+    }
   }
 
   //scalastyle:off

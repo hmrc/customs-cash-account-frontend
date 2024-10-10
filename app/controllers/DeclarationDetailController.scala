@@ -21,18 +21,23 @@ import connectors.CustomsFinancialsApiConnector
 import controllers.actions.{EmailAction, IdentifierAction}
 import helpers.CashAccountUtils
 import models.{CashAccount, CashTransactions}
-import models.request.{DeclarationDetailsSearch, IdentifierRequest, ParamName, SearchType}
-import models.response.DeclarationWrapper
+import models.request.{CashAccountPaymentDetails, DeclarationDetailsSearch, IdentifierRequest, ParamName, SearchType}
+import models.response.{CashAccountTransactionSearchResponseDetail, DeclarationWrapper, PaymentsWithdrawalsAndTransfer}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.{cash_account_declaration_details, cash_account_declaration_details_search, cash_transactions_no_result}
-
+import views.html.{
+  cash_account_declaration_details, cash_account_declaration_details_search,
+  cash_transactions_no_result, cash_account_payment_search
+}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.Logging
 import utils.RegexPatterns.{mrnRegex, paymentRegex}
-import viewmodels.{DeclarationDetailSearchViewModel, DeclarationDetailViewModel, ResultsPageSummary}
+import viewmodels.{
+  DeclarationDetailSearchViewModel, DeclarationDetailViewModel,
+  PaymentSearchResultsViewModel, ResultsPageSummary
+}
 
 import java.time.LocalDate
 
@@ -43,6 +48,7 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
                                             mcc: MessagesControllerComponents,
                                             view: cash_account_declaration_details,
                                             searchView: cash_account_declaration_details_search,
+                                            paymentSearchView: cash_account_payment_search,
                                             cashAccountUtils: CashAccountUtils,
                                             noTransactionsView: cash_transactions_no_result
                                            )(implicit executionContext: ExecutionContext,
@@ -63,11 +69,35 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
                                        searchInput: String)(implicit request: IdentifierRequest[_]): Future[Result] = {
 
     val (paramName, searchType) = determineParamNameAndSearchType(searchInput)
-    val declarationDetails = Some(DeclarationDetailsSearch(paramName, searchInput))
+
+    val (declarationDetails, cashAccountPaymentDetails) = searchType match {
+      case SearchType.D => (Some(DeclarationDetailsSearch(paramName, searchInput)), None)
+      case SearchType.P => (None, Some(CashAccountPaymentDetails(searchInput.replaceAll("[^\\d.]", "").toDouble)))
+    }
 
     apiConnector.retrieveCashTransactionsBySearch(account.number, request.eori, searchType, declarationDetails).map {
-      case Right(transactions) => processTransactions(transactions.declarations, searchInput, account, page)
+      case Right(transactions) => preProcessTransactions(transactions, searchInput, account, page)
       case Left(_) => NotFound(errorHandler.notFoundTemplate)
+    }
+  }
+
+  private def preProcessTransactions(cashAccResDetail: CashAccountTransactionSearchResponseDetail,
+                                     searchValue: String,
+                                     account: CashAccount,
+                                     page: Option[Int]
+                                    )(implicit request: IdentifierRequest[_]): Result = {
+
+    cashAccResDetail.declarations match {
+      case Some(declarations) => processTransactions(Some(declarations), searchValue, account, page)
+      case None => NotFound(errorHandler.notFoundTemplate)
+    }
+    cashAccResDetail.paymentsWithdrawalsAndTransfers match {
+      case Some(seqOfPaymentsWithdrawalsAndTransfers) => {
+        val paymentsSeq: Seq[PaymentsWithdrawalsAndTransfer] = seqOfPaymentsWithdrawalsAndTransfers.map(_.paymentsWithdrawalsAndTransfer)
+        val vm = PaymentSearchResultsViewModel("testEori", account, paymentsSeq, page)
+        Ok(paymentSearchView(vm))
+      }
+      case None => NotFound(errorHandler.notFoundTemplate)
     }
   }
 
