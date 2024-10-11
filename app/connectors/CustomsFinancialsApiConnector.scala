@@ -270,8 +270,8 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
 
     response.status match {
       case OK =>
-        val optTransSearchResDetail = Json.fromJson[CashAccountTransactionSearchResponseDetail](response.json).asOpt
-        optTransSearchResDetail.fold(Left(UnknownException))(Right(_))
+        Json.fromJson[CashAccountTransactionSearchResponseDetail](response.json)
+          .asOpt.fold(Left(UnknownException))(Right(_))
 
       case CREATED => processETMPErrors(response)
       case BAD_REQUEST => Left(BadRequest)
@@ -280,8 +280,8 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
     }
   }
 
-  private def processETMPErrors(response: HttpResponse): Either[ErrorResponse, CashAccountTransactionSearchResponseDetail] = {
-    val errorDetail: Option[ErrorDetail] = Json.fromJson[ErrorDetail](response.json).asOpt
+  private def processETMPErrors(res: HttpResponse): Either[ErrorResponse, CashAccountTransactionSearchResponseDetail] = {
+    val errorDetail: Option[ErrorDetail] = Json.fromJson[ErrorDetail](res.json).asOpt
 
     errorDetail match {
       case Some(errorDetail) => checkErrorCodeAndReturnErrorResponse(errorDetail)
