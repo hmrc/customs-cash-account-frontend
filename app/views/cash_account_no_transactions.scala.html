@@ -38,7 +38,13 @@
 
     @p("cf.cash-account.detail.no-transactions.p1")
 
-    @p("cf.cash-account.top-up.guidance")
+    @link(
+        linkMessageKey = "cf.cash-account.top-up.guidance.text.link",
+        location = "https://www.gov.uk/guidance/paying-into-your-cash-account-for-cds-declarations",
+        linkId = Some("cf.cash-account.top.up.guidance"),
+        preLinkMessage = Some("cf.cash-account.top-up.guidance.text.pre"),
+        postLinkMessage = Some("cf.cash-account.top-up.guidance.text.post")
+    )
 
     @link(
         linkMessageKey = "cf.cash-account.how-to-use.guidance.link.text",

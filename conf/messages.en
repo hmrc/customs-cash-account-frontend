@@ -193,7 +193,9 @@ cf.cash-account.help-and-support.link.text = contact the HMRC accounting centre 
 cf.cash-account.how-to-use.guidance.text.pre = Find out how to
 cf.cash-account.how-to-use.guidance.text.post = on GOV.UK.
 cf.cash-account.how-to-use.guidance.link.text = use a cash account for CDS declarations
-cf.cash-account.top-up.guidance = You’ll need to top up your cash account before you can use it.
+cf.cash-account.top-up.guidance.text.pre = You’ll need to
+cf.cash-account.top-up.guidance.text.link = top up your cash account
+cf.cash-account.top-up.guidance.text.post = before you can use it.
 cf.cash-account.detail.no-transactions-with-balance.p1=There are no transactions from the last 6 months to display.
 
 # Cash Transactions Request
@@ -283,7 +285,7 @@ cf.cash-account.transactions.request-transactions.download-csv.post-message = Th
 cf.cash-account.transactions.search-for-transactions.heading = Search for transactions
 cf.cash-account.transactions.search-for-transactions.hint = You can search by MRN, UCR or exact payment amount that includes ‘£’
 
-cf.cash-account.transactions.too-many-transactions.hint01 = There are too many transactions for this month to display
+cf.cash-account.transactions.too-many-transactions.hint01 = There are too many transactions for the last 6  months to display
 cf.cash-account.transactions.too-many-transactions.hint02 = but you can
 cf.cash-account.transactions.too-many-transactions.hint03 = request and download your transactions as a CSV file.
 cf.cash-account.transactions.too-many-transactions.hint04 = The CSV file will be available to download within 48 hours.
