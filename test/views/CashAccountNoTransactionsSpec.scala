@@ -176,6 +176,5 @@ class CashAccountNoTransactionsSpec extends SpecBase {
 
     def view(accountModel: CashAccountViewModel): Document =
       Jsoup.parse(app.injector.instanceOf[cash_account_no_transactions].apply(accountModel).body)
-    
   }
 }

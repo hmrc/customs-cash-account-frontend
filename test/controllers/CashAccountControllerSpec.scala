@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.*
 import models.*
 import models.email.{UndeliverableEmail, UnverifiedEmail}
-import org.mockito.ArgumentMatchers.{any, eq as eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import play.api.Application
 import play.api.http.Status
