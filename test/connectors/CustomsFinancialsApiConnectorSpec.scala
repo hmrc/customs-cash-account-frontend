@@ -20,7 +20,7 @@ import config.AppConfig
 import models.*
 import models.request.{CashAccountStatementRequestDetail, CashDailyStatementRequest, IdentifierRequest, SearchType}
 import models.response.{CashAccountTransactionSearchResponseDetail, EoriData, EoriDataContainer}
-import org.mockito.ArgumentMatchers.{any, anyString, eq as eqTo}
+import org.mockito.ArgumentMatchers.{any, anyString, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE}
 import play.api.inject.bind
@@ -43,7 +43,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   "getAccounts" must {
 
     "return all accounts available to the given EORI from the API service" in new Setup {
-
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[AccountsAndBalancesResponseContainer]], any[ExecutionContext]))
         .thenReturn(Future.successful(traderAccounts))
@@ -56,7 +55,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "log response time metric" in new Setup {
-
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[AccountsAndBalancesResponseContainer]], any[ExecutionContext]))
         .thenReturn(Future.successful(traderAccounts))
@@ -87,7 +85,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     "call the correct URL and pass through the HeaderCarrier and CAN, " +
       "return a list of cash daily statements while adding a UUID, and checking cache state" in new Setup {
 
-      val expectedUrl = "apiEndpointUrl/account/cash/transactions"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
       when(mockCacheRepository.get(any[String])).thenReturn(Future.successful(None))
@@ -130,7 +127,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     "log the error when failed to store data in the session cache call after getting response from the API " +
       "call" in new Setup {
 
-      val expectedUrl = "apiEndpointUrl/account/cash/transactions"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
       when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
@@ -179,12 +175,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "propagate exceptions when the backend POST fails" in new Setup {
-
-      private val responseCode: Int = 500
-
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
-        .thenReturn(Future.failed(new HttpException("It's broken", responseCode)))
+        .thenReturn(Future.failed(new HttpException("It's broken", INTERNAL_SERVER_ERROR)))
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
       when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
@@ -200,7 +193,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         result mustBe Left(UnknownException)
       }
     }
-
 
     "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" in new Setup {
       when(mockCacheRepository.get(any)).thenReturn(Future.successful(None))
@@ -546,7 +538,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     "call the correct URL and pass through the HeaderCarrier and CAN," +
       " and return a list of cash daily statements" in new Setup {
 
-      val expectedUrl = "apiEndpointUrl/account/cash/transactions-detail"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
@@ -567,12 +558,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "propagate exceptions when the backend POST fails" in new Setup {
-
-      private val responseCode: Int = 500
-
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
-        .thenReturn(Future.failed(new HttpException("It's broken", responseCode)))
+        .thenReturn(Future.failed(new HttpException("It's broken", INTERNAL_SERVER_ERROR)))
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
       val appWithMocks: Application = application
@@ -588,7 +576,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" in new Setup {
-
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", REQUEST_ENTITY_TOO_LARGE)))
@@ -607,7 +594,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
-
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
@@ -628,11 +614,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
   "postCashAccountStatements" must {
     "return success when calling the correct URL" in new Setup {
-
-      val expectedUrl = "apiEndpointUrl/accounts/cashaccountstatementrequest/v1"
-
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
-
       when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
         .thenReturn(Future.successful(accResponse))
 
@@ -653,13 +635,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "return failure when backend post fails" in new Setup {
-
-      private val responseCode: Int = 500
-
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
-
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
-        .thenReturn(Future.failed(new HttpException("It's broken", responseCode)))
+        .thenReturn(Future.failed(new HttpException("It's broken", INTERNAL_SERVER_ERROR)))
 
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
@@ -674,9 +652,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "return RequestCouldNotBeProcessed when Request cant be processed error is populated" in new Setup {
-
-      val expectedUrl = "apiEndpointUrl/accounts/cashaccountstatementrequest/v1"
-
       val requestCouldNotBeProcessed: AccountResponseCommon = AccountResponseCommon(
         emptyString, Some("123"), emptyString, None)
 
@@ -701,9 +676,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "return ErrorResponse when the backend POST fails with BAD_REQUEST" in new Setup {
-
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
-
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", BAD_REQUEST)))
 
@@ -722,9 +695,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "return ErrorResponse when the backend POST fails with INTERNAL_SERVER_ERROR" in new Setup {
-
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
-
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", INTERNAL_SERVER_ERROR)))
 
@@ -743,9 +714,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "return ErrorResponse when the backend POST fails with SERVICE_UNAVAILABLE" in new Setup {
-
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
-
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", SERVICE_UNAVAILABLE)))
 
@@ -766,7 +735,6 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
   "retrieveHistoricCashTransactions" must {
     "return a list of requested cash daily statements" in new Setup {
-      val expectedUrl = "apiEndpointUrl/account/cash/transactions"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
@@ -788,12 +756,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "propagate exceptions when the backend POST fails" in new Setup {
-
-      private val responseCode: Int = 500
-
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
-        .thenReturn(Future.failed(new HttpException("It's broken", responseCode)))
+        .thenReturn(Future.failed(new HttpException("It's broken", INTERNAL_SERVER_ERROR)))
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
       running(appWithHttpClient) {
@@ -817,9 +782,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
-
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
-
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
 
