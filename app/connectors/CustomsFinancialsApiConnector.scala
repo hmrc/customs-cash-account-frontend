@@ -274,9 +274,18 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
           .asOpt.fold(Left(UnknownException))(Right(_))
 
       case CREATED => processETMPErrors(response)
-      case BAD_REQUEST => Left(BadRequest)
-      case INTERNAL_SERVER_ERROR => Left(InternalServerErrorErrorResponse)
-      case _ => Left(ServiceUnavailableErrorResponse)
+
+      case BAD_REQUEST =>
+        logger.error("Bad request error while calling ETMP")
+        Left(BadRequest)
+
+      case INTERNAL_SERVER_ERROR =>
+        logger.error("Internal Server error while calling ETMP")
+        Left(InternalServerErrorErrorResponse)
+
+      case _ =>
+        logger.error("Service Unavailable error while calling ETMP")
+        Left(ServiceUnavailableErrorResponse)
     }
   }
 
@@ -291,11 +300,26 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
 
   private def checkErrorCodeAndReturnErrorResponse(errorDetail: ErrorDetail) = {
     errorDetail.errorCode match {
-      case EtmpErrorCode.code001 => Left(InvalidCashAccount)
-      case EtmpErrorCode.code002 => Left(InvalidDeclarationReference)
-      case EtmpErrorCode.code003 => Left(DuplicateAckRef)
-      case EtmpErrorCode.code004 => Left(NoAssociatedDataFound)
-      case EtmpErrorCode.code005 => Left(InvalidEori)
+      case EtmpErrorCode.code001 =>
+        logger.warn("Invalid Cash Account error")
+        Left(InvalidCashAccount)
+
+      case EtmpErrorCode.code002 =>
+        logger.warn("Invalid Declaration Reference error")
+        Left(InvalidDeclarationReference)
+
+      case EtmpErrorCode.code003 =>
+        logger.warn("Duplicate Acknowledge Reference error")
+        Left(DuplicateAckRef)
+
+      case EtmpErrorCode.code004 =>
+        logger.warn("No Associated Data Found error")
+        Left(NoAssociatedDataFound)
+
+      case EtmpErrorCode.code005 =>
+        logger.warn("Owner EORI not belongs to the Cash Account error")
+        Left(InvalidEori)
+
       case _ => Left(UnknownException)
     }
   }
