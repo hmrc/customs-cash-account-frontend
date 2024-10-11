@@ -153,7 +153,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
     httpClient.post(url"$retrieveCashAccountStatementSearchUrl")
       .withBody[CashAccountTransactionSearchRequestDetails](request)
       .execute[HttpResponse]
-      .map(processResponseForCashTransactionsBySearch)
+      .map(processResponseForTransactionsBySearch)
   }.recover {
     case UpstreamErrorResponse(_, BAD_REQUEST, _, _) =>
       logger.error("BAD Request for retrieveCashTransactionsBySearch")
@@ -265,41 +265,37 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
     }
   }
 
-  private def processResponseForCashTransactionsBySearch(response: HttpResponse): Either[ErrorResponse, CashAccountTransactionSearchResponseDetail] = {
+  private def processResponseForTransactionsBySearch(response: HttpResponse) = {
     import CashAccountTransactionSearchResponseDetail.format
 
     response.status match {
       case OK =>
         val optTransSearchResDetail = Json.fromJson[CashAccountTransactionSearchResponseDetail](response.json).asOpt
-
         optTransSearchResDetail.fold(Left(UnknownException))(Right(_))
 
-      /*if (optTransSearchResponseDetail.isDefined) {
-        Right(optTransSearchResponseDetail.get)
-      } else {
-        Left(UnknownException)
-      }*/
-      case CREATED => processEtmpBusinessErrors(response)
+      case CREATED => processETMPErrors(response)
       case BAD_REQUEST => Left(BadRequest)
       case INTERNAL_SERVER_ERROR => Left(InternalServerErrorErrorResponse)
       case _ => Left(ServiceUnavailableErrorResponse)
     }
   }
 
-  private def processEtmpBusinessErrors(response: HttpResponse): Either[ErrorResponse, CashAccountTransactionSearchResponseDetail] = {
+  private def processETMPErrors(response: HttpResponse): Either[ErrorResponse, CashAccountTransactionSearchResponseDetail] = {
     val errorDetail: Option[ErrorDetail] = Json.fromJson[ErrorDetail](response.json).asOpt
 
     errorDetail match {
-      case Some(errorDetail) =>
-        errorDetail.errorCode match {
-          case EtmpErrorCode.code001 => Left(InvalidCashAccount)
-          case EtmpErrorCode.code002 => Left(InvalidDeclarationReference)
-          case EtmpErrorCode.code003 => Left(DuplicateAckRef)
-          case EtmpErrorCode.code004 => Left(NoAssociatedDataFound)
-          case EtmpErrorCode.code005 => Left(InvalidEori)
-          case _ => Left(UnknownException)
-        }
+      case Some(errorDetail) => checkErrorCodeAndReturnErrorResponse(errorDetail)
+      case _ => Left(UnknownException)
+    }
+  }
 
+  private def checkErrorCodeAndReturnErrorResponse(errorDetail: ErrorDetail) = {
+    errorDetail.errorCode match {
+      case EtmpErrorCode.code001 => Left(InvalidCashAccount)
+      case EtmpErrorCode.code002 => Left(InvalidDeclarationReference)
+      case EtmpErrorCode.code003 => Left(DuplicateAckRef)
+      case EtmpErrorCode.code004 => Left(NoAssociatedDataFound)
+      case EtmpErrorCode.code005 => Left(InvalidEori)
       case _ => Left(UnknownException)
     }
   }

@@ -42,7 +42,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
   "getAccounts" must {
 
-    "return all accounts available to the given EORI from the API service" ignore new Setup {
+    "return all accounts available to the given EORI from the API service" in new Setup {
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[AccountsAndBalancesResponseContainer]], any[ExecutionContext]))
@@ -55,7 +55,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "log response time metric" ignore new Setup {
+    "log response time metric" in new Setup {
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[AccountsAndBalancesResponseContainer]], any[ExecutionContext]))
@@ -85,7 +85,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
   "retrieveCashTransactions" must {
     "call the correct URL and pass through the HeaderCarrier and CAN, " +
-      "return a list of cash daily statements while adding a UUID, and checking cache state" ignore new Setup {
+      "return a list of cash daily statements while adding a UUID, and checking cache state" in new Setup {
 
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
@@ -128,7 +128,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "log the error when failed to store data in the session cache call after getting response from the API " +
-      "call" ignore new Setup {
+      "call" in new Setup {
 
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
@@ -159,7 +159,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
     "call the correct URL and pass through the HeaderCarrier and CAN, " +
-      "and return a list of cash daily statements from the cacheRepository" ignore new Setup {
+      "and return a list of cash daily statements from the cacheRepository" in new Setup {
       val successResponse: CashTransactions = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
       when(mockConfig.customsFinancialsApi).thenReturn("apiEndpointUrl")
@@ -178,7 +178,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "propagate exceptions when the backend POST fails" ignore new Setup {
+    "propagate exceptions when the backend POST fails" in new Setup {
 
       private val responseCode: Int = 500
 
@@ -202,7 +202,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     }
 
 
-    "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" ignore new Setup {
+    "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" in new Setup {
       when(mockCacheRepository.get(any)).thenReturn(Future.successful(None))
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
@@ -223,7 +223,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "return ErrorResponse when the backend POST fails with NOT_FOUND" ignore new Setup {
+    "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
       when(mockCacheRepository.get(any)).thenReturn(Future.successful(None))
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
@@ -246,11 +246,11 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   }
 
   "retrieveCashTransactionsBySearch" must {
-    "call the correct URL and return a valid response for the given request" ignore new Setup {
+    "call the correct URL and return a valid response for the given request" in new Setup {
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 
-      when(requestBuilder.execute(any[HttpReads[CashAccountTransactionSearchResponseDetail]], any[ExecutionContext]))
-        .thenReturn(Future.successful(transactionSearchResponseDetail))
+      when(requestBuilder.execute(any[HttpReads[HttpResponse]], any[ExecutionContext]))
+        .thenReturn(Future.successful(HttpResponse(OK, Json.toJson(transactionSearchResponseDetail).toString)))
 
       when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
@@ -268,7 +268,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "return BadRequest error when backend responds with BAD_REQUEST" ignore new Setup {
+    "return BadRequest error when backend responds with BAD_REQUEST" in new Setup {
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 
       when(requestBuilder.execute(any[HttpReads[CashAccountTransactionSearchResponseDetail]], any[ExecutionContext]))
@@ -289,7 +289,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "return InternalServerErrorErrorResponse when backend responds with INTERNAL_SERVER_ERROR" ignore new Setup {
+    "return InternalServerErrorErrorResponse when backend responds with INTERNAL_SERVER_ERROR" in new Setup {
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 
       when(requestBuilder.execute(any[HttpReads[CashAccountTransactionSearchResponseDetail]], any[ExecutionContext]))
@@ -310,7 +310,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "return ServiceUnavailableErrorResponse when backend responds with SERVICE_UNAVAILABLE" ignore new Setup {
+    "return ServiceUnavailableErrorResponse when backend responds with SERVICE_UNAVAILABLE" in new Setup {
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 
       when(requestBuilder.execute(any[HttpReads[CashAccountTransactionSearchResponseDetail]], any[ExecutionContext]))
@@ -331,7 +331,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "return UnknownException when an unexpected error occurs" ignore new Setup {
+    "return UnknownException when an unexpected error occurs" in new Setup {
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 
       when(requestBuilder.execute(any[HttpReads[CashAccountTransactionSearchResponseDetail]], any[ExecutionContext]))
@@ -416,16 +416,9 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
           ).build()
 
         running(appWithMocks) {
-          connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D, None, None).map {
-            response => {
-              response.left.map {
-                leftValue => {
-                  println("================ left value is :::::  " + leftValue)
-                  assert(leftValue.toString.compareTo(DuplicateAckRef.toString) == 0)
-                }
-              }
-            }
+          whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
+            "testCAN", "GB123456789012", SearchType.D, None, None)) {
+            response => response.left.getOrElse(UnknownException) mustBe DuplicateAckRef
           }
         }
       }
@@ -475,12 +468,83 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
           }
         }
       }
+
+      "BAD_REQUEST is returned from ETMP" in new Setup {
+        when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+        when(requestBuilder.execute(any[HttpReads[HttpResponse]], any[ExecutionContext]))
+          .thenReturn(
+            Future.successful(
+              HttpResponse(BAD_REQUEST, Json.toJson(errorDetailObject.copy(errorCode = EtmpErrorCode.code400)).toString)))
+
+        when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+        val appWithMocks: Application = application
+          .overrides(
+            bind[HttpClientV2].toInstance(mockHttpClient)
+          ).build()
+
+        running(appWithMocks) {
+          whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
+            "testCAN", "GB123456789012", SearchType.D, None, None)) {
+            response => response.left.getOrElse(UnknownException) mustBe BadRequest
+          }
+        }
+      }
+
+      "INTERNAL_SERVER_ERROR is returned from ETMP" in new Setup {
+        when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+        when(requestBuilder.execute(any[HttpReads[HttpResponse]], any[ExecutionContext]))
+          .thenReturn(
+            Future.successful(
+              HttpResponse(
+                INTERNAL_SERVER_ERROR, Json.toJson(errorDetailObject.copy(errorCode = EtmpErrorCode.code500)).toString)))
+
+        when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+        val appWithMocks: Application = application
+          .overrides(
+            bind[HttpClientV2].toInstance(mockHttpClient)
+          ).build()
+
+        running(appWithMocks) {
+          whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
+            "testCAN", "GB123456789012", SearchType.D, None, None)) {
+            response => response.left.getOrElse(UnknownException) mustBe InternalServerErrorErrorResponse
+          }
+        }
+      }
+
+      "SERVICE_UNAVAILABLE is returned from ETMP" in new Setup {
+        when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+        when(requestBuilder.execute(any[HttpReads[HttpResponse]], any[ExecutionContext]))
+          .thenReturn(
+            Future.successful(
+              HttpResponse(
+                SERVICE_UNAVAILABLE, Json.toJson(errorDetailObject.copy(errorCode = EtmpErrorCode.code503)).toString)))
+
+        when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+        val appWithMocks: Application = application
+          .overrides(
+            bind[HttpClientV2].toInstance(mockHttpClient)
+          ).build()
+
+        running(appWithMocks) {
+          whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
+            "testCAN", "GB123456789012", SearchType.D, None, None)) {
+            response => response.left.getOrElse(UnknownException) mustBe ServiceUnavailableErrorResponse
+          }
+        }
+      }
     }
   }
 
   "retrieveCashTransactionsDetail" must {
     "call the correct URL and pass through the HeaderCarrier and CAN," +
-      " and return a list of cash daily statements" ignore new Setup {
+      " and return a list of cash daily statements" in new Setup {
 
       val expectedUrl = "apiEndpointUrl/account/cash/transactions-detail"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
@@ -502,7 +566,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "propagate exceptions when the backend POST fails" ignore new Setup {
+    "propagate exceptions when the backend POST fails" in new Setup {
 
       private val responseCode: Int = 500
 
@@ -523,7 +587,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" ignore new Setup {
+    "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" in new Setup {
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
@@ -542,7 +606,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "return ErrorResponse when the backend POST fails with NOT_FOUND" ignore new Setup {
+    "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
@@ -563,7 +627,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   }
 
   "postCashAccountStatements" must {
-    "return success when calling the correct URL" ignore new Setup {
+    "return success when calling the correct URL" in new Setup {
 
       val expectedUrl = "apiEndpointUrl/accounts/cashaccountstatementrequest/v1"
 
@@ -588,7 +652,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "return failure when backend post fails" ignore new Setup {
+    "return failure when backend post fails" in new Setup {
 
       private val responseCode: Int = 500
 
@@ -609,7 +673,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "return RequestCouldNotBeProcessed when Request cant be processed error is populated" ignore new Setup {
+    "return RequestCouldNotBeProcessed when Request cant be processed error is populated" in new Setup {
 
       val expectedUrl = "apiEndpointUrl/accounts/cashaccountstatementrequest/v1"
 
@@ -636,7 +700,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "return ErrorResponse when the backend POST fails with BAD_REQUEST" ignore new Setup {
+    "return ErrorResponse when the backend POST fails with BAD_REQUEST" in new Setup {
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 
@@ -657,7 +721,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "return ErrorResponse when the backend POST fails with INTERNAL_SERVER_ERROR" ignore new Setup {
+    "return ErrorResponse when the backend POST fails with INTERNAL_SERVER_ERROR" in new Setup {
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 
@@ -678,7 +742,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "return ErrorResponse when the backend POST fails with SERVICE_UNAVAILABLE" ignore new Setup {
+    "return ErrorResponse when the backend POST fails with SERVICE_UNAVAILABLE" in new Setup {
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 
@@ -701,7 +765,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   }
 
   "retrieveHistoricCashTransactions" must {
-    "return a list of requested cash daily statements" ignore new Setup {
+    "return a list of requested cash daily statements" in new Setup {
       val expectedUrl = "apiEndpointUrl/account/cash/transactions"
       private val successResponse = CashTransactions(listOfPendingTransactions, listOfCashDailyStatements)
 
@@ -723,7 +787,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "propagate exceptions when the backend POST fails" ignore new Setup {
+    "propagate exceptions when the backend POST fails" in new Setup {
 
       private val responseCode: Int = 500
 
@@ -738,7 +802,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" ignore new Setup {
+    "return ErrorResponse when the backend POST fails with REQUEST_ENTITY_TOO_LARGE" in new Setup {
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
       when(requestBuilder.execute(any[HttpReads[Seq[CashDailyStatement]]], any[ExecutionContext]))
@@ -752,7 +816,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
-    "return ErrorResponse when the backend POST fails with NOT_FOUND" ignore new Setup {
+    "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
 
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 

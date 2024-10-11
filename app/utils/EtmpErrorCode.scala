@@ -22,4 +22,7 @@ object EtmpErrorCode {
   val code003 = "003"
   val code004 = "004"
   val code005 = "005"
+  val code400 = "400"
+  val code500 = "500"
+  val code503 = "503"
 }
