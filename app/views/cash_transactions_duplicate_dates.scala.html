@@ -40,10 +40,13 @@
     fullWidth = false,
     help = false
 ) {
-    @h1("cf.cash-account.duplicate.header")
+    @h1(
+        msg = s"${messages(message, startDate, endDate)}",
+        id = Some("duplicate-date-header")
+    )
 
     @p(
-        message = s"${messages(message, startDate, endDate)}",
+        message = "cf.cash-account.duplicate.message",
         id = Some("duplicate-date-label")
     )
 
