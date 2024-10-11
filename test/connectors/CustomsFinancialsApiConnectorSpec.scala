@@ -801,8 +801,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     private val cashAccountNumber = "987654"
     private val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
 
-    val accResponse: AccountResponseCommon = AccountResponseCommon(
-      emptyString, None, emptyString, None)
+    val accResponse: AccountResponseCommon = AccountResponseCommon(emptyString, None, emptyString, None)
 
     val sessionId: SessionId = SessionId("session_1234")
     implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
@@ -815,8 +814,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     val mockCacheRepository: CacheRepository = mock[CacheRepository]
 
     val cdsCashAccount: CdsCashAccount = CdsCashAccount(
-      Account(cashAccountNumber, emptyString, traderEori, Some(AccountStatusOpen), false, Some(false)),
-      Some("999.99"))
+      Account(cashAccountNumber, emptyString, traderEori, Some(AccountStatusOpen), false, Some(false)), Some("999.99"))
 
     val cashAccount: CashAccount = cdsCashAccount.toDomain
 
@@ -874,10 +872,8 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         can = "testCAN",
         eoriDetails = Seq(
           EoriDataContainer(
-            eoriData = EoriData(
-              eoriNumber = "GB123456789012",
-              name = "Test Importer"))
-        ), declarations = Some(Seq.empty))
+            eoriData = EoriData(eoriNumber = "GB123456789012", name = "Test Importer"))),
+        declarations = Some(Seq.empty))
 
     val timestamp = "2019-08-1618:15:41"
     val correlationId = "3jh1f6b3-f8b1-4f3c-973a-05b4720e-4567899"
