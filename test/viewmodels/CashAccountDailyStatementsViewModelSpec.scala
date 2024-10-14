@@ -34,7 +34,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
 
     "return correct contents for the model" when {
 
-      "cash transactions are available" ignore new Setup {
+      "cash transactions are available" in new Setup {
         val dailyStatementsViewModel: CashAccountDailyStatementsViewModel =
           CashAccountDailyStatementsViewModel(cashTransactions, None)
 
@@ -44,7 +44,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
         dailyStatementsViewModel.hasTransactions mustBe true
       }
 
-      "cash transactions are available, max records per page is 30 and page no is one" ignore new Setup {
+      "cash transactions are available, max records per page is 30 and page no is one" in new Setup {
         val dailyStatementsViewModel: CashAccountDailyStatementsViewModel =
           CashAccountDailyStatementsViewModel(cashTransactions, Some(1))
 
@@ -54,7 +54,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
         dailyStatementsViewModel.hasTransactions mustBe true
       }
 
-      "cash transactions are available, max records per page is 30 and page no is other than one" ignore new Setup {
+      "cash transactions are available, max records per page is 30 and page no is other than one" in new Setup {
         val dailyStatementsViewModel: CashAccountDailyStatementsViewModel =
           CashAccountDailyStatementsViewModel(cashTransactions, Some(2))
 
@@ -63,7 +63,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
         dailyStatementsViewModel.hasTransactions mustBe true
       }
 
-      "cash transactions are not present" ignore new Setup {
+      "cash transactions are not present" in new Setup {
         val cashAccountDailyStatementsViewModelWithNoTransactions: CashAccountDailyStatementsViewModel =
           CashAccountDailyStatementsViewModel(
             cashTransactions.copy(pendingTransactions = Seq(), cashDailyStatements = Seq()), None)
@@ -80,17 +80,8 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
   "DailyStatementViewModel.compare" should {
 
     "sort the data in the correct order" in new Setup {
-      List(
-        DailyStatementViewModel(date = dateAug14, balance = None),
-        DailyStatementViewModel(date = dateAug12, balance = None),
-        DailyStatementViewModel(date = dateAug11, balance = None),
-        DailyStatementViewModel(date = dateAug17, balance = None),
-        DailyStatementViewModel(date = dateAug16, balance = None),
-        DailyStatementViewModel(date = dateAug15, balance = None),
-        DailyStatementViewModel(date = dateAug13, balance = None))
-        .sorted mustBe
-        List(
-          DailyStatementViewModel(date = dateAug17, balance = None),
+      val expectedListAfterSort: List[DailyStatementViewModel] =
+        List(DailyStatementViewModel(date = dateAug17, balance = None),
           DailyStatementViewModel(date = dateAug16, balance = None),
           DailyStatementViewModel(date = dateAug15, balance = None),
           DailyStatementViewModel(date = dateAug14, balance = None),
@@ -98,6 +89,13 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
           DailyStatementViewModel(date = dateAug12, balance = None),
           DailyStatementViewModel(date = dateAug11, balance = None))
 
+      List(DailyStatementViewModel(date = dateAug14, balance = None),
+        DailyStatementViewModel(date = dateAug12, balance = None),
+        DailyStatementViewModel(date = dateAug11, balance = None),
+        DailyStatementViewModel(date = dateAug17, balance = None),
+        DailyStatementViewModel(date = dateAug16, balance = None),
+        DailyStatementViewModel(date = dateAug15, balance = None),
+        DailyStatementViewModel(date = dateAug13, balance = None)).sorted mustBe expectedListAfterSort
     }
   }
 

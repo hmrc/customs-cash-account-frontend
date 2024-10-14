@@ -41,9 +41,7 @@ case class DailyStatementViewModel(date: LocalDate,
                                    credit: Option[String] = None,
                                    debit: Option[String] = None,
                                    balance: Option[String]) extends Ordered[DailyStatementViewModel] {
-  override def compare(that: DailyStatementViewModel): Int = {
-    that.date.compareTo(date)
-  }
+  override def compare(that: DailyStatementViewModel): Int = that.date.compareTo(date)
 }
 
 case class CashAccountDailyStatementsViewModel(dailyStatements: Seq[DailyStatementViewModel],
