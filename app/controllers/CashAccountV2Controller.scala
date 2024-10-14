@@ -65,41 +65,49 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
 
   def showAccountDetails(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async {
     implicit request =>
-
-      val eventualMaybeCashAccount = apiConnector.getCashAccount(request.eori)
-
-      val (from, to) = cashAccountUtils.transactionDateRange()
-      val eventualStatements = getStatementsForEori(request.eori, from, to)
-      val transformedStatements = EitherT.liftF(eventualStatements)
-
-      val result = for {
-        cashAccount <- fromOptionF[Future, Result, CashAccount](eventualMaybeCashAccount, NotFound(eh.notFoundTemplate))
-        statements <- transformedStatements
-        (from, to) = cashAccountUtils.transactionDateRange()
-        page <- liftF[Future, Result, Result](showAccountWithTransactionDetails(cashAccount, from, to, page, statements))
-      } yield page
-
-      result.merge.recover {
-        case exception =>
-          logger.error(s"Unable to retrieve account details: ${exception.getMessage}")
-          Redirect(routes.CashAccountV2Controller.showAccountUnavailable)
-      }
+      processAccountDetails(page = page)
   }
 
   def onSubmit(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     form.bindFromRequest().fold(
-      _ => Future.successful(NotFound(eh.notFoundTemplate)),
+      formWithErrors => {
+        processAccountDetails(formWithErrors, page)
+      },
       enteredValue => Future.successful {
         Redirect(routes.DeclarationDetailController.displaySearchDetails(page, enteredValue))
       }
     )
   }
 
+  private def processAccountDetails(form: Form[String] = formProvider(),
+                                    page: Option[Int])
+                                   (implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
+
+    val eventualMaybeCashAccount = apiConnector.getCashAccount(request.eori)
+    val (from, to) = cashAccountUtils.transactionDateRange()
+    val eventualStatements = getStatementsForEori(request.eori, from, to)
+    val transformedStatements = EitherT.liftF(eventualStatements)
+
+    val result = for {
+      cashAccount <- fromOptionF[Future, Result, CashAccount](eventualMaybeCashAccount, NotFound(eh.notFoundTemplate))
+      statements <- transformedStatements
+      page <-
+        liftF[Future, Result, Result](showAccountWithTransactionDetails(cashAccount, from, to, page, statements, form))
+    } yield page
+
+    result.merge.recover {
+      case exception =>
+        logger.error(s"Unable to retrieve account details: ${exception.getMessage}")
+        Redirect(routes.CashAccountV2Controller.showAccountUnavailable)
+    }
+  }
+
   private def showAccountWithTransactionDetails(account: CashAccount,
                                                 from: LocalDate,
                                                 to: LocalDate,
                                                 page: Option[Int],
-                                                statements: Seq[CashStatementsForEori])
+                                                statements: Seq[CashStatementsForEori],
+                                                form: Form[String] = formProvider())
                                                (implicit req: IdentifierRequest[AnyContent],
                                                 appConfig: AppConfig): Future[Result] = {
 

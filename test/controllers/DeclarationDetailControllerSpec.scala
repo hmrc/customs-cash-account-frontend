@@ -44,10 +44,8 @@ import org.mockito.Mockito
 import org.mockito.Mockito.when
 import play.api.Application
 import play.api.inject.bind
-import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.SpecBase
 
@@ -138,7 +136,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
 
   "Cash Account Declaration Transaction Search Details" must {
 
-    "return a NOT_FOUND when declarationsOpt is None" in new Setup {
+    "return an OK and show transactionsUnavailableView when declarations are empty" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
@@ -153,17 +151,11 @@ class DeclarationDetailControllerSpec extends SpecBase {
           can = cashAccountNumber,
           eoriDetails = Seq.empty,
           declarations = None,
-          paymentsWithdrawalsAndTransfers = None
-        ))))
-
-      when(mockErrorHandler.notFoundTemplate(any[Request[_]]))
-        .thenReturn(Html("Not Found"))
+          paymentsWithdrawalsAndTransfers = None))))
 
       val app: Application = application
         .overrides(
-          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
-          bind[ErrorHandler].toInstance(mockErrorHandler)
-        )
+          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
       running(app) {
@@ -172,8 +164,8 @@ class DeclarationDetailControllerSpec extends SpecBase {
 
         val result = route(app, request).value
 
-        status(result) mustEqual NOT_FOUND
-        contentAsString(result) mustEqual "Not Found"
+        status(result) mustEqual OK
+        contentAsString(result) must include("There is a problem displaying your transactions at the moment.")
       }
     }
 
@@ -210,7 +202,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
       }
     }
 
-    "return an NOT_FOUND when an error occurs during retrieval" in new Setup {
+    "return an OK and show transactionsUnavailableView when an error occurs during retrieval" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
@@ -219,8 +211,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
         eqTo(eori),
         any[SearchType.Value],
         any[Option[DeclarationDetailsSearch]],
-        any[Option[CashAccountPaymentDetails]]
-      )(any[HeaderCarrier]))
+        any[Option[CashAccountPaymentDetails]])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Left(UnknownException)))
 
       val app: Application = application
@@ -232,7 +223,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
           .withSession("eori" -> eori)
 
         val result = route(app, request).value
-        status(result) mustEqual NOT_FOUND
+        status(result) mustEqual OK
       }
     }
 
@@ -301,24 +292,13 @@ class DeclarationDetailControllerSpec extends SpecBase {
       postingDate = "2024-04-29",
       acceptanceDate = "2024-04-28",
       amount = 500.00,
-      taxGroups = Seq(
-        TaxGroupWrapper(
-          TaxGroupSearch(
-            taxGroupDescription = "Import VAT",
-            amount = 100.00,
-            taxTypes = Seq(
-              TaxTypeWithSecurityContainer(
-                TaxTypeWithSecurity(
-                  reasonForSecurity = Some("Security Reason"),
-                  taxTypeID = "50",
-                  amount = 100.00
-                )
-              )
-            )
-          )
-        )
-      )
-    )
+      taxGroups = Seq(TaxGroupWrapper(TaxGroupSearch(
+        taxGroupDescription = "Import VAT",
+        amount = 100.00,
+        taxTypes = Seq(TaxTypeWithSecurityContainer(TaxTypeWithSecurity(
+          reasonForSecurity = Some("Security Reason"),
+          taxTypeID = "50",
+          amount = 100.00)))))))
 
     val declarationWrapper: DeclarationWrapper = DeclarationWrapper(declarationSearch)
   }

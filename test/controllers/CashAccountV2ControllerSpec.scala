@@ -530,19 +530,20 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(POST, routes.CashAccountV2Controller.onSubmit(page).url)
-          .withFormUrlEncodedBody("value" -> "testValue")
+          .withFormUrlEncodedBody("value" -> "GHRT122910DC537220")
 
         val result = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        val expectedRedirectUrl = routes.DeclarationDetailController.displaySearchDetails(page, "testValue").url
+        val expectedRedirectUrl =
+          routes.DeclarationDetailController.displaySearchDetails(page, "GHRT122910DC537220").url
 
         redirectLocation(result).value mustEqual expectedRedirectUrl
       }
     }
 
-    "return NOT_FOUND when form submission is unsuccessful" in new Setup {
+    "return OK when form submission is unsuccessful" in new Setup {
       val app: Application = application
         .overrides(bind[DeclarationDetailController].toInstance(mockDeclarationDetailController))
         .build()
@@ -553,8 +554,8 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
         val result = route(app, request).value
 
-        status(result) mustEqual NOT_FOUND
-        contentAsString(result) must include("Page not found")
+        status(result) mustEqual OK
+        contentAsString(result) must include("There is a problem")
       }
     }
   }
