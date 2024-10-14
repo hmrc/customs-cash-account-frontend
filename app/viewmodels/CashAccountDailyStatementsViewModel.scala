@@ -17,7 +17,6 @@
 package viewmodels
 
 import config.AppConfig
-import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount, parseDateString}
 import models.{
   CashDailyStatement, CashTransactionType, CashTransactions, Declaration, Payment, Transaction,
   Transfer, Withdrawal
