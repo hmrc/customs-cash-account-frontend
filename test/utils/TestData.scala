@@ -30,8 +30,14 @@ object TestData {
   val DATE_1: LocalDate = LocalDate.parse("2020-08-21")
 
   val DAY_1 = 1
-  val DAY_15 = 15
   val DAY_10 = 10
+  val DAY_11 = 11
+  val DAY_12 = 12
+  val DAY_13 = 13
+  val DAY_14 = 14
+  val DAY_15 = 15
+  val DAY_16 = 16
+  val DAY_17 = 17
 
   val MONTH_1 = 1
   val MONTH_2 = 2
