@@ -51,7 +51,7 @@
 
     @viewModel.cashAccountBalance
 
-    <div class="govuk-grid-row">
+    <div class="govuk-grid-row" id="notification-statement">
         <div class="govuk-grid-column-two-thirds">
             @viewModel.cashStatementNotification.map(identity)
         </div>
