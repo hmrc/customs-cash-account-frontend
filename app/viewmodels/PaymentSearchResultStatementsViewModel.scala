@@ -17,11 +17,14 @@
 package viewmodels
 
 import config.AppConfig
-
+import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount, yyyyMMddDateFormatter}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import utils.Utils.{h2Component, pComponent, prependNegativeSignWithAmount}
+import models.response
 import models.response.PaymentsWithdrawalsAndTransfer
-import utils.Utils.{h2Component, pComponent}
+
+import java.time.LocalDate
 
 case class PaymentSearchResultStatementsViewModel(dailyStatements: Seq[DailyStatementViewModel],
                                                   hasTransactions: Boolean,
@@ -74,19 +77,49 @@ object PaymentSearchResultStatementsViewModel {
   private def populateDailyStatementViewModelList(dailyStatements: Seq[PaymentsWithdrawalsAndTransfer])
                                                  (implicit msgs: Messages): Seq[DailyStatementViewModel] = {
     val result: Seq[DailyStatementViewModel] = dailyStatements.map { txn =>
-      val credit = if (txn.amount > 0) Some(f"${txn.amount}%.2f") else None
-      val debit = if (txn.amount < 0) Some(f"${-txn.amount}%.2f") else None
-      val transactionType = Some(txn.`type`)
-
       DailyStatementViewModel(
-        date = txn.valueDate,
-        //transactionType = transactionType,
-        credit = credit,
-        debit = debit,
+        date = dateAsDayMonthAndYear(LocalDate.parse(txn.valueDate, yyyyMMddDateFormatter)),
+        transactionType = Some(PaymentType(textString = Some(populateTransactionTypeText(txn)))),
+        credit = populateCreditAmount(txn),
+        debit = populateDebitAmount(txn),
         balance = None
       )
     }
     result.sorted
+  }
+
+  private def populateTransactionTypeText(valueObject: PaymentsWithdrawalsAndTransfer)(implicit msgs: Messages) = {
+    valueObject.`type` match {
+      case response.PaymentType.Payment => msgs("cf.cash-account.detail.top-up.v2")
+      case response.PaymentType.Withdrawal => msgs("cf.cash-account.detail.withdrawal")
+      case response.PaymentType.Transfer => msgs("cf.cash-account.detail.transfer.v2")
+    }
+  }
+
+  private def populateCreditAmount(valueObject: PaymentsWithdrawalsAndTransfer): Option[String] = {
+    valueObject.`type` match {
+      case response.PaymentType.Payment => Some(formatCurrencyAmount(valueObject.amount))
+      case response.PaymentType.Withdrawal => None
+      case response.PaymentType.Transfer =>
+        if (valueObject.amount < 0) {
+          None
+        } else {
+          Some(formatCurrencyAmount(valueObject.amount))
+        }
+    }
+  }
+
+  private def populateDebitAmount(valueObject: PaymentsWithdrawalsAndTransfer): Option[String] = {
+    valueObject.`type` match {
+      case response.PaymentType.Payment => None
+      case response.PaymentType.Withdrawal => Some(prependNegativeSignWithAmount(formatCurrencyAmount(valueObject.amount)))
+      case response.PaymentType.Transfer =>
+        if (valueObject.amount < 0) {
+          Some(prependNegativeSignWithAmount(formatCurrencyAmount(valueObject.amount)))
+        } else {
+          None
+        }
+    }
   }
 
 }

@@ -77,6 +77,7 @@ cf.cash-account.detail.top-up.v2=Top up
 cf.cash-account.detail.withdrawal=Withdrawal
 cf.cash-account.detail.withdrawal.account-ending=(to account ending {0})
 cf.cash-account.detail.pending=(Pending)
+cf.cash-account.detail.transfer.v2=Transfer
 cf.cash-account.detail.transfer-in=Transfer from another account
 cf.cash-account.detail.transfer-in.v2=Transfer from Cash account {0}
 cf.cash-account.detail.transfer-out=Transfer to another account

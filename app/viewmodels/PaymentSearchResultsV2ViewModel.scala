@@ -17,43 +17,50 @@
 package viewmodels
 
 import config.AppConfig
-import models.{CashAccount, CashAccountViewModel}
-import models.domain.EORI
+import models.CashAccount
 import models.response.PaymentsWithdrawalsAndTransfer
-import utils.Utils.*
 import play.twirl.api.HtmlFormat
-import views.html.components.{cash_account_balance, payment_search_results_v2}
+import views.html.components.payment_search_results_v2
 import play.api.i18n.Messages
+import utils.Utils.{
+  emptyGovUkTableComponent, emptyH1InnerComponent, h2Component,
+  h2InnerComponent, hmrcNewTabLinkComponent
+}
 import viewmodels.pagination.ListPaginationViewModel
 
 
 case class PaymentSearchResultsViewModel(pageTitle: String,
                                          backLink: String,
-                                         cashAccountBalance: HtmlFormat.Appendable,
+                                         accountDetails: HtmlFormat.Appendable,
+                                         searchResultsHeader: HtmlFormat.Appendable,
                                          paymentSearchResultSection: HtmlFormat.Appendable,
                                          helpAndSupportGuidance: GuidanceRow,
                                          paginationModel: Option[ListPaginationViewModel] = None)
 
 object PaymentSearchResultsViewModel {
 
-  def apply(eori: EORI,
+  def apply(searchValue: String,
             account: CashAccount,
             paymentsWithdrawalsAndTransfers: Seq[PaymentsWithdrawalsAndTransfer],
             pageNo: Option[Int])(implicit msgs: Messages, config: AppConfig): PaymentSearchResultsViewModel = {
 
-    val cashAccountBalance: HtmlFormat.Appendable =
-      new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
-        .apply(model = CashAccountViewModel(eori, account), showBalance = false, displayLastSixMonthsHeading = false)
+    val populateAccountDetails: HtmlFormat.Appendable =
+      h2InnerComponent(id = Some("account-number"), innerMsg = account.number, msgKey = "cf.cash-account.detail.account")
 
     val totalDailyStatementsSize: Int = paymentsWithdrawalsAndTransfers.size
 
     PaymentSearchResultsViewModel(
       pageTitle = msgs("cf.cash-account.detail.title"),
-      backLink = config.customsFinancialsFrontendHomepage,
-      cashAccountBalance = cashAccountBalance,
+      backLink = controllers.routes.CashAccountV2Controller.showAccountDetails(pageNo).url,
+      accountDetails = populateAccountDetails,
+      searchResultsHeader = populateSearchResultsHeader(searchValue),
       paymentSearchResultSection = populatePaymentSearchResultSection(paymentsWithdrawalsAndTransfers, pageNo),
       helpAndSupportGuidance = helpAndSupport,
       paginationModel = populatePaginationModel(pageNo, totalDailyStatementsSize))
+  }
+
+  private def populateSearchResultsHeader(searchInput: String)(implicit messages: Messages): HtmlFormat.Appendable = {
+    emptyH1InnerComponent(msg = "cf.cash-account.detail.declaration.search-title", innerMsg = searchInput)
   }
 
   private def populatePaymentSearchResultSection(seqOfXyz: Seq[PaymentsWithdrawalsAndTransfer],

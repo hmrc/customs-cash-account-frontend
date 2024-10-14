@@ -22,7 +22,7 @@ import controllers.actions.{EmailAction, IdentifierAction}
 import helpers.CashAccountUtils
 import models.{CashAccount, CashTransactions}
 import models.request.{CashAccountPaymentDetails, DeclarationDetailsSearch, IdentifierRequest, ParamName, SearchType}
-import models.response.{CashAccountTransactionSearchResponseDetail, DeclarationWrapper, PaymentsWithdrawalsAndTransfer}
+import models.response.{CashAccountTransactionSearchResponseDetail, PaymentsWithdrawalsAndTransfer}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -76,40 +76,35 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
     }
 
     apiConnector.retrieveCashTransactionsBySearch(account.number, request.eori, searchType, declarationDetails).map {
-      case Right(transactions) => preProcessTransactions(transactions, searchInput, account, page)
+      case Right(transactions) => processTransactions(transactions, searchInput, account, page)
       case Left(_) => NotFound(errorHandler.notFoundTemplate)
     }
   }
 
-  private def preProcessTransactions(cashAccResDetail: CashAccountTransactionSearchResponseDetail,
-                                     searchValue: String,
-                                     account: CashAccount,
-                                     page: Option[Int]
-                                    )(implicit request: IdentifierRequest[_]): Result = {
-
-    cashAccResDetail.declarations match {
-      case Some(declarations) => processTransactions(Some(declarations), searchValue, account, page)
-      case None => NotFound(errorHandler.notFoundTemplate)
-    }
-    cashAccResDetail.paymentsWithdrawalsAndTransfers match {
-      case Some(seqOfPaymentsWithdrawalsAndTransfers) => {
-        val paymentsSeq: Seq[PaymentsWithdrawalsAndTransfer] = seqOfPaymentsWithdrawalsAndTransfers.map(_.paymentsWithdrawalsAndTransfer)
-        val vm = PaymentSearchResultsViewModel("testEori", account, paymentsSeq, page)
-        Ok(paymentSearchView(vm))
-      }
-      case None => NotFound(errorHandler.notFoundTemplate)
-    }
-  }
-
-  private def processTransactions(declarationsOpt: Option[Seq[DeclarationWrapper]],
+  private def processTransactions(cashAccResDetail: CashAccountTransactionSearchResponseDetail,
                                   searchValue: String,
                                   account: CashAccount,
-                                  page: Option[Int])(implicit request: IdentifierRequest[_]): Result = {
-
-    declarationsOpt.flatMap(_.headOption.map(_.declaration)) match {
-      case Some(declarationSearch) =>
-        Ok(searchView(DeclarationDetailSearchViewModel(searchValue, account, declarationSearch), page))
-      case None => NotFound(errorHandler.notFoundTemplate)
+                                  page: Option[Int]
+                                 )(implicit request: IdentifierRequest[_]): Result = {
+    if (cashAccResDetail.declarations.isDefined) {
+      cashAccResDetail.declarations.flatMap(_.headOption.map(_.declaration)) match {
+        case Some(declarationSearch) =>
+          Ok(searchView(DeclarationDetailSearchViewModel(searchValue, account, declarationSearch), page))
+        case None => NotFound(errorHandler.notFoundTemplate)
+      }
+    }
+    else if (cashAccResDetail.paymentsWithdrawalsAndTransfers.isDefined) {
+      cashAccResDetail.paymentsWithdrawalsAndTransfers match {
+        case Some(seqOfPaymentsWithdrawalsAndTransfers) => {
+          val paymentTransfersList: Seq[PaymentsWithdrawalsAndTransfer] =
+            seqOfPaymentsWithdrawalsAndTransfers.map(_.paymentsWithdrawalsAndTransfer)
+          Ok(paymentSearchView(PaymentSearchResultsViewModel(searchValue, account, paymentTransfersList, page)))
+        }
+        case None => NotFound(errorHandler.notFoundTemplate)
+      }
+    }
+    else {
+      NotFound(errorHandler.notFoundTemplate)
     }
   }
 

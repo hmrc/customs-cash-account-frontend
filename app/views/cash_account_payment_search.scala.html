@@ -22,8 +22,8 @@
 @import viewmodels.PaymentSearchResultsViewModel
 
 @this(
-        main_template: Layout,
-        pagination: GovukPagination
+    main_template: Layout,
+    pagination: GovukPagination
 )
 
 @(
@@ -41,7 +41,9 @@
     help = true
 ) {
 
-    @viewModel.cashAccountBalance
+    @viewModel.accountDetails
+
+    @viewModel.searchResultsHeader
 
     @viewModel.paymentSearchResultSection
 
