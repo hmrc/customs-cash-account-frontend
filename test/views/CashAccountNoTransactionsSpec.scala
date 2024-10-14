@@ -168,7 +168,6 @@ class CashAccountNoTransactionsSpec extends SpecBase {
 
     val model: CashAccountViewModel = CashAccountViewModel(eori, cashAccount)
 
-
     val app: Application = application.build()
     implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
     implicit val msgs: Messages = messages(app)
