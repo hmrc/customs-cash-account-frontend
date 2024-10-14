@@ -51,11 +51,11 @@
 
     @viewModel.cashAccountBalance
 
-    <div class = "govuk-grid-column-two-thirds">
-        @viewModel.cashStatementNotification.map(identity)
-    </div>
-
-    <div style="clear:both;"></div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            @viewModel.cashStatementNotification.map(identity)
+        </div>
+    </div
 
     @formHelper(action = controllers.routes.CashAccountV2Controller.onSubmit(None)) {
         @errorSummary(form.errors, None)
