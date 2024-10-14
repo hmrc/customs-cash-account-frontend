@@ -252,6 +252,31 @@ class DeclarationDetailControllerSpec extends SpecBase {
         status(result) mustEqual NOT_FOUND
       }
     }
+    
+    "return an OK when declarationOpt is None" in new Setup {
+      ???
+    }
+    
+    "return a CREATED when error code is 001 (Invalid Cash Account error)" in new Setup {
+      ???
+    }
+    
+    "return a CREATED when error code is 002 (Invalid Declaration Reference error)" in new Setup {
+      ???
+    }
+
+    "return a CREATED when error code is 003 (Duplicate Acknowledge Reference error)" in new Setup {
+      ???
+    }
+
+    "return a CREATED when error code is 004 (No Associated Data Found error)" in new Setup {
+      ???
+    }
+
+    "return a CREATED when error code is 005 (Owner EORI not belongs to the Cash Account error)" in new Setup {
+      ???
+    }
+    
   }
 
   trait Setup {
