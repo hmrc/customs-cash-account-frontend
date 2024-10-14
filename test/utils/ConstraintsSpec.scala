@@ -17,14 +17,48 @@
 package utils
 
 import forms.mappings.Constraints
-import org.scalatest.matchers.should.Matchers._
 import play.api.data.validation.{Invalid, Valid, ValidationError, ValidationResult}
+import utils.RegexPatterns.{mrnRegex, paymentRegex, ucrRegex}
 
 import java.time.{LocalDate, LocalDateTime}
 
 class ConstraintsSpec extends SpecBase with Constraints {
 
   "Constraints" should {
+
+    "validateSearchInput" must {
+
+      "return Valid when given a valid MRN" in new Setup {
+        val result: ValidationResult = validateSearchInput("error.key")("GDRC1345317D1113315")
+        result mustBe Valid
+      }
+
+      "return Invalid when given an invalid MRN" in new Setup {
+        val result: ValidationResult = validateSearchInput("error.key")("123DR_1345!D1113315He22")
+        result mustBe Invalid(Seq(ValidationError("error.key", patterns: _*)))
+      }
+
+      "return Valid when given an valid UCR" in new Setup {
+        val result: ValidationResult = validateSearchInput("error.key")("GB1168562890 9193-9182-888 416D")
+        result mustBe Valid
+      }
+
+      "return Invalid when given an invalid UCR" in new Setup {
+        val result: ValidationResult = validateSearchInput("error.key")("GB1234567890_1134!7456-914+121D")
+        result mustBe Invalid(Seq(ValidationError("error.key", patterns: _*)))
+      }
+
+      "return Valid when given a valid payment amount" in new Setup {
+        val paymentResult: ValidationResult = validateSearchInput("error.key")("£30.00")
+        paymentResult mustBe Valid
+      }
+
+      "return Invalid when given an invalid payment amount" in new Setup {
+        val paymentResult: ValidationResult = validateSearchInput("error.key")("-_£30.00.00")
+        paymentResult mustBe Invalid(
+          Seq(ValidationError("error.key", patterns: _*)))
+      }
+    }
 
     "currentDate" must {
 
@@ -107,6 +141,8 @@ class ConstraintsSpec extends SpecBase with Constraints {
   }
 
   trait Setup {
+    val patterns: Seq[String] = Seq(mrnRegex.regex, paymentRegex.regex, ucrRegex.regex)
+
     def ld: LocalDate = LocalDateTime.now().toLocalDate
   }
 }

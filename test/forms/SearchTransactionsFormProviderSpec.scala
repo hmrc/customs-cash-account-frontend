@@ -28,14 +28,13 @@ class SearchTransactionsFormProviderSpec extends SpecBase {
 
       val data = Map("value" -> emptyString)
 
-      form.bind(data).errors mustBe Seq(FormError("value", List("cf.searchTransactions.form.error.required"), List()))
+      form.bind(data).errors mustBe Seq(FormError("value", List("cf.search.form.error.required"), List()))
     }
 
     "produce no error if some value is provided" in {
       val form = new SearchTransactionsFormProvider()()
 
-      val inputValue = "test_value"
-
+      val inputValue = "GAGG1126910LP531340"
       val data = Map("value" -> inputValue)
 
       form.bind(data).get mustBe inputValue
