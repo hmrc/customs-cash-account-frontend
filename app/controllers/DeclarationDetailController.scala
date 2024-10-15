@@ -19,6 +19,7 @@ package controllers
 import config.{AppConfig, ErrorHandler}
 import connectors.CustomsFinancialsApiConnector
 import controllers.actions.{EmailAction, IdentifierAction}
+import forms.SearchTransactionsFormProvider
 import helpers.CashAccountUtils
 import models.{CashAccount, CashTransactions}
 import models.request.{CashAccountPaymentDetails, DeclarationDetailsSearch, IdentifierRequest, ParamName, SearchType}
@@ -28,11 +29,12 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{
   cash_account_declaration_details, cash_account_declaration_details_search,
-  cash_transactions_no_result, cash_account_payment_search
+  cash_account_payment_search, cash_transactions_no_result
 }
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.Logging
+import play.api.data.Form
 import utils.RegexPatterns.{mrnRegex, paymentRegex}
 import viewmodels.{
   DeclarationDetailSearchViewModel, DeclarationDetailViewModel,
@@ -50,18 +52,26 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
                                             searchView: cash_account_declaration_details_search,
                                             paymentSearchView: cash_account_payment_search,
                                             cashAccountUtils: CashAccountUtils,
-                                            noTransactionsView: cash_transactions_no_result
+                                            noTransactionsView: cash_transactions_no_result,
+                                            formProvider: SearchTransactionsFormProvider,
+                                            eh: ErrorHandler
                                            )(implicit executionContext: ExecutionContext,
                                              appConfig: AppConfig
                                            ) extends FrontendController(mcc) with I18nSupport with Logging {
 
-  def displaySearchDetails(page: Option[Int], searchInput: String): Action[AnyContent] =
-    (authenticate andThen verifyEmail).async { implicit request =>
+  val form: Form[String] = formProvider()
 
-      apiConnector.getCashAccount(request.eori).flatMap {
-        case Some(account) => prepareTransactionSearch(account, page, searchInput)
-        case None => Future.successful(NotFound(errorHandler.notFoundTemplate))
-      }
+  def displaySearchDetails(page: Option[Int]): Action[AnyContent] =
+    (authenticate andThen verifyEmail).async { implicit request =>
+      form.bindFromRequest().fold(
+        _ => Future.successful(NotFound(eh.notFoundTemplate)),
+        enteredValue => {
+          apiConnector.getCashAccount(request.eori).flatMap {
+            case Some(account) => prepareTransactionSearch(account, page, enteredValue)
+            case None => Future.successful(NotFound(errorHandler.notFoundTemplate))
+          }
+        }
+      )
     }
 
   private def prepareTransactionSearch(account: CashAccount,

@@ -53,7 +53,7 @@
 
     @viewModel.cashStatementNotification.map(identity)
 
-    @formHelper(action = controllers.routes.CashAccountV2Controller.onSubmit(None)) {
+    @formHelper(action = controllers.routes.DeclarationDetailController.displaySearchDetails(None)) {
         @errorSummary(form.errors, None)
 
         @inputText(

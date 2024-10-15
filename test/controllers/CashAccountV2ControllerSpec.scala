@@ -521,44 +521,6 @@ class CashAccountV2ControllerSpec extends SpecBase {
     }
   }
 
-  "onSubmit" must {
-
-    "return SEE_OTHER when form submission is successful" in new Setup {
-      val app: Application = application
-        .overrides(bind[DeclarationDetailController].toInstance(mockDeclarationDetailController))
-        .build()
-
-      running(app) {
-        val request = FakeRequest(POST, routes.CashAccountV2Controller.onSubmit(page).url)
-          .withFormUrlEncodedBody("value" -> "testValue")
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        val expectedRedirectUrl = routes.DeclarationDetailController.displaySearchDetails(page, "testValue").url
-
-        redirectLocation(result).value mustEqual expectedRedirectUrl
-      }
-    }
-
-    "return NOT_FOUND when form submission is unsuccessful" in new Setup {
-      val app: Application = application
-        .overrides(bind[DeclarationDetailController].toInstance(mockDeclarationDetailController))
-        .build()
-
-      running(app) {
-        val request = FakeRequest(POST, routes.CashAccountV2Controller.onSubmit(page).url)
-          .withFormUrlEncodedBody("value" -> emptyString)
-
-        val result = route(app, request).value
-
-        status(result) mustEqual NOT_FOUND
-        contentAsString(result) must include("Page not found")
-      }
-    }
-  }
-
   trait Setup {
 
     val cashAccountNumber = "1234567"

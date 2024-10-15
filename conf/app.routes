@@ -5,7 +5,6 @@ GET         /assets/*file                           controllers.Assets.versioned
 
 GET         /                                       controllers.CashAccountController.showAccountDetails(page: Option[Int])
 GET         /v2                                     controllers.CashAccountV2Controller.showAccountDetails(page: Option[Int])
-POST        /v2                                     controllers.CashAccountV2Controller.onSubmit(page: Option[Int])
 
 GET         /too-many-transactions                  controllers.CashAccountController.tooManyTransactions()
 GET         /v2/too-many-transactions               controllers.CashAccountV2Controller.tooManyTransactions()
@@ -43,4 +42,4 @@ GET         /download-csv                           controllers.DownloadCsvContr
 GET         /csv-download-error                     controllers.DownloadCsvController.showUnableToDownloadCSV()
 
 GET         /transaction/:ref                       controllers.DeclarationDetailController.displayDetails(ref: String, page: Option[Int])
-GET         /transaction-search/:searchInput        controllers.DeclarationDetailController.displaySearchDetails(page: Option[Int], searchInput: String)
+POST        /transaction-search                     controllers.DeclarationDetailController.displaySearchDetails(page: Option[Int])
