@@ -97,7 +97,7 @@ object PaymentSearchResultsViewModel {
         totalNumberOfItems = totalDailyStatementsSize,
         currentPage = pageNo.getOrElse(1),
         numberOfItemsPerPage = config.numberOfRecordsPerPage,
-        href = controllers.routes.CashAccountV2Controller.showAccountDetails(None).url))
+        href = controllers.routes.DeclarationDetailController.displaySearchDetails(None).url))
     }
   }
 }
