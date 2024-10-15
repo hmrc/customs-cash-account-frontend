@@ -86,15 +86,6 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
       }
   }
 
-  def onSubmit(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    form.bindFromRequest().fold(
-      _ => Future.successful(NotFound(eh.notFoundTemplate)),
-      enteredValue => Future.successful {
-        Redirect(routes.DeclarationDetailController.displaySearchDetails(page, enteredValue))
-      }
-    )
-  }
-
   private def showAccountWithTransactionDetails(account: CashAccount,
                                                 from: LocalDate,
                                                 to: LocalDate,

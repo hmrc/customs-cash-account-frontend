@@ -76,6 +76,7 @@ cf.cash-account.detail.top-up.v2=Ychwanegu
 cf.cash-account.detail.withdrawal=Codiad
 cf.cash-account.detail.withdrawal.account-ending=(i’r cyfrif sy’n gorffen gyda {0})
 cf.cash-account.detail.pending=(Ar y gweill)
+cf.cash-account.detail.transfer.v2=Trosglwyddo
 cf.cash-account.detail.transfer-in=Trosglwyddo o gyfrif arall
 cf.cash-account.detail.transfer-in.v2=Trosglwyddo o'r cyfrif Arian Parod
 cf.cash-account.detail.transfer-out=Trosglwyddo i gyfrif arall

@@ -167,7 +167,8 @@ class DeclarationDetailControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+        val request = FakeRequest(POST, routes.DeclarationDetailController.displaySearchDetails(Some(1)).url)
+          .withFormUrlEncodedBody("value" -> "testValue")
           .withSession("eori" -> eori)
 
         val result = route(app, request).value
@@ -202,7 +203,8 @@ class DeclarationDetailControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+        val request = FakeRequest(POST, routes.DeclarationDetailController.displaySearchDetails(Some(1)).url)
+          .withFormUrlEncodedBody("value" -> "testValue")
           .withSession("eori" -> eori)
 
         val result = route(app, request).value
@@ -228,7 +230,8 @@ class DeclarationDetailControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+        val request = FakeRequest(POST, routes.DeclarationDetailController.displaySearchDetails(Some(1)).url)
+          .withFormUrlEncodedBody("value" -> "testValue")
           .withSession("eori" -> eori)
 
         val result = route(app, request).value
@@ -245,7 +248,8 @@ class DeclarationDetailControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+        val request = FakeRequest(POST, routes.DeclarationDetailController.displaySearchDetails(Some(1)).url)
+          .withFormUrlEncodedBody("value" -> "testValue")
           .withSession("eori" -> eori)
 
         val result = route(app, request).value

@@ -48,6 +48,13 @@ object Utils {
     new h2().apply(msg = msgKey, id = id, classes = classes, extraContent = extraContent)
   }
 
+  def h2InnerComponent(msgKey: String,
+                       id: Option[String] = None,
+                       innerMsg: String,
+                       classes: String = "govuk-caption-xl")(implicit messages: Messages): HtmlFormat.Appendable = {
+    new h2Inner().apply(msg = msgKey, id = id, classes = classes, innerMsg = innerMsg)
+  }
+
   def notificationPanelComponent(showNotification: Boolean,
                                  preMessage: String,
                                  linkUrl: String,
