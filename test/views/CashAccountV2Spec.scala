@@ -76,6 +76,11 @@ class CashAccountV2Spec extends ViewTestHelper {
         shouldContainCorrectDownloadCSVFileLinkForMaxTransactionExceededFlag(view)
         shouldContainCorrectHelpAndSupportGuidance(view)
       }
+
+      "display cashStatementNotification" in new Setup {
+        val view: Document = createView(viewModelWithTransactions)
+        view.getElementById("notification-statement").text() mustBe "Your requested transactions are now available"
+      }
     }
 
     "not display pagination component" when {

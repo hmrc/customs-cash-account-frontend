@@ -44,9 +44,12 @@
         id = Some("cash-account-authorise-an-agent")
     )
 
-    @p(
-        message = "cf.cash-account.top-up.guidance",
-        id = Some("cash-account-authorise-agent-guidance")
+    @link(
+        linkMessageKey = "cf.cash-account.top-up.guidance.text.link",
+        location = appConfig.cashAccountTopUpGuidanceUrl,
+        linkId = Some("cash-account-top-up-guidance-link"),
+        preLinkMessage = Some("cf.cash-account.top-up.guidance.text.pre"),
+        postLinkMessage = Some("cf.cash-account.top-up.guidance.text.post")
     )
 
     @link(

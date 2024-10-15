@@ -20,6 +20,8 @@ import config.AppConfig
 import connectors._
 import models._
 import models.email.{UndeliverableEmail, UnverifiedEmail}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.when
 import play.api.Application
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
@@ -29,15 +31,15 @@ import play.api.test.Helpers._
 import services.AuditingService
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
-import views.html.{cash_account_no_transactions, cash_account_no_transactions_with_balance, cash_account_transactions_not_available}
+import views.html.{
+  cash_account_no_transactions,
+  cash_account_no_transactions_with_balance,
+  cash_account_transactions_not_available
+}
 
 import java.time.LocalDate
 import scala.concurrent.Future
 import scala.util.Random
-
-import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.{eq => eqTo}
 
 class CashAccountControllerSpec extends SpecBase {
 
@@ -173,7 +175,9 @@ class CashAccountControllerSpec extends SpecBase {
             eori,
             cashAccount.copy(balances = CDSCashBalance(Some(0)))))(request, messages, appConfig).toString()
 
-        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.pre")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.link")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.post")
       }
     }
 
@@ -183,7 +187,6 @@ class CashAccountControllerSpec extends SpecBase {
 
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(NoTransactionsAvailable)))
-
 
       val app: Application = application
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
@@ -199,12 +202,12 @@ class CashAccountControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
 
-        contentAsString(result) mustEqual view(
-          CashAccountViewModel(
-            eori,
-            cashAccount.copy(balances = CDSCashBalance(Some(0)))))(request, messages, appConfig).toString()
+        contentAsString(result) mustEqual view(CashAccountViewModel(eori,
+          cashAccount.copy(balances = CDSCashBalance(Some(0)))))(request, messages, appConfig).toString()
 
-        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.pre")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.link")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.post")
       }
     }
 
