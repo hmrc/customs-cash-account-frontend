@@ -29,47 +29,38 @@ class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
   "view" should {
 
     "display title" in new Setup {
-      val viewDoc: Document = view(model)
       titleShouldBeCorrect(viewDoc, "cf.cash-account.detail.title")
     }
 
     "display back link" in new Setup {
-      val viewDoc: Document = view(model)
       shouldContainBackLinkUrl(viewDoc, appConfig.customsFinancialsFrontendHomepage)
     }
 
     "display account details" in new Setup {
-      val viewDoc: Document = view(model)
       shouldDisplayCorrectAccountDetails(viewDoc, accNumber)
     }
 
     "display pay import duty and tax guidance" in new Setup {
-      val viewDoc: Document = view(model)
       shouldDisplayPayImportDutyAndTaxesGuidance(viewDoc)
     }
 
     "display authorise agent guidance" in new Setup {
-      val viewDoc: Document = view(model)
       shouldDisplayAuthoriseAnAgentGuidance(viewDoc)
     }
 
     "display top up guidance" in new Setup {
-      val viewDoc: Document = view(model)
       shouldDisplayTopUpGuidance(viewDoc)
     }
 
     "display find out how link" in new Setup {
-      val viewDoc: Document = view(model)
       shouldDisplayFindOutHowLink(viewDoc)
     }
 
     "display help and support guidance header" in new Setup {
-      val viewDoc: Document = view(model)
       shouldDisplayHelpAndSupportGuidanceHeader(viewDoc)
     }
 
     "display help and support guidance" in new Setup {
-      val viewDoc: Document = view(model)
       shouldDisplayHelpAndSupportGuidance(viewDoc)
     }
   }
@@ -137,5 +128,7 @@ class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
 
     def view(account: CashAccountViewModel): Document =
       Jsoup.parse(app.injector.instanceOf[cash_account_no_transactions_v2].apply(account).body)
+
+    val viewDoc: Document = view(model)
   }
 }

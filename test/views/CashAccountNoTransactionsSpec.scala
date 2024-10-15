@@ -34,47 +34,38 @@ class CashAccountNoTransactionsSpec extends SpecBase {
   "view" should {
 
     "display correct title" in new Setup {
-      val viewDoc: Document = view(model)
       shouldContainCorrectTitle(viewDoc)
     }
 
     "display correct back link" in new Setup {
-      val viewDoc: Document = view(model)
       shouldContainCorrectBackLink(viewDoc)
     }
 
     "display correct account number" in new Setup {
-      val viewDoc: Document = view(model)
       shouldDisplayCorrectAccountNumber(viewDoc, accNumber)
     }
 
     "display correct cash account heading" in new Setup {
-      val viewDoc: Document = view(model)
       shouldContainCorrectCashAccountHeading(viewDoc)
     }
 
     "display correct cash text no amount" in new Setup {
-      val viewDoc: Document = view(model)
       shouldContainCorrectTextNoAmount(viewDoc)
     }
 
     "display correct authorised agent guidance" in new Setup {
-      val viewDoc: Document = view(model)
       shouldContainAuthoriseAgentGuidance(viewDoc)
     }
 
     "display correct top up guidance" in new Setup {
-      val viewDoc: Document = view(model)
       shouldContainTopUpGuidance(viewDoc)
     }
 
     "display correct how to use cash account guidance" in new Setup {
-      val viewDoc: Document = view(model)
       shouldContainHowToUseCashAccountGuidance(viewDoc)
     }
 
     "display correct help and support guidance" in new Setup {
-      val viewDoc: Document = view(model)
       shouldContainHelpAndSupportGuidance(viewDoc)
     }
   }
@@ -159,5 +150,7 @@ class CashAccountNoTransactionsSpec extends SpecBase {
 
     def view(accountModel: CashAccountViewModel): Document =
       Jsoup.parse(app.injector.instanceOf[cash_account_no_transactions].apply(accountModel).body)
+
+    val viewDoc: Document = view(model)
   }
 }
