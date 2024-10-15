@@ -93,8 +93,11 @@ cf.cash-account.detail.unable-download-csv=Sorry, there was a problem downloadin
 cf.cash-account.detail.try-again-later=Try again later.
 cf.cash-account-detail.back-to-cash-account=Back to Cash account
 cf.cash-account-detail.exceeded-threshold = There are too many transactions from the last 6 months to display.
+
 cf.cash-account.detail.declaration.title=Declaration transaction
 cf.cash-account.detail.declaration.search-title=Search results for {0}
+cf.cash-account.detail.declaration.search-no-results-guidance-text-1 = Your search {0} has not returned any results.
+cf.cash-account.detail.declaration.search-no-results-guidance-text-2 = This could be because you entered:
 cf.cash-account.detail.total.paid=Total paid
 cf.cash-account.detail.last-transactions=Your transactions for the last 6 months
 

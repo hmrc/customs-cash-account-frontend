@@ -15,18 +15,48 @@
  *@
 
 @this(
-        main_template: Layout,
-        h2: components.h2,
-        newTabLink: components.newTabLink
+       main_template: Layout,
+       h2: components.h2,
+       h1Inner: components.h1Inner,
+       h2Inner: components.h2Inner,
+       p: components.p,
+       newTabLink: components.newTabLink
 )
 
-@(pageNumber: Option[Int])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(
+    pageNumber: Option[Int],
+    accountNumber: String,
+    searchInput: String
+)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
   pageTitle = Some(messages("cf.cash-account.detail.title")),
   backLink = Some(routes.CashAccountV2Controller.showAccountDetails(page = pageNumber).url),
   fullWidth = false
 ) {
+
+  @h2Inner(
+    msg = "cf.cash-account.detail.account",
+    innerMsg = accountNumber,
+    id = Some("account-number"),
+    classes = "govuk-caption-xl"
+  )
+
+  @h1Inner(
+    msg = "cf.cash-account.detail.declaration.search-title",
+    innerMsg = searchInput,
+    id = Some("search-result-heading")
+  )
+
+ @p(
+    message = messages("cf.cash-account.detail.declaration.search-no-results-guidance-text-1", searchInput),
+    id = Some("search-result-guidance-1")
+ )
+
+ @p(
+   message = messages("cf.cash-account.detail.declaration.search-no-results-guidance-text-2"),
+   id = Some("search-result-guidance-2")
+ )
 
   @h2(
       msg = "cf.cash-account.transactions.request.support.heading",
