@@ -78,7 +78,7 @@ object PaymentSearchResultStatementsViewModel {
                                                  (implicit msgs: Messages): Seq[DailyStatementViewModel] = {
     val result: Seq[DailyStatementViewModel] = dailyStatements.map { txn =>
       DailyStatementViewModel(
-        date = dateAsDayMonthAndYear(LocalDate.parse(txn.valueDate, yyyyMMddDateFormatter)),
+        date = LocalDate.parse(txn.valueDate, yyyyMMddDateFormatter),
         transactionType = Some(PaymentType(textString = Some(populateTransactionTypeText(txn)))),
         credit = populateCreditAmount(txn),
         debit = populateDebitAmount(txn),

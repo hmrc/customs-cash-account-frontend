@@ -15,7 +15,7 @@
  *@
 
 @import viewmodels.PaymentSearchResultStatementsViewModel
-@import helpers.Formatters
+@import helpers.Formatters.dateAsDayMonthAndYear
 @import views.components.PaymentSearchResultHeaderV2
 @import utils.Utils.emptyString
 
@@ -35,7 +35,7 @@
                                 <span class="hmrc-responsive-table__heading" aria-hidden="true">
                                     ${messages("cf.cash-account.detail.date")}
                                 </span>
-                                ${statement.date}
+                                ${dateAsDayMonthAndYear(statement.date)}
                              """
                         )
                     ),
