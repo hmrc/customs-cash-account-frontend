@@ -37,12 +37,12 @@ class CashTransactionsDuplicateDatesSpec extends ViewTestHelper {
       }
 
       "header is correct" in new Setup {
-        view.getElementsByTag("h1").text() mustBe messages("cf.cash-account.duplicate.header")
+        val msg: String = messages("cf.cash-account.duplicate.header", "Jan 2021", "Feb 2021")
+        view.getElementsByTag("h1").text() mustBe msg
       }
 
       "label is correct" in new Setup {
-        val msg: String = messages("cf.cash-account.duplicate.message", "Jan 2021", "Feb 2021")
-        view.getElementById("duplicate-date-label").text() mustBe msg
+        view.getElementById("duplicate-date-label").text() mustBe messages("cf.cash-account.duplicate.message")
       }
 
       "link is correct" in new Setup {
@@ -54,7 +54,7 @@ class CashTransactionsDuplicateDatesSpec extends ViewTestHelper {
   trait Setup {
     implicit val clk: Clock = Clock.systemUTC()
 
-    val displayedMsg = "You requested transactions from Jan 2021 to Feb 2021"
+    val displayedMsg = "We are already processing a request for Jan 2021 to Feb 2021"
     val startDate = "Jan 2021"
     val endDate = "Feb 2021"
 

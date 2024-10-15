@@ -303,9 +303,9 @@ cf.cash-account.topup.withdrawal.detail.text=Gall ychwanegiadau gymryd hyd at un
 cf.cash-account.detail.available-balance=Y balans sydd ar gael {0}
 cf.cash-account.detail.payments-heading=Eich trafodion ar gyfer y chwe mis diwethaf
 
-cf.cash-account.duplicate.header = Mae cais i gael trafodion ar gyfer yr un cyfnod yn bodoli eisoes
-cf.cash-account.duplicate.message = Gwnaethoch gais i gael y trafodion o fis {0} i {1}
-cf.cash-account.duplicate.link = Rhowch gynnig arall arni gan ddefnyddio cyfnod gwahanol.
+cf.cash-account.duplicate.header = Rydym eisoes yn prosesu cais ar gyfer mis {0} i fis {1}
+cf.cash-account.duplicate.message = Gall trafodion y gofynnir amdanynt gymryd hyd at 48 awr cyn eu bod ar gael i’w lawrlwytho.
+cf.cash-account.duplicate.link = Yn ôl i’r cyfrif arian parod.
 
 
 #Pagination

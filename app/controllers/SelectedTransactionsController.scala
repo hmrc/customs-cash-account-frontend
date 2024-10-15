@@ -122,7 +122,7 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
           case Left(EntryAlreadyExists) =>
 
             Redirect(
-              routes.SelectedTransactionsController.duplicateDates("cf.cash-account.duplicate.message",
+              routes.SelectedTransactionsController.duplicateDates("cf.cash-account.duplicate.header",
                 dateAsMonthAndYear(dates.start), dateAsMonthAndYear(dates.end)))
 
           case Left(ExceededMaximum) => Redirect(routes.SelectedTransactionsController.requestedTooManyTransactions())
