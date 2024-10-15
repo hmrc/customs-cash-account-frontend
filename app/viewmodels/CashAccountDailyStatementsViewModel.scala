@@ -17,7 +17,6 @@
 package viewmodels
 
 import config.AppConfig
-import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount, parseDateString}
 import models.{
   CashDailyStatement, CashTransactions, Declaration, Payment, Transaction,
   Transfer, Withdrawal
@@ -33,12 +32,12 @@ import java.time.LocalDate
 case class PaymentType(mrnLink: Option[HtmlFormat.Appendable] = None,
                        textString: Option[String] = None)
 
-case class DailyStatementViewModel(date: String,
+case class DailyStatementViewModel(date: LocalDate,
                                    transactionType: Option[PaymentType] = None,
                                    credit: Option[String] = None,
                                    debit: Option[String] = None,
                                    balance: Option[String]) extends Ordered[DailyStatementViewModel] {
-  override def compare(that: DailyStatementViewModel): Int = parseDateString(that.date).compareTo(parseDateString(date))
+  override def compare(that: DailyStatementViewModel): Int = that.date.compareTo(date)
 }
 
 case class CashAccountDailyStatementsViewModel(dailyStatements: Seq[DailyStatementViewModel],
@@ -103,7 +102,7 @@ object CashAccountDailyStatementsViewModel {
         }
 
         val closingBalanceOnlyRow = DailyStatementViewModel(
-          date = dateAsDayMonthAndYear(dStat.date),
+          date = dStat.date,
           balance = Some(formatCurrencyAmount(dStat.closingBalance)))
 
         val transferAndWithdrawDailyStatementViewModel: Seq[DailyStatementViewModel] =
@@ -121,7 +120,7 @@ object CashAccountDailyStatementsViewModel {
     declarations.map {
       declaration =>
         DailyStatementViewModel(
-          date = dateAsDayMonthAndYear(date),
+          date = date,
           transactionType = Some(PaymentType(mrnLink = Some(linkComponent(
             LinkComponentValues(
               linkMessage = Some(declaration.movementReferenceNumber),
@@ -141,7 +140,7 @@ object CashAccountDailyStatementsViewModel {
     paymentAndWithdrawals.map {
       paymentAndWithdrawal =>
         DailyStatementViewModel(
-          date = dateAsDayMonthAndYear(date),
+          date = date,
           transactionType = Some(PaymentType(textString = Some(populateTransactionTypeText(paymentAndWithdrawal)))),
           credit = populateCreditAmount(paymentAndWithdrawal),
           debit = populateDebitAmount(paymentAndWithdrawal),

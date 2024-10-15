@@ -75,9 +75,39 @@ class DailyStatementsV2Spec extends ViewTestHelper {
   }
 
   private def shouldDisplayTableElements(viewDocument: Document) = {
-    val tableRowsElementsByClass = viewDocument.getElementsByClass("hmrc-responsive-table__heading")
+    val tableRows = viewDocument.getElementsByClass("govuk-table__row")
 
-    tableRowsElementsByClass.size() must be > 0
+    val index_4 = 4
+    val index_5 = 5
+    val index_6 = 6
+    val index_7 = 7
+    val index_8 = 8
+    val index_9 = 9
+    val index_10 = 10
+
+    val row1 = tableRows.get(1).html()
+    val row2 = tableRows.get(2).html()
+    val row3 = tableRows.get(3).html()
+    val row4 = tableRows.get(index_4).html()
+    val row5 = tableRows.get(index_5).html()
+    val row6 = tableRows.get(index_6).html()
+    val row7 = tableRows.get(index_7).html()
+    val row8 = tableRows.get(index_8).html()
+    val row9 = tableRows.get(index_9).html()
+    val row10 = tableRows.get(index_10).html()
+
+    tableRows.size() mustBe 11
+
+    row1 must include("20 July 2020")
+    row2 must include("20 July 2020")
+    row3 must include("20 July 2020")
+    row4 must include("20 July 2020")
+    row5 must include("20 July 2020")
+    row6 must include("18 July 2020")
+    row7 must include("18 July 2020")
+    row8 must include("18 July 2020")
+    row9 must include("18 July 2020")
+    row10 must include("18 July 2020")
   }
 
 

@@ -24,6 +24,8 @@ import connectors.{
   TooManyTransactionsRequested,
   UnknownException
 }
+
+import models.email.{UndeliverableEmail, UnverifiedEmail}
 import models.{
   AccountStatusOpen,
   CDSCashBalance,
@@ -37,15 +39,19 @@ import models.{
   Transfer,
   Withdrawal
 }
-import models.email.{UndeliverableEmail, UnverifiedEmail}
+
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.when
 import play.api.Application
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
+import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
+
 import views.html.{
   cash_account_no_transactions_v2,
   cash_account_no_transactions_with_balance,
@@ -55,10 +61,6 @@ import views.html.{
 import java.time.LocalDate
 import scala.concurrent.Future
 import scala.util.Random
-import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.{eq => eqTo}
-import play.api.mvc.{AnyContentAsEmpty, Result}
 
 class CashAccountV2ControllerSpec extends SpecBase {
 
@@ -193,7 +195,9 @@ class CashAccountV2ControllerSpec extends SpecBase {
             eori,
             cashAccount.copy(balances = CDSCashBalance(Some(0)))))(request, messages, appConfig).toString()
 
-        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.pre")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.link")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.post")
       }
     }
 
@@ -223,7 +227,9 @@ class CashAccountV2ControllerSpec extends SpecBase {
             eori,
             cashAccount.copy(balances = CDSCashBalance(Some(0)))))(request, messages, appConfig).toString()
 
-        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.pre")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.link")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.post")
       }
     }
 
