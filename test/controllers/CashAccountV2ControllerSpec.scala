@@ -24,6 +24,7 @@ import connectors.{
   TooManyTransactionsRequested,
   UnknownException
 }
+import forms.SearchTransactionsFormProvider
 import models.{
   AccountStatusOpen,
   CDSCashBalance,
@@ -49,16 +50,20 @@ import utils.SpecBase
 import views.html.{
   cash_account_no_transactions_v2,
   cash_account_no_transactions_with_balance,
-  cash_account_transactions_not_available
+  cash_account_transactions_not_available,
+  cash_account_v2
 }
-
 import java.time.LocalDate
 import scala.concurrent.Future
 import scala.util.Random
 import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.{eq => eqTo}
+import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Result}
+import play.twirl.api.HtmlFormat
+import utils.Utils.poundSymbol
+import viewmodels.{CashAccountV2ViewModel, GuidanceRow}
 
 class CashAccountV2ControllerSpec extends SpecBase {
 
@@ -543,19 +548,40 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
-    "return OK when form submission is unsuccessful" in new Setup {
+    "return same page when form submission is unsuccessful with error validation present" in new Setup {
       val app: Application = application
-        .overrides(bind[DeclarationDetailController].toInstance(mockDeclarationDetailController))
-        .build()
+        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)).build()
 
       running(app) {
+        val formWithErrors: Form[String] = new SearchTransactionsFormProvider()
+          .apply()
+          .bind(Map("value" -> emptyString))
+
+        val view = app.injector.instanceOf[cash_account_v2]
+
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        val viewModel = CashAccountV2ViewModel(
+          pageTitle = emptyString,
+          backLink = emptyString,
+          cashAccountBalance = HtmlFormat.empty,
+          cashStatementNotification = None,
+          dailyStatementsSection = None,
+          tooManyTransactionsSection = None,
+          downloadCSVFileLinkUrl = HtmlFormat.empty,
+          helpAndSupportGuidance = GuidanceRow(HtmlFormat.empty, None, None),
+          paginationModel = None)
+
         val request = FakeRequest(POST, routes.CashAccountV2Controller.onSubmit(page).url)
           .withFormUrlEncodedBody("value" -> emptyString)
 
         val result = route(app, request).value
+        status(result) mustEqual SEE_OTHER
 
-        status(result) mustEqual OK
-        contentAsString(result) must include("There is a problem")
+        val renderedView = view.apply(formWithErrors, viewModel)(messages(app), appConfig(app), request).body
+        renderedView must include("There is a problem")
+        renderedView must include(s"Enter an MRN, UCR or exact payment amount that includes $poundSymbol")
       }
     }
   }
