@@ -108,7 +108,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
 
       running(app) {
         val request =
-          FakeRequest(GET, routes.DeclarationDetailController.displayDetails("sMRN not found", Some(1)).url)
+          FakeRequest(GET, routes.DeclarationDetailController.displayDetails(sMRN, Some(1)).url)
             .withSession("eori" -> eori)
 
         val result = route(app, request).value
