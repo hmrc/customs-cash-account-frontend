@@ -192,6 +192,7 @@ cf.cash-account.help-and-support.link.text = gysylltu â chanolfan cyfrifyddu CT
 cf.cash-account.how-to-use.guidance.text.pre = Dysgwch sut i
 cf.cash-account.how-to-use.guidance.text.post = ar GOV.UK.
 cf.cash-account.how-to-use.guidance.link.text = ddefnyddio cyfrif arian parod ar gyfer datganiadau’r Gwasanaeth Datgan Tollau (CDS)
+cf.cash-account.top-up.guidance = Bydd angen i chi ychwanegu at eich cyfrif arian parod cyn y gallwch ei ddefnyddio.
 cf.cash-account.top-up.guidance.preLink = Bydd angen i chi
 cf.cash-account.top-up.guidance.link = ychwanegu at eich cyfrif arian parod
 cf.cash-account.top-up.guidance.Post = cyn y gallwch ei ddefnyddio.

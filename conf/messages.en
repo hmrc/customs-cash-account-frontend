@@ -193,6 +193,7 @@ cf.cash-account.help-and-support.link.text = contact the HMRC accounting centre 
 cf.cash-account.how-to-use.guidance.text.pre = Find out how to
 cf.cash-account.how-to-use.guidance.text.post = on GOV.UK.
 cf.cash-account.how-to-use.guidance.link.text = use a cash account for CDS declarations
+cf.cash-account.top-up.guidance = You’ll need to top up your cash account before you can use it.
 cf.cash-account.top-up.guidance.text.pre = You’ll need to
 cf.cash-account.top-up.guidance.text.link = top up your cash account
 cf.cash-account.top-up.guidance.text.post = before you can use it.

@@ -33,20 +33,6 @@ class CashAccountNoTransactionsSpec extends SpecBase {
 
   "view" should {
 
-    "display correct guidance" in new Setup {
-      val viewDoc: Document = view(model)
-
-      shouldContainCorrectTitle(viewDoc)
-      shouldContainCorrectBackLink(viewDoc)
-      shouldDisplayCorrectAccountNumber(viewDoc, accNumber)
-      shouldContainCorrectCashAccountHeading(viewDoc)
-      shouldContainCorrectTextNoAmount(viewDoc)
-      shouldContainAuthoriseAgentGuidance(viewDoc)
-      shouldContainTopUpGuidance(viewDoc)
-      shouldContainHowToUseCashAccountGuidance(viewDoc)
-      shouldContainHelpAndSupportGuidance(viewDoc)
-    }
-
     "display correct title" in new Setup {
       val viewDoc: Document = view(model)
       shouldContainCorrectTitle(viewDoc)
@@ -121,9 +107,7 @@ class CashAccountNoTransactionsSpec extends SpecBase {
   }
 
   private def shouldContainTopUpGuidance(viewDoc: Document)(implicit msgs: Messages): Assertion = {
-    viewDoc.text().contains(msgs("cf.cash-account.top-up.guidance.text.pre")) mustBe true
-    viewDoc.text().contains(msgs("cf.cash-account.top-up.guidance.text.link")) mustBe true
-    viewDoc.text().contains(msgs("cf.cash-account.top-up.guidance.text.post")) mustBe true
+    viewDoc.text().contains(msgs("cf.cash-account.top-up.guidance")) mustBe true
   }
 
   private def shouldContainHowToUseCashAccountGuidance(viewDoc: Document)(implicit msgs: Messages,

@@ -28,20 +28,6 @@ class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
 
   "view" should {
 
-    "display correct contents" in new Setup {
-      val viewDoc: Document = view(model)
-
-      titleShouldBeCorrect(viewDoc, "cf.cash-account.detail.title")
-      shouldContainBackLinkUrl(viewDoc, appConfig.customsFinancialsFrontendHomepage)
-      shouldDisplayCorrectAccountDetails(viewDoc, accNumber)
-      shouldDisplayPayImportDutyAndTaxesGuidance(viewDoc)
-      shouldDisplayAuthoriseAnAgentGuidance(viewDoc)
-      shouldDisplayTopUpGuidance(viewDoc)
-      shouldDisplayFindOutHowLink(viewDoc)
-      shouldDisplayHelpAndSupportGuidanceHeader(viewDoc)
-      shouldDisplayHelpAndSupportGuidance(viewDoc)
-    }
-
     "display title" in new Setup {
       val viewDoc: Document = view(model)
       titleShouldBeCorrect(viewDoc, "cf.cash-account.detail.title")
@@ -114,7 +100,7 @@ class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
 
   private def shouldDisplayFindOutHowLink(viewDoc: Document)(implicit msgs: Messages, config: AppConfig) = {
     val elementLink = viewDoc.getElementById("cash-account-top-up-guidance-link")
-    elementLink.attribute("href").getValue mustBe config.cashAccountTopUp
+    elementLink.attribute("href").getValue mustBe config.cashAccountTopUpGuidanceUrl
     elementLink.text() mustBe msgs("cf.cash-account.top-up.guidance.text.link")
 
     viewDoc.text().contains(msgs("cf.cash-account.how-to-use.guidance.text.pre")) mustBe true
