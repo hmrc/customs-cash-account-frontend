@@ -17,8 +17,8 @@
 package controllers
 
 import config.AppConfig
-import connectors.*
-import models.*
+import connectors._
+import models._
 import models.email.{UndeliverableEmail, UnverifiedEmail}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
@@ -27,11 +27,15 @@ import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers.*
+import play.api.test.Helpers._
 import services.AuditingService
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
-import views.html.{cash_account_no_transactions, cash_account_no_transactions_with_balance, cash_account_transactions_not_available}
+import views.html.{
+  cash_account_no_transactions,
+  cash_account_no_transactions_with_balance,
+  cash_account_transactions_not_available
+}
 
 import java.time.LocalDate
 import scala.concurrent.Future
