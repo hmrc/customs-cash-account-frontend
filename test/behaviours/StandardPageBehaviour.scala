@@ -16,7 +16,12 @@
 
 package behaviours
 
+import config.AppConfig
 import org.jsoup.nodes.Document
+import play.api.Application
+import play.api.i18n.Messages
+import play.api.mvc.AnyContentAsEmpty
+import play.api.test.FakeRequest
 import utils.SpecBase
 
 trait StandardPageBehaviour {
@@ -26,16 +31,20 @@ trait StandardPageBehaviour {
   val view: Document
   val titleMsgKey: String
   val backLink: Option[String] = None
-  val componentIds: List[String] = List.empty
+  val componentIdsToVerify: List[String] = List.empty
   val helpAndSupportMsgKeys: Option[List[String]] = None
   val helpAndSupportLink: Option[String] = None
+  val otherComponentGuidanceList: List[ComponentDetailsForAssertion] = List.empty
+
+  implicit lazy val app: Application = application.build()
+  implicit val msgs: Messages = messages(app)
+  implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest()
+  implicit val appConfig: AppConfig = appConfig(app)
 
   def standardPage(): Unit =
 
-    "page" should {
-
       "display correct title" in {
-        view.title() mustBe s"${messages(titleMsgKey)} - ${messages("service.name")} - GOV.UK"
+        view.title() mustBe s"${msgs(titleMsgKey)} - ${msgs("service.name")} - GOV.UK"
       }
 
       "display correct back link" in {
@@ -44,7 +53,7 @@ trait StandardPageBehaviour {
 
       "display correct help and support guidance" in {
         if(helpAndSupportMsgKeys.isDefined) {
-          helpAndSupportMsgKeys.map(msgsKey => view.html().contains(messages(msgsKey)) mustBe true)
+          helpAndSupportMsgKeys.map(msgsKey => view.html().contains(msgs(msgsKey)) mustBe true)
         } else {
           val viewAsHtml = view.html()
 
@@ -56,7 +65,27 @@ trait StandardPageBehaviour {
           ) mustBe true
         }
       }
-    }
 
+      componentIdsToVerify.foreach {
+        id =>
+          s"display component with id $id" in {
+            view.select(s"#$id").size() must be > 0
+          }
+      }
 
+      otherComponentGuidanceList.foreach {
+        component =>
+          component.testDescription in {
+            if(component.id.isDefined) {
+              view.getElementById(component.id.getOrElse(emptyString)).text() mustBe component.expectedValue
+            } else {
+              view.html().contains(component.expectedValue)
+            }
+          }
+      }
 }
+
+case class ComponentDetailsForAssertion(testDescription: String,
+                                        id: Option[String] = None,
+                                        expectedValue: String)
+

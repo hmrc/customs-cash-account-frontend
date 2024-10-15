@@ -17,17 +17,20 @@
 package views
 
 import utils.SpecBase
+import behaviours.StandardPageBehaviour
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import viewmodels.DeclarationDetailSearchViewModel
+import views.html.cash_account_declaration_details_search_no_result
+class CashAccountDeclarationDetailsSearchNoResultSpec extends SpecBase with StandardPageBehaviour {
 
-class CashAccountDeclarationDetailsSearchNoResultSpec extends ViewTestHelper {
+  override val view: Document =
+    Jsoup.parse(app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(Some(1)).body)
+
+  override val titleMsgKey: String = "cf.cash-account.detail.title"
+  override val backLink: Option[String] = Some(controllers.routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
 
   "view" should {
-
-    "display correct contents" in new Setup {
-
-    }
-  }
-
-  trait Setup {
-    
+    behave like standardPage()
   }
 }
