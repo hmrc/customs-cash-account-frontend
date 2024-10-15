@@ -17,16 +17,15 @@
 package viewmodels
 
 import config.AppConfig
+import helpers.Formatters.formatCurrencyAmount
 import models.{
   CashDailyStatement, CashTransactions, Declaration, Payment, Transaction,
   Transfer, Withdrawal
 }
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import utils.Utils.{
-  LinkComponentValues, emptyString, h2Component, linkComponent, pComponent,
-  prependNegativeSignWithAmount
-}
+import utils.Utils.{LinkComponentValues, emptyString, h2Component, linkComponent, pComponent, prependNegativeSignWithAmount}
+
 import java.time.LocalDate
 
 case class PaymentType(mrnLink: Option[HtmlFormat.Appendable] = None,
