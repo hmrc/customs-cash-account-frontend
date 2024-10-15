@@ -21,18 +21,20 @@ import behaviours.{ComponentDetailsForAssertion, StandardPageBehaviour}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import views.html.cash_account_declaration_details_search_no_result
+
 class CashAccountDeclarationDetailsSearchNoResultSpec extends SpecBase with StandardPageBehaviour {
 
   val accNumber = "12345678"
   val searchInputValue = "test_MNR"
 
-  override val view: Document =
-    Jsoup.parse(
-      app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(
-        Some(1), accNumber, searchInputValue).body)
+  override val view: Document = Jsoup.parse(app.injector.instanceOf[cash_account_declaration_details_search_no_result]
+    .apply(Some(1), accNumber, searchInputValue).body)
 
   override val titleMsgKey: String = "cf.cash-account.detail.title"
   override val backLink: Option[String] = Some(controllers.routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
+  override val componentIdsToVerify: List[String] =
+    List("account-number", "search-result-heading", "search-result-guidance-1", "search-result-guidance-2",
+      "invalid-inputs-guidance-list")
 
   override val otherComponentGuidanceList: List[ComponentDetailsForAssertion] =
     populateRequiredComponentGuidanceList(accNumber, searchInputValue)
@@ -63,6 +65,15 @@ class CashAccountDeclarationDetailsSearchNoResultSpec extends SpecBase with Stan
       id = Some("search-result-guidance-2"),
       expectedValue = "This could be because you entered:")
 
-    List(accountHeadingAndValue, searchResultSubHeading, searchResultParagraph1, searchResultParagraph2)
+    val unorderedListGuidance = ComponentDetailsForAssertion(
+      testDescription = "display correct guidance for invalid inputs ",
+      id = Some("invalid-inputs-guidance-list"),
+      expectedValue = "an incorrect Movement Reference Number(MRN) or Unique Consignment Number(UCR)")
+
+    List(accountHeadingAndValue,
+      searchResultSubHeading,
+      searchResultParagraph1,
+      searchResultParagraph2,
+      unorderedListGuidance)
   }
 }

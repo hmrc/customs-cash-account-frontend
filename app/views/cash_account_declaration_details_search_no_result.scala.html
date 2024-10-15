@@ -20,6 +20,7 @@
        h1Inner: components.h1Inner,
        h2Inner: components.h2Inner,
        p: components.p,
+       ul:components.unorderedList,
        newTabLink: components.newTabLink
 )
 
@@ -56,6 +57,15 @@
  @p(
    message = messages("cf.cash-account.detail.declaration.search-no-results-guidance-text-2"),
    id = Some("search-result-guidance-2")
+ )
+
+ @ul(
+    id = Some("invalid-inputs-guidance-list"),
+    liMsgList = List(
+                    messages("cf.cash-account.detail.declaration.search-no-results-invalid-input-mrn"),
+                    messages("cf.cash-account.detail.declaration.search-no-results-invalid-input-payment-amount"),
+                    messages("cf.cash-account.detail.declaration.search-no-results-invalid-input-pound-sign")
+    )
  )
 
   @h2(
