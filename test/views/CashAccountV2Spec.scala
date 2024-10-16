@@ -132,10 +132,10 @@ class CashAccountV2Spec extends ViewTestHelper {
 
   private def shouldContainCorrectSearchForTransactionsInputTextDetails(viewDocument: Document)
                                                                        (implicit msgs: Messages) = {
-    val inputTextElement: Element = viewDocument.getElementById("search-transactions")
+    val inputTextElement: Element = viewDocument.getElementById("value")
     inputTextElement.getElementsByAttribute("name").text() mustBe emptyString
 
-    viewDocument.getElementById("search-transactions-hint-text").html() mustBe
+    viewDocument.getElementById("value-hint-text").html() mustBe
       msgs("cf.cash-account.transactions.search-for-transactions.hint")
   }
 
@@ -300,7 +300,7 @@ class CashAccountV2Spec extends ViewTestHelper {
       CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions, statements, None)
 
     val viewModelWithTransactionsGreaterThan30: CashAccountV2ViewModel =
-        CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactionsWithMoreThan30Records, statements, None)
+      CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactionsWithMoreThan30Records, statements, None)
 
     val viewModelWithTooManyTransactions: CashAccountV2ViewModel =
       CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions02, statements, None)

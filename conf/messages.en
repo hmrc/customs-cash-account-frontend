@@ -329,3 +329,6 @@ pagination.previous = Previous
 pagination.previous.hidden = Previous page
 pagination.ellipses = ...
 pagination.ellipses.hidden = Ellipses
+
+# Search Form Error Validation
+cf.search.form.error.required = Enter an MRN, UCR or exact payment amount that includes '£'

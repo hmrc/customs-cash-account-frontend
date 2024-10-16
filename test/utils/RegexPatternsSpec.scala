@@ -16,7 +16,7 @@
 
 package utils
 
-import utils.RegexPatterns.{mrnRegex, paymentRegex}
+import utils.RegexPatterns.{mrnRegex, paymentRegex, ucrRegex}
 
 class RegexPatternsSpec extends SpecBase {
 
@@ -73,6 +73,28 @@ class RegexPatternsSpec extends SpecBase {
 
       invalidInputs.foreach { input =>
         paymentRegex.findFirstIn(input) mustBe None
+      }
+    }
+  }
+
+  "UCR Regex" should {
+
+    "match valid regex" in {
+      val validInputs: Seq[String] = Seq("GB1234567890 1134-7456-914 121D")
+
+      validInputs.foreach { input =>
+        ucrRegex.findFirstIn(input) mustBe Some(input)
+      }
+    }
+
+    "not match invalid regex" in {
+      val invalidInputs: Seq[String] = Seq(
+        "GB1234567890-1134!7456_914 121D",
+        "GB1234567890 1134-7456-914 121D 3031D",
+        "123GB4567440 5734 3356 914 81D")
+
+      invalidInputs.foreach { input =>
+        ucrRegex.findFirstIn(input) mustBe None
       }
     }
   }
