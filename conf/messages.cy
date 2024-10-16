@@ -329,4 +329,4 @@ pagination.ellipses = ...
 pagination.ellipses.hidden = Ellipses
 
 # Search Form Error Validation
-cf.search.form.error.required = Nodwch MRN, UCR neu union swm y taliad sy’n cynnwys ‘£’
+cf.search.form.error.required = Nodwch MRN, UCR neu union swm y taliad sy’n cynnwys ''£''
