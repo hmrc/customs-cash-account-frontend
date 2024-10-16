@@ -146,7 +146,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
         eqTo(cashAccountNumber),
         eqTo(eori),
         any[SearchType.Value],
-        any(),
+        any,
         any[Option[DeclarationDetailsSearch]],
         any[Option[CashAccountPaymentDetails]]
       )(any[HeaderCarrier]))
@@ -194,7 +194,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
         eqTo(cashAccountNumber),
         eqTo(eori),
         any[SearchType.Value],
-        any(),
+        any,
         any[Option[DeclarationDetailsSearch]],
         any[Option[CashAccountPaymentDetails]]
       )(any[HeaderCarrier]))
@@ -222,7 +222,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
         eqTo(cashAccountNumber),
         eqTo(eori),
         any[SearchType.Value],
-        any(),
+        any,
         any[Option[DeclarationDetailsSearch]],
         any[Option[CashAccountPaymentDetails]]
       )(any[HeaderCarrier]))

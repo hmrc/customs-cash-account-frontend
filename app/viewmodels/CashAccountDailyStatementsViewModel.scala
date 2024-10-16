@@ -24,7 +24,10 @@ import models.{
 }
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import utils.Utils.{LinkComponentValues, emptyString, h2Component, linkComponent, pComponent, prependNegativeSignWithAmount}
+import utils.Utils.{
+  LinkComponentValues, emptyString, h2Component,
+  linkComponent, pComponent, prependNegativeSignWithAmount
+}
 
 import java.time.LocalDate
 

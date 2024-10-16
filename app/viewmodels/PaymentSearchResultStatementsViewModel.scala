@@ -17,7 +17,7 @@
 package viewmodels
 
 import config.AppConfig
-import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount, yyyyMMddDateFormatter}
+import helpers.Formatters.{formatCurrencyAmount, yyyyMMddDateFormatter}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import utils.Utils.{h2Component, pComponent, prependNegativeSignWithAmount}

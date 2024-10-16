@@ -254,7 +254,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(appWithMocks) {
         val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
-          "testCAN", "GB123456789012", SearchType.D, "dummySearchKey", None, None))
+          "testCAN", "GB123456789012", SearchType.D, searchValue, None, None))
 
         result mustBe Right(transactionSearchResponseDetail)
       }
@@ -275,7 +275,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(appWithMocks) {
         val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
-          "testCAN", "GB123456789012", SearchType.D, "dummySearchKey", None, None))
+          "testCAN", "GB123456789012", SearchType.D, searchValue, None, None))
 
         result mustBe Left(BadRequest)
       }
@@ -296,7 +296,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(appWithMocks) {
         val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
-          "testCAN", "GB123456789012", SearchType.D, "dummySearchKey", None, None))
+          "testCAN", "GB123456789012", SearchType.D, searchValue, None, None))
 
         result mustBe Left(InternalServerErrorErrorResponse)
       }
@@ -317,7 +317,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(appWithMocks) {
         val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
-          "testCAN", "GB123456789012", SearchType.D, "dummySearchKey", None, None))
+          "testCAN", "GB123456789012", SearchType.D, searchValue, None, None))
 
         result mustBe Left(ServiceUnavailableErrorResponse)
       }
@@ -338,7 +338,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(appWithMocks) {
         val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
-          "testCAN", "GB123456789012", SearchType.D, "dummySearchKey", None, None))
+          "testCAN", "GB123456789012", SearchType.D, searchValue, None, None))
 
         result mustBe Left(UnknownException)
       }
@@ -363,7 +363,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         running(appWithMocks) {
           whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D, "dummySearchKey", None, None)) {
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None)) {
             response => response.left.getOrElse(UnknownException) mustBe InvalidCashAccount
           }
         }
@@ -386,7 +386,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         running(appWithMocks) {
           whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D, "dummySearchKey", None, None)) {
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None)) {
             response => response.left.getOrElse(UnknownException) mustBe InvalidDeclarationReference
           }
         }
@@ -409,7 +409,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         running(appWithMocks) {
           whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D, "dummySearchKey", None, None)) {
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None)) {
             response => response.left.getOrElse(UnknownException) mustBe DuplicateAckRef
           }
         }
@@ -432,7 +432,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         running(appWithMocks) {
           whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D, "dummySearchKey", None, None)) {
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None)) {
             response => response.left.getOrElse(UnknownException) mustBe NoAssociatedDataFound
           }
         }
@@ -455,7 +455,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         running(appWithMocks) {
           whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D, "dummySearchKey", None, None)) {
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None)) {
             response => response.left.getOrElse(UnknownException) mustBe InvalidEori
           }
         }
@@ -478,7 +478,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         running(appWithMocks) {
           whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D, "dummySearchKey", None, None)) {
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None)) {
             response => response.left.getOrElse(UnknownException) mustBe BadRequest
           }
         }
@@ -502,7 +502,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         running(appWithMocks) {
           whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D, "dummySearchKey", None, None)) {
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None)) {
             response => response.left.getOrElse(UnknownException) mustBe InternalServerErrorErrorResponse
           }
         }
@@ -526,7 +526,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         running(appWithMocks) {
           whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D, "dummySearchKey", None, None)) {
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None)) {
             response => response.left.getOrElse(UnknownException) mustBe ServiceUnavailableErrorResponse
           }
         }
@@ -875,11 +875,12 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
             eoriData = EoriData(eoriNumber = "GB123456789012", name = "Test Importer"))),
         declarations = Some(Seq.empty))
 
-    val timestamp = "2019-08-1618:15:41"
-    val correlationId = "3jh1f6b3-f8b1-4f3c-973a-05b4720e-4567899"
-    val errorCode = "400"
-    val errorMessage = "Bad request received"
-    val source = "CDS Financials"
+    val timestamp: String = "2019-08-1618:15:41"
+    val correlationId: String = "3jh1f6b3-f8b1-4f3c-973a-05b4720e-4567899"
+    val errorCode: String = "400"
+    val errorMessage: String = "Bad request received"
+    val source: String = "CDS Financials"
+    val searchValue: String = "test"
 
     val sourceFaultDetail: SourceFaultDetail =
       SourceFaultDetail(Seq("Invalid value supplied for field statementRequestId: 32"))

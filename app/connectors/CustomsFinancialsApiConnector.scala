@@ -22,11 +22,14 @@ import models.*
 import models.AccountsAndBalancesResponseContainer.accountResponseCommonReads
 import models.CashDailyStatement.*
 import models.request.{
-  CashAccountPaymentDetails, CashAccountStatementRequestDetail,
-  CashAccountTransactionSearchRequestDetails, CashDailyStatementRequest, DeclarationDetailsSearch, IdentifierRequest, SearchType
+  CashAccountPaymentDetails, CashAccountStatementRequestDetail, CashAccountTransactionSearchRequestDetails,
+  CashDailyStatementRequest, DeclarationDetailsSearch, IdentifierRequest, SearchType
 }
 import org.slf4j.LoggerFactory
-import play.api.http.Status.{BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE}
+import play.api.http.Status.{
+  BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK,
+  REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE
+}
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.mvc.AnyContent
 import repositories.{CacheRepository, CashAccountSearchCacheRepository}
@@ -42,7 +45,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import models.request.CashAccountStatementRequestDetail.jsonBodyWritable
 import models.response.CashAccountTransactionSearchResponseDetail
-import play.api.libs.json.{JsResult, Json}
+import play.api.libs.json.Json
 import utils.EtmpErrorCode
 import utils.Utils.formCacheId
 

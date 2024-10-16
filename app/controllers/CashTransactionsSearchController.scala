@@ -19,23 +19,16 @@ package controllers
 import config.{AppConfig, ErrorHandler}
 import connectors.CustomsFinancialsApiConnector
 import controllers.actions.{EmailAction, IdentifierAction}
-import forms.SearchTransactionsFormProvider
-import helpers.CashAccountUtils
-import models.request.*
-import models.response.{CashAccountTransactionSearchResponseDetail, PaymentsWithdrawalsAndTransfer}
-import models.{CashAccount, CashTransactions}
+import models.response.CashAccountTransactionSearchResponseDetail
+import models.CashAccount
 import play.api.Logging
-import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.CashAccountSearchCacheRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.RegexPatterns.{mrnRegex, paymentRegex}
 import utils.Utils.formCacheId
-import viewmodels.{DeclarationDetailSearchViewModel, DeclarationDetailViewModel, PaymentSearchResultsViewModel, ResultsPageSummary}
-import views.html.{cash_account_declaration_details, cash_account_declaration_details_search, cash_account_payment_search, cash_transactions_no_result}
-
-import java.time.LocalDate
+import viewmodels.PaymentSearchResultsViewModel
+import views.html.cash_account_payment_search
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,18 +37,11 @@ class CashTransactionsSearchController @Inject()(authenticate: IdentifierAction,
                                                  apiConnector: CustomsFinancialsApiConnector,
                                                  errorHandler: ErrorHandler,
                                                  mcc: MessagesControllerComponents,
-                                                 view: cash_account_declaration_details,
-                                                 searchView: cash_account_declaration_details_search,
                                                  paymentSearchView: cash_account_payment_search,
-                                                 cashAccountUtils: CashAccountUtils,
-                                                 noTransactionsView: cash_transactions_no_result,
-                                                 formProvider: SearchTransactionsFormProvider,
-                                                 searchCacheRepository: CashAccountSearchCacheRepository,
-                                                 eh: ErrorHandler
+                                                 searchCacheRepository: CashAccountSearchCacheRepository
                                                 )(implicit executionContext: ExecutionContext,
                                                   appConfig: AppConfig
                                                 ) extends FrontendController(mcc) with I18nSupport with Logging {
-
 
   def search(searchValue: String,
              page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
@@ -63,9 +49,7 @@ class CashTransactionsSearchController @Inject()(authenticate: IdentifierAction,
     apiConnector.getCashAccount(request.eori).flatMap {
       case Some(account) =>
 
-        val uuid = formCacheId(account.number,searchValue)
-
-        searchCacheRepository.get(uuid).flatMap {
+        searchCacheRepository.get(formCacheId(account.number, searchValue)).flatMap {
           case Some(paymentTransfersList) =>
             paymentTransfersList.paymentsWithdrawalsAndTransfers match {
               case Some(seqOfPaymentsWithdrawalsAndTransfers) =>
@@ -78,7 +62,5 @@ class CashTransactionsSearchController @Inject()(authenticate: IdentifierAction,
         }
       case None => Future.successful(NotFound(errorHandler.notFoundTemplate))
     }
-
   }
-
 }
