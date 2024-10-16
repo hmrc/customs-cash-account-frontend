@@ -17,7 +17,7 @@
 package views
 
 import utils.SpecBase
-import behaviours.{ComponentDetailsForAssertion, StandardPageBehaviour}
+import behaviours.{ComponentDetailsForAssertion, LinkDetails, StandardPageBehaviour}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import views.html.cash_account_declaration_details_search_no_result
@@ -32,19 +32,24 @@ class CashAccountDeclarationDetailsSearchNoResultSpec extends SpecBase with Stan
 
   override val titleMsgKey: String = "cf.cash-account.detail.title"
   override val backLink: Option[String] = Some(controllers.routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
-  override val componentIdsToVerify: List[String] =
-    List("account-number", "search-result-heading", "search-result-guidance-1", "search-result-guidance-2",
-      "invalid-inputs-guidance-list")
+  override val componentIdsToVerify: List[String] = populateComponentIdsToVerify
 
   override val otherComponentGuidanceList: List[ComponentDetailsForAssertion] =
-    populateRequiredComponentGuidanceList(accNumber, searchInputValue)
+    populateComponentGuidanceList(accNumber, searchInputValue)
+
+  override val linksToVerify: List[LinkDetails] = populateLinksToVerify()
 
   "view" should {
     behave like standardPage()
   }
 
-  private def populateRequiredComponentGuidanceList(accNumber: String,
-                                                    searchInput: String) = {
+  private def populateComponentIdsToVerify = {
+    List("account-number", "search-result-heading", "search-result-guidance-not-returned-any-results",
+      "search-result-guidance-because-you-entered", "invalid-inputs-guidance-list", "search-again-link")
+  }
+
+  private def populateComponentGuidanceList(accNumber: String,
+                                            searchInput: String) = {
     val accountHeadingAndValue = ComponentDetailsForAssertion(
       testDescription = "display correct account label with number",
       id = Some("account-number"),
@@ -57,12 +62,12 @@ class CashAccountDeclarationDetailsSearchNoResultSpec extends SpecBase with Stan
 
     val searchResultParagraph1 = ComponentDetailsForAssertion(
       testDescription = "display correct search result guidance's first paragraph",
-      id = Some("search-result-guidance-1"),
+      id = Some("search-result-guidance-not-returned-any-results"),
       expectedValue = s"Your search $searchInput has not returned any results.")
 
     val searchResultParagraph2 = ComponentDetailsForAssertion(
       testDescription = "display correct search result guidance's second paragraph",
-      id = Some("search-result-guidance-2"),
+      id = Some("search-result-guidance-because-you-entered"),
       expectedValue = "This could be because you entered:")
 
     val unorderedListGuidance = ComponentDetailsForAssertion(
@@ -75,5 +80,13 @@ class CashAccountDeclarationDetailsSearchNoResultSpec extends SpecBase with Stan
       searchResultParagraph1,
       searchResultParagraph2,
       unorderedListGuidance)
+  }
+
+  private def populateLinksToVerify() = {
+    List(
+      LinkDetails(id = Some("search-again-link"),
+        url = controllers.routes.CashAccountV2Controller.showAccountDetails(Some(1)).url,
+        urlText = "Search again")
+    )
   }
 }

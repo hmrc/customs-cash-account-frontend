@@ -20,7 +20,8 @@
        h1Inner: components.h1Inner,
        h2Inner: components.h2Inner,
        p: components.p,
-       ul:components.unorderedList,
+       ul: components.unorderedList,
+       link: components.link,
        newTabLink: components.newTabLink
 )
 
@@ -50,13 +51,13 @@
   )
 
  @p(
-    message = messages("cf.cash-account.detail.declaration.search-no-results-guidance-text-1", searchInput),
-    id = Some("search-result-guidance-1")
+    message = messages("cf.cash-account.detail.declaration.search-no-results-guidance-not-returned-any-results", searchInput),
+    id = Some("search-result-guidance-not-returned-any-results")
  )
 
  @p(
-   message = messages("cf.cash-account.detail.declaration.search-no-results-guidance-text-2"),
-   id = Some("search-result-guidance-2")
+   message = messages("cf.cash-account.detail.declaration.search-no-results-guidance-because-you-entered"),
+   id = Some("search-result-guidance-because-you-entered")
  )
 
  @ul(
@@ -66,6 +67,12 @@
                     messages("cf.cash-account.detail.declaration.search-no-results-invalid-input-payment-amount"),
                     messages("cf.cash-account.detail.declaration.search-no-results-invalid-input-pound-sign")
     )
+ )
+
+ @link(
+    linkMessageKey = "site.search.again",
+    location = routes.CashAccountV2Controller.showAccountDetails(pageNumber).url,
+    pId = Some("search-again-link")
  )
 
   @h2(
@@ -79,4 +86,5 @@
       preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre"),
       postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")
   )
+
 }

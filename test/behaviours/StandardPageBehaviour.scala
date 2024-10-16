@@ -35,6 +35,7 @@ trait StandardPageBehaviour {
   val helpAndSupportMsgKeys: Option[List[String]] = None
   val helpAndSupportLink: Option[String] = None
   val otherComponentGuidanceList: List[ComponentDetailsForAssertion] = List.empty
+  val linksToVerify: List[LinkDetails] = List.empty
 
   implicit lazy val app: Application = application.build()
   implicit val msgs: Messages = messages(app)
@@ -43,49 +44,68 @@ trait StandardPageBehaviour {
 
   def standardPage(): Unit =
 
-      "display correct title" in {
-        view.title() mustBe s"${msgs(titleMsgKey)} - ${msgs("service.name")} - GOV.UK"
+    "display correct title" in {
+      view.title() mustBe s"${msgs(titleMsgKey)} - ${msgs("service.name")} - GOV.UK"
+    }
+
+    "display correct back link" in {
+      backLink.map(url => view.html().contains(url) mustBe true)
+    }
+
+    "display correct help and support guidance" in {
+      if (helpAndSupportMsgKeys.isDefined) {
+        helpAndSupportMsgKeys.map(msgsKey => view.html().contains(msgs(msgsKey)) mustBe true)
+      } else {
+        val viewAsHtml = view.html()
+
+        viewAsHtml.contains(msgs("cf.cash-account.help-and-support.link.text")) mustBe true
+        viewAsHtml.contains(msgs("cf.cash-account.help-and-support.link.text.post")) mustBe true
+        viewAsHtml.contains(msgs("cf.cash-account.help-and-support.link.text.pre")) mustBe true
+        viewAsHtml.contains(
+          helpAndSupportLink.getOrElse("https://www.gov.uk/guidance/use-a-cash-account-for-cds-declarations")
+        ) mustBe true
       }
+    }
 
-      "display correct back link" in {
-        backLink.map(url => view.html().contains(url) mustBe true)
-      }
-
-      "display correct help and support guidance" in {
-        if(helpAndSupportMsgKeys.isDefined) {
-          helpAndSupportMsgKeys.map(msgsKey => view.html().contains(msgs(msgsKey)) mustBe true)
-        } else {
-          val viewAsHtml = view.html()
-
-          viewAsHtml.contains(msgs("cf.cash-account.help-and-support.link.text")) mustBe true
-          viewAsHtml.contains(msgs("cf.cash-account.help-and-support.link.text.post")) mustBe true
-          viewAsHtml.contains(msgs("cf.cash-account.help-and-support.link.text.pre")) mustBe true
-          viewAsHtml.contains(
-            helpAndSupportLink.getOrElse("https://www.gov.uk/guidance/use-a-cash-account-for-cds-declarations")
-          ) mustBe true
+    componentIdsToVerify.foreach {
+      id =>
+        s"display component with id $id" in {
+          view.select(s"#$id").size() must be > 0
         }
-      }
+    }
 
-      componentIdsToVerify.foreach {
-        id =>
-          s"display component with id $id" in {
-            view.select(s"#$id").size() must be > 0
+    otherComponentGuidanceList.foreach {
+      component =>
+        component.testDescription in {
+          if (component.id.isDefined) {
+            view.getElementById(component.id.getOrElse(emptyString)).text() mustBe component.expectedValue
+          } else {
+            view.html().contains(component.expectedValue) mustBe true
           }
-      }
+        }
+    }
 
-      otherComponentGuidanceList.foreach {
-        component =>
-          component.testDescription in {
-            if(component.id.isDefined) {
-              view.getElementById(component.id.getOrElse(emptyString)).text() mustBe component.expectedValue
-            } else {
-              view.html().contains(component.expectedValue)
-            }
+    linksToVerify.foreach {
+      link =>
+        s"display the link for ${link.urlText}" in {
+          if (link.id.isDefined) {
+            val linkElement = view.getElementById(link.id.getOrElse(emptyString))
+
+            linkElement.html() must include(link.url)
+            linkElement.html() must include(link.urlText)
+          } else {
+            view.html() must include(link.url)
+            view.html() must include(link.urlText)
           }
-      }
+        }
+    }
 }
 
 case class ComponentDetailsForAssertion(testDescription: String,
                                         id: Option[String] = None,
                                         expectedValue: String)
 
+case class LinkDetails(url: String,
+                       urlText: String,
+                       id: Option[String] = None,
+                       classes: Option[String] = None)
