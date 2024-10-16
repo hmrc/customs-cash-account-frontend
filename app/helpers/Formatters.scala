@@ -73,34 +73,5 @@ object Formatters {
     numberFormat.setMinimumFractionDigits(maxDecimalPlaces)
     numberFormat.format(amount.abs)
   }
-
-  def parseDateString(date: String): LocalDate = {
-    val dateArray: Array[String] = date.split(singleSpace)
-
-    if (dateArray.size > 1) {
-      val day = dateArray(0).toInt
-      val monthString = dateArray(1)
-      val year = dateArray(2).toInt
-
-      LocalDate.of(year, intValueForMonthString(monthString), day)
-    } else {
-      LocalDate.parse(date, yyyyMMddDateFormatter);
-    }
-  }
-
-  //scalastyle:off
-  private def intValueForMonthString(month: String) = month match {
-    case "January" | "Ionawr" => month_1
-    case "February" | "Chwefror" => month_2
-    case "March" | "Mawrth" => month_3
-    case "April" | "Ebrill" => month_4
-    case "May" | "Mai" => month_5
-    case "June" | "Mehefin" => month_6
-    case "July" | "Gorffennaf" => month_7
-    case "August" | "Awst" => month_8
-    case "September" | "Medi" => month_9
-    case "October" | "Hydref" => month_10
-    case "November" | "Tachwedd" => month_11
-    case "December" | "Rhagfyr" => month_12
-  }
+  
 }
