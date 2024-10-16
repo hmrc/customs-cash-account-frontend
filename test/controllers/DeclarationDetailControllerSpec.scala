@@ -59,6 +59,7 @@ import utils.SpecBase
 import java.time.LocalDate
 import scala.concurrent.Future
 import views.html.cash_account_declaration_details_search_no_result
+import config.AppConfig
 
 class DeclarationDetailControllerSpec extends SpecBase {
 
