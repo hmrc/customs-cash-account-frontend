@@ -91,8 +91,8 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
     val result = for {
       cashAccount <- fromOptionF[Future, Result, CashAccount](eventualMaybeCashAccount, NotFound(eh.notFoundTemplate))
       statements <- transformedStatements
-      page <-
-        liftF[Future, Result, Result](showAccountWithTransactionDetails(cashAccount, from, to, page, statements, form))
+      page <- liftF[Future, Result, Result](showAccountWithTransactionDetails(
+        cashAccount, from, to, page, statements, form))
     } yield page
 
     result.merge.recover {

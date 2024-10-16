@@ -59,11 +59,7 @@ import views.html.{
 import java.time.LocalDate
 import scala.concurrent.Future
 import scala.util.Random
-import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.{eq => eqTo}
 import play.api.data.Form
-import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.twirl.api.HtmlFormat
 import utils.Utils.poundSymbol
 import viewmodels.{CashAccountV2ViewModel, GuidanceRow}
