@@ -37,7 +37,7 @@ import org.mockito.Mockito.when
 import play.api.Application
 import play.api.i18n.Messages
 import play.api.inject.bind
-import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HeaderCarrier
@@ -57,10 +57,6 @@ class DeclarationDetailControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
-
       running(app) {
         val request = FakeRequest(GET, routes.DeclarationDetailController.displayDetails(sMRN, Some(1)).url)
           .withSession("eori" -> eori)
@@ -76,10 +72,6 @@ class DeclarationDetailControllerSpec extends SpecBase {
 
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(new Exception("API error"))))
-
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DeclarationDetailController.displayDetails(sMRN, Some(1)).url)
@@ -97,10 +89,6 @@ class DeclarationDetailControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Right(CashTransactions(Seq.empty, Seq.empty))))
 
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
-
       running(app) {
         val request =
           FakeRequest(GET, routes.DeclarationDetailController.displayDetails("sMRN not found", Some(1)).url)
@@ -114,10 +102,6 @@ class DeclarationDetailControllerSpec extends SpecBase {
     "return a NOT_FOUND when the transaction details not retrieved" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(None))
-
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DeclarationDetailController.displayDetails(sMRN, Some(1)).url)
@@ -151,10 +135,6 @@ class DeclarationDetailControllerSpec extends SpecBase {
       )(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(cashAccountTransactionSearchResponseDetail)))
 
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
-
       running(app) {
         val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
           .withSession("eori" -> eori)
@@ -176,10 +156,6 @@ class DeclarationDetailControllerSpec extends SpecBase {
         any[Option[CashAccountPaymentDetails]]
       )(any[HeaderCarrier]))
         .thenReturn(Future.successful(Left(UnknownException)))
-
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
@@ -203,10 +179,6 @@ class DeclarationDetailControllerSpec extends SpecBase {
       )(any[HeaderCarrier]))
         .thenReturn(Future.successful(Left(BadRequest)))
 
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
-
       running(app) {
         val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
           .withSession("eori" -> eori)
@@ -228,10 +200,6 @@ class DeclarationDetailControllerSpec extends SpecBase {
         any[Option[CashAccountPaymentDetails]]
       )(any[HeaderCarrier]))
         .thenReturn(Future.successful(Left(InternalServerErrorErrorResponse)))
-
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
@@ -255,10 +223,6 @@ class DeclarationDetailControllerSpec extends SpecBase {
       )(any[HeaderCarrier]))
         .thenReturn(Future.successful(Left(ServiceUnavailableErrorResponse)))
 
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
-
       running(app) {
         val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
           .withSession("eori" -> eori)
@@ -271,10 +235,6 @@ class DeclarationDetailControllerSpec extends SpecBase {
     "return a NOT_FOUND when the transaction details not retrieved" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(None))
-
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
@@ -303,18 +263,10 @@ class DeclarationDetailControllerSpec extends SpecBase {
           paymentsWithdrawalsAndTransfers = None
         ))))
 
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector]
-          .toInstance(mockCustomsFinancialsApiConnector))
-        .build()
-
       running(app) {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
             .withSession("eori" -> eori)
-
-        implicit val msgs: Messages = messages(app)
-        implicit val config: AppConfig = appConfig(app)
 
         val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(
           Some(1), cashAccountNumber, searchInput).body
@@ -340,18 +292,10 @@ class DeclarationDetailControllerSpec extends SpecBase {
         )(any[HeaderCarrier]))
           .thenReturn(Future.successful(Left(InvalidCashAccount)))
 
-        val app: Application = application
-          .overrides(bind[CustomsFinancialsApiConnector]
-            .toInstance(mockCustomsFinancialsApiConnector))
-          .build()
-
         running(app) {
           implicit val request: FakeRequest[AnyContentAsEmpty.type] =
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
-
-          implicit val msgs: Messages = messages(app)
-          implicit val config: AppConfig = appConfig(app)
 
           val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(
             Some(1), cashAccountNumber, searchInput).body
@@ -376,18 +320,10 @@ class DeclarationDetailControllerSpec extends SpecBase {
         )(any[HeaderCarrier]))
           .thenReturn(Future.successful(Left(InvalidDeclarationReference)))
 
-        val app: Application = application
-          .overrides(bind[CustomsFinancialsApiConnector]
-            .toInstance(mockCustomsFinancialsApiConnector))
-          .build()
-
         running(app) {
           implicit val request: FakeRequest[AnyContentAsEmpty.type] =
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
-
-          implicit val msgs: Messages = messages(app)
-          implicit val config: AppConfig = appConfig(app)
 
           val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(
             Some(1), cashAccountNumber, searchInput).body
@@ -412,18 +348,10 @@ class DeclarationDetailControllerSpec extends SpecBase {
         )(any[HeaderCarrier]))
           .thenReturn(Future.successful(Left(DuplicateAckRef)))
 
-        val app: Application = application
-          .overrides(bind[CustomsFinancialsApiConnector]
-            .toInstance(mockCustomsFinancialsApiConnector))
-          .build()
-
         running(app) {
           implicit val request: FakeRequest[AnyContentAsEmpty.type] =
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
-
-          implicit val msgs: Messages = messages(app)
-          implicit val config: AppConfig = appConfig(app)
 
           val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
             .apply(Some(1), cashAccountNumber, searchInput).body
@@ -448,18 +376,10 @@ class DeclarationDetailControllerSpec extends SpecBase {
         )(any[HeaderCarrier]))
           .thenReturn(Future.successful(Left(NoAssociatedDataFound)))
 
-        val app: Application = application
-          .overrides(bind[CustomsFinancialsApiConnector]
-            .toInstance(mockCustomsFinancialsApiConnector))
-          .build()
-
         running(app) {
           implicit val request: FakeRequest[AnyContentAsEmpty.type] =
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
-
-          implicit val msgs: Messages = messages(app)
-          implicit val config: AppConfig = appConfig(app)
 
           val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
             .apply(Some(1), cashAccountNumber, searchInput).body
@@ -484,18 +404,10 @@ class DeclarationDetailControllerSpec extends SpecBase {
         )(any[HeaderCarrier]))
           .thenReturn(Future.successful(Left(InvalidEori)))
 
-        val app: Application = application
-          .overrides(bind[CustomsFinancialsApiConnector]
-            .toInstance(mockCustomsFinancialsApiConnector))
-          .build()
-
         running(app) {
           implicit val request: FakeRequest[AnyContentAsEmpty.type] =
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
-
-          implicit val msgs: Messages = messages(app)
-          implicit val config: AppConfig = appConfig(app)
 
           val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
             .apply(Some(1), cashAccountNumber, searchInput).body
@@ -576,5 +488,12 @@ class DeclarationDetailControllerSpec extends SpecBase {
     )
 
     val declarationWrapper: DeclarationWrapper = DeclarationWrapper(declarationSearch)
+
+    val app: Application = application
+      .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+      .build()
+
+    implicit val msgs: Messages = messages(app)
+    implicit val config: AppConfig = appConfig(app)
   }
 }
