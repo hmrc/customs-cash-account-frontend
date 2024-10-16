@@ -26,40 +26,6 @@ class ConstraintsSpec extends SpecBase with Constraints {
 
   "Constraints" should {
 
-    "validateSearchInput" must {
-
-      "return Valid when given a valid MRN" in new Setup {
-        val result: ValidationResult = validateSearchInput("error.key")("GDRC1345317D1113315")
-        result mustBe Valid
-      }
-
-      "return Invalid when given an invalid MRN" in new Setup {
-        val result: ValidationResult = validateSearchInput("error.key")("123DR_1345!D1113315He22")
-        result mustBe Invalid(Seq(ValidationError("error.key", patterns: _*)))
-      }
-
-      "return Valid when given an valid UCR" in new Setup {
-        val result: ValidationResult = validateSearchInput("error.key")("GB1168562890 9193-9182-888 416D")
-        result mustBe Valid
-      }
-
-      "return Invalid when given an invalid UCR" in new Setup {
-        val result: ValidationResult = validateSearchInput("error.key")("GB1234567890_1134!7456-914+121D")
-        result mustBe Invalid(Seq(ValidationError("error.key", patterns: _*)))
-      }
-
-      "return Valid when given a valid payment amount" in new Setup {
-        val paymentResult: ValidationResult = validateSearchInput("error.key")("£30.00")
-        paymentResult mustBe Valid
-      }
-
-      "return Invalid when given an invalid payment amount" in new Setup {
-        val paymentResult: ValidationResult = validateSearchInput("error.key")("-_£30.00.00")
-        paymentResult mustBe Invalid(
-          Seq(ValidationError("error.key", patterns: _*)))
-      }
-    }
-
     "currentDate" must {
 
       "current date should return a local date time" in new Setup {
@@ -136,6 +102,40 @@ class ConstraintsSpec extends SpecBase with Constraints {
 
         val result: ValidationResult = beforeCurrentDate("error.min").apply(futureMonth)
         result mustBe Invalid(List(ValidationError(List("error.min"))))
+      }
+    }
+
+    "validateSearchInput" must {
+
+      "return Valid when given a valid MRN" in new Setup {
+        val result: ValidationResult = validateSearchInput("error.key")("GDRC1345317D1113315")
+        result mustBe Valid
+      }
+
+      "return Invalid when given an invalid MRN" in new Setup {
+        val result: ValidationResult = validateSearchInput("error.key")("123DR_1345!D1113315He22")
+        result mustBe Invalid(Seq(ValidationError("error.key", patterns: _*)))
+      }
+
+      "return Valid when given an valid UCR" in new Setup {
+        val result: ValidationResult = validateSearchInput("error.key")("GB1168562890 9193-9182-888 416D")
+        result mustBe Valid
+      }
+
+      "return Invalid when given an invalid UCR" in new Setup {
+        val result: ValidationResult = validateSearchInput("error.key")("GB1234567890_1134!7456-914+121D")
+        result mustBe Invalid(Seq(ValidationError("error.key", patterns: _*)))
+      }
+
+      "return Valid when given a valid payment amount" in new Setup {
+        val paymentResult: ValidationResult = validateSearchInput("error.key")("£30.00")
+        paymentResult mustBe Valid
+      }
+
+      "return Invalid when given an invalid payment amount" in new Setup {
+        val paymentResult: ValidationResult = validateSearchInput("error.key")("-_£30.00.00")
+        paymentResult mustBe Invalid(
+          Seq(ValidationError("error.key", patterns: _*)))
       }
     }
   }

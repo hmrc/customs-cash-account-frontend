@@ -114,7 +114,11 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
     apiConnector.retrieveCashTransactions(account.number, from, to).map {
       case Left(errorResponse) => processErrorResponse(account, errorResponse)
       case Right(cashTransactions) =>
-        Ok(accountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions, statements, page)))
+        if (form.hasErrors) {
+          BadRequest(accountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions, statements, page)))
+        } else {
+          Ok(accountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions, statements, page)))
+        }
     }
   }
 
