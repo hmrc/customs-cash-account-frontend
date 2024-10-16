@@ -119,6 +119,7 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
         } else {
           Ok(accountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions, statements, page)))
         }
+        
     }
   }
 
