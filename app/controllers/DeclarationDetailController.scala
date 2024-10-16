@@ -52,7 +52,7 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
                                             cashAccountUtils: CashAccountUtils,
                                             noTransactionsView: cash_transactions_no_result,
                                             transactionsUnavailableView: cash_account_transactions_not_available,
-                                            noSearchResultView: cash_account_declaration_details_search_no_result,
+                                            noSearchResultView: cash_account_declaration_details_search_no_result
                                            )(implicit executionContext: ExecutionContext,
                                              appConfig: AppConfig
                                            ) extends FrontendController(mcc) with I18nSupport with Logging {
