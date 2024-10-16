@@ -16,34 +16,27 @@
 
 package controllers
 
-import config.ErrorHandler
-import connectors.{
-  CustomsFinancialsApiConnector, DuplicateAckRef, InvalidCashAccount,
-  InvalidDeclarationReference, InvalidEori, NoAssociatedDataFound, UnknownException
-}
+import config.{AppConfig, ErrorHandler}
+import connectors.{CustomsFinancialsApiConnector, DuplicateAckRef, InvalidCashAccount, InvalidDeclarationReference, InvalidEori, NoAssociatedDataFound, UnknownException}
 import models.request.{CashAccountPaymentDetails, DeclarationDetailsSearch, SearchType}
-import models.response.{
-  CashAccountTransactionSearchResponseDetail, DeclarationSearch,
-  DeclarationWrapper, TaxGroupSearch, TaxGroupWrapper, TaxTypeWithSecurity, TaxTypeWithSecurityContainer
-}
-import models.{
-  AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement,
-  CashTransactions, Declaration, Payment, Transaction, Withdrawal
-}
+import models.response.{CashAccountTransactionSearchResponseDetail, DeclarationSearch, DeclarationWrapper, TaxGroupSearch, TaxGroupWrapper, TaxTypeWithSecurity, TaxTypeWithSecurityContainer}
+import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Withdrawal}
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito
 import org.mockito.Mockito.when
 import play.api.Application
+import play.api.i18n.Messages
 import play.api.inject.bind
-import play.api.mvc.Request
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import play.twirl.api.Html
+import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.SpecBase
 
 import java.time.LocalDate
 import scala.concurrent.Future
+import views.html.cash_account_declaration_details_search_no_result
 
 class DeclarationDetailControllerSpec extends SpecBase {
 
@@ -128,45 +121,6 @@ class DeclarationDetailControllerSpec extends SpecBase {
   }
 
   "Cash Account Declaration Transaction Search Details" must {
-
-    "return a NOT_FOUND when declarationsOpt is None" in new Setup {
-      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-        .thenReturn(Future.successful(Some(cashAccount)))
-
-      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-        eqTo(cashAccountNumber),
-        eqTo(eori),
-        any[SearchType.Value],
-        any[Option[DeclarationDetailsSearch]],
-        any[Option[CashAccountPaymentDetails]]
-      )(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right(CashAccountTransactionSearchResponseDetail(
-          can = cashAccountNumber,
-          eoriDetails = Seq.empty,
-          declarations = None,
-          paymentsWithdrawalsAndTransfers = None
-        ))))
-
-      when(mockErrorHandler.notFoundTemplate(any[Request[_]]))
-        .thenReturn(Html("Not Found"))
-
-      val app: Application = application
-        .overrides(
-          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
-          bind[ErrorHandler].toInstance(mockErrorHandler)
-        )
-        .build()
-
-      running(app) {
-        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
-          .withSession("eori" -> eori)
-
-        val result = route(app, request).value
-
-        status(result) mustEqual NOT_FOUND
-        contentAsString(result) mustEqual "Not Found"
-      }
-    }
 
     "return an OK view when a transaction is found" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
@@ -268,10 +222,20 @@ class DeclarationDetailControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1),
-          searchInput).url).withSession("eori" -> eori)
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+            .withSession("eori" -> eori)
+
+        implicit val msgs: Messages = messages(app)
+        implicit val config: AppConfig = appConfig(app)
+
+        val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(
+          Some(1), cashAccountNumber, searchInput).body
+
         val result = route(app, request).value
         status(result) mustEqual OK
+
+        contentAsString(result) mustEqual expectedView
       }
     }
 
@@ -295,11 +259,20 @@ class DeclarationDetailControllerSpec extends SpecBase {
           .build()
 
         running(app) {
-          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1),
-            searchInput).url).withSession("eori" -> eori)
+          implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
+
+          implicit val msgs: Messages = messages(app)
+          implicit val config: AppConfig = appConfig(app)
+
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(
+            Some(1), cashAccountNumber, searchInput).body
 
           val result = route(app, request).value
           status(result) mustEqual OK
+
+          contentAsString(result) mustBe expectedView
         }
       }
 
@@ -322,11 +295,20 @@ class DeclarationDetailControllerSpec extends SpecBase {
           .build()
 
         running(app) {
-          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1),
-            searchInput).url).withSession("eori" -> eori)
+          implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
+
+          implicit val msgs: Messages = messages(app)
+          implicit val config: AppConfig = appConfig(app)
+
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(
+            Some(1), cashAccountNumber, searchInput).body
 
           val result = route(app, request).value
           status(result) mustEqual OK
+
+          contentAsString(result) mustBe expectedView
         }
       }
 
@@ -349,11 +331,20 @@ class DeclarationDetailControllerSpec extends SpecBase {
           .build()
 
         running(app) {
-          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1),
-            searchInput).url).withSession("eori" -> eori)
+          implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
+
+          implicit val msgs: Messages = messages(app)
+          implicit val config: AppConfig = appConfig(app)
+
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput).body
 
           val result = route(app, request).value
           status(result) mustEqual OK
+
+          contentAsString(result) mustBe expectedView
         }
       }
 
@@ -376,11 +367,20 @@ class DeclarationDetailControllerSpec extends SpecBase {
           .build()
 
         running(app) {
-          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1),
-            searchInput).url).withSession("eori" -> eori)
+          implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
+
+          implicit val msgs: Messages = messages(app)
+          implicit val config: AppConfig = appConfig(app)
+
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput).body
 
           val result = route(app, request).value
           status(result) mustEqual OK
+
+          contentAsString(result) mustBe expectedView
         }
       }
 
@@ -403,11 +403,20 @@ class DeclarationDetailControllerSpec extends SpecBase {
           .build()
 
         running(app) {
-          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1),
-            searchInput).url).withSession("eori" -> eori)
+          implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
+
+          implicit val msgs: Messages = messages(app)
+          implicit val config: AppConfig = appConfig(app)
+
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput).body
 
           val result = route(app, request).value
           status(result) mustEqual OK
+
+          contentAsString(result) mustBe expectedView
         }
       }
     }

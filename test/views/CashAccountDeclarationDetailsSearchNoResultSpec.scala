@@ -73,7 +73,7 @@ class CashAccountDeclarationDetailsSearchNoResultSpec extends SpecBase with Stan
     val unorderedListGuidance = ComponentDetailsForAssertion(
       testDescription = "display correct guidance for invalid inputs ",
       id = Some("invalid-inputs-guidance-list"),
-      expectedValue = "an incorrect Movement Reference Number(MRN) or Unique Consignment Number(UCR)")
+      expectedValue = "an incorrect Movement Reference Number (MRN) or Unique Consignment Number (UCR)")
 
     List(accountHeadingAndValue,
       searchResultSubHeading,

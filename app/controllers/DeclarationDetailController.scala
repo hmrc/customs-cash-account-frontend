@@ -26,7 +26,12 @@ import models.response.DeclarationWrapper
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.{cash_account_declaration_details, cash_account_declaration_details_search, cash_transactions_no_result}
+import views.html.{
+  cash_account_declaration_details,
+  cash_account_declaration_details_search,
+  cash_transactions_no_result,
+  cash_account_declaration_details_search_no_result
+}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,7 +49,8 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
                                             view: cash_account_declaration_details,
                                             searchView: cash_account_declaration_details_search,
                                             cashAccountUtils: CashAccountUtils,
-                                            noTransactionsView: cash_transactions_no_result
+                                            noTransactionsView: cash_transactions_no_result,
+                                            noSearchResultView: cash_account_declaration_details_search_no_result
                                            )(implicit executionContext: ExecutionContext,
                                              appConfig: AppConfig
                                            ) extends FrontendController(mcc) with I18nSupport with Logging {
@@ -67,7 +73,8 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
 
     apiConnector.retrieveCashTransactionsBySearch(account.number, request.eori, searchType, declarationDetails).map {
       case Right(transactions) => processTransactions(transactions.declarations, searchInput, account, page)
-      case Left(_) => NotFound(errorHandler.notFoundTemplate)
+      case Left(_) => Ok(noSearchResultView(page, account.number, searchInput))
+      //case Left(_) => NotFound(errorHandler.notFoundTemplate)
     }
   }
 
@@ -79,7 +86,8 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
     declarationsOpt.flatMap(_.headOption.map(_.declaration)) match {
       case Some(declarationSearch) =>
         Ok(searchView(DeclarationDetailSearchViewModel(searchValue, account, declarationSearch), page))
-      case None => NotFound(errorHandler.notFoundTemplate)
+
+      case None => Ok(noSearchResultView(page, account.number, searchValue))
     }
   }
 

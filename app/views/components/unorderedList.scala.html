@@ -25,7 +25,7 @@
 )
 
 @liMsgList.map {liMsg =>
-    <ul @{id.fold(emptyString)(id => s"id=$id")} class="@{classes.fold("govuk-body")(classes => s"$classes")}">
+    <ul @{id.fold(emptyString)(id => s"id=$id")} class="@{classes.fold("govuk-list govuk-list--bullet")(classes => s"$classes")}">
         <li>@liMsg</li>
     </ul>
 }
