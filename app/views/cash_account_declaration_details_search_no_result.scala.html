@@ -38,42 +38,42 @@
 ) {
 
   @h2Inner(
-    msg = "cf.cash-account.detail.account",
-    innerMsg = accountNumber,
-    id = Some("account-number"),
-    classes = "govuk-caption-xl"
+     msg = "cf.cash-account.detail.account",
+     innerMsg = accountNumber,
+     id = Some("account-number"),
+     classes = "govuk-caption-xl"
   )
 
   @h1Inner(
-    msg = "cf.cash-account.detail.declaration.search-title",
-    innerMsg = searchInput,
-    id = Some("search-result-heading")
+     msg = "cf.cash-account.detail.declaration.search-title",
+     innerMsg = searchInput,
+     id = Some("search-result-heading")
   )
 
- @p(
-    message = messages("cf.cash-account.detail.declaration.search-no-results-guidance-not-returned-any-results", searchInput),
-    id = Some("search-result-guidance-not-returned-any-results")
- )
+  @p(
+     message = messages("cf.cash-account.detail.declaration.search-no-results-guidance-not-returned-any-results", searchInput),
+     id = Some("search-result-guidance-not-returned-any-results")
+  )
 
- @p(
-   message = messages("cf.cash-account.detail.declaration.search-no-results-guidance-because-you-entered"),
-   id = Some("search-result-guidance-because-you-entered")
- )
+  @p(
+     message = messages("cf.cash-account.detail.declaration.search-no-results-guidance-because-you-entered"),
+     id = Some("search-result-guidance-because-you-entered")
+  )
 
- @ul(
-    id = Some("invalid-inputs-guidance-list"),
-    liMsgList = List(
+  @ul(
+     id = Some("invalid-inputs-guidance-list"),
+     liMsgList = List(
                     messages("cf.cash-account.detail.declaration.search-no-results-invalid-input-mrn"),
                     messages("cf.cash-account.detail.declaration.search-no-results-invalid-input-payment-amount"),
                     messages("cf.cash-account.detail.declaration.search-no-results-invalid-input-pound-sign")
-    )
- )
+     )
+  )
 
- @link(
-    linkMessageKey = "site.search.again",
-    location = routes.CashAccountV2Controller.showAccountDetails(pageNumber).url,
-    pId = Some("search-again-link")
- )
+  @link(
+     linkMessageKey = "site.search.again",
+     location = routes.CashAccountV2Controller.showAccountDetails(pageNumber).url,
+     pId = Some("search-again-link")
+  )
 
   @h2(
       msg = "cf.cash-account.transactions.request.support.heading",
