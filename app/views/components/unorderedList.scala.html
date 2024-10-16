@@ -26,7 +26,6 @@
 
 @if(liMsgList.nonEmpty) {
     <ul @{id.fold(emptyString)(id => s"id=$id")} class="@{classes.fold("govuk-list govuk-list--bullet")(classes => s"$classes")}">
-
         @liMsgList.map { liMsg =>
             <li>@liMsg</li>
         }
