@@ -28,21 +28,41 @@ class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
 
   "view" should {
 
-    "display correct contents" in new Setup {
-      val viewDoc: Document = view(model)
-
+    "display title" in new Setup {
       titleShouldBeCorrect(viewDoc, "cf.cash-account.detail.title")
-      shouldContainBackLinkUrl(viewDoc, appConfig.customsFinancialsFrontendHomepage)
-
-      shouldDisplayCorrectAccountDetails(viewDoc, accNumber)
-      shouldDisplayPayImportDutyAndTaxesGuidance(viewDoc)
-      shouldDisplayAuthoriseAnAgentGuidance(viewDoc)
-      shouldDisplayTopUpGuidance(viewDoc)
-      shouldDisplayFindOutHowLink(viewDoc)
-      shouldDisplayHelpAndSupportGuidanceHeader(viewDoc)
-      shouldDisplayHelpAndSupportGuidance(viewDoc)
     }
 
+    "display back link" in new Setup {
+      shouldContainBackLinkUrl(viewDoc, appConfig.customsFinancialsFrontendHomepage)
+    }
+
+    "display account details" in new Setup {
+      shouldDisplayCorrectAccountDetails(viewDoc, accNumber)
+    }
+
+    "display pay import duty and tax guidance" in new Setup {
+      shouldDisplayPayImportDutyAndTaxesGuidance(viewDoc)
+    }
+
+    "display authorise agent guidance" in new Setup {
+      shouldDisplayAuthoriseAnAgentGuidance(viewDoc)
+    }
+
+    "display top up guidance" in new Setup {
+      shouldDisplayTopUpGuidance(viewDoc)
+    }
+
+    "display find out how link" in new Setup {
+      shouldDisplayFindOutHowLink(viewDoc)
+    }
+
+    "display help and support guidance header" in new Setup {
+      shouldDisplayHelpAndSupportGuidanceHeader(viewDoc)
+    }
+
+    "display help and support guidance" in new Setup {
+      shouldDisplayHelpAndSupportGuidance(viewDoc)
+    }
   }
 
   private def shouldDisplayCorrectAccountDetails(viewDoc: Document, accNumber: String)(implicit msgs: Messages) = {
@@ -64,15 +84,15 @@ class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
   }
 
   private def shouldDisplayTopUpGuidance(viewDoc: Document)(implicit msgs: Messages) = {
-    viewDoc.getElementById("cash-account-authorise-agent-guidance").text() mustBe
-      msgs("cf.cash-account.top-up.guidance")
+    viewDoc.text().contains(msgs("cf.cash-account.top-up.guidance.text.pre")) mustBe true
+    viewDoc.text().contains(msgs("cf.cash-account.top-up.guidance.text.link")) mustBe true
+    viewDoc.text().contains(msgs("cf.cash-account.top-up.guidance.text.post")) mustBe true
   }
 
   private def shouldDisplayFindOutHowLink(viewDoc: Document)(implicit msgs: Messages, config: AppConfig) = {
-
     val elementLink = viewDoc.getElementById("cash-account-top-up-guidance-link")
-    elementLink.attribute("href").getValue mustBe config.cashAccountForCdsDeclarationsUrl
-    elementLink.text() mustBe msgs("cf.cash-account.how-to-use.guidance.link.text")
+    elementLink.attribute("href").getValue mustBe config.cashAccountTopUpGuidanceUrl
+    elementLink.text() mustBe msgs("cf.cash-account.top-up.guidance.text.link")
 
     viewDoc.text().contains(msgs("cf.cash-account.how-to-use.guidance.text.pre")) mustBe true
     viewDoc.text().contains(msgs("cf.cash-account.how-to-use.guidance.link.text")) mustBe true
@@ -108,5 +128,7 @@ class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
 
     def view(account: CashAccountViewModel): Document =
       Jsoup.parse(app.injector.instanceOf[cash_account_no_transactions_v2].apply(account).body)
+
+    val viewDoc: Document = view(model)
   }
 }

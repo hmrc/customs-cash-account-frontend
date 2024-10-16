@@ -14,80 +14,78 @@
  * limitations under the License.
  *@
 
-@*
-* Copyright 2021 HM Revenue & Customs
-*
-*@
-
 @import viewmodels.CashAccountV2ViewModel
 @import models.FileRole.CashStatement
 @import utils.Utils.{InputTextHint, LabelHint}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
 
 @this(
-        main_template: Layout,
-        formHelper: FormWithCSRF,
-        errorSummary: components.errorSummary,
-        button: components.button,
-        inputText: components.inputText,
-        pagination: GovukPagination
+  main_template: Layout,
+  formHelper: FormWithCSRF,
+  errorSummary: components.errorSummary,
+  button: components.button,
+  inputText: components.inputText,
+  pagination: GovukPagination
 )
 
 @(
-    form: Form[_],
-    viewModel: CashAccountV2ViewModel
+  form: Form[_],
+  viewModel: CashAccountV2ViewModel
 )(
-    implicit messages: Messages,
-    appConfig: AppConfig,
-    request: Request[_]
+  implicit messages: Messages,
+  appConfig: AppConfig,
+  request: Request[_]
 )
 
 @main_template(
-    pageTitle = Some(viewModel.pageTitle),
-    backLink = Some(viewModel.backLink),
-    fullWidth = true,
-    help = true
+  pageTitle = Some(viewModel.pageTitle),
+  backLink = Some(viewModel.backLink),
+  fullWidth = true,
+  help = true
 ) {
 
-    @viewModel.cashAccountBalance
+  @errorSummary(form.errors, None)
 
-    @viewModel.cashStatementNotification.map(identity)
+  @viewModel.cashAccountBalance
 
-    @formHelper(action = controllers.routes.CashAccountV2Controller.onSubmit(None)) {
-        @errorSummary(form.errors, None)
+  <div class="govuk-grid-row" id="notification-statement">
+    <div class="govuk-grid-column-two-thirds">
+      @viewModel.cashStatementNotification.map(identity)
+    </div>
+  </div>
 
-        @inputText(
-            form,
-            id = "search-transactions",
-            name = "value",
-            label = "cf.cash-account.transactions.search-for-transactions.heading",
-            hint = Some(
-                    InputTextHint(labelHint =
-                                    Some(LabelHint("cf.cash-account.transactions.search-for-transactions.hint",
-                                                    "govuk-hint govuk-!-margin-top-2")))),
-            formGroup = FormGroup(afterInput = Some(HtmlContent(button(msg = "site.search", classes = "inline-button")))),
-            isPageHeading = false,
-            classes = Some("govuk-!-width-one-third"),
-            labelClasses = Some("govuk-label--m govuk-!-margin-bottom-3")
-        )
+  @formHelper(action = controllers.routes.CashAccountV2Controller.onSubmit(None)) {
 
-    }
+    @inputText(
+        form,
+        id = "value",
+        name = "value",
+        label = "cf.cash-account.transactions.search-for-transactions.heading",
+        hint = Some(
+                InputTextHint(labelHint =
+                                Some(LabelHint("cf.cash-account.transactions.search-for-transactions.hint",
+                                                "govuk-hint govuk-!-margin-top-2")))),
+        formGroup = FormGroup(afterInput = Some(HtmlContent(button(msg = "site.search", classes = "inline-button")))),
+        isPageHeading = false,
+        classes = Some("govuk-!-width-one-third"),
+        labelClasses = Some("govuk-label--m govuk-!-margin-bottom-3"))
+  }
 
-    @viewModel.dailyStatementsSection.map { section =>
-        @section.dailyStatements
-        @viewModel.paginationModel.map(model => pagination(model.pagination))
-        @section.requestTransactionsHeading
-    }
+  @viewModel.dailyStatementsSection.map { section =>
+    @section.dailyStatements
+    @viewModel.paginationModel.map(model => pagination(model.pagination))
+    @section.requestTransactionsHeading
+  }
 
-    @viewModel.tooManyTransactionsSection.map { section =>
-        @section.heading
-        @section.paragraph
-    }
+  @viewModel.tooManyTransactionsSection.map { section =>
+    @section.heading
+    @section.paragraph
+  }
 
-    @viewModel.downloadCSVFileLinkUrl
+  @viewModel.downloadCSVFileLinkUrl
 
-    @defining(viewModel.helpAndSupportGuidance) { (helpAndSupport) =>
-        @helpAndSupport.h2Heading
-        @helpAndSupport.link.map(identity)
-    }
+  @defining(viewModel.helpAndSupportGuidance) { (helpAndSupport) =>
+    @helpAndSupport.h2Heading
+    @helpAndSupport.link.map(identity)
+  }
 }

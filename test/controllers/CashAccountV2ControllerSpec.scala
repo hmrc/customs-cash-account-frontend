@@ -24,6 +24,8 @@ import connectors.{
   TooManyTransactionsRequested,
   UnknownException
 }
+import forms.SearchTransactionsFormProvider
+import models.email.{UndeliverableEmail, UnverifiedEmail}
 import models.{
   AccountStatusOpen,
   CDSCashBalance,
@@ -37,11 +39,13 @@ import models.{
   Transfer,
   Withdrawal
 }
-import models.email.{UndeliverableEmail, UnverifiedEmail}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.when
 import play.api.Application
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
+import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.http.UpstreamErrorResponse
@@ -49,16 +53,16 @@ import utils.SpecBase
 import views.html.{
   cash_account_no_transactions_v2,
   cash_account_no_transactions_with_balance,
-  cash_account_transactions_not_available
+  cash_account_transactions_not_available,
+  cash_account_v2
 }
-
 import java.time.LocalDate
 import scala.concurrent.Future
 import scala.util.Random
-import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.{eq => eqTo}
-import play.api.mvc.{AnyContentAsEmpty, Result}
+import play.api.data.Form
+import play.twirl.api.HtmlFormat
+import utils.Utils.poundSymbol
+import viewmodels.{CashAccountV2ViewModel, GuidanceRow}
 
 class CashAccountV2ControllerSpec extends SpecBase {
 
@@ -193,7 +197,9 @@ class CashAccountV2ControllerSpec extends SpecBase {
             eori,
             cashAccount.copy(balances = CDSCashBalance(Some(0)))))(request, messages, appConfig).toString()
 
-        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.pre")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.link")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.post")
       }
     }
 
@@ -223,7 +229,9 @@ class CashAccountV2ControllerSpec extends SpecBase {
             eori,
             cashAccount.copy(balances = CDSCashBalance(Some(0)))))(request, messages, appConfig).toString()
 
-        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.pre")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.link")
+        contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.post")
       }
     }
 
@@ -530,31 +538,53 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(POST, routes.CashAccountV2Controller.onSubmit(page).url)
-          .withFormUrlEncodedBody("value" -> "testValue")
+          .withFormUrlEncodedBody("value" -> "GHRT122910DC537220")
 
         val result = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        val expectedRedirectUrl = routes.DeclarationDetailController.displaySearchDetails(page, "testValue").url
+        val expectedRedirectUrl =
+          routes.DeclarationDetailController.displaySearchDetails(page, "GHRT122910DC537220").url
 
         redirectLocation(result).value mustEqual expectedRedirectUrl
       }
     }
 
-    "return NOT_FOUND when form submission is unsuccessful" in new Setup {
+    "return same page when form submission is unsuccessful with error validation present" in new Setup {
       val app: Application = application
-        .overrides(bind[DeclarationDetailController].toInstance(mockDeclarationDetailController))
-        .build()
+        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)).build()
 
       running(app) {
+        val formWithErrors: Form[String] = new SearchTransactionsFormProvider()
+          .apply()
+          .bind(Map("value" -> emptyString))
+
+        val view = app.injector.instanceOf[cash_account_v2]
+
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        val viewModel = CashAccountV2ViewModel(
+          pageTitle = emptyString,
+          backLink = emptyString,
+          cashAccountBalance = HtmlFormat.empty,
+          cashStatementNotification = None,
+          dailyStatementsSection = None,
+          tooManyTransactionsSection = None,
+          downloadCSVFileLinkUrl = HtmlFormat.empty,
+          helpAndSupportGuidance = GuidanceRow(HtmlFormat.empty, None, None),
+          paginationModel = None)
+
         val request = FakeRequest(POST, routes.CashAccountV2Controller.onSubmit(page).url)
           .withFormUrlEncodedBody("value" -> emptyString)
 
         val result = route(app, request).value
+        status(result) mustEqual SEE_OTHER
 
-        status(result) mustEqual NOT_FOUND
-        contentAsString(result) must include("Page not found")
+        val renderedView = view.apply(formWithErrors, viewModel)(messages(app), appConfig(app), request).body
+        renderedView must include("There is a problem")
+        renderedView must include(s"Enter an MRN, UCR or exact payment amount that includes &#x27;$poundSymbol&#x27;")
       }
     }
   }

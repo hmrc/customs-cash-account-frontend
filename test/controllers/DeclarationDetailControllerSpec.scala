@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.{AppConfig, ErrorHandler}
+import config.ErrorHandler
 import connectors.{
   BadRequest, CustomsFinancialsApiConnector, DuplicateAckRef, InternalServerErrorErrorResponse,
   InvalidCashAccount, InvalidDeclarationReference, InvalidEori, NoAssociatedDataFound, ServiceUnavailableErrorResponse,
@@ -24,12 +24,24 @@ import connectors.{
 }
 import models.request.{CashAccountPaymentDetails, DeclarationDetailsSearch, SearchType}
 import models.response.{
-  CashAccountTransactionSearchResponseDetail, DeclarationSearch, DeclarationWrapper,
-  TaxGroupSearch, TaxGroupWrapper, TaxTypeWithSecurity, TaxTypeWithSecurityContainer
+  CashAccountTransactionSearchResponseDetail,
+  DeclarationSearch,
+  DeclarationWrapper,
+  TaxGroupSearch,
+  TaxGroupWrapper,
+  TaxTypeWithSecurity,
+  TaxTypeWithSecurityContainer
 }
 import models.{
-  AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions,
-  Declaration, Payment, Transaction, Withdrawal
+  AccountStatusOpen,
+  CDSCashBalance,
+  CashAccount,
+  CashDailyStatement,
+  CashTransactions,
+  Declaration,
+  Payment,
+  Transaction,
+  Withdrawal
 }
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito
@@ -40,6 +52,7 @@ import play.api.inject.bind
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
+import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.SpecBase
 
@@ -51,7 +64,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
 
   "displayDetails" must {
 
-    "return an OK view when a transaction is found" in new Setup {
+    "return OK view when a transaction is found" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
@@ -67,7 +80,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
       }
     }
 
-    "return an OK view with no transactions when an error occurs during retrieval" in new Setup {
+    "return OK view with no transactions when an error occurs during retrieval" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
@@ -83,7 +96,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
       }
     }
 
-    "return a NOT_FOUND when the transaction details not found in the retrieved data" in new Setup {
+    "return NOT_FOUND when the transaction details not found in the retrieved data" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
@@ -92,7 +105,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
 
       running(app) {
         val request =
-          FakeRequest(GET, routes.DeclarationDetailController.displayDetails("sMRN not found", Some(1)).url)
+          FakeRequest(GET, routes.DeclarationDetailController.displayDetails(sMRN, Some(1)).url)
             .withSession("eori" -> eori)
 
         val result = route(app, request).value
@@ -100,7 +113,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
       }
     }
 
-    "return a NOT_FOUND when the transaction details not retrieved" in new Setup {
+    "return NOT_FOUND when the transaction details not retrieved" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(None))
 
@@ -145,7 +158,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
       }
     }
 
-    "return NOT_FOUND" when {
+    "return OK and display show transactionsUnavailableView" when {
 
       "UnknownException error occurs during retrieval" in new Setup {
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
@@ -165,7 +178,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
             .withSession("eori" -> eori)
 
           val result = route(app, request).value
-          status(result) mustEqual NOT_FOUND
+          status(result) mustEqual OK
         }
       }
 
@@ -187,7 +200,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
             .withSession("eori" -> eori)
 
           val result = route(app, request).value
-          status(result) mustEqual NOT_FOUND
+          status(result) mustEqual OK
         }
       }
 
@@ -209,7 +222,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
             .withSession("eori" -> eori)
 
           val result = route(app, request).value
-          status(result) mustEqual NOT_FOUND
+          status(result) mustEqual OK
         }
       }
 
@@ -231,11 +244,13 @@ class DeclarationDetailControllerSpec extends SpecBase {
             .withSession("eori" -> eori)
 
           val result = route(app, request).value
-          status(result) mustEqual NOT_FOUND
+          status(result) mustEqual OK
         }
       }
+    }
 
-      "the transaction details not retrieved" in new Setup {
+    "return NOT_FOUND" when {
+      "error occurs to fetch the CashAccount details" in new Setup {
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
           .thenReturn(Future.successful(None))
 
@@ -249,7 +264,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
       }
     }
 
-    "return an OK and display Declaration search no result page when declarationOpt is None" in new Setup {
+    "return OK and display declaration details search no result page when declarations are empty" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
@@ -272,8 +287,8 @@ class DeclarationDetailControllerSpec extends SpecBase {
           FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
             .withSession("eori" -> eori)
 
-        val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(
-          Some(1), cashAccountNumber, searchInput).body
+        val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
+          .apply(Some(1), cashAccountNumber, searchInput).body
 
         val result = route(app, request).value
         status(result) mustEqual OK
@@ -283,6 +298,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
     }
 
     "return OK and display Declaration search no result page" when {
+
       "ETMP returns Invalid Cash Account Error" in new Setup {
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
           .thenReturn(Future.successful(Some(cashAccount)))
@@ -301,8 +317,8 @@ class DeclarationDetailControllerSpec extends SpecBase {
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
 
-          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(
-            Some(1), cashAccountNumber, searchInput).body
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput).body
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -329,8 +345,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
 
-          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(
-            Some(1), cashAccountNumber, searchInput).body
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(Some(1), cashAccountNumber, searchInput).body
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -357,8 +372,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
 
-          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
-            .apply(Some(1), cashAccountNumber, searchInput).body
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(Some(1), cashAccountNumber, searchInput).body
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -385,8 +399,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
 
-          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
-            .apply(Some(1), cashAccountNumber, searchInput).body
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(Some(1), cashAccountNumber, searchInput).body
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -413,8 +426,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
 
-          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
-            .apply(Some(1), cashAccountNumber, searchInput).body
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(Some(1), cashAccountNumber, searchInput).body
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -426,7 +438,6 @@ class DeclarationDetailControllerSpec extends SpecBase {
   }
 
   trait Setup {
-
     val cashAccountNumber = "1234567"
     val eori = "exampleEori"
     val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
@@ -472,24 +483,13 @@ class DeclarationDetailControllerSpec extends SpecBase {
       postingDate = "2024-04-29",
       acceptanceDate = "2024-04-28",
       amount = 500.00,
-      taxGroups = Seq(
-        TaxGroupWrapper(
-          TaxGroupSearch(
-            taxGroupDescription = "Import VAT",
-            amount = 100.00,
-            taxTypes = Seq(
-              TaxTypeWithSecurityContainer(
-                TaxTypeWithSecurity(
-                  reasonForSecurity = Some("Security Reason"),
-                  taxTypeID = "50",
-                  amount = 100.00
-                )
-              )
-            )
-          )
-        )
-      )
-    )
+      taxGroups = Seq(TaxGroupWrapper(TaxGroupSearch(
+        taxGroupDescription = "Import VAT",
+        amount = 100.00,
+        taxTypes = Seq(TaxTypeWithSecurityContainer(TaxTypeWithSecurity(
+          reasonForSecurity = Some("Security Reason"),
+          taxTypeID = "50",
+          amount = 100.00)))))))
 
     val declarationWrapper: DeclarationWrapper = DeclarationWrapper(declarationSearch)
 

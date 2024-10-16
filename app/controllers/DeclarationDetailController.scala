@@ -20,7 +20,7 @@ import config.{AppConfig, ErrorHandler}
 import connectors.{CustomsFinancialsApiConnector, ErrorResponse}
 import controllers.actions.{EmailAction, IdentifierAction}
 import helpers.CashAccountUtils
-import models.{CashAccount, CashTransactions}
+import models.{CashAccount, CashAccountViewModel, CashTransactions}
 import models.request.{DeclarationDetailsSearch, IdentifierRequest, ParamName, SearchType}
 import models.response.DeclarationWrapper
 import play.api.i18n.I18nSupport
@@ -29,10 +29,10 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{
   cash_account_declaration_details,
   cash_account_declaration_details_search,
+  cash_account_transactions_not_available,
   cash_account_declaration_details_search_no_result,
   cash_transactions_no_result
 }
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.Logging
@@ -51,7 +51,8 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
                                             searchView: cash_account_declaration_details_search,
                                             cashAccountUtils: CashAccountUtils,
                                             noTransactionsView: cash_transactions_no_result,
-                                            noSearchResultView: cash_account_declaration_details_search_no_result
+                                            transactionsUnavailableView: cash_account_transactions_not_available,
+                                            noSearchResultView: cash_account_declaration_details_search_no_result,
                                            )(implicit executionContext: ExecutionContext,
                                              appConfig: AppConfig
                                            ) extends FrontendController(mcc) with I18nSupport with Logging {
@@ -89,7 +90,8 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
     apiConnector.retrieveCashTransactionsBySearch(account.number, request.eori, searchType, declarationDetails).map {
       case Right(transactions) => processTransactions(transactions.declarations, searchInput, account, page)
       case Left(res) if isBusinessErrorResponse(res) => Ok(noSearchResultView(page, account.number, searchInput))
-      case Left(_) => NotFound(errorHandler.notFoundTemplate)
+      case Left(_) =>
+        Ok(transactionsUnavailableView(CashAccountViewModel(request.eori, account), appConfig.transactionsTimeoutFlag))
     }
   }
 

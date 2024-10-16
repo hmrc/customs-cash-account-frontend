@@ -20,6 +20,7 @@ import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.{Logger, LoggerLike}
 import uk.gov.hmrc.time.TaxYear
 import uk.gov.hmrc.time.TaxYear.taxYearFor
+import utils.RegexPatterns.{mrnRegex, paymentRegex, ucrRegex}
 
 import java.time.{Clock, LocalDate, LocalDateTime, Period}
 
@@ -72,5 +73,15 @@ trait Constraints {
       dayOfMonthThatTaxYearStartsOn)) => Invalid(ValidationError(taxYearErrorKey))
 
     case _ => Valid
+  }
+
+  protected def validateSearchInput(errorKey: String): Constraint[String] = Constraint { input =>
+    val patterns = Seq(mrnRegex, paymentRegex, ucrRegex)
+
+    if (patterns.exists(_.pattern.matcher(input).matches())) {
+      Valid
+    } else {
+      Invalid(errorKey, patterns.map(_.regex): _*)
+    }
   }
 }
