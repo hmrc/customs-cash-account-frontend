@@ -17,29 +17,20 @@
 package controllers
 
 import config.ErrorHandler
-import connectors.{CustomsFinancialsApiConnector, UnknownException}
+import connectors.{
+  CustomsFinancialsApiConnector, DuplicateAckRef, InvalidCashAccount,
+  InvalidDeclarationReference, InvalidEori, NoAssociatedDataFound, UnknownException
+}
 import models.request.{CashAccountPaymentDetails, DeclarationDetailsSearch, SearchType}
 import models.response.{
-  CashAccountTransactionSearchResponseDetail,
-  DeclarationSearch,
-  DeclarationWrapper,
-  TaxGroupSearch,
-  TaxGroupWrapper,
-  TaxTypeWithSecurity,
-  TaxTypeWithSecurityContainer
+  CashAccountTransactionSearchResponseDetail, DeclarationSearch,
+  DeclarationWrapper, TaxGroupSearch, TaxGroupWrapper, TaxTypeWithSecurity, TaxTypeWithSecurityContainer
 }
 import models.{
-  AccountStatusOpen,
-  CDSCashBalance,
-  CashAccount,
-  CashDailyStatement,
-  CashTransactions,
-  Declaration,
-  Payment,
-  Transaction,
-  Withdrawal
+  AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement,
+  CashTransactions, Declaration, Payment, Transaction, Withdrawal
 }
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito
 import org.mockito.Mockito.when
 import play.api.Application
@@ -250,6 +241,174 @@ class DeclarationDetailControllerSpec extends SpecBase {
 
         val result = route(app, request).value
         status(result) mustEqual NOT_FOUND
+      }
+    }
+
+    "return an OK when declarationOpt is None" in new Setup {
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+        eqTo(cashAccountNumber),
+        eqTo(eori),
+        any[SearchType.Value],
+        any[Option[DeclarationDetailsSearch]],
+        any[Option[CashAccountPaymentDetails]]
+      )(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(CashAccountTransactionSearchResponseDetail(
+          can = cashAccountNumber,
+          eoriDetails = Seq.empty,
+          declarations = None,
+          paymentsWithdrawalsAndTransfers = None
+        ))))
+
+      val app: Application = application
+        .overrides(bind[CustomsFinancialsApiConnector]
+          .toInstance(mockCustomsFinancialsApiConnector))
+        .build()
+
+      running(app) {
+        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1),
+          searchInput).url).withSession("eori" -> eori)
+        val result = route(app, request).value
+        status(result) mustEqual OK
+      }
+    }
+
+    "return OK and display Declaration Detail Search" when {
+      "ETMP returns Invalid Cash Account Error" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(InvalidCashAccount)))
+
+        val app: Application = application
+          .overrides(bind[CustomsFinancialsApiConnector]
+            .toInstance(mockCustomsFinancialsApiConnector))
+          .build()
+
+        running(app) {
+          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1),
+            searchInput).url).withSession("eori" -> eori)
+
+          val result = route(app, request).value
+          status(result) mustEqual OK
+        }
+      }
+
+      "ETMP returns Invalid Declaration Reference error" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(InvalidDeclarationReference)))
+
+        val app: Application = application
+          .overrides(bind[CustomsFinancialsApiConnector]
+            .toInstance(mockCustomsFinancialsApiConnector))
+          .build()
+
+        running(app) {
+          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1),
+            searchInput).url).withSession("eori" -> eori)
+
+          val result = route(app, request).value
+          status(result) mustEqual OK
+        }
+      }
+
+      "ETMP returns Duplicate Acknowledge Reference error" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(DuplicateAckRef)))
+
+        val app: Application = application
+          .overrides(bind[CustomsFinancialsApiConnector]
+            .toInstance(mockCustomsFinancialsApiConnector))
+          .build()
+
+        running(app) {
+          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1),
+            searchInput).url).withSession("eori" -> eori)
+
+          val result = route(app, request).value
+          status(result) mustEqual OK
+        }
+      }
+
+      "ETMP returns No Associated Data Found error" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(NoAssociatedDataFound)))
+
+        val app: Application = application
+          .overrides(bind[CustomsFinancialsApiConnector]
+            .toInstance(mockCustomsFinancialsApiConnector))
+          .build()
+
+        running(app) {
+          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1),
+            searchInput).url).withSession("eori" -> eori)
+
+          val result = route(app, request).value
+          status(result) mustEqual OK
+        }
+      }
+
+      "ETMP returns Owner EORI not belongs to the Cash Account error" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(InvalidEori)))
+
+        val app: Application = application
+          .overrides(bind[CustomsFinancialsApiConnector]
+            .toInstance(mockCustomsFinancialsApiConnector))
+          .build()
+
+        running(app) {
+          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1),
+            searchInput).url).withSession("eori" -> eori)
+
+          val result = route(app, request).value
+          status(result) mustEqual OK
+        }
       }
     }
   }
