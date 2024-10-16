@@ -23,9 +23,11 @@
   classes: Option[String] = None,
   liMsgList: List[String] = List.empty,
 )
+
 @if(liMsgList.nonEmpty) {
     <ul @{id.fold(emptyString)(id => s"id=$id")} class="@{classes.fold("govuk-list govuk-list--bullet")(classes => s"$classes")}">
-        @liMsgList.map {liMsg =>
+
+        @liMsgList.map { liMsg =>
             <li>@liMsg</li>
         }
     </ul>
