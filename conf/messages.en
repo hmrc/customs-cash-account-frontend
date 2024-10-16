@@ -308,7 +308,7 @@ cf.cash-account.detail.available-balance=Available balance {0}
 
 cf.cash-account.duplicate.header = We are already processing a request for {0} to {1}
 cf.cash-account.duplicate.message = Requested transactions can take up to 48 hours before they are available to download.
-cf.cash-account.duplicate.link = Back to cash account.
+cf.cash-account.duplicate.link = Back to cash account
 
 
 #Pagination
