@@ -17,10 +17,20 @@
 package controllers
 
 import config.{AppConfig, ErrorHandler}
-import connectors.{CustomsFinancialsApiConnector, DuplicateAckRef, InvalidCashAccount, InvalidDeclarationReference, InvalidEori, NoAssociatedDataFound, UnknownException}
+import connectors.{
+  BadRequest, CustomsFinancialsApiConnector, DuplicateAckRef, InternalServerErrorErrorResponse,
+  InvalidCashAccount, InvalidDeclarationReference, InvalidEori, NoAssociatedDataFound, ServiceUnavailableErrorResponse,
+  UnknownException
+}
 import models.request.{CashAccountPaymentDetails, DeclarationDetailsSearch, SearchType}
-import models.response.{CashAccountTransactionSearchResponseDetail, DeclarationSearch, DeclarationWrapper, TaxGroupSearch, TaxGroupWrapper, TaxTypeWithSecurity, TaxTypeWithSecurityContainer}
-import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Withdrawal}
+import models.response.{
+  CashAccountTransactionSearchResponseDetail, DeclarationSearch, DeclarationWrapper,
+  TaxGroupSearch, TaxGroupWrapper, TaxTypeWithSecurity, TaxTypeWithSecurityContainer
+}
+import models.{
+  AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions,
+  Declaration, Payment, Transaction, Withdrawal
+}
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito
 import org.mockito.Mockito.when
@@ -30,7 +40,6 @@ import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.SpecBase
 
@@ -181,6 +190,84 @@ class DeclarationDetailControllerSpec extends SpecBase {
       }
     }
 
+    "return NOT_FOUND when an BAD_REQUEST occurs during retrieval" in new Setup {
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+        eqTo(cashAccountNumber),
+        eqTo(eori),
+        any[SearchType.Value],
+        any[Option[DeclarationDetailsSearch]],
+        any[Option[CashAccountPaymentDetails]]
+      )(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Left(BadRequest)))
+
+      val app: Application = application
+        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+        .build()
+
+      running(app) {
+        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+          .withSession("eori" -> eori)
+
+        val result = route(app, request).value
+        status(result) mustEqual NOT_FOUND
+      }
+    }
+
+    "return NOT_FOUND when an INTERNAL_SERVER_ERROR occurs during retrieval" in new Setup {
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+        eqTo(cashAccountNumber),
+        eqTo(eori),
+        any[SearchType.Value],
+        any[Option[DeclarationDetailsSearch]],
+        any[Option[CashAccountPaymentDetails]]
+      )(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Left(InternalServerErrorErrorResponse)))
+
+      val app: Application = application
+        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+        .build()
+
+      running(app) {
+        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+          .withSession("eori" -> eori)
+
+        val result = route(app, request).value
+        status(result) mustEqual NOT_FOUND
+      }
+    }
+
+    "return NOT_FOUND when an SERVICE_UNAVAILABLE occurs during retrieval" in new Setup {
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+        eqTo(cashAccountNumber),
+        eqTo(eori),
+        any[SearchType.Value],
+        any[Option[DeclarationDetailsSearch]],
+        any[Option[CashAccountPaymentDetails]]
+      )(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Left(ServiceUnavailableErrorResponse)))
+
+      val app: Application = application
+        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+        .build()
+
+      running(app) {
+        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+          .withSession("eori" -> eori)
+
+        val result = route(app, request).value
+        status(result) mustEqual NOT_FOUND
+      }
+    }
+
     "return a NOT_FOUND when the transaction details not retrieved" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(None))
@@ -198,7 +285,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
       }
     }
 
-    "return an OK when declarationOpt is None" in new Setup {
+    "return an OK and display Declaration search no result page when declarationOpt is None" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
@@ -239,7 +326,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
       }
     }
 
-    "return OK and display Declaration Detail Search" when {
+    "return OK and display Declaration search no result page" when {
       "ETMP returns Invalid Cash Account Error" in new Setup {
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
           .thenReturn(Future.successful(Some(cashAccount)))

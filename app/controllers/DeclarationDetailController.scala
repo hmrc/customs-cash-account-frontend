@@ -17,7 +17,7 @@
 package controllers
 
 import config.{AppConfig, ErrorHandler}
-import connectors.CustomsFinancialsApiConnector
+import connectors.{CustomsFinancialsApiConnector, ErrorResponse}
 import controllers.actions.{EmailAction, IdentifierAction}
 import helpers.CashAccountUtils
 import models.{CashAccount, CashTransactions}
@@ -29,8 +29,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{
   cash_account_declaration_details,
   cash_account_declaration_details_search,
-  cash_transactions_no_result,
-  cash_account_declaration_details_search_no_result
+  cash_account_declaration_details_search_no_result,
+  cash_transactions_no_result
 }
 
 import javax.inject.Inject
@@ -38,6 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import play.api.Logging
 import utils.RegexPatterns.{mrnRegex, paymentRegex}
 import viewmodels.{DeclarationDetailSearchViewModel, DeclarationDetailViewModel, ResultsPageSummary}
+import connectors.{InvalidCashAccount, InvalidDeclarationReference, DuplicateAckRef, NoAssociatedDataFound, InvalidEori}
 
 import java.time.LocalDate
 
@@ -73,8 +74,8 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
 
     apiConnector.retrieveCashTransactionsBySearch(account.number, request.eori, searchType, declarationDetails).map {
       case Right(transactions) => processTransactions(transactions.declarations, searchInput, account, page)
-      case Left(_) => Ok(noSearchResultView(page, account.number, searchInput))
-      //case Left(_) => NotFound(errorHandler.notFoundTemplate)
+      case Left(res) if isBusinessErrorResponse(res) => Ok(noSearchResultView(page, account.number, searchInput))
+      case Left(_) => NotFound(errorHandler.notFoundTemplate)
     }
   }
 
@@ -89,6 +90,13 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
 
       case None => Ok(noSearchResultView(page, account.number, searchValue))
     }
+  }
+
+  private def isBusinessErrorResponse(incomingErrorResponse: ErrorResponse): Boolean = {
+    val businessErrorResponseList =
+      List(InvalidCashAccount, InvalidDeclarationReference, DuplicateAckRef, NoAssociatedDataFound, InvalidEori)
+
+    businessErrorResponseList.contains(incomingErrorResponse)
   }
 
   private def determineParamNameAndSearchType(searchInput: String): (ParamName.Value, SearchType.Value) = {
