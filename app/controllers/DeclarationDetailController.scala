@@ -85,7 +85,9 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
       case SearchType.P => (None, Some(CashAccountPaymentDetails(searchInput.replaceAll("[^\\d.]", "").toDouble)))
     }
 
-    apiConnector.retrieveCashTransactionsBySearch(account.number, request.eori, searchType, declarationDetails).map {
+    apiConnector.retrieveCashTransactionsBySearch(
+      account.number, request.eori, searchType, searchInput, declarationDetails, cashAccountPaymentDetails).map {
+
       case Right(transactions) => processTransactions(transactions, searchInput, account, page)
       case Left(_) => NotFound(errorHandler.notFoundTemplate)
     }
