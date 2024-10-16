@@ -56,7 +56,7 @@ object PaymentSearchResultsViewModel {
       searchResultsHeader = populateSearchResultsHeader(searchValue),
       paymentSearchResultSection = populatePaymentSearchResultSection(paymentsWithdrawalsAndTransfers, pageNo),
       helpAndSupportGuidance = helpAndSupport,
-      paginationModel = populatePaginationModel(pageNo, totalDailyStatementsSize))
+      paginationModel = populatePaginationModel(searchValue, pageNo, totalDailyStatementsSize))
   }
 
   private def populateSearchResultsHeader(searchInput: String)(implicit messages: Messages): HtmlFormat.Appendable = {
@@ -85,7 +85,8 @@ object PaymentSearchResultsViewModel {
     )
   }
 
-  private def populatePaginationModel(pageNo: Option[Int],
+  private def populatePaginationModel(searchValue: String,
+                                      pageNo: Option[Int],
                                       totalDailyStatementsSize: Int)
                                      (implicit config: AppConfig) = {
     val isPaginationDisabled = totalDailyStatementsSize <= config.numberOfRecordsPerPage
@@ -97,7 +98,7 @@ object PaymentSearchResultsViewModel {
         totalNumberOfItems = totalDailyStatementsSize,
         currentPage = pageNo.getOrElse(1),
         numberOfItemsPerPage = config.numberOfRecordsPerPage,
-        href = controllers.routes.DeclarationDetailController.displaySearchDetails(None).url))
+        href = controllers.routes.CashTransactionsSearchController.search(searchValue, None).url))
     }
   }
 }

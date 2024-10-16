@@ -43,3 +43,5 @@ GET         /csv-download-error                     controllers.DownloadCsvContr
 
 GET         /transaction/:ref                       controllers.DeclarationDetailController.displayDetails(ref: String, page: Option[Int])
 POST        /transaction-search                     controllers.DeclarationDetailController.displaySearchDetails(page: Option[Int])
+
+GET         /search/:searchValue                    controllers.CashTransactionsSearchController.search(searchValue: String, page: Option[Int])

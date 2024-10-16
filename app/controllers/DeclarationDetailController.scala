@@ -107,11 +107,8 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
     }
     else if (cashAccResDetail.paymentsWithdrawalsAndTransfers.isDefined) {
       cashAccResDetail.paymentsWithdrawalsAndTransfers match {
-        case Some(seqOfPaymentsWithdrawalsAndTransfers) => {
-          val paymentTransfersList: Seq[PaymentsWithdrawalsAndTransfer] =
-            seqOfPaymentsWithdrawalsAndTransfers.map(_.paymentsWithdrawalsAndTransfer)
-          Ok(paymentSearchView(PaymentSearchResultsViewModel(searchValue, account, paymentTransfersList, page)))
-        }
+        case Some(seqOfPaymentsWithdrawalsAndTransfers) =>
+          Redirect(routes.CashTransactionsSearchController.search(searchValue, page))
         case None => NotFound(errorHandler.notFoundTemplate)
       }
     }

@@ -48,6 +48,10 @@ object Utils {
     new h2().apply(msg = msgKey, id = id, classes = classes, extraContent = extraContent)
   }
 
+  def formCacheId(accountNumber: String, searchValue: String): String = {
+    s"${accountNumber}_${searchValue}"
+  }
+
   def h2InnerComponent(msgKey: String,
                        id: Option[String] = None,
                        innerMsg: String,
