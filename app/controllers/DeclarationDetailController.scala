@@ -65,6 +65,20 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
       }
     }
 
+  def displayDetails(ref: String,
+                     page: Option[Int]
+                    ): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    for {
+      accountOpt <- apiConnector.getCashAccount(request.eori)
+      result <- accountOpt match {
+        case Some(account) =>
+          val (from, to) = cashAccountUtils.transactionDateRange()
+          retrieveCashAccountTransactionAndDisplay(account, from, to, ref, page)
+        case None => Future.successful(NotFound(errorHandler.notFoundTemplate))
+      }
+    } yield result
+  }
+
   private def prepareTransactionSearch(account: CashAccount,
                                        page: Option[Int],
                                        searchInput: String)(implicit request: IdentifierRequest[_]): Future[Result] = {
@@ -110,20 +124,6 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
   private def isValidMRN(value: String): Boolean = mrnRegex.matches(value)
 
   private def isValidPayment(value: String): Boolean = paymentRegex.matches(value)
-
-  def displayDetails(ref: String,
-                     page: Option[Int]
-                    ): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    for {
-      accountOpt <- apiConnector.getCashAccount(request.eori)
-      result <- accountOpt match {
-        case Some(account) =>
-          val (from, to) = cashAccountUtils.transactionDateRange()
-          retrieveCashAccountTransactionAndDisplay(account, from, to, ref, page)
-        case None => Future.successful(NotFound(errorHandler.notFoundTemplate))
-      }
-    } yield result
-  }
 
   private def retrieveCashAccountTransactionAndDisplay(account: CashAccount,
                                                        from: LocalDate,

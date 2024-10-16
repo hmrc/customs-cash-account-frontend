@@ -31,7 +31,7 @@ import models.{
   AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions,
   Declaration, Payment, Transaction, Withdrawal
 }
-import org.mockito.ArgumentMatchers.{any, eq as eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito
 import org.mockito.Mockito.when
 import play.api.Application
@@ -49,7 +49,8 @@ import views.html.cash_account_declaration_details_search_no_result
 
 class DeclarationDetailControllerSpec extends SpecBase {
 
-  "Cash Account Declaration Transaction Details" must {
+  "displayDetails" must {
+
     "return an OK view when a transaction is found" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
@@ -113,7 +114,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
     }
   }
 
-  "Cash Account Declaration Transaction Search Details" must {
+  "displaySearchDetails" must {
 
     "return an OK view when a transaction is found" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
@@ -144,104 +145,107 @@ class DeclarationDetailControllerSpec extends SpecBase {
       }
     }
 
-    "return an NOT_FOUND when an error occurs during retrieval" in new Setup {
-      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-        .thenReturn(Future.successful(Some(cashAccount)))
+    "return NOT_FOUND" when {
 
-      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-        eqTo(cashAccountNumber),
-        eqTo(eori),
-        any[SearchType.Value],
-        any[Option[DeclarationDetailsSearch]],
-        any[Option[CashAccountPaymentDetails]]
-      )(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Left(UnknownException)))
+      "UnknownException error occurs during retrieval" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
 
-      running(app) {
-        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
-          .withSession("eori" -> eori)
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(UnknownException)))
 
-        val result = route(app, request).value
-        status(result) mustEqual NOT_FOUND
+        running(app) {
+          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+            .withSession("eori" -> eori)
+
+          val result = route(app, request).value
+          status(result) mustEqual NOT_FOUND
+        }
       }
-    }
 
-    "return NOT_FOUND when an BAD_REQUEST occurs during retrieval" in new Setup {
-      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-        .thenReturn(Future.successful(Some(cashAccount)))
+      "BAD_REQUEST error occurs during retrieval" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
 
-      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-        eqTo(cashAccountNumber),
-        eqTo(eori),
-        any[SearchType.Value],
-        any[Option[DeclarationDetailsSearch]],
-        any[Option[CashAccountPaymentDetails]]
-      )(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Left(BadRequest)))
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(BadRequest)))
 
-      running(app) {
-        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
-          .withSession("eori" -> eori)
+        running(app) {
+          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+            .withSession("eori" -> eori)
 
-        val result = route(app, request).value
-        status(result) mustEqual NOT_FOUND
+          val result = route(app, request).value
+          status(result) mustEqual NOT_FOUND
+        }
       }
-    }
 
-    "return NOT_FOUND when an INTERNAL_SERVER_ERROR occurs during retrieval" in new Setup {
-      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-        .thenReturn(Future.successful(Some(cashAccount)))
+      "INTERNAL_SERVER_ERROR occurs during retrieval" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
 
-      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-        eqTo(cashAccountNumber),
-        eqTo(eori),
-        any[SearchType.Value],
-        any[Option[DeclarationDetailsSearch]],
-        any[Option[CashAccountPaymentDetails]]
-      )(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Left(InternalServerErrorErrorResponse)))
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(InternalServerErrorErrorResponse)))
 
-      running(app) {
-        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
-          .withSession("eori" -> eori)
+        running(app) {
+          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+            .withSession("eori" -> eori)
 
-        val result = route(app, request).value
-        status(result) mustEqual NOT_FOUND
+          val result = route(app, request).value
+          status(result) mustEqual NOT_FOUND
+        }
       }
-    }
 
-    "return NOT_FOUND when an SERVICE_UNAVAILABLE occurs during retrieval" in new Setup {
-      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-        .thenReturn(Future.successful(Some(cashAccount)))
+      "SERVICE_UNAVAILABLE error occurs during retrieval" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
 
-      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-        eqTo(cashAccountNumber),
-        eqTo(eori),
-        any[SearchType.Value],
-        any[Option[DeclarationDetailsSearch]],
-        any[Option[CashAccountPaymentDetails]]
-      )(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Left(ServiceUnavailableErrorResponse)))
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(ServiceUnavailableErrorResponse)))
 
-      running(app) {
-        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
-          .withSession("eori" -> eori)
+        running(app) {
+          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+            .withSession("eori" -> eori)
 
-        val result = route(app, request).value
-        status(result) mustEqual NOT_FOUND
+          val result = route(app, request).value
+          status(result) mustEqual NOT_FOUND
+        }
       }
-    }
 
-    "return a NOT_FOUND when the transaction details not retrieved" in new Setup {
-      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-        .thenReturn(Future.successful(None))
+      "the transaction details not retrieved" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(None))
 
-      running(app) {
-        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
-          .withSession("eori" -> eori)
+        running(app) {
+          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+            .withSession("eori" -> eori)
 
-        val result = route(app, request).value
-        status(result) mustEqual NOT_FOUND
+          val result = route(app, request).value
+          status(result) mustEqual NOT_FOUND
+        }
       }
     }
 
