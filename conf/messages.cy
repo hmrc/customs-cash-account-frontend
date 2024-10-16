@@ -193,6 +193,9 @@ cf.cash-account.how-to-use.guidance.text.pre = Dysgwch sut i
 cf.cash-account.how-to-use.guidance.text.post = ar GOV.UK.
 cf.cash-account.how-to-use.guidance.link.text = ddefnyddio cyfrif arian parod ar gyfer datganiadau’r Gwasanaeth Datgan Tollau (CDS)
 cf.cash-account.top-up.guidance = Bydd angen i chi ychwanegu at eich cyfrif arian parod cyn y gallwch ei ddefnyddio.
+cf.cash-account.top-up.guidance.preLink = Bydd angen i chi
+cf.cash-account.top-up.guidance.link = ychwanegu at eich cyfrif arian parod
+cf.cash-account.top-up.guidance.Post = cyn y gallwch ei ddefnyddio.
 cf.cash-account.detail.no-transactions-with-balance.p1=Nid oes unrhyw drafodion o’r 6 mis diwethaf i’w harddangos.
 
 # Cash Transactions Request
@@ -276,9 +279,9 @@ cf.cash-account.transactions.request-transactions.download-csv.post-message = By
 cf.cash-account.transactions.search-for-transactions.heading = Chwilio am drafodion
 cf.cash-account.transactions.search-for-transactions.hint = Gallwch chwilio yn ôl Cyfeirnod Symud (MRN), Cyfeirnod Unigryw y Llwyth (UCR) neu union swm y taliad sy’n cynnwys ‘£’
 
-cf.cash-account.transactions.too-many-transactions.hint01 = Mae gormod o drafodion ar gyfer y mis hwn i’w dangos
+cf.cash-account.transactions.too-many-transactions.hint01 = Mae yna ormod o drafodion i’w dangos ar gyfer y 6 mis diwethaf,
 cf.cash-account.transactions.too-many-transactions.hint02 = ond gallwch
-cf.cash-account.transactions.too-many-transactions.hint03 = ofyn a lawrlwytho’ch trafodion fel ffeil CSV.
+cf.cash-account.transactions.too-many-transactions.hint03 = wneud cais i gael eich trafodion ar ffurf ffeil CSV a’i lawrlwytho.
 cf.cash-account.transactions.too-many-transactions.hint04 = Bydd y ffeil CSV ar gael i’w lawrlwytho cyn pen 48 awr.
 
 site.continue=Cadarnhau ac anfon
