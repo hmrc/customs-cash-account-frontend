@@ -584,7 +584,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
         val renderedView = view.apply(formWithErrors, viewModel)(messages(app), appConfig(app), request).body
         renderedView must include("There is a problem")
-        renderedView must include(s"Enter an MRN, UCR or exact payment amount that includes $poundSymbol")
+        renderedView must include(s"Enter an MRN, UCR or exact payment amount that includes &#x27;$poundSymbol&#x27;")
       }
     }
   }
