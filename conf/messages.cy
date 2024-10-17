@@ -19,10 +19,10 @@ feedback.after=yn ein helpu i’w wella.
 # Cash CSV
 cf.cash-account.csv.date=Dyddiad y trafodyn
 cf.cash-account.csv.transactionType=Trafodyn
-cf.cash-account.csv.movementReferenceNumber=MRN y datganiad
-cf.cash-account.csv.uniqueConsignmentReference=UCR y datganiad
-cf.cash-account.csv.declarantEori=Eori y datganydd
-cf.cash-account.csv.importerEori=EORI y mewnforiwr
+cf.cash-account.csv.movementReferenceNumber=<abbr title="Cyfeirnod Symud (MRN)">MRN</abbr> y datganiad
+cf.cash-account.csv.uniqueConsignmentReference=<abbr title="Cyfeirnod Unigryw y Llwyth (UCR)">UCR</abbr> y datganiad
+cf.cash-account.csv.declarantEori=<abbr title="Economic Operators Registration and Identification number">Eori</abbr> y datganydd
+cf.cash-account.csv.importerEori=<abbr title="Economic Operators Registration and Identification number">Eori</abbr> y mewnforiwr
 cf.cash-account.csv.vat=TAW
 cf.cash-account.csv.duty=Tollau
 cf.cash-account.csv.excise=Ecséis
