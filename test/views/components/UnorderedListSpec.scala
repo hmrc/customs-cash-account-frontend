@@ -25,14 +25,14 @@ class UnorderedListSpec extends SpecBase {
 
   "component" should {
 
-    "not display the component when li msg list is empty" in {
+    "not display the unordered list when li msg list is empty" in {
       val id = "testId"
       val unorderedList: Document = Jsoup.parse(new unorderedList().apply(id = Some(id)).body)
 
       unorderedList.select(s"#$id").size() mustBe 0
     }
 
-    "display the component correctly when li msg list is present" in {
+    "display the unordered list correctly when li msg list is present" in {
       val id = "testId"
       val msgList = List("test_msg1", "test_msg2", "test_msg3")
 
@@ -44,7 +44,7 @@ class UnorderedListSpec extends SpecBase {
       msgList.foreach(msg => unorderedList.html().contains(msg) mustBe true)
     }
 
-    "display the component correctly (with provided style class) when classes and li msg list are present" in {
+    "display the unordered list correctly (with provided style class) when classes and li msg list are present" in {
       val customClass = "test_class"
       val msgList = List("test_msg1", "test_msg2", "test_msg3")
 
