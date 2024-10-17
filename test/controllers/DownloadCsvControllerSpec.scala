@@ -80,24 +80,31 @@ class DownloadCsvControllerSpec extends SpecBase {
 
         val csv = contentAsString(result)
         val actualRows = csv.split("\n").toList
-        val actualHeaders = actualRows.head.split(",")
+
+        val htmlTagPattern = "<.*?>".r
+        val actualHeaders = actualRows.head.split(",").map { header =>
+          htmlTagPattern.replaceAllIn(header.replace("\"", ""), "")
+        }.toList
+
         val expectedHeaders = List(
-          "\"Transaction date\"",
-          "\"Transaction\"",
-          "\"Declaration MRN\"",
-          "\"Declaration UCR\"",
-          "\"Declarant EORI\"",
-          "\"Importer EORI\"",
-          "\"Duty\"",
-          "\"VAT\"",
-          "\"Excise\"",
-          "\"Credit\"",
-          "\"Debit\"",
-          "\"Balance\""
+          "Transaction date",
+          "Transaction",
+          "Declaration MRN",
+          "Declaration UCR",
+          "Declarant EORI",
+          "Importer EORI",
+          "Duty",
+          "VAT",
+          "Excise",
+          "Credit",
+          "Debit",
+          "Balance"
         )
-        actualHeaders must be(expectedHeaders)
+
+        actualHeaders mustEqual expectedHeaders
       }
     }
+
 
     "return content disposition of 'attachment' by default" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
