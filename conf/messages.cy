@@ -307,7 +307,7 @@ cf.cash-account.detail.payments-heading=Eich trafodion ar gyfer y chwe mis diwet
 
 cf.cash-account.duplicate.header = Rydym eisoes yn prosesu cais ar gyfer mis {0} i fis {1}
 cf.cash-account.duplicate.message = Gall trafodion y gofynnir amdanynt gymryd hyd at 48 awr cyn eu bod ar gael i’w lawrlwytho.
-cf.cash-account.duplicate.link = Yn ôl i’r cyfrif arian parod.
+cf.cash-account.duplicate.link = Yn ôl i’r cyfrif arian parod
 
 
 #Pagination
