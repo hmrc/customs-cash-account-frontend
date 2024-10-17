@@ -19,7 +19,7 @@ package viewmodels
 import helpers.Formatters
 import models.{CashAccount, CustomsDuty, Declaration, ExciseDuty, ImportVat}
 import play.api.i18n.Messages
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, SummaryList, SummaryListRow, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, Value}
 import utils.Utils.{emptyH1InnerComponent, emptyH2InnerComponent, emptyString}
@@ -100,7 +100,7 @@ object DeclarationDetailViewModel {
       attributes = Map("id" -> "tax-details"),
       rows = Seq(
         SummaryListRow(
-          key = Key(content = Text(messages("cf.cash-account.csv.duty"))),
+          key = Key(content = HtmlContent(messages("cf.cash-account.csv.duty"))),
           value = Value(content = HtmlContent(
             Formatters.formatCurrencyAmount(declaration.taxGroups.find(_.taxGroupDescription == CustomsDuty)
               .map(_.amount)
@@ -108,7 +108,7 @@ object DeclarationDetailViewModel {
           ))
         ),
         SummaryListRow(
-          key = Key(content = Text(messages("cf.cash-account.csv.vat"))),
+          key = Key(content = HtmlContent(messages("cf.cash-account.csv.vat"))),
           value = Value(content = HtmlContent(
             Formatters.formatCurrencyAmount(declaration.taxGroups.find(_.taxGroupDescription == ImportVat)
               .map(_.amount)
@@ -116,7 +116,7 @@ object DeclarationDetailViewModel {
           ))
         ),
         SummaryListRow(
-          key = Key(content = Text(messages("cf.cash-account.csv.excise"))),
+          key = Key(content = HtmlContent(messages("cf.cash-account.csv.excise"))),
           value = Value(content = HtmlContent(
             declaration.taxGroups.find(_.taxGroupDescription == ExciseDuty)
               .map(_.amount)
@@ -124,7 +124,7 @@ object DeclarationDetailViewModel {
           ))
         ),
         SummaryListRow(
-          key = Key(content = Text(messages("cf.cash-account.detail.total.paid"))),
+          key = Key(content = HtmlContent(messages("cf.cash-account.detail.total.paid"))),
           value = Value(content = HtmlContent(
             Formatters.formatCurrencyAmount(declaration.amount)
           ))
