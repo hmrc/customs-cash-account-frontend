@@ -49,7 +49,7 @@ trait GuidancePageBehaviour {
     }
 
     "display correct back link" in {
-      backLink.map(url => view.html().contains(url) mustBe true)
+      backLink.map(url => view.html() must include(url))
     }
 
     "display correct help and support guidance" in {
@@ -58,12 +58,11 @@ trait GuidancePageBehaviour {
       } else {
         val viewAsHtml = view.html()
 
-        viewAsHtml.contains(msgs("cf.cash-account.help-and-support.link.text")) mustBe true
-        viewAsHtml.contains(msgs("cf.cash-account.help-and-support.link.text.post")) mustBe true
-        viewAsHtml.contains(msgs("cf.cash-account.help-and-support.link.text.pre")) mustBe true
-        viewAsHtml.contains(
-          helpAndSupportLink.getOrElse("https://www.gov.uk/guidance/use-a-cash-account-for-cds-declarations")
-        ) mustBe true
+        viewAsHtml must include(msgs("cf.cash-account.help-and-support.link.text"))
+        viewAsHtml must include(msgs("cf.cash-account.help-and-support.link.text.post"))
+        viewAsHtml must include(msgs("cf.cash-account.help-and-support.link.text.pre"))
+        viewAsHtml must include(
+          helpAndSupportLink.getOrElse("https://www.gov.uk/guidance/use-a-cash-account-for-cds-declarations"))
       }
     }
 
@@ -80,7 +79,7 @@ trait GuidancePageBehaviour {
           if (component.id.isDefined) {
             view.getElementById(component.id.getOrElse(emptyString)).text() mustBe component.expectedValue
           } else {
-            view.html().contains(component.expectedValue) mustBe true
+            view.html() must include(component.expectedValue)
           }
         }
     }
