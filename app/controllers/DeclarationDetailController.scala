@@ -17,7 +17,7 @@
 package controllers
 
 import config.{AppConfig, ErrorHandler}
-import connectors.CustomsFinancialsApiConnector
+import connectors.{CustomsFinancialsApiConnector, ErrorResponse}
 import controllers.actions.{EmailAction, IdentifierAction}
 import helpers.CashAccountUtils
 import models.{CashAccount, CashAccountViewModel, CashTransactions}
@@ -30,6 +30,7 @@ import views.html.{
   cash_account_declaration_details,
   cash_account_declaration_details_search,
   cash_account_transactions_not_available,
+  cash_account_declaration_details_search_no_result,
   cash_transactions_no_result
 }
 import javax.inject.Inject
@@ -37,6 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import play.api.Logging
 import utils.RegexPatterns.{mrnRegex, paymentRegex}
 import viewmodels.{DeclarationDetailSearchViewModel, DeclarationDetailViewModel, ResultsPageSummary}
+import connectors.{InvalidCashAccount, InvalidDeclarationReference, DuplicateAckRef, NoAssociatedDataFound, InvalidEori}
 
 import java.time.LocalDate
 
@@ -49,7 +51,8 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
                                             searchView: cash_account_declaration_details_search,
                                             cashAccountUtils: CashAccountUtils,
                                             noTransactionsView: cash_transactions_no_result,
-                                            transactionsUnavailableView: cash_account_transactions_not_available
+                                            transactionsUnavailableView: cash_account_transactions_not_available,
+                                            noSearchResultView: cash_account_declaration_details_search_no_result
                                            )(implicit executionContext: ExecutionContext,
                                              appConfig: AppConfig
                                            ) extends FrontendController(mcc) with I18nSupport with Logging {
@@ -62,45 +65,6 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
         case None => Future.successful(NotFound(errorHandler.notFoundTemplate))
       }
     }
-
-  private def prepareTransactionSearch(account: CashAccount,
-                                       page: Option[Int],
-                                       searchInput: String)(implicit request: IdentifierRequest[_]): Future[Result] = {
-
-    val (paramName, searchType) = determineParamNameAndSearchType(searchInput)
-    val declarationDetails = Some(DeclarationDetailsSearch(paramName, searchInput))
-
-    apiConnector.retrieveCashTransactionsBySearch(account.number, request.eori, searchType, declarationDetails).map {
-      case Right(transactions) => processTransactions(transactions.declarations, searchInput, account, page)
-      case Left(_) =>
-        Ok(transactionsUnavailableView(CashAccountViewModel(request.eori, account), appConfig.transactionsTimeoutFlag))
-    }
-  }
-
-  private def processTransactions(declarationsOpt: Option[Seq[DeclarationWrapper]],
-                                  searchValue: String,
-                                  account: CashAccount,
-                                  page: Option[Int])(implicit request: IdentifierRequest[_]): Result = {
-
-    declarationsOpt.flatMap(_.headOption.map(_.declaration)) match {
-      case Some(declarationSearch) =>
-        Ok(searchView(DeclarationDetailSearchViewModel(searchValue, account, declarationSearch), page))
-      case None =>
-        Ok(transactionsUnavailableView(CashAccountViewModel(request.eori, account), appConfig.transactionsTimeoutFlag))
-    }
-  }
-
-  private def determineParamNameAndSearchType(searchInput: String): (ParamName.Value, SearchType.Value) = {
-    searchInput match {
-      case input if isValidMRN(input) => (ParamName.MRN, SearchType.D)
-      case input if isValidPayment(input) => (ParamName.MRN, SearchType.P)
-      case _ => (ParamName.UCR, SearchType.D)
-    }
-  }
-
-  private def isValidMRN(value: String): Boolean = mrnRegex.matches(value)
-
-  private def isValidPayment(value: String): Boolean = paymentRegex.matches(value)
 
   def displayDetails(ref: String,
                      page: Option[Int]
@@ -115,6 +79,53 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
       }
     } yield result
   }
+
+  private def prepareTransactionSearch(account: CashAccount,
+                                       page: Option[Int],
+                                       searchInput: String)(implicit request: IdentifierRequest[_]): Future[Result] = {
+
+    val (paramName, searchType) = determineParamNameAndSearchType(searchInput)
+    val declarationDetails = Some(DeclarationDetailsSearch(paramName, searchInput))
+
+    apiConnector.retrieveCashTransactionsBySearch(account.number, request.eori, searchType, declarationDetails).map {
+      case Right(transactions) => processTransactions(transactions.declarations, searchInput, account, page)
+      case Left(res) if isBusinessErrorResponse(res) => Ok(noSearchResultView(page, account.number, searchInput))
+      case Left(_) =>
+        Ok(transactionsUnavailableView(CashAccountViewModel(request.eori, account), appConfig.transactionsTimeoutFlag))
+    }
+  }
+
+  private def processTransactions(declarationsOpt: Option[Seq[DeclarationWrapper]],
+                                  searchValue: String,
+                                  account: CashAccount,
+                                  page: Option[Int])(implicit request: IdentifierRequest[_]): Result = {
+
+    declarationsOpt.flatMap(_.headOption.map(_.declaration)) match {
+      case Some(declarationSearch) =>
+        Ok(searchView(DeclarationDetailSearchViewModel(searchValue, account, declarationSearch), page))
+
+      case None => Ok(noSearchResultView(page, account.number, searchValue))
+    }
+  }
+
+  private def isBusinessErrorResponse(incomingErrorResponse: ErrorResponse): Boolean = {
+    val businessErrorResponseList =
+      List(InvalidCashAccount, InvalidDeclarationReference, DuplicateAckRef, NoAssociatedDataFound, InvalidEori)
+
+    businessErrorResponseList.contains(incomingErrorResponse)
+  }
+
+  private def determineParamNameAndSearchType(searchInput: String): (ParamName.Value, SearchType.Value) = {
+    searchInput match {
+      case input if isValidMRN(input) => (ParamName.MRN, SearchType.D)
+      case input if isValidPayment(input) => (ParamName.MRN, SearchType.P)
+      case _ => (ParamName.UCR, SearchType.D)
+    }
+  }
+
+  private def isValidMRN(value: String): Boolean = mrnRegex.matches(value)
+
+  private def isValidPayment(value: String): Boolean = paymentRegex.matches(value)
 
   private def retrieveCashAccountTransactionAndDisplay(account: CashAccount,
                                                        from: LocalDate,

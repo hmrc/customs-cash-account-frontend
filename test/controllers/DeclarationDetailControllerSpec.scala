@@ -17,7 +17,11 @@
 package controllers
 
 import config.ErrorHandler
-import connectors.{CustomsFinancialsApiConnector, UnknownException}
+import connectors.{
+  BadRequest, CustomsFinancialsApiConnector, DuplicateAckRef, InternalServerErrorErrorResponse,
+  InvalidCashAccount, InvalidDeclarationReference, InvalidEori, NoAssociatedDataFound, ServiceUnavailableErrorResponse,
+  UnknownException
+}
 import models.request.{CashAccountPaymentDetails, DeclarationDetailsSearch, SearchType}
 import models.response.{
   CashAccountTransactionSearchResponseDetail,
@@ -43,28 +47,30 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito
 import org.mockito.Mockito.when
 import play.api.Application
+import play.api.i18n.Messages
 import play.api.inject.bind
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
+import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.SpecBase
 
 import java.time.LocalDate
 import scala.concurrent.Future
+import views.html.cash_account_declaration_details_search_no_result
+import config.AppConfig
 
 class DeclarationDetailControllerSpec extends SpecBase {
 
-  "Cash Account Declaration Transaction Details" must {
-    "return an OK view when a transaction is found" in new Setup {
+  "displayDetails" must {
+
+    "return OK view when a transaction is found" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
-
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DeclarationDetailController.displayDetails(sMRN, Some(1)).url)
@@ -75,16 +81,12 @@ class DeclarationDetailControllerSpec extends SpecBase {
       }
     }
 
-    "return an OK view with no transactions when an error occurs during retrieval" in new Setup {
+    "return OK view with no transactions when an error occurs during retrieval" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(new Exception("API error"))))
-
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DeclarationDetailController.displayDetails(sMRN, Some(1)).url)
@@ -95,16 +97,12 @@ class DeclarationDetailControllerSpec extends SpecBase {
       }
     }
 
-    "return a NOT_FOUND when the transaction details not found in the retrieved data" in new Setup {
+    "return NOT_FOUND when the transaction details not found in the retrieved data" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Right(CashTransactions(Seq.empty, Seq.empty))))
-
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
 
       running(app) {
         val request =
@@ -116,13 +114,9 @@ class DeclarationDetailControllerSpec extends SpecBase {
       }
     }
 
-    "return a NOT_FOUND when the transaction details not retrieved" in new Setup {
+    "return NOT_FOUND when the transaction details not retrieved" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(None))
-
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DeclarationDetailController.displayDetails(sMRN, Some(1)).url)
@@ -134,40 +128,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
     }
   }
 
-  "Cash Account Declaration Transaction Search Details" must {
-
-    "return an OK and show transactionsUnavailableView when declarations are empty" in new Setup {
-      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-        .thenReturn(Future.successful(Some(cashAccount)))
-
-      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-        eqTo(cashAccountNumber),
-        eqTo(eori),
-        any[SearchType.Value],
-        any[Option[DeclarationDetailsSearch]],
-        any[Option[CashAccountPaymentDetails]]
-      )(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right(CashAccountTransactionSearchResponseDetail(
-          can = cashAccountNumber,
-          eoriDetails = Seq.empty,
-          declarations = None,
-          paymentsWithdrawalsAndTransfers = None))))
-
-      val app: Application = application
-        .overrides(
-          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
-
-      running(app) {
-        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
-          .withSession("eori" -> eori)
-
-        val result = route(app, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) must include("There is a problem displaying your transactions at the moment.")
-      }
-    }
+  "displaySearchDetails" must {
 
     "return an OK view when a transaction is found" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
@@ -189,20 +150,128 @@ class DeclarationDetailControllerSpec extends SpecBase {
       )(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(cashAccountTransactionSearchResponseDetail)))
 
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
-
       running(app) {
-        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
-          .withSession("eori" -> eori)
+        val request =
+          FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+            .withSession("eori" -> eori)
 
         val result = route(app, request).value
         status(result) mustEqual OK
       }
     }
 
-    "return an OK and show transactionsUnavailableView when an error occurs during retrieval" in new Setup {
+    "return OK and display show transactionsUnavailableView" when {
+
+      "UnknownException error occurs during retrieval" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(UnknownException)))
+
+        running(app) {
+          val request =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
+
+          val result = route(app, request).value
+          status(result) mustEqual OK
+        }
+      }
+
+      "BAD_REQUEST error occurs during retrieval" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(BadRequest)))
+
+        running(app) {
+          val request =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
+
+          val result = route(app, request).value
+          status(result) mustEqual OK
+        }
+      }
+
+      "INTERNAL_SERVER_ERROR occurs during retrieval" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(InternalServerErrorErrorResponse)))
+
+        running(app) {
+          val request =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
+
+          val result = route(app, request).value
+          status(result) mustEqual OK
+        }
+      }
+
+      "SERVICE_UNAVAILABLE error occurs during retrieval" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(ServiceUnavailableErrorResponse)))
+
+        running(app) {
+          val request =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
+
+          val result = route(app, request).value
+          status(result) mustEqual OK
+        }
+      }
+    }
+
+    "return NOT_FOUND" when {
+      "error occurs to fetch the CashAccount details" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(None))
+
+        running(app) {
+          val request =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
+
+          val result = route(app, request).value
+          status(result) mustEqual NOT_FOUND
+        }
+      }
+    }
+
+    "return OK and display declaration details search no result page when declarations are empty" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
@@ -211,42 +280,175 @@ class DeclarationDetailControllerSpec extends SpecBase {
         eqTo(eori),
         any[SearchType.Value],
         any[Option[DeclarationDetailsSearch]],
-        any[Option[CashAccountPaymentDetails]])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Left(UnknownException)))
-
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
+        any[Option[CashAccountPaymentDetails]]
+      )(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(CashAccountTransactionSearchResponseDetail(
+          can = cashAccountNumber,
+          eoriDetails = Seq.empty,
+          declarations = None,
+          paymentsWithdrawalsAndTransfers = None
+        ))))
 
       running(app) {
-        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
-          .withSession("eori" -> eori)
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+            .withSession("eori" -> eori)
+
+        val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
+          .apply(Some(1), cashAccountNumber, searchInput).body
 
         val result = route(app, request).value
         status(result) mustEqual OK
+
+        contentAsString(result) mustEqual expectedView
       }
     }
 
-    "return a NOT_FOUND when the transaction details not retrieved" in new Setup {
-      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-        .thenReturn(Future.successful(None))
+    "return OK and display Declaration search no result page" when {
 
-      val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
+      "ETMP returns Invalid Cash Account Error" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
 
-      running(app) {
-        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
-          .withSession("eori" -> eori)
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(InvalidCashAccount)))
 
-        val result = route(app, request).value
-        status(result) mustEqual NOT_FOUND
+        running(app) {
+          implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
+
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput).body
+
+          val result = route(app, request).value
+          status(result) mustEqual OK
+
+          contentAsString(result) mustBe expectedView
+        }
+      }
+
+      "ETMP returns Invalid Declaration Reference error" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(InvalidDeclarationReference)))
+
+        running(app) {
+          implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
+
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput).body
+
+          val result = route(app, request).value
+          status(result) mustEqual OK
+
+          contentAsString(result) mustBe expectedView
+        }
+      }
+
+      "ETMP returns Duplicate Acknowledge Reference error" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(DuplicateAckRef)))
+
+        running(app) {
+          implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
+
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput).body
+
+          val result = route(app, request).value
+          status(result) mustEqual OK
+
+          contentAsString(result) mustBe expectedView
+        }
+      }
+
+      "ETMP returns No Associated Data Found error" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(NoAssociatedDataFound)))
+
+        running(app) {
+          implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
+
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput).body
+
+          val result = route(app, request).value
+          status(result) mustEqual OK
+
+          contentAsString(result) mustBe expectedView
+        }
+      }
+
+      "ETMP returns Owner EORI not belongs to the Cash Account error" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Left(InvalidEori)))
+
+        running(app) {
+          implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
+
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput).body
+
+          val result = route(app, request).value
+          status(result) mustEqual OK
+
+          contentAsString(result) mustBe expectedView
+        }
       }
     }
   }
 
   trait Setup {
-
     val cashAccountNumber = "1234567"
     val eori = "exampleEori"
     val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
@@ -301,5 +503,12 @@ class DeclarationDetailControllerSpec extends SpecBase {
           amount = 100.00)))))))
 
     val declarationWrapper: DeclarationWrapper = DeclarationWrapper(declarationSearch)
+
+    val app: Application = application
+      .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+      .build()
+
+    implicit val msgs: Messages = messages(app)
+    implicit val config: AppConfig = appConfig(app)
   }
 }

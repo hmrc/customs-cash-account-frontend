@@ -5,6 +5,7 @@ language.change.english=Change the language to English
 site.error = Gwall
 site.search = Chwilio
 site.support.heading = Help a chymorth
+site.search.again = Chwilio eto
 
 service.name=Rheoli tollau mewnforio a chyfrifon TAW
 
@@ -92,8 +93,14 @@ cf.cash-account.detail.unable-download-csv=Mae’n ddrwg gennym – roedd proble
 cf.cash-account.detail.try-again-later=Rhowch gynnig arall arni yn nes ymlaen.
 cf.cash-account-detail.back-to-cash-account=Yn ôl i ‘Cyfrif arian parod’
 cf.cash-account-detail.exceeded-threshold = Mae gormod o drafodion o’r 6 mis diwethaf i’w harddangos.
+
 cf.cash-account.detail.declaration.title=Trafodiad datganiad
 cf.cash-account.detail.declaration.search-title=Canlyniadau chwilio ar gyfer {0}
+cf.cash-account.detail.declaration.search-no-results-guidance-not-returned-any-results = Nid yw eich chwiliad {0} wedi dod o hyd i unrhyw ganlyniadau.
+cf.cash-account.detail.declaration.search-no-results-guidance-because-you-entered = Gallai hyn fod oherwydd eich bod wedi nodi’r canlynol:
+cf.cash-account.detail.declaration.search-no-results-invalid-input-mrn = Cyfeirnod Symud (MRN) neu Gyfeirnod Llwyth Unigryw (UCR) anghywir
+cf.cash-account.detail.declaration.search-no-results-invalid-input-payment-amount = swm taliad na chafwyd hyd iddo
+cf.cash-account.detail.declaration.search-no-results-invalid-input-pound-sign = swm taliad nad yw’n cynnwys ‘£’
 cf.cash-account.detail.total.paid=Cyfanswm a dalwyd
 cf.cash-account.detail.last-transactions=Eich trafodion ar gyfer y chwe mis diwethaf
 
