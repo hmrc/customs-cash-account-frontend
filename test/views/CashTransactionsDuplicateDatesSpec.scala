@@ -33,7 +33,7 @@ class CashTransactionsDuplicateDatesSpec extends ViewTestHelper {
       }
 
       "backlink should take you back to request transactions" in new Setup {
-        shouldContainBackLinkUrl(view, controllers.routes.SelectTransactionsController.onPageLoad().url)
+        shouldContainBackLinkUrl(view, controllers.routes.CashAccountController.showAccountDetails(None).url)
       }
 
       "header is correct" in new Setup {
