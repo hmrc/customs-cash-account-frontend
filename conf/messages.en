@@ -284,7 +284,7 @@ cf.cash-account.transactions.no-transactions-for-last-six-months = There are no 
 cf.cash-account.transactions.request-transactions.download-csv.url = Request by date and download your transactions as a CSV file.
 cf.cash-account.transactions.request-transactions.download-csv.post-message = The CSV file will be available to download within 48 hours.
 cf.cash-account.transactions.search-for-transactions.heading = Search for transactions
-cf.cash-account.transactions.search-for-transactions.hint = You can search by MRN, UCR or exact payment amount that includes ‘£’
+cf.cash-account.transactions.search-for-transactions.hint = You can search by <abbr title="Movement Reference Number">MRN</abbr>, <abbr title="Unique Consignment Reference">UCR</abbr> or exact payment amount that includes ‘£’
 
 cf.cash-account.transactions.too-many-transactions.hint01 = There are too many transactions for the last 6  months to display
 cf.cash-account.transactions.too-many-transactions.hint02 = but you can
