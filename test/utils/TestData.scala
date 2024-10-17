@@ -83,4 +83,6 @@ object TestData {
   val PAGE_800 = 800
   val PAGE_880 = 880
   val PAGE_1000 = 1000
+
+  val TEST_ID = "testId"
 }

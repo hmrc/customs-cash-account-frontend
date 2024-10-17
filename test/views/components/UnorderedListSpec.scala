@@ -20,41 +20,40 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import utils.SpecBase
 import views.html.components.unorderedList
+import utils.TestData.TEST_ID
 
 class UnorderedListSpec extends SpecBase {
 
   "component" should {
 
-    "not display the unordered list when li msg list is empty" in {
-      val id = "testId"
-      val unorderedList: Document = Jsoup.parse(new unorderedList().apply(id = Some(id)).body)
+    "not display the unordered list when listItems are empty" in {
+      val unorderedList: Document = Jsoup.parse(new unorderedList().apply(id = Some(TEST_ID)).body)
 
-      unorderedList.select(s"#$id").size() mustBe 0
+      unorderedList.select(s"#$TEST_ID").size() mustBe 0
     }
 
-    "display the unordered list correctly when li msg list is present" in {
-      val id = "testId"
-      val msgList = List("test_msg1", "test_msg2", "test_msg3")
+    "display the unordered list correctly when listItems are present" in {
+      val itemList = List("test_msg1", "test_msg2", "test_msg3")
 
-      val unorderedList: Document = Jsoup.parse(new unorderedList().apply(id = Some(id), liMsgList = msgList).body)
+      val unorderedList: Document = Jsoup.parse(new unorderedList().apply(id = Some(TEST_ID), listItems = itemList).body)
 
-      unorderedList.select(s"#$id").size() must be > 0
+      unorderedList.select(s"#$TEST_ID").size() must be > 0
       unorderedList.getElementsByTag("li").size() mustBe 3
 
-      msgList.foreach(msg => unorderedList.html().contains(msg) mustBe true)
+      itemList.foreach(msg => unorderedList.html().contains(msg) mustBe true)
     }
 
-    "display the unordered list correctly (with provided style class) when classes and li msg list are present" in {
+    "display the unordered list correctly (with provided style class) when classes and listItems are present" in {
       val customClass = "test_class"
-      val msgList = List("test_msg1", "test_msg2", "test_msg3")
+      val itemList = List("test_msg1", "test_msg2", "test_msg3")
 
       val unorderedList: Document =
-        Jsoup.parse(new unorderedList().apply(liMsgList = msgList, classes = Some(customClass)).body)
+        Jsoup.parse(new unorderedList().apply(listItems = itemList, classes = Some(customClass)).body)
 
       unorderedList.select(s".$customClass").size() must be > 0
       unorderedList.getElementsByTag("li").size() mustBe 3
 
-      msgList.foreach(msg => unorderedList.html().contains(msg) mustBe true)
+      itemList.foreach(msg => unorderedList.html().contains(msg) mustBe true)
     }
   }
 }

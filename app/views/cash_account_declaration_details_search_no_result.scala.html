@@ -29,7 +29,11 @@
     pageNumber: Option[Int],
     accountNumber: String,
     searchInput: String
-)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+)(
+    implicit request: Request[_],
+    messages: Messages,
+    appConfig: AppConfig
+)
 
 @main_template(
   pageTitle = Some(messages("cf.cash-account.detail.title")),
@@ -51,7 +55,8 @@
   )
 
   @p(
-     message = messages("cf.cash-account.detail.declaration.search-no-results-guidance-not-returned-any-results", searchInput),
+     message = messages("cf.cash-account.detail.declaration.search-no-results-guidance-not-returned-any-results",
+                        searchInput),
      id = Some("search-result-guidance-not-returned-any-results")
   )
 
@@ -62,7 +67,7 @@
 
   @ul(
      id = Some("invalid-inputs-guidance-list"),
-     liMsgList = List(
+     listItems = List(
                     messages("cf.cash-account.detail.declaration.search-no-results-invalid-input-mrn"),
                     messages("cf.cash-account.detail.declaration.search-no-results-invalid-input-payment-amount"),
                     messages("cf.cash-account.detail.declaration.search-no-results-invalid-input-pound-sign")

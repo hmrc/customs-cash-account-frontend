@@ -151,8 +151,9 @@ class DeclarationDetailControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Right(cashAccountTransactionSearchResponseDetail)))
 
       running(app) {
-        val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
-          .withSession("eori" -> eori)
+        val request =
+          FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+            .withSession("eori" -> eori)
 
         val result = route(app, request).value
         status(result) mustEqual OK
@@ -175,8 +176,9 @@ class DeclarationDetailControllerSpec extends SpecBase {
           .thenReturn(Future.successful(Left(UnknownException)))
 
         running(app) {
-          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
-            .withSession("eori" -> eori)
+          val request =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -197,8 +199,9 @@ class DeclarationDetailControllerSpec extends SpecBase {
           .thenReturn(Future.successful(Left(BadRequest)))
 
         running(app) {
-          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
-            .withSession("eori" -> eori)
+          val request =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -219,8 +222,9 @@ class DeclarationDetailControllerSpec extends SpecBase {
           .thenReturn(Future.successful(Left(InternalServerErrorErrorResponse)))
 
         running(app) {
-          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
-            .withSession("eori" -> eori)
+          val request =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -241,8 +245,9 @@ class DeclarationDetailControllerSpec extends SpecBase {
           .thenReturn(Future.successful(Left(ServiceUnavailableErrorResponse)))
 
         running(app) {
-          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
-            .withSession("eori" -> eori)
+          val request =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -256,8 +261,9 @@ class DeclarationDetailControllerSpec extends SpecBase {
           .thenReturn(Future.successful(None))
 
         running(app) {
-          val request = FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
-            .withSession("eori" -> eori)
+          val request =
+            FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
+              .withSession("eori" -> eori)
 
           val result = route(app, request).value
           status(result) mustEqual NOT_FOUND
@@ -346,7 +352,8 @@ class DeclarationDetailControllerSpec extends SpecBase {
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
 
-          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(Some(1), cashAccountNumber, searchInput).body
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput).body
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -373,7 +380,8 @@ class DeclarationDetailControllerSpec extends SpecBase {
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
 
-          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(Some(1), cashAccountNumber, searchInput).body
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput).body
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -400,7 +408,8 @@ class DeclarationDetailControllerSpec extends SpecBase {
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
 
-          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(Some(1), cashAccountNumber, searchInput).body
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput).body
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -427,7 +436,8 @@ class DeclarationDetailControllerSpec extends SpecBase {
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
 
-          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result].apply(Some(1), cashAccountNumber, searchInput).body
+          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput).body
 
           val result = route(app, request).value
           status(result) mustEqual OK
