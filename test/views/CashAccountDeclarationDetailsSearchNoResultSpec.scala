@@ -17,12 +17,12 @@
 package views
 
 import utils.SpecBase
-import behaviours.{ComponentDetailsForAssertion, LinkDetails, StandardPageBehaviour}
+import behaviours.{ComponentDetailsForAssertion, LinkDetails, GuidancePageBehaviour}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import views.html.cash_account_declaration_details_search_no_result
 
-class CashAccountDeclarationDetailsSearchNoResultSpec extends SpecBase with StandardPageBehaviour {
+class CashAccountDeclarationDetailsSearchNoResultSpec extends SpecBase with GuidancePageBehaviour {
 
   val accNumber = "12345678"
   val searchInputValue = "test_MNR"
@@ -40,7 +40,7 @@ class CashAccountDeclarationDetailsSearchNoResultSpec extends SpecBase with Stan
   override val linksToVerify: List[LinkDetails] = populateLinksToVerify()
 
   "view" should {
-    behave like standardPage()
+    behave like guidancePage()
   }
 
   private def populateComponentIdsToVerify = {

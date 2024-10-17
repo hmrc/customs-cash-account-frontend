@@ -24,7 +24,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.SpecBase
 
-trait StandardPageBehaviour {
+trait GuidancePageBehaviour {
 
   self: SpecBase =>
 
@@ -42,7 +42,7 @@ trait StandardPageBehaviour {
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest()
   implicit val appConfig: AppConfig = appConfig(app)
 
-  def standardPage(): Unit =
+  def guidancePage(): Unit =
 
     "display correct title" in {
       view.title() mustBe s"${msgs(titleMsgKey)} - ${msgs("service.name")} - GOV.UK"
@@ -98,6 +98,12 @@ trait StandardPageBehaviour {
             view.html() must include(link.urlText)
           }
         }
+    }
+
+    "display the deskpro link" in {
+      val deskProLinkClass = "hmrc-report-technical-issue"
+
+      view.select(s".$deskProLinkClass").text() mustBe "Is this page not working properly? (opens in new tab)"
     }
 }
 
