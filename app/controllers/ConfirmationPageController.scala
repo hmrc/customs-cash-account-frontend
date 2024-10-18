@@ -17,16 +17,16 @@
 package controllers
 
 import config.AppConfig
-import controllers.actions.*
+import connectors.CustomsDataStoreConnector
+import controllers.actions.IdentifierAction
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.auth.core.retrieve.Email
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.frontend.controller.{FrontendBaseController, FrontendController}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Utils.emptyString
 import repositories.RequestedTransactionsCache
 import views.html.confirmation_page
-import helpers.Formatters.{dateAsDayMonthAndYear, dateAsMonthAndYear}
+import helpers.Formatters.dateAsMonthAndYear
 import models.CashTransactionDates
 import play.api.i18n.Messages
 import models.request.IdentifierRequest
@@ -34,12 +34,12 @@ import play.api.Logger
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import java.time.LocalDate
 
 class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi,
                                            identify: IdentifierAction,
                                            cache: RequestedTransactionsCache,
-                                           view: confirmation_page)
+                                           view: confirmation_page,
+                                           customsDataStoreConnector: CustomsDataStoreConnector)
                                           (implicit mcc: MessagesControllerComponents,
                                            ec: ExecutionContext,
                                            appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
@@ -51,9 +51,15 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
     implicit request =>
 
       val result: Future[Result] = for {
-        dates: Option[CashTransactionDates] <- cache.get(request.eori)
+        dates <- cache.get(request.eori)
+        email <- customsDataStoreConnector.getEmail(request.eori)
       } yield {
-        checkDatesAndRedirect(dates)
+        email match {
+          case Right(email) =>
+            checkDatesAndRedirect(dates, email.value)
+          case Left(_) =>
+            checkDatesAndRedirect(dates, emptyString)
+        }
       }
 
       result.recover {
@@ -63,16 +69,16 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
       }
   }
 
-  private def checkDatesAndRedirect(optionalDates: Option[CashTransactionDates])
-                                  (implicit request: IdentifierRequest[AnyContent],
-                                   messages: Messages): Result = {
+  private def checkDatesAndRedirect(optionalDates: Option[CashTransactionDates], email: String)
+                                   (implicit request: IdentifierRequest[AnyContent],
+                                    messages: Messages): Result = {
     optionalDates match {
       case Some(dates) =>
 
         val startDate = dateAsMonthAndYear(dates.start)
         val endDate = dateAsMonthAndYear(dates.end)
 
-        Ok(view(s"$startDate ${messages("month.to")} $endDate"))
+        Ok(view(s"$startDate ${messages("month.to")} $endDate", email))
 
       case _ =>
         log.error(s"filed to load checkDatesAndRedirect $optionalDates")
