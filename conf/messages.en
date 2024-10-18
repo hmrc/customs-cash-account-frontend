@@ -20,10 +20,10 @@ feedback.after = will help us to improve it.
 # Cash CSV
 cf.cash-account.csv.date=Transaction date
 cf.cash-account.csv.transactionType=Transaction
-cf.cash-account.csv.movementReferenceNumber=Declaration MRN
-cf.cash-account.csv.uniqueConsignmentReference=Declaration UCR
-cf.cash-account.csv.declarantEori=Declarant EORI
-cf.cash-account.csv.importerEori=Importer EORI
+cf.cash-account.csv.movementReferenceNumber=Declaration <abbr title="Movement Reference Number">MRN</abbr>
+cf.cash-account.csv.uniqueConsignmentReference=Declaration <abbr title="Unique Consignment Reference">UCR</abbr>
+cf.cash-account.csv.declarantEori=Declarant <abbr title="Economic Operators Registration and Identification number">EORI</abbr>
+cf.cash-account.csv.importerEori=Importer <abbr title="Economic Operators Registration and Identification number">EORI</abbr>
 cf.cash-account.csv.vat=VAT
 cf.cash-account.csv.duty=Duty
 cf.cash-account.csv.excise=Excise
@@ -291,7 +291,7 @@ cf.cash-account.transactions.no-transactions-for-last-six-months = There are no 
 cf.cash-account.transactions.request-transactions.download-csv.url = Request by date and download your transactions as a CSV file.
 cf.cash-account.transactions.request-transactions.download-csv.post-message = The CSV file will be available to download within 48 hours.
 cf.cash-account.transactions.search-for-transactions.heading = Search for transactions
-cf.cash-account.transactions.search-for-transactions.hint = You can search by MRN, UCR or exact payment amount that includes ‘£’
+cf.cash-account.transactions.search-for-transactions.hint = You can search by <abbr title="Movement Reference Number">MRN</abbr>, <abbr title="Unique Consignment Reference">UCR</abbr> or exact payment amount that includes ‘£’
 
 cf.cash-account.transactions.too-many-transactions.hint01 = There are too many transactions for the last 6  months to display
 cf.cash-account.transactions.too-many-transactions.hint02 = but you can

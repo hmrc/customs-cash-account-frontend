@@ -20,10 +20,10 @@ feedback.after=yn ein helpu i’w wella.
 # Cash CSV
 cf.cash-account.csv.date=Dyddiad y trafodyn
 cf.cash-account.csv.transactionType=Trafodyn
-cf.cash-account.csv.movementReferenceNumber=MRN y datganiad
-cf.cash-account.csv.uniqueConsignmentReference=UCR y datganiad
-cf.cash-account.csv.declarantEori=Eori y datganydd
-cf.cash-account.csv.importerEori=EORI y mewnforiwr
+cf.cash-account.csv.movementReferenceNumber=<abbr title="Cyfeirnod Symud (MRN)">MRN</abbr> y datganiad
+cf.cash-account.csv.uniqueConsignmentReference=<abbr title="Cyfeirnod Unigryw y Llwyth (UCR)">UCR</abbr> y datganiad
+cf.cash-account.csv.declarantEori=<abbr title="Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)">EORI</abbr> y datganydd
+cf.cash-account.csv.importerEori=<abbr title="Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)">EORI</abbr> y mewnforiwr
 cf.cash-account.csv.vat=TAW
 cf.cash-account.csv.duty=Tollau
 cf.cash-account.csv.excise=Ecséis
@@ -284,7 +284,7 @@ cf.cash-account.transactions.no-transactions-for-last-six-months = Nid oes unrhy
 cf.cash-account.transactions.request-transactions.download-csv.url = Gofynnwch yn ôl dyddiad a lawrlwytho’ch trafodion fel ffeil CSV.
 cf.cash-account.transactions.request-transactions.download-csv.post-message = Bydd y ffeil CSV ar gael i’w lawrlwytho cyn pen 48 awr.
 cf.cash-account.transactions.search-for-transactions.heading = Chwilio am drafodion
-cf.cash-account.transactions.search-for-transactions.hint = Gallwch chwilio yn ôl Cyfeirnod Symud (MRN), Cyfeirnod Unigryw y Llwyth (UCR) neu union swm y taliad sy’n cynnwys ‘£’
+cf.cash-account.transactions.search-for-transactions.hint = Gallwch chwilio yn ôl Cyfeirnod Symud <abbr title="Cyfeirnod Symud (MRN)">(MRN)</abbr>, Cyfeirnod Unigryw y Llwyth <abbr title="Cyfeirnod Unigryw y Llwyth (UCR)">(UCR)</abbr> neu union swm y taliad sy’n cynnwys ‘£’
 
 cf.cash-account.transactions.too-many-transactions.hint01 = Mae yna ormod o drafodion i’w dangos ar gyfer y 6 mis diwethaf,
 cf.cash-account.transactions.too-many-transactions.hint02 = ond gallwch

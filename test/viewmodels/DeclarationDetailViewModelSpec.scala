@@ -43,7 +43,7 @@ class DeclarationDetailViewModelSpec extends SpecBase {
         DeclarationDetailViewModel.declarationSummaryList(declaration)
 
       val extractedResultData: Seq[(String, String)] = summaryList.rows.map(row => (
-        row.key.content.asInstanceOf[Text].value,
+        row.key.content.asInstanceOf[HtmlContent].asHtml.toString,
         row.value.content.asInstanceOf[HtmlContent].asHtml.toString
       ))
 
@@ -66,7 +66,7 @@ class DeclarationDetailViewModelSpec extends SpecBase {
         DeclarationDetailViewModel.taxSummaryList(declaration)
 
       val extractedResultData: Seq[(String, String)] = summaryList.rows.map(row => (
-        row.key.content.asInstanceOf[Text].value,
+        row.key.content.asInstanceOf[HtmlContent].asHtml.toString,
         row.value.content.asInstanceOf[HtmlContent].asHtml.toString
       ))
 
@@ -91,7 +91,7 @@ class DeclarationDetailViewModelSpec extends SpecBase {
         DeclarationDetailViewModel.declarationSummaryList(declarationWithMissingFields)
 
       val extractedResultData: Seq[(String, String)] = summaryList.rows.map(row => (
-        row.key.content.asInstanceOf[Text].value,
+        row.key.content.asInstanceOf[HtmlContent].asHtml.toString,
         row.value.content.asInstanceOf[HtmlContent].asHtml.toString
       ))
 
@@ -117,7 +117,7 @@ class DeclarationDetailViewModelSpec extends SpecBase {
         DeclarationDetailViewModel.taxSummaryList(declarationWithExcise)
 
       val extractedResultData: Seq[(String, String)] = summaryList.rows.map(row => (
-        row.key.content.asInstanceOf[Text].value,
+        row.key.content.asInstanceOf[HtmlContent].asHtml.toString,
         row.value.content.asInstanceOf[HtmlContent].asHtml.toString
       ))
 
@@ -132,7 +132,7 @@ class DeclarationDetailViewModelSpec extends SpecBase {
         DeclarationDetailViewModel.taxSummaryList(declaration)
 
       val extractedResultData: Seq[(String, String)] = summaryList.rows.map(row => (
-        row.key.content.asInstanceOf[Text].value,
+        row.key.content.asInstanceOf[HtmlContent].asHtml.toString,
         row.value.content.asInstanceOf[HtmlContent].asHtml.toString
       ))
 
