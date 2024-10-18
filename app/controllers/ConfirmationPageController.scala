@@ -56,9 +56,9 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
       } yield {
         email match {
           case Right(email) =>
-            checkDatesAndRedirect(dates, email.value)
+            checkDatesAndEmailAndRedirect(dates, email.value)
           case Left(_) =>
-            checkDatesAndRedirect(dates, emptyString)
+            checkDatesAndEmailAndRedirect(dates, emptyString)
         }
       }
 
@@ -69,9 +69,9 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
       }
   }
 
-  private def checkDatesAndRedirect(optionalDates: Option[CashTransactionDates], email: String)
-                                   (implicit request: IdentifierRequest[AnyContent],
-                                    messages: Messages): Result = {
+  private def checkDatesAndEmailAndRedirect(optionalDates: Option[CashTransactionDates], email: String)
+                                           (implicit request: IdentifierRequest[AnyContent],
+                                            messages: Messages): Result = {
     optionalDates match {
       case Some(dates) =>
 
