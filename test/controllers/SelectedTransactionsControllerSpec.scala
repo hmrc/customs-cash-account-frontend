@@ -282,7 +282,6 @@ class SelectedTransactionsControllerSpec extends SpecBase {
     val sMRN: Option[String] = Some("ic62zbad-75fa-445f-962b-cc92311686b8e")
     val cashAccountNumber = "1234567"
     val eori = "exampleEori"
-    val someCan = "1234567"
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
     val mockRequestedTransactionsCache: RequestedTransactionsCache = mock[RequestedTransactionsCache]
 
