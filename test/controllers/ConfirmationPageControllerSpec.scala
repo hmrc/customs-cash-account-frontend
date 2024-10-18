@@ -18,6 +18,7 @@ package controllers
 
 import connectors.{CustomsDataStoreConnector, CustomsFinancialsApiConnector}
 import models.CashTransactionDates
+import models.email.UndeliverableEmail
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.Application
@@ -47,13 +48,13 @@ class ConfirmationPageControllerSpec extends SpecBase {
       status(result) mustBe OK
 
       val content = contentAsString(result)
-      content must include(messages("cf.cash-account.transactions.confirmation.email", email))
+      content must include(emailParagraphId)
     }
   }
 
   "calling page load returns valid response without email address" in new Setup {
     when(mockRequestedTransactionsCache.get(any)).thenReturn(Future.successful(Some(cashDates)))
-    when(mockCustomsDataStoreConnector.getEmail(any)(any)).thenReturn(Future.successful(Right(Email(emptyString))))
+    when(mockCustomsDataStoreConnector.getEmail(any)(any)).thenReturn(Future.successful(Left(Email(emptyString))))
 
     val request: FakeRequest[AnyContentAsEmpty.type] =
       fakeRequest(GET, routes.ConfirmationPageController.onPageLoad().url)
@@ -63,11 +64,27 @@ class ConfirmationPageControllerSpec extends SpecBase {
       status(result) mustBe OK
 
       val content = contentAsString(result)
-      content must not include messages("cf.cash-account.transactions.confirmation.email", None)
+      content must not include emailParagraphId
     }
   }
 
-  "calling pageload returns error and redirects to cash account" in new Setup {
+  "calling page load returns valid response without email address for UndeliverableEmail" in new Setup {
+    when(mockRequestedTransactionsCache.get(any)).thenReturn(Future.successful(Some(cashDates)))
+    when(mockCustomsDataStoreConnector.getEmail(any)(any)).thenReturn(Future.successful(Left(UndeliverableEmail)))
+
+    val request: FakeRequest[AnyContentAsEmpty.type] =
+      fakeRequest(GET, routes.ConfirmationPageController.onPageLoad().url)
+
+    running(app) {
+      val result = route(app, request).value
+      status(result) mustBe OK
+
+      val content = contentAsString(result)
+      content must not include emailParagraphId
+    }
+  }
+
+  "calling page load returns error and redirects to cash account" in new Setup {
     when(mockRequestedTransactionsCache.get(any)).thenReturn(Future.successful(Some(emptyString)))
     when(mockCustomsDataStoreConnector.getEmail(any)(any)).thenReturn(Future.successful(Right(Email(emptyString))))
 
@@ -82,6 +99,7 @@ class ConfirmationPageControllerSpec extends SpecBase {
   }
 
   trait Setup {
+    val emailParagraphId = "body-text-email"
     val email = "jackiechan@mail.com"
 
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
