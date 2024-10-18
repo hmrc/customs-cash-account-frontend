@@ -51,7 +51,7 @@ object PaymentSearchResultsViewModel {
 
     PaymentSearchResultsViewModel(
       pageTitle = msgs("cf.cash-account.detail.title"),
-      backLink = controllers.routes.CashAccountV2Controller.showAccountDetails(pageNo).url,
+      backLink = controllers.routes.CashAccountV2Controller.showAccountDetails(None).url,
       accountDetails = populateAccountDetails,
       searchResultsHeader = populateSearchResultsHeader(searchValue),
       paymentSearchResultSection = populatePaymentSearchResultSection(paymentsWithdrawalsAndTransfers, pageNo),
@@ -63,12 +63,12 @@ object PaymentSearchResultsViewModel {
     emptyH1InnerComponent(msg = "cf.cash-account.detail.declaration.search-title", innerMsg = searchInput)
   }
 
-  private def populatePaymentSearchResultSection(seqOfXyz: Seq[PaymentsWithdrawalsAndTransfer],
-                                                 pageNo: Option[Int] = None)(
-                                                  implicit msgs: Messages, config: AppConfig): HtmlFormat.Appendable = {
+  private def populatePaymentSearchResultSection(paymentsWithdrawalsAndTransfers: Seq[PaymentsWithdrawalsAndTransfer],
+                                                 pageNo: Option[Int] = None
+                                                )(implicit msgs: Messages, config: AppConfig): HtmlFormat.Appendable = {
 
     new payment_search_results_v2(emptyGovUkTableComponent)
-      .apply(PaymentSearchResultStatementsViewModel(seqOfXyz, Some(pageNo.getOrElse(1))))
+      .apply(PaymentSearchResultStatementsViewModel(paymentsWithdrawalsAndTransfers, Some(pageNo.getOrElse(1))))
   }
 
   private def helpAndSupport(implicit appConfig: AppConfig, messages: Messages): GuidanceRow = {
