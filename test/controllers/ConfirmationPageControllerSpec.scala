@@ -16,9 +16,8 @@
 
 package controllers
 
-import config.AppConfig
-import connectors._
-import models.*
+import connectors.{CustomsDataStoreConnector, CustomsFinancialsApiConnector}
+import models.CashTransactionDates
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.Application
@@ -27,6 +26,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import repositories.RequestedTransactionsCache
+import uk.gov.hmrc.auth.core.retrieve.Email
 import utils.SpecBase
 
 import java.time.LocalDate
@@ -36,6 +36,7 @@ class ConfirmationPageControllerSpec extends SpecBase {
 
   "call page load returns valid response" in new Setup {
     when(mockRequestedTransactionsCache.get(any)).thenReturn(Future.successful(Some(cashDates)))
+    when(mockCustomsDataStoreConnector.getEmail(any)(any)).thenReturn(Future.successful(Right(Email(email))))
 
     val request: FakeRequest[AnyContentAsEmpty.type] =
       fakeRequest(GET, routes.ConfirmationPageController.onPageLoad().url)
@@ -47,7 +48,8 @@ class ConfirmationPageControllerSpec extends SpecBase {
   }
 
   "calling pageload returns error and redirects to cash account" in new Setup {
-    when(mockRequestedTransactionsCache.get(any)).thenReturn(Future.successful(Some("")))
+    when(mockRequestedTransactionsCache.get(any)).thenReturn(Future.successful(Some(emptyString)))
+    when(mockCustomsDataStoreConnector.getEmail(any)(any)).thenReturn(Future.successful(Right(Email(email))))
 
     val request: FakeRequest[AnyContentAsEmpty.type] =
       fakeRequest(GET, routes.ConfirmationPageController.onPageLoad().url)
@@ -60,28 +62,23 @@ class ConfirmationPageControllerSpec extends SpecBase {
   }
 
   trait Setup {
-
-    val cashAccountNumber = "1234567"
-    val eori = "exampleEori"
-    val someCan = "1234567"
-    val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
+    val email = "jackiechan@mail.com"
 
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
     val mockRequestedTransactionsCache: RequestedTransactionsCache = mock[RequestedTransactionsCache]
+    val mockCustomsDataStoreConnector: CustomsDataStoreConnector = mock[CustomsDataStoreConnector]
 
     val fromDate: LocalDate = LocalDate.parse("2023-03-01")
     val toDate: LocalDate = LocalDate.parse("2023-04-30")
 
-    val cashDates = CashTransactionDates(start = fromDate, end = toDate)
+    val cashDates: CashTransactionDates = CashTransactionDates(start = fromDate, end = toDate)
 
     val app: Application = application
       .overrides(
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
-        bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache)
-      )
+        bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache),
+        bind[CustomsDataStoreConnector].toInstance(mockCustomsDataStoreConnector))
       .configure("features.fixed-systemdate-for-tests" -> "true")
       .build()
-
-    val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   }
 }

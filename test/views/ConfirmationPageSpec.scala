@@ -50,13 +50,13 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
       }
 
       "body text email is correct" in new Setup {
-        view.getElementById("body-text-email").text() mustBe s"${messages(
-          "cf.cash-account.transactions.confirmation.email")}"
+        view.getElementById("body-text-email").text() mustBe messages(
+          "cf.cash-account.transactions.confirmation.email", email)
       }
 
       "body text download is correct" in new Setup {
-        view.getElementById("body-text-download").text() mustBe s"${messages(
-          "cf.cash-account.transactions.confirmation.download")}"
+        view.getElementById("body-text-download").text() mustBe messages(
+          "cf.cash-account.transactions.confirmation.download")
       }
 
       "link text is correct" in new Setup {
@@ -70,7 +70,8 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
     val startDate = "March 2022"
     val endDate = "April 2022"
     val dates = s"$startDate ${messages("month.to")} $endDate"
+    val email = "jackiechan@mail.com"
 
-    val view: Document = Jsoup.parse(app.injector.instanceOf[confirmation_page].apply(dates).body)
+    val view: Document = Jsoup.parse(app.injector.instanceOf[confirmation_page].apply(dates, email).body)
   }
 }
