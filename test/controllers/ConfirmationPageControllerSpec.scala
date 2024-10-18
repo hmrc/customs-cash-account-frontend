@@ -54,7 +54,7 @@ class ConfirmationPageControllerSpec extends SpecBase {
 
   "calling page load returns valid response without email address" in new Setup {
     when(mockRequestedTransactionsCache.get(any)).thenReturn(Future.successful(Some(cashDates)))
-    when(mockCustomsDataStoreConnector.getEmail(any)(any)).thenReturn(Future.successful(Left(Email(emptyString))))
+    when(mockCustomsDataStoreConnector.getEmail(any)(any)).thenReturn(Future.successful(Right(Email(emptyString))))
 
     val request: FakeRequest[AnyContentAsEmpty.type] =
       fakeRequest(GET, routes.ConfirmationPageController.onPageLoad().url)
