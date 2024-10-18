@@ -396,6 +396,26 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
+    // *************** JAMIE FORM PAGE *******************//
+
+    "redirect to Jamie Form Page" when {
+      "JAMIE LETTS is entered in form" in new Setup {
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        val app: Application = application
+          .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+          .build()
+
+        running(app) {
+          val request = FakeRequest(GET, routes.CashAccountV2Controller.showJamieFormPage(enteredValue = "JAMIE LETTS").url)
+          val result = route(app, request).value
+
+          status(result) mustEqual OK
+        }
+      }
+    }
+
     "redirect to 'verify your email' page when an unverified email response is received" in new Setup {
       when(mockDataStoreConnector.getEmail(any)(any))
         .thenReturn(Future.successful(Left(UnverifiedEmail)))

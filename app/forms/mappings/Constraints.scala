@@ -20,7 +20,7 @@ import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.{Logger, LoggerLike}
 import uk.gov.hmrc.time.TaxYear
 import uk.gov.hmrc.time.TaxYear.taxYearFor
-import utils.RegexPatterns.{mrnRegex, paymentRegex, ucrRegex}
+import utils.RegexPatterns.{jamieRegex, mrnRegex, paymentRegex, ucrRegex}
 
 import java.time.{Clock, LocalDate, LocalDateTime, Period}
 
@@ -75,8 +75,10 @@ trait Constraints {
     case _ => Valid
   }
 
+  // *************** JAMIE FORM PAGE *******************//
+  
   protected def validateSearchInput(errorKey: String): Constraint[String] = Constraint { input =>
-    val patterns = Seq(mrnRegex, paymentRegex, ucrRegex)
+    val patterns = Seq(mrnRegex, paymentRegex, ucrRegex, jamieRegex)
 
     if (patterns.exists(_.pattern.matcher(input).matches())) {
       Valid
@@ -84,4 +86,6 @@ trait Constraints {
       Invalid(errorKey, patterns.map(_.regex): _*)
     }
   }
+  
+  // *************** JAMIE FORM PAGE *******************//
 }

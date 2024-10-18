@@ -18,7 +18,7 @@ package utils
 
 import forms.mappings.Constraints
 import play.api.data.validation.{Invalid, Valid, ValidationError, ValidationResult}
-import utils.RegexPatterns.{mrnRegex, paymentRegex, ucrRegex}
+import utils.RegexPatterns.{jamieRegex, mrnRegex, paymentRegex, ucrRegex}
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -107,6 +107,19 @@ class ConstraintsSpec extends SpecBase with Constraints {
 
     "validateSearchInput" must {
 
+      // *************** JAMIE FORM PAGE *******************//
+      
+      "return valid when given a valid jamie letts" in new Setup {
+        val result: ValidationResult = validateSearchInput("error.key")("JAMIE LETTS")
+        result mustBe Valid
+      }
+
+      "return Invalid when given an invalid jamie letts" in new Setup {
+        val result: ValidationResult = validateSearchInput("error.key")("tom hardy")
+        result mustBe Invalid(Seq(ValidationError("error.key", patterns: _*)))
+      }
+      // *************** JAMIE FORM PAGE *******************//
+
       "return Valid when given a valid MRN" in new Setup {
         val result: ValidationResult = validateSearchInput("error.key")("GDRC1345317D1113315")
         result mustBe Valid
@@ -141,7 +154,7 @@ class ConstraintsSpec extends SpecBase with Constraints {
   }
 
   trait Setup {
-    val patterns: Seq[String] = Seq(mrnRegex.regex, paymentRegex.regex, ucrRegex.regex)
+    val patterns: Seq[String] = Seq(mrnRegex.regex, paymentRegex.regex, ucrRegex.regex, jamieRegex.regex)
 
     def ld: LocalDate = LocalDateTime.now().toLocalDate
   }

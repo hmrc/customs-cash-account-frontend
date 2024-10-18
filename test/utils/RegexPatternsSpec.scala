@@ -16,9 +16,33 @@
 
 package utils
 
-import utils.RegexPatterns.{mrnRegex, paymentRegex, ucrRegex}
+import utils.RegexPatterns.{mrnRegex, paymentRegex, ucrRegex, jamieRegex}
 
 class RegexPatternsSpec extends SpecBase {
+  
+  // *************** JAMIE FORM PAGE *******************//
+  "Jamie Regex" should {
+    "match valid regex" in {
+      val validInputs: Seq[String] = Seq("JAMIE LETTS")
+
+      validInputs.foreach { input =>
+        jamieRegex.findFirstIn(input) mustBe Some(input)
+      }
+    }
+
+    "not match invalid regex" in {
+      val invalidInputs: Seq[String] = Seq(
+        "jame letts",
+        "Jamie Letts",
+        "jAmIe LeTTs")
+
+      invalidInputs.foreach { input =>
+        ucrRegex.findFirstIn(input) mustBe None
+      }
+    }
+  }
+
+  // *************** JAMIE FORM PAGE *******************//
 
   "MRN Regex" should {
 

@@ -22,4 +22,5 @@ object RegexPatterns {
   val mrnRegex: Regex = """^(\d{2}[A-Z]{2}[A-Z\d]{13,16}|[A-Z]{4}\d{6}[A-Z\d]{5,10})$""".r
   val paymentRegex: Regex = """^-?£\d+(\.\d{2})?$""".r
   val ucrRegex: Regex = """^[A-Z]{2}\d{10}\s\d{4}-\d{4}-\d{3}\s\d{3}[A-Z]$""".r
+  val jamieRegex: Regex = """^JAMIE LETTS$""".r
 }

@@ -48,6 +48,7 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
                                         sdesConnector: SdesConnector,
                                         accountsView: cash_account_v2,
                                         unavailable: cash_account_not_available,
+                                        jamieForm: jamie_form_page,
                                         transactionsUnavailable: cash_account_transactions_not_available,
                                         noTransactions: cash_account_no_transactions_v2,
                                         showAccountsExceededThreshold: cash_account_exceeded_threshold,
@@ -74,7 +75,11 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
         processAccountDetails(formWithErrors, page)
       },
       enteredValue => Future.successful {
-        Redirect(routes.DeclarationDetailController.displaySearchDetails(page, enteredValue))
+        if (enteredValue == "JAMIE LETTS") {
+          Redirect(routes.CashAccountV2Controller.showJamieFormPage(enteredValue))
+        } else {
+          Redirect(routes.DeclarationDetailController.displaySearchDetails(page, enteredValue))
+        }
       }
     )
   }
@@ -179,5 +184,9 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
 
   def showAccountUnavailable: Action[AnyContent] = authenticate { implicit req =>
     Ok(unavailable())
+  }
+
+  def showJamieFormPage(enteredValue: String): Action[AnyContent] = authenticate { implicit req =>
+    Ok(jamieForm(form))
   }
 }
