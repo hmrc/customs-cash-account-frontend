@@ -300,7 +300,7 @@ cf.cash-account.transactions.too-many-transactions.hint04 = The CSV file will be
 
 cf.cash-account.transactions.confirmation.statements=We received your request for transactions
 cf.cash-account.transactions.confirmation.next=What happens next
-cf.cash-account.transactions.confirmation.email=We’ll send an email within 48 hours to someemail@mail.com when your request is processed.
+cf.cash-account.transactions.confirmation.email=We’ll send an email within 48 hours to {0} when your request is processed.
 cf.cash-account.transactions.confirmation.download=You’ll be able to download your transactions from the cash account transactions page.
 cf.cash-account.transactions.confirmation.back=Back to cash account
 

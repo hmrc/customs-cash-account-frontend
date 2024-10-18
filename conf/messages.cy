@@ -300,7 +300,7 @@ cf.cash-account.transactions.request.date.hint-end-date.v2=Er enghraifft, 3 2021
 
 cf.cash-account.transactions.confirmation.statements=Mae’ch cais am drafodion wedi dod i law
 cf.cash-account.transactions.confirmation.next=Yr hyn sy’n digwydd nesaf
-cf.cash-account.transactions.confirmation.email=Byddwn yn anfon e-bost at someemail@mail.com cyn pen 48 awr pan fydd eich cais wedi’i brosesu.
+cf.cash-account.transactions.confirmation.email=Byddwn yn anfon e-bost at {0} cyn pen 48 awr pan fydd eich cais wedi’i brosesu.
 cf.cash-account.transactions.confirmation.download=Byddwch yn gallu lawrlwytho’ch trafodion o’r dudalen trafodion cyfrifon arian parod.
 cf.cash-account.transactions.confirmation.back=Yn ôl i ‘cyfrif arian parod’
 

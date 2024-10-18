@@ -52,7 +52,6 @@ import play.api.inject.bind
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.SpecBase
 
