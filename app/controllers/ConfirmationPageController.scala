@@ -64,7 +64,7 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
 
       result.recover {
         case e: Exception =>
-          log.error(s"filed to load ConfirmationPageController $e")
+          log.error(s"Failed to load ConfirmationPageController $e")
           Redirect(routes.CashAccountController.showAccountUnavailable)
       }
   }
@@ -81,7 +81,7 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
         Ok(view(s"$startDate ${messages("month.to")} $endDate", email))
 
       case _ =>
-        log.error(s"filed to load checkDatesAndRedirect $optionalDates")
+        log.error(s"Failed to load checkDatesAndEmailAndRedirect $optionalDates")
         Redirect(routes.CashAccountController.showAccountUnavailable)
     }
   }
