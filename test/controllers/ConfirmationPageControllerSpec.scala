@@ -21,6 +21,7 @@ import models.CashTransactionDates
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.Application
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -34,7 +35,7 @@ import scala.concurrent.Future
 
 class ConfirmationPageControllerSpec extends SpecBase {
 
-  "call page load returns valid response" in new Setup {
+  "calling page load returns valid response with email address" in new Setup {
     when(mockRequestedTransactionsCache.get(any)).thenReturn(Future.successful(Some(cashDates)))
     when(mockCustomsDataStoreConnector.getEmail(any)(any)).thenReturn(Future.successful(Right(Email(email))))
 
@@ -44,6 +45,25 @@ class ConfirmationPageControllerSpec extends SpecBase {
     running(app) {
       val result = route(app, request).value
       status(result) mustBe OK
+
+      val content = contentAsString(result)
+      content must include(messages("cf.cash-account.transactions.confirmation.email", email))
+    }
+  }
+
+  "calling page load returns valid response without email address" in new Setup {
+    when(mockRequestedTransactionsCache.get(any)).thenReturn(Future.successful(Some(cashDates)))
+    when(mockCustomsDataStoreConnector.getEmail(any)(any)).thenReturn(Future.successful(Right(Email(emptyString))))
+
+    val request: FakeRequest[AnyContentAsEmpty.type] =
+      fakeRequest(GET, routes.ConfirmationPageController.onPageLoad().url)
+
+    running(app) {
+      val result = route(app, request).value
+      status(result) mustBe OK
+
+      val content = contentAsString(result)
+      content must not include messages("cf.cash-account.transactions.confirmation.email", None)
     }
   }
 
@@ -80,5 +100,7 @@ class ConfirmationPageControllerSpec extends SpecBase {
         bind[CustomsDataStoreConnector].toInstance(mockCustomsDataStoreConnector))
       .configure("features.fixed-systemdate-for-tests" -> "true")
       .build()
+
+    val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
   }
 }

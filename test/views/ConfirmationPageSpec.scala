@@ -49,9 +49,13 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
           "cf.cash-account.transactions.confirmation.next")
       }
 
-      "body text email is correct" in new Setup {
+      "body text email is correct and email address is present" in new Setup {
         view.getElementById("body-text-email").text() mustBe messages(
           "cf.cash-account.transactions.confirmation.email", email)
+      }
+
+      "email address is not present" in new Setup {
+        Option(viewWithoutEmail.getElementById("body-text-email")) mustBe None
       }
 
       "body text download is correct" in new Setup {
@@ -72,6 +76,7 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
     val dates = s"$startDate ${messages("month.to")} $endDate"
     val email = "jackiechan@mail.com"
 
-    val view: Document = Jsoup.parse(app.injector.instanceOf[confirmation_page].apply(dates, email).body)
+    val view: Document = Jsoup.parse(app.injector.instanceOf[confirmation_page].apply(dates, Some(email)).body)
+    val viewWithoutEmail: Document = Jsoup.parse(app.injector.instanceOf[confirmation_page].apply(dates, None).body)
   }
 }

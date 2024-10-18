@@ -55,10 +55,8 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
         email <- customsDataStoreConnector.getEmail(request.eori)
       } yield {
         email match {
-          case Right(email) =>
-            checkDatesAndEmailAndRedirect(dates, email.value)
-          case Left(_) =>
-            checkDatesAndEmailAndRedirect(dates, emptyString)
+          case Right(email) => checkDatesAndEmailAndRedirect(dates, Some(email.value))
+          case Left(_) => checkDatesAndEmailAndRedirect(dates, None)
         }
       }
 
@@ -69,7 +67,7 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
       }
   }
 
-  private def checkDatesAndEmailAndRedirect(optionalDates: Option[CashTransactionDates], email: String)
+  private def checkDatesAndEmailAndRedirect(optionalDates: Option[CashTransactionDates], email: Option[String])
                                            (implicit request: IdentifierRequest[AnyContent],
                                             messages: Messages): Result = {
     optionalDates match {

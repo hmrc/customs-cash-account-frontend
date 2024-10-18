@@ -28,7 +28,7 @@
 
 @(
   dates: String,
-  email: String
+  email: Option[String]
 )(
   implicit request: Request[_],
   messages: Messages,
@@ -53,10 +53,12 @@
     id=Some("email-confirmation-subheader")
   )
 
-  @p(
-    message = messages("cf.cash-account.transactions.confirmation.email", email),
-    id=Some("body-text-email")
-  )
+  @email.filter(_.nonEmpty).map { emailAddress =>
+    @p(
+      message = messages("cf.cash-account.transactions.confirmation.email", emailAddress),
+      id = Some("body-text-email")
+    )
+  }
 
   @p(
     message = s"${messages("cf.cash-account.transactions.confirmation.download")}",
