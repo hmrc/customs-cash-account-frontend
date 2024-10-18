@@ -86,7 +86,7 @@ class ConfirmationPageControllerSpec extends SpecBase {
 
   "calling page load returns error and redirects to cash account" in new Setup {
     when(mockRequestedTransactionsCache.get(any)).thenReturn(Future.successful(Some(emptyString)))
-    when(mockCustomsDataStoreConnector.getEmail(any)(any)).thenReturn(Future.successful(Right(Email(emptyString))))
+    when(mockCustomsDataStoreConnector.getEmail(any)(any)).thenReturn(Future.successful(Left(Email(emptyString))))
 
     val request: FakeRequest[AnyContentAsEmpty.type] =
       fakeRequest(GET, routes.ConfirmationPageController.onPageLoad().url)
