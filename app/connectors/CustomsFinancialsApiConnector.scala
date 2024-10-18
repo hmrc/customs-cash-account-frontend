@@ -32,7 +32,7 @@ import play.api.http.Status.{
 }
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.mvc.AnyContent
-import repositories.{CacheRepository, CashAccountSearchCacheRepository}
+import repositories.{CacheRepository, CashAccountSearchRepository}
 import services.MetricsReporterService
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -47,13 +47,13 @@ import models.request.CashAccountStatementRequestDetail.jsonBodyWritable
 import models.response.CashAccountTransactionSearchResponseDetail
 import play.api.libs.json.Json
 import utils.EtmpErrorCode
-import utils.Utils.formCacheId
+import utils.Utils.buildCacheId
 
 class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
                                               appConfig: AppConfig,
                                               metricsReporter: MetricsReporterService,
                                               cacheRepository: CacheRepository,
-                                              searchCacheRepository: CashAccountSearchCacheRepository)
+                                              searchRepository: CashAccountSearchRepository)
                                              (implicit executionContext: ExecutionContext) {
 
   private val logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
@@ -154,16 +154,16 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
     val request = CashAccountTransactionSearchRequestDetails(
       can, ownerEORI, searchType, declarationDetails, cashAccountPaymentDetails)
 
-    val uuid = formCacheId(can, searchInput)
+    val cacheId = buildCacheId(can, searchInput)
 
-    searchCacheRepository.get(uuid).flatMap {
+    searchRepository.get(cacheId).flatMap {
       case Some(value) => Future.successful(Right(value))
 
       case None =>
         httpClient.post(url"$retrieveCashAccountStatementSearchUrl")
           .withBody[CashAccountTransactionSearchRequestDetails](request)
           .execute[HttpResponse]
-          .map { jsonResponse => processResponseForTransactionsBySearch(uuid, jsonResponse) }
+          .map { jsonResponse => processResponseForTransactionsBySearch(cacheId, jsonResponse) }
     }
   }.recover {
     case UpstreamErrorResponse(_, BAD_REQUEST, _, _) =>
@@ -282,7 +282,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
     response.status match {
       case OK =>
         val responseDetail = Json.fromJson[CashAccountTransactionSearchResponseDetail](response.json)
-        searchCacheRepository.set(uuid, responseDetail.get).map { successfulWrite =>
+        searchRepository.set(uuid, responseDetail.get).map { successfulWrite =>
           if (!successfulWrite) {
             logger.error("Failed to store data in the session cache defaulting to the api response")
           }

@@ -48,8 +48,12 @@ object Utils {
     new h2().apply(msg = msgKey, id = id, classes = classes, extraContent = extraContent)
   }
 
-  def formCacheId(accountNumber: String, searchValue: String): String = {
+  def buildCacheId(accountNumber: String, searchValue: String): String = {
     s"${accountNumber}_${searchValue}"
+  }
+
+  def extractNumericValue(amount: String): String = {
+    amount.replaceAll("[^\\d.-]", "")
   }
 
   def h2InnerComponent(msgKey: String,

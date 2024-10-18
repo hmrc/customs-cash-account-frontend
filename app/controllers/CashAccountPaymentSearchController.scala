@@ -24,21 +24,22 @@ import models.CashAccount
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.CashAccountSearchCacheRepository
+import repositories.CashAccountSearchRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.Utils.formCacheId
+import utils.Utils.{buildCacheId, extractNumericValue}
 import viewmodels.PaymentSearchResultsViewModel
 import views.html.cash_account_payment_search
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CashTransactionsSearchController @Inject()(authenticate: IdentifierAction,
-                                                 verifyEmail: EmailAction,
-                                                 apiConnector: CustomsFinancialsApiConnector,
-                                                 errorHandler: ErrorHandler,
-                                                 mcc: MessagesControllerComponents,
-                                                 paymentSearchView: cash_account_payment_search,
-                                                 searchCacheRepository: CashAccountSearchCacheRepository
+class CashAccountPaymentSearchController @Inject()(authenticate: IdentifierAction,
+                                                   verifyEmail: EmailAction,
+                                                   apiConnector: CustomsFinancialsApiConnector,
+                                                   errorHandler: ErrorHandler,
+                                                   mcc: MessagesControllerComponents,
+                                                   paymentSearchView: cash_account_payment_search,
+                                                   searchRepository: CashAccountSearchRepository
                                                 )(implicit executionContext: ExecutionContext,
                                                   appConfig: AppConfig
                                                 ) extends FrontendController(mcc) with I18nSupport with Logging {
@@ -48,8 +49,7 @@ class CashTransactionsSearchController @Inject()(authenticate: IdentifierAction,
 
     apiConnector.getCashAccount(request.eori).flatMap {
       case Some(account) =>
-
-        searchCacheRepository.get(formCacheId(account.number, searchValue)).flatMap {
+        searchRepository.get(buildCacheId(account.number, extractNumericValue(searchValue))).flatMap {
           case Some(paymentTransfersList) =>
             paymentTransfersList.paymentsWithdrawalsAndTransfers match {
               case Some(seqOfPaymentsWithdrawalsAndTransfers) =>

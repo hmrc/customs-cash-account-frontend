@@ -16,7 +16,7 @@
 
 package repositories
 
-import crypto.{CashAccountSearchEncrypter, EncryptedValue}
+import crypto.{CashAccountPaymentSearchEncrypter, EncryptedValue}
 import models.response.CashAccountTransactionSearchResponseDetail
 import org.mongodb.scala.model.Filters.equal
 import org.mongodb.scala.model.Indexes.ascending
@@ -34,21 +34,21 @@ import org.mongodb.scala.SingleObservableFuture
 import org.mongodb.scala.ToSingleObservablePublisher
 
 @Singleton
-class CashAccountSearchCacheRepository @Inject()(mongo: MongoComponent,
-                                                 config: Configuration,
-                                                 encrypter: CashAccountSearchEncrypter)
-                                                (implicit executionContext: ExecutionContext)
-  extends PlayMongoRepository[TransactionSearchResponseDetailMongo](
+class CashAccountSearchRepository @Inject()(mongo: MongoComponent,
+                                            config: Configuration,
+                                            encrypter: CashAccountPaymentSearchEncrypter)
+                                           (implicit executionContext: ExecutionContext)
+  extends PlayMongoRepository[CashAccountPaymentSearchResponseMongo](
     collectionName = "cash-account-search-cache",
     mongoComponent = mongo,
-    domainFormat = TransactionSearchResponseDetailMongo.format,
+    domainFormat = CashAccountPaymentSearchResponseMongo.format,
     indexes = Seq(
       IndexModel(
         ascending("lastUpdated"),
         IndexOptions().name("cash-account-search-cache-last-updated-index")
           .expireAfter(config.get[Long]("mongodb.timeToLiveInSeconds"), TimeUnit.SECONDS)
       )
-    )) with CacheAccountSearchCacheRepositoryTrait {
+    )) with CashAccountSearchRepositoryTrait {
 
   private val encryptionKey = config.get[String]("mongodb.encryptionKey")
 
@@ -61,7 +61,7 @@ class CashAccountSearchCacheRepository @Inject()(mongo: MongoComponent,
   }
 
   override def set(id: String, transactions: CashAccountTransactionSearchResponseDetail): Future[Boolean] = {
-    val record: TransactionSearchResponseDetailMongo = TransactionSearchResponseDetailMongo(
+    val record: CashAccountPaymentSearchResponseMongo = CashAccountPaymentSearchResponseMongo(
       encrypter.encryptSearchResponseDetail(transactions, encryptionKey), Instant.now())
 
     collection.replaceOne(equal("_id", id),
@@ -74,7 +74,7 @@ class CashAccountSearchCacheRepository @Inject()(mongo: MongoComponent,
     collection.deleteOne(equal("_id", id)).toFuture().map(_.wasAcknowledged())
 }
 
-trait CacheAccountSearchCacheRepositoryTrait {
+trait CashAccountSearchRepositoryTrait {
 
   def get(id: String): Future[Option[CashAccountTransactionSearchResponseDetail]]
 
@@ -83,9 +83,9 @@ trait CacheAccountSearchCacheRepositoryTrait {
   def remove(id: String): Future[Boolean]
 }
 
-case class TransactionSearchResponseDetailMongo(responseDetail: EncryptedValue, lastUpdated: Instant)
+case class CashAccountPaymentSearchResponseMongo(responseDetail: EncryptedValue, lastUpdated: Instant)
 
-object TransactionSearchResponseDetailMongo {
+object CashAccountPaymentSearchResponseMongo {
   implicit val jodaTimeFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
-  implicit val format: OFormat[TransactionSearchResponseDetailMongo] = Json.format[TransactionSearchResponseDetailMongo]
+  implicit val format: OFormat[CashAccountPaymentSearchResponseMongo] = Json.format[CashAccountPaymentSearchResponseMongo]
 }

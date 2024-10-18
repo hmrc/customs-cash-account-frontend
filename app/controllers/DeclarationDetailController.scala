@@ -28,16 +28,16 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{
-  cash_account_declaration_details, cash_account_declaration_details_search, cash_transactions_no_result
+  cash_account_declaration_details, cash_account_declaration_details_search,
+  cash_transactions_no_result
 }
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.Logging
 import play.api.data.Form
 import utils.RegexPatterns.{mrnRegex, paymentRegex}
-import viewmodels.{
-  DeclarationDetailSearchViewModel, DeclarationDetailViewModel, ResultsPageSummary
-}
+import utils.Utils.extractNumericValue
+import viewmodels.{DeclarationDetailSearchViewModel, DeclarationDetailViewModel, ResultsPageSummary}
 
 import java.time.LocalDate
 
@@ -74,16 +74,15 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
                                        page: Option[Int],
                                        searchInput: String)(implicit request: IdentifierRequest[_]): Future[Result] = {
 
-    val (paramName, searchType) = determineParamNameAndSearchType(searchInput)
+    val (paramName, searchType, sanitizedSearchValue) = determineParamNameAndTypeAndSearchValue(searchInput)
 
     val (declarationDetails, cashAccountPaymentDetails) = searchType match {
-      case SearchType.D => (Some(DeclarationDetailsSearch(paramName, searchInput)), None)
-      case SearchType.P => (None, Some(CashAccountPaymentDetails(searchInput.replaceAll("[^\\d.]", "").toDouble)))
+      case SearchType.D => (Some(DeclarationDetailsSearch(paramName, sanitizedSearchValue)), None)
+      case SearchType.P => (None, Some(CashAccountPaymentDetails(sanitizedSearchValue.toDouble)))
     }
 
-    apiConnector.retrieveCashTransactionsBySearch(
-      account.number, request.eori, searchType, searchInput, declarationDetails, cashAccountPaymentDetails).map {
-
+    apiConnector.retrieveCashTransactionsBySearch(account.number, request.eori, searchType, sanitizedSearchValue,
+      declarationDetails, cashAccountPaymentDetails).map {
       case Right(transactions) => processTransactions(transactions, searchInput, account, page)
       case Left(_) => NotFound(errorHandler.notFoundTemplate)
     }
@@ -94,30 +93,29 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
                                   account: CashAccount,
                                   page: Option[Int]
                                  )(implicit request: IdentifierRequest[_]): Result = {
-    if (cashAccResDetail.declarations.isDefined) {
-      cashAccResDetail.declarations.flatMap(_.headOption.map(_.declaration)) match {
-        case Some(declarationSearch) =>
-          Ok(searchView(DeclarationDetailSearchViewModel(searchValue, account, declarationSearch), page))
-        case None => NotFound(errorHandler.notFoundTemplate)
-      }
-    }
-    else if (cashAccResDetail.paymentsWithdrawalsAndTransfers.isDefined) {
-      cashAccResDetail.paymentsWithdrawalsAndTransfers match {
-        case Some(seqOfPaymentsWithdrawalsAndTransfers) =>
-          Redirect(routes.CashTransactionsSearchController.search(searchValue, page))
-        case None => NotFound(errorHandler.notFoundTemplate)
-      }
-    }
-    else {
-      NotFound(errorHandler.notFoundTemplate)
+
+    (cashAccResDetail.declarations, cashAccResDetail.paymentsWithdrawalsAndTransfers) match {
+      case (Some(declarations), None | Some(Nil)) =>
+        cashAccResDetail.declarations.flatMap(_.headOption.map(_.declaration)) match {
+          case Some(declarationSearch) =>
+            Ok(searchView(DeclarationDetailSearchViewModel(searchValue, account, declarationSearch), page))
+          case None =>
+            NotFound(errorHandler.notFoundTemplate)
+        }
+
+      case (None | Some(Nil), Some(seqOfPaymentsWithdrawalsAndTransfers)) =>
+        Redirect(routes.CashAccountPaymentSearchController.search(searchValue, page))
+
+      case _ => NotFound(errorHandler.notFoundTemplate)
     }
   }
 
-  private def determineParamNameAndSearchType(searchInput: String): (ParamName.Value, SearchType.Value) = {
+  private def determineParamNameAndTypeAndSearchValue(searchInput: String
+                                                     ): (ParamName.Value, SearchType.Value, String) = {
     searchInput match {
-      case input if isValidMRN(input) => (ParamName.MRN, SearchType.D)
-      case input if isValidPayment(input) => (ParamName.MRN, SearchType.P)
-      case _ => (ParamName.UCR, SearchType.D)
+      case input if isValidMRN(input) => (ParamName.MRN, SearchType.D, searchInput)
+      case input if isValidPayment(input) => (ParamName.MRN, SearchType.P, extractNumericValue(searchInput))
+      case _ => (ParamName.UCR, SearchType.D, searchInput)
     }
   }
 
