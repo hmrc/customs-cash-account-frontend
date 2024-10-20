@@ -16,6 +16,9 @@
 
 package utils
 
+import helpers.Formatters.yyyyMMddDateFormatter
+import models.*
+import models.response.{PaymentsWithdrawalsAndTransfer, PaymentsWithdrawalsAndTransferContainer}
 import java.time.LocalDate
 import models.{TaxGroup, ImportVat, TaxType}
 
@@ -85,4 +88,39 @@ object TestData {
   val PAGE_1000 = 1000
 
   val TEST_ID = "testId"
+
+  val LENGTH_40: Int = 40
+
+  val PAYMENT_SEARCH_VALUE: String = "$123.12"
+  val PAYMENT_REF_TEXT: String = "paymentRef"
+  val BANK_ACC_NUMBER: Option[String] = Some("12345678")
+  val SORT_CODE: Option[String] = Some("12-34-56")
+
+  val DATE_AUG_15: LocalDate = LocalDate.of(YEAR_2021, MONTH_8, DAY_15)
+  val DATE_AUG_16: LocalDate = LocalDate.of(YEAR_2021, MONTH_8, DAY_16)
+  val DATE_AUG_17: LocalDate = LocalDate.of(YEAR_2021, MONTH_8, DAY_17)
+
+  val PAYMENT_DETAILS_01: PaymentsWithdrawalsAndTransfer = PaymentsWithdrawalsAndTransfer.apply(
+    valueDate = DATE_AUG_15.format(yyyyMMddDateFormatter), postingDate = DATE_AUG_15.format(yyyyMMddDateFormatter),
+    paymentReference = PAYMENT_REF_TEXT, amount = 101.10, `type` = response.PaymentType.Payment,
+    bankAccount = BANK_ACC_NUMBER, sortCode = SORT_CODE)
+
+  val PAYMENT_DETAILS_02: PaymentsWithdrawalsAndTransfer = PaymentsWithdrawalsAndTransfer.apply(
+    valueDate = DATE_AUG_16.format(yyyyMMddDateFormatter), postingDate = DATE_AUG_16.format(yyyyMMddDateFormatter),
+    paymentReference = PAYMENT_REF_TEXT, amount = 102.10, `type` = response.PaymentType.Transfer,
+    bankAccount = BANK_ACC_NUMBER, sortCode = SORT_CODE)
+
+  val PAYMENT_DETAILS_03: PaymentsWithdrawalsAndTransfer = PaymentsWithdrawalsAndTransfer.apply(
+    valueDate = DATE_AUG_17.format(yyyyMMddDateFormatter), postingDate = DATE_AUG_17.format(yyyyMMddDateFormatter),
+    paymentReference = PAYMENT_REF_TEXT, amount = 103.10, `type` = response.PaymentType.Withdrawal,
+    bankAccount = BANK_ACC_NUMBER, sortCode = SORT_CODE)
+
+  val SEQ_OF_PAYMENT_DETAILS_01: Seq[PaymentsWithdrawalsAndTransfer] = Seq(
+    PAYMENT_DETAILS_01, PAYMENT_DETAILS_02, PAYMENT_DETAILS_03)
+
+  val SEQ_OF_PAYMENT_DETAILS_02: Seq[PaymentsWithdrawalsAndTransfer] = LazyList.continually(
+    SEQ_OF_PAYMENT_DETAILS_01).flatten.take(LENGTH_40)
+
+  val SEQ_PAYMENT_DETAILS_CONTAINER_01: Seq[PaymentsWithdrawalsAndTransferContainer] = Seq(
+    PaymentsWithdrawalsAndTransferContainer(PAYMENT_DETAILS_01))
 }

@@ -77,6 +77,7 @@ cf.cash-account.detail.top-up.v2=Ychwanegu
 cf.cash-account.detail.withdrawal=Codiad
 cf.cash-account.detail.withdrawal.account-ending=(i’r cyfrif sy’n gorffen gyda {0})
 cf.cash-account.detail.pending=(Ar y gweill)
+cf.cash-account.detail.transfer.v2=Trosglwyddo
 cf.cash-account.detail.transfer-in=Trosglwyddo o gyfrif arall
 cf.cash-account.detail.transfer-in.v2=Trosglwyddo o'r cyfrif Arian Parod
 cf.cash-account.detail.transfer-out=Trosglwyddo i gyfrif arall
@@ -278,6 +279,7 @@ cf.cash-account.transactions.request.review.heading=Y trafodion cyfrif arian par
 cf.cash-account.transactions.request.review.change=Newid
 cf.cash-account.transactions.request.review.account=Cyfrif:
 
+cf.cash-account.transactions.no-transactions.message = Nid oes unrhyw drafodion i'w harddangos.
 cf.cash-account.transactions.request-transactions.heading = Gofyn am drafodion
 cf.cash-account.transactions.transactions-for-last-six-months.heading = Eich trafodion ar gyfer y chwe mis diwethaf
 cf.cash-account.transactions.no-transactions-for-last-six-months = Nid oes unrhyw drafodion o’r 6 mis diwethaf i’w harddangos.
