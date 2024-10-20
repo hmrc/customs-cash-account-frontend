@@ -20,7 +20,7 @@ import config.AppConfig
 import helpers.Formatters.{formatCurrencyAmount, yyyyMMddDateFormatter}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import utils.Utils.{h2Component, pComponent, prependNegativeSignWithAmount}
+import utils.Utils.{pComponent, prependNegativeSignWithAmount}
 import models.response
 import models.response.PaymentsWithdrawalsAndTransfer
 
@@ -28,8 +28,7 @@ import java.time.LocalDate
 
 case class PaymentSearchResultStatementsViewModel(dailyStatements: Seq[DailyStatementViewModel],
                                                   hasTransactions: Boolean,
-                                                  transForLastSixMonthsHeading: HtmlFormat.Appendable,
-                                                  noTransFromLastSixMonthsText: Option[HtmlFormat.Appendable] = None)
+                                                  noTransactionsMessage: Option[HtmlFormat.Appendable] = None)
 
 object PaymentSearchResultStatementsViewModel {
 
@@ -44,8 +43,7 @@ object PaymentSearchResultStatementsViewModel {
       dailyStatementsBasedOnPageNoForPagination(
         populateDailyStatementViewModelList(dailyStatements), pageNo, config.numberOfRecordsPerPage),
       hasTransactions,
-      transForLastSixMonthsHeading,
-      if (hasTransactions) None else Some(noTransFromLastSixMonthsText))
+      if (hasTransactions) None else Some(noTransactionsMessage))
   }
 
   private def dailyStatementsBasedOnPageNoForPagination(statements: Seq[DailyStatementViewModel],
@@ -62,16 +60,10 @@ object PaymentSearchResultStatementsViewModel {
     }
   }
 
-  private def transForLastSixMonthsHeading(implicit msgs: Messages): HtmlFormat.Appendable = {
-    h2Component(
-      msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
-      id = Some("transactions-for-last-six-months-heading"))
-  }
-
-  private def noTransFromLastSixMonthsText(implicit msgs: Messages): HtmlFormat.Appendable = {
+  private def noTransactionsMessage(implicit msgs: Messages): HtmlFormat.Appendable = {
     pComponent(
-      messageKey = "cf.cash-account.transactions.no-transactions-for-last-six-months",
-      id = Some("no-transactions-for-last-six-months-text"))
+      messageKey = "cf.cash-account.transactions.no-transactions.message",
+      id = Some("no-transactions-to-display"))
   }
 
   private def populateDailyStatementViewModelList(dailyStatements: Seq[PaymentsWithdrawalsAndTransfer])

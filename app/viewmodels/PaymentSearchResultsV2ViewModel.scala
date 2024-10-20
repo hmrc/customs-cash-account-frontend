@@ -60,7 +60,8 @@ object PaymentSearchResultsViewModel {
   }
 
   private def populateSearchResultsHeader(searchInput: String)(implicit messages: Messages): HtmlFormat.Appendable = {
-    emptyH1InnerComponent(msg = "cf.cash-account.detail.declaration.search-title", innerMsg = searchInput)
+    emptyH1InnerComponent(id = Some("search-results-message-heading"),
+      msg = "cf.cash-account.detail.declaration.search-title", innerMsg = searchInput)
   }
 
   private def populatePaymentSearchResultSection(paymentsWithdrawalsAndTransfers: Seq[PaymentsWithdrawalsAndTransfer],

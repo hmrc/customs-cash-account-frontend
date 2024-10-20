@@ -276,13 +276,13 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
     }
   }
 
-  private def processResponseForTransactionsBySearch(uuid: String, response: HttpResponse) = {
+  private def processResponseForTransactionsBySearch(cacheId: String, response: HttpResponse) = {
     import CashAccountTransactionSearchResponseDetail.format
 
     response.status match {
       case OK =>
         val responseDetail = Json.fromJson[CashAccountTransactionSearchResponseDetail](response.json)
-        searchRepository.set(uuid, responseDetail.get).map { successfulWrite =>
+        searchRepository.set(cacheId, responseDetail.get).map { successfulWrite =>
           if (!successfulWrite) {
             logger.error("Failed to store data in the session cache defaulting to the api response")
           }

@@ -21,13 +21,16 @@ import models.*
 import models.request.{CashAccountStatementRequestDetail, CashDailyStatementRequest, IdentifierRequest, SearchType}
 import models.response.{CashAccountTransactionSearchResponseDetail, EoriData, EoriDataContainer}
 import org.mockito.ArgumentMatchers.{any, anyString, eq => eqTo}
-import org.mockito.Mockito.{verify, when}
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE}
+import org.mockito.Mockito.{times, verify, when}
+import play.api.http.Status.{
+  BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND,
+  REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE
+}
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.Helpers.*
 import play.api.{Application, inject}
-import repositories.CacheRepository
+import repositories.{CacheRepository, CashAccountSearchRepository}
 import services.MetricsReporterService
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpReads, HttpResponse, SessionId, UpstreamErrorResponse}
@@ -238,25 +241,70 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   }
 
   "retrieveCashTransactionsBySearch" must {
-    "call the correct URL and return a valid response for the given request" in new Setup {
-      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 
-      when(requestBuilder.execute(any[HttpReads[HttpResponse]], any[ExecutionContext]))
-        .thenReturn(Future.successful(HttpResponse(OK, Json.toJson(transactionSearchResponseDetail).toString)))
+    "return valid response from api for the given request" when {
 
-      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+      "cache repository returns None for search id" in new Setup {
 
-      val appWithMocks: Application = application
-        .overrides(
-          bind[HttpClientV2].toInstance(mockHttpClient),
-          bind[RequestBuilder].toInstance(requestBuilder)
-        ).build()
+        when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 
-      running(appWithMocks) {
-        val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
-          "testCAN", "GB123456789012", SearchType.D,searchValue, None, None))
+        when(mockCashAccountSearchRepository.get(any[String])).thenReturn(Future.successful(None))
 
-        result mustBe Right(transactionSearchResponseDetail)
+        when(mockCashAccountSearchRepository.set(any[String],
+          any[CashAccountTransactionSearchResponseDetail])).thenReturn(Future.successful(true))
+
+        when(requestBuilder.execute(any[HttpReads[HttpResponse]], any[ExecutionContext]))
+          .thenReturn(Future.successful(HttpResponse(OK, Json.toJson(transactionSearchResponseDetail).toString)))
+
+        when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+        val appWithMocks: Application = application
+          .overrides(
+            bind[HttpClientV2].toInstance(mockHttpClient),
+            bind[RequestBuilder].toInstance(requestBuilder),
+            bind[CashAccountSearchRepository].toInstance(mockCashAccountSearchRepository)
+          ).build()
+
+        running(appWithMocks) {
+          val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None))
+
+          result mustBe Right(transactionSearchResponseDetail)
+          verify(mockCashAccountSearchRepository, times(1)).get(any[String])
+          verify(mockCashAccountSearchRepository, times(1)).set(any[String],
+            any[CashAccountTransactionSearchResponseDetail])
+        }
+      }
+    }
+
+    "return valid response from cache for the given request" when {
+
+      "cache repository returns valid data for search id" in new Setup {
+
+        when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+        when(mockCashAccountSearchRepository.get(any[String])).thenReturn(
+          Future.successful(Some(transactionSearchResponseDetail)))
+
+        when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+        val appWithMocks: Application = application
+          .overrides(
+            bind[HttpClientV2].toInstance(mockHttpClient),
+            bind[RequestBuilder].toInstance(requestBuilder),
+            bind[CashAccountSearchRepository].toInstance(mockCashAccountSearchRepository)
+          ).build()
+
+        running(appWithMocks) {
+          val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None))
+
+          result mustBe Right(transactionSearchResponseDetail)
+          verify(mockHttpClient, times(0)).post(any[URL])(any())
+          verify(mockCashAccountSearchRepository, times(1)).get(any[String])
+          verify(mockCashAccountSearchRepository, times(0)).set(any[String],
+            any[CashAccountTransactionSearchResponseDetail])
+        }
       }
     }
 
@@ -275,7 +323,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(appWithMocks) {
         val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
-          "testCAN", "GB123456789012", SearchType.D,searchValue, None, None))
+          "testCAN", "GB123456789012", SearchType.D, searchValue, None, None))
 
         result mustBe Left(BadRequest)
       }
@@ -296,7 +344,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(appWithMocks) {
         val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
-          "testCAN", "GB123456789012", SearchType.D,searchValue, None, None))
+          "testCAN", "GB123456789012", SearchType.D, searchValue, None, None))
 
         result mustBe Left(InternalServerErrorErrorResponse)
       }
@@ -317,7 +365,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(appWithMocks) {
         val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
-          "testCAN", "GB123456789012", SearchType.D,searchValue, None, None))
+          "testCAN", "GB123456789012", SearchType.D, searchValue, None, None))
 
         result mustBe Left(ServiceUnavailableErrorResponse)
       }
@@ -338,7 +386,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       running(appWithMocks) {
         val result = await(connector(appWithMocks).retrieveCashTransactionsBySearch(
-          "testCAN", "GB123456789012", SearchType.D,searchValue, None, None))
+          "testCAN", "GB123456789012", SearchType.D, searchValue, None, None))
 
         result mustBe Left(UnknownException)
       }
@@ -363,7 +411,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         running(appWithMocks) {
           whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D,searchValue, None, None)) {
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None)) {
             response => response.left.getOrElse(UnknownException) mustBe InvalidCashAccount
           }
         }
@@ -386,7 +434,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         running(appWithMocks) {
           whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D,searchValue, None, None)) {
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None)) {
             response => response.left.getOrElse(UnknownException) mustBe InvalidDeclarationReference
           }
         }
@@ -409,7 +457,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         running(appWithMocks) {
           whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D,searchValue, None, None)) {
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None)) {
             response => response.left.getOrElse(UnknownException) mustBe DuplicateAckRef
           }
         }
@@ -432,7 +480,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         running(appWithMocks) {
           whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D,searchValue, None, None)) {
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None)) {
             response => response.left.getOrElse(UnknownException) mustBe NoAssociatedDataFound
           }
         }
@@ -455,7 +503,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         running(appWithMocks) {
           whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D,searchValue, None, None)) {
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None)) {
             response => response.left.getOrElse(UnknownException) mustBe InvalidEori
           }
         }
@@ -478,7 +526,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         running(appWithMocks) {
           whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D,searchValue, None, None)) {
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None)) {
             response => response.left.getOrElse(UnknownException) mustBe BadRequest
           }
         }
@@ -502,7 +550,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         running(appWithMocks) {
           whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D,searchValue, None, None)) {
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None)) {
             response => response.left.getOrElse(UnknownException) mustBe InternalServerErrorErrorResponse
           }
         }
@@ -526,7 +574,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         running(appWithMocks) {
           whenReady(connector(appWithMocks).retrieveCashTransactionsBySearch(
-            "testCAN", "GB123456789012", SearchType.D, searchValue,None, None)) {
+            "testCAN", "GB123456789012", SearchType.D, searchValue, None, None)) {
             response => response.left.getOrElse(UnknownException) mustBe ServiceUnavailableErrorResponse
           }
         }
@@ -812,6 +860,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     val mockMetricsReporterService: MetricsReporterService = mock[MetricsReporterService]
     val mockConfig: AppConfig = mock[AppConfig]
     val mockCacheRepository: CacheRepository = mock[CacheRepository]
+    val mockCashAccountSearchRepository: CashAccountSearchRepository = mock[CashAccountSearchRepository]
 
     val cdsCashAccount: CdsCashAccount = CdsCashAccount(
       Account(cashAccountNumber, emptyString, traderEori, Some(AccountStatusOpen), false, Some(false)), Some("999.99"))
@@ -870,9 +919,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     val transactionSearchResponseDetail: CashAccountTransactionSearchResponseDetail =
       CashAccountTransactionSearchResponseDetail(
         can = "testCAN",
-        eoriDetails = Seq(
-          EoriDataContainer(
-            eoriData = EoriData(eoriNumber = "GB123456789012", name = "Test Importer"))),
+        eoriDetails = Seq(EoriDataContainer(EoriData(eoriNumber = "GB123456789012", name = "Test Importer"))),
         declarations = Some(Seq.empty))
 
     val timestamp = "2019-08-1618:15:41"
