@@ -63,7 +63,7 @@ class CashAccountDeclarationDetailsSearchNoResultSpec extends SpecBase with Guid
     val searchResultParagraph1 = ComponentDetailsForAssertion(
       testDescription = "display correct search result guidance's first paragraph",
       id = Some("search-result-guidance-not-returned-any-results"),
-      expectedValue = s"Your search $searchInput has not returned any results.")
+      expectedValue = s"Your search \"$searchInput\" has not returned any results.")
 
     val searchResultParagraph2 = ComponentDetailsForAssertion(
       testDescription = "display correct search result guidance's second paragraph",
@@ -74,7 +74,7 @@ class CashAccountDeclarationDetailsSearchNoResultSpec extends SpecBase with Guid
       testDescription = "display correct guidance for invalid inputs ",
       id = Some("invalid-inputs-guidance-list"),
       expectedValue =
-        "an incorrect Movement Reference Number (MRN) or Unique Consignment Number (UCR)" +
+        "an incorrect Movement Reference Number (MRN) or Unique Consignment Reference (UCR)" +
           " a payment amount that was not found a payment amount that does not include ‘£’")
 
     List(accountHeadingAndValue,
