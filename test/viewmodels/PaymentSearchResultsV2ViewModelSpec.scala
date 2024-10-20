@@ -74,25 +74,24 @@ class PaymentSearchResultsV2ViewModelSpec extends SpecBase {
     linkStr mustBe controllers.routes.CashAccountV2Controller.showAccountDetails(None).url
   }
 
-  private def shouldProduceCorrectSearchResultsHeader(searchResultsHeader: HtmlFormat.Appendable)(implicit msgs: Messages): Assertion = {
-    searchResultsHeader.body.toString.contains(
+  private def shouldProduceCorrectSearchResultsHeader(searchResultsHeader: HtmlFormat.Appendable
+                                                     )(implicit msgs: Messages): Assertion = {
+    searchResultsHeader.body.contains(
       msgs("cf.cash-account.detail.declaration.search-title", PAYMENT_SEARCH_VALUE)) mustBe true
   }
-
 
   private def shouldProduceCorrectAccountBalance(accountDetails: HtmlFormat.Appendable,
                                                  eori: String,
                                                  account: CashAccount)
                                                 (implicit msgs: Messages): Assertion = {
-    val htmlContent = accountDetails.body.toString
+    val htmlContent = accountDetails.body
     htmlContent.contains(msgs("cf.cash-account.detail.account", account.number)) mustBe true
     htmlContent.contains(eori) mustBe false
-
   }
 
   private def shouldProducePaymentSearchResultSection(accountDetails: HtmlFormat.Appendable): Assertion = {
 
-    val htmlContent = accountDetails.body.toString
+    val htmlContent = accountDetails.body
 
     htmlContent.contains("title=\"Date\"") mustBe true
     htmlContent.contains("title=\"Transaction type\"") mustBe true
@@ -100,7 +99,6 @@ class PaymentSearchResultsV2ViewModelSpec extends SpecBase {
     htmlContent.contains("title=\"Debit\"") mustBe true
     htmlContent.contains("title=\"Balance\"") mustBe false
   }
-
 
   private def shouldOutputCorrectHelpAndSupportGuidance(guidanceRow: GuidanceRow)
                                                        (implicit msgs: Messages, config: AppConfig) = {
@@ -116,9 +114,8 @@ class PaymentSearchResultsV2ViewModelSpec extends SpecBase {
     )
   }
 
-
   private def shouldContainCorrectPaginationModel(paginationModel: ListPaginationViewModel): Assertion = {
-    paginationModel.results mustBe MetaData(PAGE_1, PAGE_5, PAGE_40, PAGE_1, PAGE_8)
+    paginationModel.results mustBe MetaData(PAGE_1, PAGE_30, PAGE_40, PAGE_1, PAGE_2)
     paginationModel.pageNumber mustBe 1
   }
 
@@ -137,9 +134,7 @@ class PaymentSearchResultsV2ViewModelSpec extends SpecBase {
     implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
     implicit val msgs: Messages = messages(app)
 
-    val cashAccount: CashAccount = CashAccount(number = can,
-      owner = eoriNumber,
-      status = AccountStatusOpen,
-      balances = CDSCashBalance(Some(balance)))
+    val cashAccount: CashAccount = CashAccount(number = can, owner = eoriNumber,
+      status = AccountStatusOpen, balances = CDSCashBalance(Some(balance)))
   }
 }
