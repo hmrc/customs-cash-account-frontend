@@ -19,29 +19,17 @@ package controllers
 import config.ErrorHandler
 import connectors.{
   BadRequest, CustomsFinancialsApiConnector, DuplicateAckRef, InternalServerErrorErrorResponse,
-  InvalidCashAccount, InvalidDeclarationReference, InvalidEori, NoAssociatedDataFound, ServiceUnavailableErrorResponse,
-  UnknownException
+  InvalidCashAccount, InvalidDeclarationReference, InvalidEori, NoAssociatedDataFound,
+  ServiceUnavailableErrorResponse, UnknownException
 }
 import models.request.{CashAccountPaymentDetails, DeclarationDetailsSearch, SearchType}
 import models.response.{
-  CashAccountTransactionSearchResponseDetail,
-  DeclarationSearch,
-  DeclarationWrapper,
-  TaxGroupSearch,
-  TaxGroupWrapper,
-  TaxTypeWithSecurity,
-  TaxTypeWithSecurityContainer
+  CashAccountTransactionSearchResponseDetail, DeclarationSearch, DeclarationWrapper,
+  TaxGroupSearch, TaxGroupWrapper, TaxTypeWithSecurity, TaxTypeWithSecurityContainer
 }
 import models.{
-  AccountStatusOpen,
-  CDSCashBalance,
-  CashAccount,
-  CashDailyStatement,
-  CashTransactions,
-  Declaration,
-  Payment,
-  Transaction,
-  Withdrawal
+  AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions,
+  Declaration, Payment, Transaction, Withdrawal
 }
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito
@@ -59,6 +47,7 @@ import java.time.LocalDate
 import scala.concurrent.Future
 import views.html.cash_account_declaration_details_search_no_result
 import config.AppConfig
+import utils.TestData.{PAYMENT_SEARCH_VALUE, SEQ_PAYMENT_DETAILS_CONTAINER_01}
 
 class DeclarationDetailControllerSpec extends SpecBase {
 
@@ -144,6 +133,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
         eqTo(cashAccountNumber),
         eqTo(eori),
         any[SearchType.Value],
+        any,
         any[Option[DeclarationDetailsSearch]],
         any[Option[CashAccountPaymentDetails]]
       )(any[HeaderCarrier]))
@@ -169,6 +159,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
           eqTo(cashAccountNumber),
           eqTo(eori),
           any[SearchType.Value],
+          any,
           any[Option[DeclarationDetailsSearch]],
           any[Option[CashAccountPaymentDetails]]
         )(any[HeaderCarrier]))
@@ -192,6 +183,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
           eqTo(cashAccountNumber),
           eqTo(eori),
           any[SearchType.Value],
+          any,
           any[Option[DeclarationDetailsSearch]],
           any[Option[CashAccountPaymentDetails]]
         )(any[HeaderCarrier]))
@@ -215,6 +207,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
           eqTo(cashAccountNumber),
           eqTo(eori),
           any[SearchType.Value],
+          any,
           any[Option[DeclarationDetailsSearch]],
           any[Option[CashAccountPaymentDetails]]
         )(any[HeaderCarrier]))
@@ -238,6 +231,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
           eqTo(cashAccountNumber),
           eqTo(eori),
           any[SearchType.Value],
+          any,
           any[Option[DeclarationDetailsSearch]],
           any[Option[CashAccountPaymentDetails]]
         )(any[HeaderCarrier]))
@@ -278,6 +272,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
         eqTo(cashAccountNumber),
         eqTo(eori),
         any[SearchType.Value],
+        any,
         any[Option[DeclarationDetailsSearch]],
         any[Option[CashAccountPaymentDetails]]
       )(any[HeaderCarrier]))
@@ -313,6 +308,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
           eqTo(cashAccountNumber),
           eqTo(eori),
           any[SearchType.Value],
+          any,
           any[Option[DeclarationDetailsSearch]],
           any[Option[CashAccountPaymentDetails]]
         )(any[HeaderCarrier]))
@@ -341,6 +337,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
           eqTo(cashAccountNumber),
           eqTo(eori),
           any[SearchType.Value],
+          any,
           any[Option[DeclarationDetailsSearch]],
           any[Option[CashAccountPaymentDetails]]
         )(any[HeaderCarrier]))
@@ -369,6 +366,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
           eqTo(cashAccountNumber),
           eqTo(eori),
           any[SearchType.Value],
+          any,
           any[Option[DeclarationDetailsSearch]],
           any[Option[CashAccountPaymentDetails]]
         )(any[HeaderCarrier]))
@@ -397,6 +395,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
           eqTo(cashAccountNumber),
           eqTo(eori),
           any[SearchType.Value],
+          any,
           any[Option[DeclarationDetailsSearch]],
           any[Option[CashAccountPaymentDetails]]
         )(any[HeaderCarrier]))
@@ -425,6 +424,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
           eqTo(cashAccountNumber),
           eqTo(eori),
           any[SearchType.Value],
+          any,
           any[Option[DeclarationDetailsSearch]],
           any[Option[CashAccountPaymentDetails]]
         )(any[HeaderCarrier]))
@@ -443,6 +443,38 @@ class DeclarationDetailControllerSpec extends SpecBase {
 
           contentAsString(result) mustBe expectedView
         }
+      }
+    }
+
+    "redirect to payment search results page when amount is entered" in new Setup {
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      val cashAccountTransactionSearchResponseDetail: CashAccountTransactionSearchResponseDetail =
+        CashAccountTransactionSearchResponseDetail(
+          can = cashAccountNumber,
+          eoriDetails = Seq.empty,
+          declarations = None,
+          paymentsWithdrawalsAndTransfers = Some(SEQ_PAYMENT_DETAILS_CONTAINER_01))
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+        eqTo(cashAccountNumber),
+        eqTo(eori),
+        any[SearchType.Value],
+        any,
+        any[Option[DeclarationDetailsSearch]],
+        any[Option[CashAccountPaymentDetails]]
+      )(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(cashAccountTransactionSearchResponseDetail)))
+
+      running(app) {
+        val request =
+          FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), PAYMENT_SEARCH_VALUE).url)
+            .withSession("eori" -> eori)
+
+        val result = route(app, request).value
+        status(result) mustEqual SEE_OTHER
       }
     }
   }

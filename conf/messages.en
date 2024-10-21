@@ -78,6 +78,7 @@ cf.cash-account.detail.top-up.v2=Top up
 cf.cash-account.detail.withdrawal=Withdrawal
 cf.cash-account.detail.withdrawal.account-ending=(to account ending {0})
 cf.cash-account.detail.pending=(Pending)
+cf.cash-account.detail.transfer.v2=Transfer
 cf.cash-account.detail.transfer-in=Transfer from another account
 cf.cash-account.detail.transfer-in.v2=Transfer from Cash account {0}
 cf.cash-account.detail.transfer-out=Transfer to another account
@@ -285,6 +286,7 @@ cf.cash-account.transactions.request.review.heading=Selected cash account transa
 cf.cash-account.transactions.request.review.change=Change
 cf.cash-account.transactions.request.review.account=Account:
 
+cf.cash-account.transactions.no-transactions.message = There are no transactions to display.
 cf.cash-account.transactions.request-transactions.heading = Request transactions
 cf.cash-account.transactions.transactions-for-last-six-months.heading = Your transactions for the last 6 months
 cf.cash-account.transactions.no-transactions-for-last-six-months = There are no transactions from the last 6 months to display.

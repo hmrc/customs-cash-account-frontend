@@ -89,6 +89,30 @@ class UtilsSpec extends SpecBase {
     }
   }
 
+  "h2InnerComponent" should {
+    "create the component correctly with provided input" in new Setup {
+      h2InnerComponent(msgKey = testMsg, id = Some(testId), innerMsg = "test") mustBe
+        new h2Inner().apply(msg = testMsg, id = Some(testId), innerMsg = "test", classes = "govuk-caption-xl")
+    }
+  }
+
+  "buildCacheId" should {
+    "return a new cache id with given inputs" in {
+      buildCacheId("can1234", "$40.00") mustBe "can1234_$40.00"
+      buildCacheId("can1234", "-$20.10") mustBe "can1234_-$20.10"
+    }
+  }
+
+  "extractNumericValue" should {
+    "return only numeric value without pound or any symbols except minus" in {
+      extractNumericValue("£123.09") mustBe "123.09"
+      extractNumericValue("-$12.34") mustBe "-12.34"
+      extractNumericValue("-12.34") mustBe "-12.34"
+      extractNumericValue("£4567.01") mustBe "4567.01"
+      extractNumericValue("-$34567.02") mustBe "-34567.02"
+    }
+  }
+
   "emptyLinkComponent" should {
     "return the empty link component" in {
       emptyLinkComponent mustBe new link()
