@@ -16,7 +16,7 @@
 
 @import viewmodels.PaymentSearchResultStatementsViewModel
 @import helpers.Formatters.dateAsDayMonthAndYear
-@import views.components.PaymentSearchResultHeaderV2
+@import views.components.PaymentSearchResultHeader
 @import utils.Utils.emptyString
 
 @this(govukTable: GovukTable)
@@ -72,7 +72,7 @@
                 )
             }
             ,
-            head = Some(PaymentSearchResultHeaderV2()),
+            head = Some(PaymentSearchResultHeader()),
             captionClasses = "govuk-visually-hidden",
             classes = "hmrc-responsive-table govuk-!-margin-bottom-6",
             firstCellIsHeader = true

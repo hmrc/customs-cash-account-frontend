@@ -23,7 +23,7 @@ import play.api.i18n.Messages
 import utils.TestData.*
 import viewmodels.PaymentSearchResultStatementsViewModel
 import views.ViewTestHelper
-import views.html.components.payment_search_results_v2
+import views.html.components.payment_search_results
 
 class PaymentSearchResultsV2Spec extends ViewTestHelper {
 
@@ -88,6 +88,6 @@ class PaymentSearchResultsV2Spec extends ViewTestHelper {
   trait Setup {
 
     def componentView(model: PaymentSearchResultStatementsViewModel): Document =
-      Jsoup.parse(app.injector.instanceOf[payment_search_results_v2].apply(model).body)
+      Jsoup.parse(app.injector.instanceOf[payment_search_results].apply(model).body)
   }
 }

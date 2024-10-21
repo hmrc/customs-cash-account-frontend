@@ -24,16 +24,16 @@ import models.response.{
 }
 import utils.SpecBase
 
-class CashTransactionsPaymentSearchEncrypterSpec extends SpecBase {
+class CashAccountTransactionSearchResponseDetailEncrypterSpec extends SpecBase {
 
   private val cipher = new AesGCMCrypto
-  private val encrypter = new CashAccountPaymentSearchEncrypter(cipher)
+  private val encrypter = new CashAccountTransactionSearchResponseDetailEncrypter(cipher)
   private val secretKey = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
 
 
-  "encrypt / decrypt cashTransactions" must {
+  "encrypter" must {
 
-    "encrypt and decrypt declaration search results correctly" in new Setup {
+    "encrypt and decrypt declaration search response detail correctly" in new Setup {
 
       val encryptedValue: EncryptedValue = encrypter.encryptSearchResponseDetail(
         declarationsSearchResponseDetail, secretKey)
@@ -44,7 +44,7 @@ class CashTransactionsPaymentSearchEncrypterSpec extends SpecBase {
       decryptedObject mustEqual declarationsSearchResponseDetail
     }
 
-    "encrypt and decrypt payment search results correctly" in new Setup {
+    "encrypt and decrypt payment search response detail correctly" in new Setup {
 
       val encryptedValue: EncryptedValue = encrypter.encryptSearchResponseDetail(paymentSearchResponseDetail, secretKey)
 

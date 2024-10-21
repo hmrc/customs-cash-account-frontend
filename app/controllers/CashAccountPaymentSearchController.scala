@@ -21,6 +21,7 @@ import connectors.CustomsFinancialsApiConnector
 import controllers.actions.{EmailAction, IdentifierAction}
 import models.response.CashAccountTransactionSearchResponseDetail
 import models.CashAccount
+import models.request.IdentifierRequest
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -28,7 +29,7 @@ import repositories.CashAccountSearchRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Utils.{buildCacheId, extractNumericValue}
 import viewmodels.PaymentSearchResultsViewModel
-import views.html.cash_account_payment_search
+import views.html.{cash_account_declaration_details_search_no_result, cash_account_payment_search}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,28 +40,46 @@ class CashAccountPaymentSearchController @Inject()(authenticate: IdentifierActio
                                                    errorHandler: ErrorHandler,
                                                    mcc: MessagesControllerComponents,
                                                    paymentSearchView: cash_account_payment_search,
-                                                   searchRepository: CashAccountSearchRepository
-                                                )(implicit executionContext: ExecutionContext,
-                                                  appConfig: AppConfig
-                                                ) extends FrontendController(mcc) with I18nSupport with Logging {
+                                                   searchRepository: CashAccountSearchRepository,
+                                                   noSearchResultView: cash_account_declaration_details_search_no_result
+                                                  )(implicit executionContext: ExecutionContext,
+                                                    appConfig: AppConfig
+                                                  ) extends FrontendController(mcc) with I18nSupport with Logging {
 
   def search(searchValue: String,
              page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
 
     apiConnector.getCashAccount(request.eori).flatMap {
-      case Some(account) =>
-        searchRepository.get(buildCacheId(account.number, extractNumericValue(searchValue))).flatMap {
-          case Some(paymentTransfersList) =>
-            paymentTransfersList.paymentsWithdrawalsAndTransfers match {
-              case Some(seqOfPaymentsWithdrawalsAndTransfers) =>
-                val paymentTransfersList = seqOfPaymentsWithdrawalsAndTransfers.map(_.paymentsWithdrawalsAndTransfer)
-                Future.successful(Ok(paymentSearchView(PaymentSearchResultsViewModel(searchValue, account, paymentTransfersList, page))))
-
-              case None => Future.successful(NotFound(errorHandler.notFoundTemplate))
-            }
-          case None => Future.successful(NotFound(errorHandler.notFoundTemplate))
-        }
+      case Some(account) => processCashAccountDetails(searchValue, account, page)
       case None => Future.successful(NotFound(errorHandler.notFoundTemplate))
+    }
+  }
+
+  private def processCashAccountDetails(searchValue: String,
+                                        account: CashAccount,
+                                        page: Option[Int])(implicit request: IdentifierRequest[AnyContent]) = {
+
+    searchRepository.get(buildCacheId(account.number, extractNumericValue(searchValue))).flatMap {
+      case Some(paymentTransfers) => processPaymentTransfersAndDisplayView(searchValue, account, paymentTransfers, page)
+      case None => Future.successful(Ok(noSearchResultView(page, account.number, searchValue)))
+    }
+  }
+
+  private def processPaymentTransfersAndDisplayView(searchValue: String,
+                                                    account: CashAccount,
+                                                    paymentTransfers: CashAccountTransactionSearchResponseDetail,
+                                                    page: Option[Int])
+                                                   (implicit request: IdentifierRequest[AnyContent]) = {
+
+    paymentTransfers.paymentsWithdrawalsAndTransfers match {
+      case Some(paymentsWithdrawalsAndTransfers) =>
+        val paymentTransfersList = paymentsWithdrawalsAndTransfers.map(_.paymentsWithdrawalsAndTransfer)
+
+        Future.successful(
+          Ok(paymentSearchView(PaymentSearchResultsViewModel(searchValue, account, paymentTransfersList, page)))
+        )
+
+      case None => Future.successful(Ok(noSearchResultView(page, account.number, searchValue)))
     }
   }
 }

@@ -49,11 +49,11 @@ object Utils {
   }
 
   def buildCacheId(accountNumber: String, searchValue: String): String = {
-    s"${accountNumber}_${searchValue}"
+    s"${accountNumber}_$searchValue"
   }
 
   def extractNumericValue(amount: String): String = {
-    amount.replaceAll("[^\\d.-]", "")
+    amount.replaceAll("[^\\d.-]", emptyString)
   }
 
   def h2InnerComponent(msgKey: String,

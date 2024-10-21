@@ -35,8 +35,12 @@ class PaymentSearchResultsV2ViewModelSpec extends SpecBase {
 
       "search results are less than records per page in config" in new Setup {
 
-        val viewModel = PaymentSearchResultsViewModel.apply(searchValue = PAYMENT_SEARCH_VALUE,
-          account = cashAccount, paymentsWithdrawalsAndTransfers = SEQ_OF_PAYMENT_DETAILS_01, pageNo = Some(1))
+        val viewModel: PaymentSearchResultsViewModel =
+          PaymentSearchResultsViewModel(
+            searchValue = PAYMENT_SEARCH_VALUE,
+            account = cashAccount,
+            paymentsWithdrawalsAndTransfers = SEQ_OF_PAYMENT_DETAILS_01,
+            pageNo = Some(1))
 
         shouldProduceCorrectTitle(viewModel.pageTitle)
         shouldProduceCorrectBackLink(viewModel.backLink)
@@ -52,8 +56,12 @@ class PaymentSearchResultsV2ViewModelSpec extends SpecBase {
 
       "search results are more than records per page in config" in new Setup {
 
-        val viewModel = PaymentSearchResultsViewModel.apply(searchValue = PAYMENT_SEARCH_VALUE,
-          account = cashAccount, paymentsWithdrawalsAndTransfers = SEQ_OF_PAYMENT_DETAILS_02, pageNo = Some(1))
+        val viewModel: PaymentSearchResultsViewModel =
+          PaymentSearchResultsViewModel(
+            searchValue = PAYMENT_SEARCH_VALUE,
+            account = cashAccount,
+            paymentsWithdrawalsAndTransfers = SEQ_OF_PAYMENT_DETAILS_02,
+            pageNo = Some(1))
 
         shouldProduceCorrectTitle(viewModel.pageTitle)
         shouldProduceCorrectBackLink(viewModel.backLink)

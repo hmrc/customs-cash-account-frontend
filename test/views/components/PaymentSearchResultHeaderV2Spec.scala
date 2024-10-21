@@ -29,7 +29,7 @@ class PaymentSearchResultHeaderV2Spec extends SpecBase {
 
     "produce correct output" in new Setup {
 
-      val header: Seq[HeadCell] = PaymentSearchResultHeaderV2()
+      val header: Seq[HeadCell] = PaymentSearchResultHeader()
 
       header.size mustBe 4
       header.head.content.toString.contains("Date") mustBe true

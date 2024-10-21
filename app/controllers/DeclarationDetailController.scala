@@ -107,18 +107,28 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
 
     (cashAccResDetail.declarations, cashAccResDetail.paymentsWithdrawalsAndTransfers) match {
 
-      case (Some(declarations), None | Some(Nil)) =>
-        cashAccResDetail.declarations.flatMap(_.headOption.map(_.declaration)) match {
-          case Some(declarationSearch) =>
-            Ok(searchView(DeclarationDetailSearchViewModel(searchValue, account, declarationSearch), page))
-          case None =>
-            NotFound(errorHandler.notFoundTemplate)
-        }
+      case (Some(_), None | Some(Nil)) =>
+        processDeclarations(cashAccResDetail, searchValue, account, page)
 
-      case (None | Some(Nil), Some(seqOfPaymentsWithdrawalsAndTransfers)) =>
+      case (None | Some(Nil), Some(_)) =>
         Redirect(routes.CashAccountPaymentSearchController.search(searchValue, page))
 
       case _ => Ok(noSearchResultView(page, account.number, searchValue))
+    }
+  }
+
+  private def processDeclarations(cashAccResDetail: CashAccountTransactionSearchResponseDetail,
+                                  searchValue: String,
+                                  account: CashAccount,
+                                  page: Option[Int])(implicit request: IdentifierRequest[_]) = {
+
+    cashAccResDetail.declarations.flatMap(_.headOption.map(_.declaration)) match {
+
+      case Some(declarationSearch) =>
+        Ok(searchView(DeclarationDetailSearchViewModel(searchValue, account, declarationSearch), page))
+
+      case None =>
+        Ok(noSearchResultView(page, account.number, searchValue))
     }
   }
 

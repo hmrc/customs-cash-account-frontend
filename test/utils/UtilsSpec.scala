@@ -108,6 +108,8 @@ class UtilsSpec extends SpecBase {
       extractNumericValue("£123.09") mustBe "123.09"
       extractNumericValue("-$12.34") mustBe "-12.34"
       extractNumericValue("-12.34") mustBe "-12.34"
+      extractNumericValue("£4567.01") mustBe "4567.01"
+      extractNumericValue("-$34567.02") mustBe "-34567.02"
     }
   }
 

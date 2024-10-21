@@ -21,7 +21,7 @@ import models.response.CashAccountTransactionSearchResponseDetail
 import play.api.libs.json.Json
 import javax.inject.Inject
 
-class CashAccountPaymentSearchEncrypter @Inject()(crypto: AesGCMCrypto) {
+class CashAccountTransactionSearchResponseDetailEncrypter @Inject()(crypto: AesGCMCrypto) {
 
   def encryptSearchResponseDetail(cashTransactions: CashAccountTransactionSearchResponseDetail,
                                   key: String): EncryptedValue = {

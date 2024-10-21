@@ -20,7 +20,7 @@ import config.AppConfig
 import models.CashAccount
 import models.response.PaymentsWithdrawalsAndTransfer
 import play.twirl.api.HtmlFormat
-import views.html.components.payment_search_results_v2
+import views.html.components.payment_search_results
 import play.api.i18n.Messages
 import utils.Utils.{
   emptyGovUkTableComponent, emptyH1InnerComponent, h2Component,
@@ -68,7 +68,7 @@ object PaymentSearchResultsViewModel {
                                                  pageNo: Option[Int] = None
                                                 )(implicit msgs: Messages, config: AppConfig): HtmlFormat.Appendable = {
 
-    new payment_search_results_v2(emptyGovUkTableComponent)
+    new payment_search_results(emptyGovUkTableComponent)
       .apply(PaymentSearchResultStatementsViewModel(paymentsWithdrawalsAndTransfers, Some(pageNo.getOrElse(1))))
   }
 

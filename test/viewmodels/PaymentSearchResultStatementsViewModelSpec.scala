@@ -33,6 +33,7 @@ class PaymentSearchResultStatementsViewModelSpec extends SpecBase {
           PaymentSearchResultStatementsViewModel(SEQ_OF_PAYMENT_DETAILS_01, None)
 
         viewModel01.dailyStatements.size mustBe 3
+        viewModel01.dailyStatements.map(_.date) mustEqual Seq(DATE_AUG_17, DATE_AUG_16, DATE_AUG_15)
         viewModel01.hasTransactions mustBe true
         viewModel01.noTransactionsMessage mustBe None
       }

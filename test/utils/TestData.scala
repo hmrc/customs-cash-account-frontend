@@ -91,7 +91,7 @@ object TestData {
 
   val LENGTH_40: Int = 40
 
-  val PAYMENT_SEARCH_VALUE: String = "$123.12"
+  val PAYMENT_SEARCH_VALUE: String = "£123.12"
   val PAYMENT_REF_TEXT: String = "paymentRef"
   val BANK_ACC_NUMBER: Option[String] = Some("12345678")
   val SORT_CODE: Option[String] = Some("12-34-56")

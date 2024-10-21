@@ -77,6 +77,7 @@ object PaymentSearchResultStatementsViewModel {
         balance = None
       )
     }
+
     result.sorted
   }
 

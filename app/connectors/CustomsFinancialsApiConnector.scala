@@ -277,17 +277,9 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
   }
 
   private def processResponseForTransactionsBySearch(cacheId: String, response: HttpResponse) = {
-    import CashAccountTransactionSearchResponseDetail.format
 
     response.status match {
-      case OK =>
-        val responseDetail = Json.fromJson[CashAccountTransactionSearchResponseDetail](response.json)
-        searchRepository.set(cacheId, responseDetail.get).map { successfulWrite =>
-          if (!successfulWrite) {
-            logger.error("Failed to store data in the session cache defaulting to the api response")
-          }
-        }
-        responseDetail.asOpt.fold(Left(UnknownException))(Right(_))
+      case OK => processOKResponse(cacheId, response)
 
       case CREATED => processETMPErrors(response)
 
@@ -303,6 +295,18 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
         logger.error("Service Unavailable error while calling ETMP")
         Left(ServiceUnavailableErrorResponse)
     }
+  }
+
+  private def processOKResponse(cacheId: String, response: HttpResponse) = {
+    val responseDetail = Json.fromJson[CashAccountTransactionSearchResponseDetail](response.json)
+
+    searchRepository.set(cacheId, responseDetail.get).map { successfulWrite =>
+      if (!successfulWrite) {
+        logger.error("Failed to store data in the session cache defaulting to the api response")
+      }
+    }
+
+    responseDetail.asOpt.fold(Left(UnknownException))(Right(_))
   }
 
   private def processETMPErrors(res: HttpResponse): Either[ErrorResponse, CashAccountTransactionSearchResponseDetail] = {

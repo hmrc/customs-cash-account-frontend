@@ -19,7 +19,7 @@ package views.components
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HeadCell, HtmlContent}
 
-object PaymentSearchResultHeaderV2 {
+object PaymentSearchResultHeader {
 
   def apply()(implicit messages: Messages): Seq[HeadCell] = {
     Seq(
