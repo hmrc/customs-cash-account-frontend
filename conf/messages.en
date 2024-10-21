@@ -97,9 +97,9 @@ cf.cash-account-detail.exceeded-threshold = There are too many transactions from
 
 cf.cash-account.detail.declaration.title=Declaration transaction
 cf.cash-account.detail.declaration.search-title=Search results for {0}
-cf.cash-account.detail.declaration.search-no-results-guidance-not-returned-any-results = Your search {0} has not returned any results.
+cf.cash-account.detail.declaration.search-no-results-guidance-not-returned-any-results = Your search "{0}" has not returned any results.
 cf.cash-account.detail.declaration.search-no-results-guidance-because-you-entered = This could be because you entered:
-cf.cash-account.detail.declaration.search-no-results-invalid-input-mrn = an incorrect Movement Reference Number (MRN) or Unique Consignment Number (UCR)
+cf.cash-account.detail.declaration.search-no-results-invalid-input-mrn = an incorrect Movement Reference Number (MRN) or Unique Consignment Reference (UCR)
 cf.cash-account.detail.declaration.search-no-results-invalid-input-payment-amount = a payment amount that was not found
 cf.cash-account.detail.declaration.search-no-results-invalid-input-pound-sign = a payment amount that does not include ‘£’
 cf.cash-account.detail.total.paid=Total paid

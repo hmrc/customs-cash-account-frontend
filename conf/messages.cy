@@ -96,7 +96,7 @@ cf.cash-account-detail.exceeded-threshold = Mae gormod o drafodion o’r 6 mis d
 
 cf.cash-account.detail.declaration.title=Trafodiad datganiad
 cf.cash-account.detail.declaration.search-title=Canlyniadau chwilio ar gyfer {0}
-cf.cash-account.detail.declaration.search-no-results-guidance-not-returned-any-results = Nid yw eich chwiliad {0} wedi dod o hyd i unrhyw ganlyniadau.
+cf.cash-account.detail.declaration.search-no-results-guidance-not-returned-any-results = Nid yw eich chwiliad "{0}" wedi dod o hyd i unrhyw ganlyniadau.
 cf.cash-account.detail.declaration.search-no-results-guidance-because-you-entered = Gallai hyn fod oherwydd eich bod wedi nodi’r canlynol:
 cf.cash-account.detail.declaration.search-no-results-invalid-input-mrn = Cyfeirnod Symud (MRN) neu Gyfeirnod Llwyth Unigryw (UCR) anghywir
 cf.cash-account.detail.declaration.search-no-results-invalid-input-payment-amount = swm taliad na chafwyd hyd iddo
