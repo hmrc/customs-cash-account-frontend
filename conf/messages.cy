@@ -20,10 +20,10 @@ feedback.after=yn ein helpu i’w wella.
 # Cash CSV
 cf.cash-account.csv.date=Dyddiad y trafodyn
 cf.cash-account.csv.transactionType=Trafodyn
-cf.cash-account.csv.movementReferenceNumber=<abbr title="Cyfeirnod Symud (MRN)">MRN</abbr> y datganiad
-cf.cash-account.csv.uniqueConsignmentReference=<abbr title="Cyfeirnod Unigryw y Llwyth (UCR)">UCR</abbr> y datganiad
-cf.cash-account.csv.declarantEori=<abbr title="Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)">EORI</abbr> y datganydd
-cf.cash-account.csv.importerEori=<abbr title="Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)">EORI</abbr> y mewnforiwr
+cf.cash-account.csv.movementReferenceNumber=MRN y datganiad
+cf.cash-account.csv.uniqueConsignmentReference=UCR y datganiad
+cf.cash-account.csv.declarantEori=EORI y datganydd
+cf.cash-account.csv.importerEori=EORI y mewnforiwr
 cf.cash-account.csv.vat=TAW
 cf.cash-account.csv.duty=Tollau
 cf.cash-account.csv.excise=Ecséis
@@ -43,6 +43,7 @@ cf.cash-account.csv.withdrawal.account-ending=(i’r cyfrif sy’n gorffen gyda 
 cf.cash-account.csv.filename=Trafodion_Cyfrif_Arian_Parod_{0}.CSV
 cf.cash-account.detail.closing-balance=Balans Cau {0}
 cf.cash-account.detail.opening-balance=Balans Agor
+cf.cash-account.detail.importerEori=<abbr title="Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)">EORI</abbr> y mewnforiwr
 
 
 # Cash Account detail view

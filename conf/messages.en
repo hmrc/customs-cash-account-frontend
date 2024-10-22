@@ -20,10 +20,10 @@ feedback.after = will help us to improve it.
 # Cash CSV
 cf.cash-account.csv.date=Transaction date
 cf.cash-account.csv.transactionType=Transaction
-cf.cash-account.csv.movementReferenceNumber=Declaration <abbr title="Movement Reference Number">MRN</abbr>
-cf.cash-account.csv.uniqueConsignmentReference=Declaration <abbr title="Unique Consignment Reference">UCR</abbr>
-cf.cash-account.csv.declarantEori=Declarant <abbr title="Economic Operators Registration and Identification number">EORI</abbr>
-cf.cash-account.csv.importerEori=Importer <abbr title="Economic Operators Registration and Identification number">EORI</abbr>
+cf.cash-account.csv.movementReferenceNumber=Declaration MRN
+cf.cash-account.csv.uniqueConsignmentReference=Declaration UCR
+cf.cash-account.csv.declarantEori=Declarant EORI
+cf.cash-account.csv.importerEori=Importer EORI
 cf.cash-account.csv.vat=VAT
 cf.cash-account.csv.duty=Duty
 cf.cash-account.csv.excise=Excise
@@ -66,7 +66,7 @@ cf.cash-account.detail.ucr=UCR
 cf.cash-account.detail.Declarationucr=Declaration UCR
 cf.cash-account.detail.declarant=Declarant
 cf.cash-account.detail.eori=EORI
-cf.cash-account.detail.importerEori=Importer EORI
+cf.cash-account.detail.importerEori=Importer <abbr title="Economic Operators Registration and Identification number">EORI</abbr>
 cf.cash-account.detail.eori-definition=Economic Operators Registration and Identification number
 cf.cash-account.detail.transaction-type = Transaction type
 cf.cash-account.detail.credit = Credit
