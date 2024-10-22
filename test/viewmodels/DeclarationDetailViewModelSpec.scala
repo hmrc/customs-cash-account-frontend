@@ -22,7 +22,7 @@ import models.{CustomsDuty, Declaration, ExciseDuty, ImportVat, TaxGroup, TaxTyp
 import org.mockito.Mockito.*
 import play.api.i18n.{Messages, MessagesApi}
 import uk.gov.hmrc.govukfrontend
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views
 import utils.SpecBase
 

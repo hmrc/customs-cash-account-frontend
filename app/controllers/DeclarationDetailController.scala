@@ -21,24 +21,24 @@ import connectors.{CustomsFinancialsApiConnector, ErrorResponse}
 import controllers.actions.{EmailAction, IdentifierAction}
 import helpers.CashAccountUtils
 import models.{CashAccount, CashAccountViewModel, CashTransactions}
-import models.request.{DeclarationDetailsSearch, IdentifierRequest, ParamName, SearchType}
-import models.response.DeclarationWrapper
+import models.request.{CashAccountPaymentDetails, DeclarationDetailsSearch, IdentifierRequest, ParamName, SearchType}
+import models.response.{CashAccountTransactionSearchResponseDetail, DeclarationWrapper}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{
-  cash_account_declaration_details,
-  cash_account_declaration_details_search,
-  cash_account_transactions_not_available,
-  cash_account_declaration_details_search_no_result,
+  cash_account_declaration_details, cash_account_declaration_details_search,
+  cash_account_declaration_details_search_no_result, cash_account_transactions_not_available,
   cash_transactions_no_result
 }
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.Logging
 import utils.RegexPatterns.{mrnRegex, paymentRegex}
 import viewmodels.{DeclarationDetailSearchViewModel, DeclarationDetailViewModel, ResultsPageSummary}
-import connectors.{InvalidCashAccount, InvalidDeclarationReference, DuplicateAckRef, NoAssociatedDataFound, InvalidEori}
+import connectors.{DuplicateAckRef, InvalidCashAccount, InvalidDeclarationReference, InvalidEori, NoAssociatedDataFound}
+import utils.Utils.extractNumericValue
 
 import java.time.LocalDate
 
@@ -84,27 +84,47 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
                                        page: Option[Int],
                                        searchInput: String)(implicit request: IdentifierRequest[_]): Future[Result] = {
 
-    val (paramName, searchType) = determineParamNameAndSearchType(searchInput)
-    val declarationDetails = Some(DeclarationDetailsSearch(paramName, searchInput))
+    val (paramName, searchType, sanitizedSearchValue) = determineParamNameAndTypeAndSearchValue(searchInput)
 
-    apiConnector.retrieveCashTransactionsBySearch(account.number, request.eori, searchType, declarationDetails).map {
-      case Right(transactions) => processTransactions(transactions.declarations, searchInput, account, page)
+    val (declarationDetails, cashAccountPaymentDetails) = searchType match {
+      case SearchType.D => (Some(DeclarationDetailsSearch(paramName, sanitizedSearchValue)), None)
+      case SearchType.P => (None, Some(CashAccountPaymentDetails(sanitizedSearchValue.toDouble)))
+    }
+
+    apiConnector.retrieveCashTransactionsBySearch(account.number, request.eori, searchType, sanitizedSearchValue,
+      declarationDetails, cashAccountPaymentDetails).map {
+      case Right(transactions) => processTransactions(transactions, searchInput, account, page)
       case Left(res) if isBusinessErrorResponse(res) => Ok(noSearchResultView(page, account.number, searchInput))
       case Left(_) =>
         Ok(transactionsUnavailableView(CashAccountViewModel(request.eori, account), appConfig.transactionsTimeoutFlag))
     }
   }
 
-  private def processTransactions(declarationsOpt: Option[Seq[DeclarationWrapper]],
+  private def processTransactions(cashAccResDetail: CashAccountTransactionSearchResponseDetail,
                                   searchValue: String,
                                   account: CashAccount,
                                   page: Option[Int])(implicit request: IdentifierRequest[_]): Result = {
 
-    declarationsOpt.flatMap(_.headOption.map(_.declaration)) match {
+    (cashAccResDetail.declarations, cashAccResDetail.paymentsWithdrawalsAndTransfers) match {
+
+      case (Some(_), None | Some(Nil)) => processDeclarations(cashAccResDetail, searchValue, account, page)
+      case (None | Some(Nil), Some(_)) => Redirect(routes.CashAccountPaymentSearchController.search(searchValue, page))
+      case _ => Ok(noSearchResultView(page, account.number, searchValue))
+    }
+  }
+
+  private def processDeclarations(cashAccResDetail: CashAccountTransactionSearchResponseDetail,
+                                  searchValue: String,
+                                  account: CashAccount,
+                                  page: Option[Int])(implicit request: IdentifierRequest[_]) = {
+
+    cashAccResDetail.declarations.flatMap(_.headOption.map(_.declaration)) match {
+
       case Some(declarationSearch) =>
         Ok(searchView(DeclarationDetailSearchViewModel(searchValue, account, declarationSearch), page))
 
-      case None => Ok(noSearchResultView(page, account.number, searchValue))
+      case None =>
+        Ok(noSearchResultView(page, account.number, searchValue))
     }
   }
 
@@ -115,11 +135,12 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
     businessErrorResponseList.contains(incomingErrorResponse)
   }
 
-  private def determineParamNameAndSearchType(searchInput: String): (ParamName.Value, SearchType.Value) = {
+  private def determineParamNameAndTypeAndSearchValue(searchInput: String
+                                                     ): (ParamName.Value, SearchType.Value, String) = {
     searchInput match {
-      case input if isValidMRN(input) => (ParamName.MRN, SearchType.D)
-      case input if isValidPayment(input) => (ParamName.MRN, SearchType.P)
-      case _ => (ParamName.UCR, SearchType.D)
+      case input if isValidMRN(input) => (ParamName.MRN, SearchType.D, searchInput)
+      case input if isValidPayment(input) => (ParamName.MRN, SearchType.P, extractNumericValue(searchInput))
+      case _ => (ParamName.UCR, SearchType.D, searchInput)
     }
   }
 
