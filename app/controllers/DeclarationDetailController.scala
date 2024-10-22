@@ -107,12 +107,8 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
 
     (cashAccResDetail.declarations, cashAccResDetail.paymentsWithdrawalsAndTransfers) match {
 
-      case (Some(_), None | Some(Nil)) =>
-        processDeclarations(cashAccResDetail, searchValue, account, page)
-
-      case (None | Some(Nil), Some(_)) =>
-        Redirect(routes.CashAccountPaymentSearchController.search(searchValue, page))
-
+      case (Some(_), None | Some(Nil)) => processDeclarations(cashAccResDetail, searchValue, account, page)
+      case (None | Some(Nil), Some(_)) => Redirect(routes.CashAccountPaymentSearchController.search(searchValue, page))
       case _ => Ok(noSearchResultView(page, account.number, searchValue))
     }
   }

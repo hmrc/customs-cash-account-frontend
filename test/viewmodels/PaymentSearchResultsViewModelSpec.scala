@@ -27,7 +27,7 @@ import utils.TestData.*
 import utils.Utils.*
 import viewmodels.pagination.{ListPaginationViewModel, MetaData}
 
-class PaymentSearchResultsV2ViewModelSpec extends SpecBase {
+class PaymentSearchResultsViewModelSpec extends SpecBase {
 
   "apply method" should {
 
