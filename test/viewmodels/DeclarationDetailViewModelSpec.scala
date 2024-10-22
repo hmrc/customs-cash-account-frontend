@@ -214,4 +214,3 @@ class DeclarationDetailViewModelSpec extends SpecBase {
     implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
   }
 }
-
