@@ -25,6 +25,7 @@ import uk.gov.hmrc.govukfrontend
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views
 import utils.SpecBase
+import utils.Utils.singleSpace
 
 import java.time.LocalDate
 import play.api.Application
@@ -208,7 +209,7 @@ class DeclarationDetailViewModelSpec extends SpecBase {
       secureMovementReferenceNumber = secureMovementReferenceNumber
     )
 
-    def normalizeHtml(html: String): String = html.replaceAll("\\s+", " ").trim
+    def normalizeHtml(html: String): String = html.replaceAll("\\s+", singleSpace).trim
 
     val app: Application = application.build()
     implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
