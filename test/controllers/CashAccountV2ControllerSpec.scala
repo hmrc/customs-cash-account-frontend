@@ -396,7 +396,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
-    // *************** JAMIE FORM PAGE *******************//
+    // *************** JAMIE FORM PAGE ******************* //
 
     "redirect to Jamie Form Page" when {
       "JAMIE LETTS is entered in form" in new Setup {
@@ -416,6 +416,8 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
+    // *************** JAMIE FORM PAGE ******************* //
+    
     "redirect to 'verify your email' page when an unverified email response is received" in new Setup {
       when(mockDataStoreConnector.getEmail(any)(any))
         .thenReturn(Future.successful(Left(UnverifiedEmail)))

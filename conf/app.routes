@@ -36,6 +36,9 @@ GET         /v2/account-unavailable                 controllers.CashAccountV2Con
 GET         /v2/jamie-form-page                     controllers.CashAccountV2Controller.showJamieFormPage(enteredValue: String)
 GET         /not-subscribed-for-cds                 controllers.UnauthorisedController.onPageLoad
 
+GET         /jamie-form-page/jamie_details_page     controllers.JamiePageController.onPageLoad()
+POST        /jamie-form-page/jamie_details_page     controllers.JamiePageController.onSubmit()
+
 GET         /logout-survey                          controllers.LogoutController.logout
 GET         /logout                                 controllers.LogoutController.logoutNoSurvey
 
