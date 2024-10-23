@@ -20,6 +20,7 @@ import cats.data.EitherT
 import cats.data.EitherT.*
 import config.{AppConfig, ErrorHandler}
 import controllers.actions.IdentifierAction
+import forms.JamieFormProvider
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, RequestHeader, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.*
@@ -29,23 +30,28 @@ import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 
 
 class JamiePageController @Inject()(
                                     jamieInfo: jamie_form_page
-                                   )(implicit mcc: MessagesControllerComponents) extends FrontendController(mcc) {
+                                   
+                                   )(implicit mcc: MessagesControllerComponents, config: AppConfig) extends FrontendController(mcc) {
 
   //  val form: Form[String] = formProvider()
   def onPageLoad(): Action[AnyContent] = Action.async {
-      implicit request => Ok(jamieInfo)
+    implicit request =>
+    val form = new JamieFormProvider().apply()
+      Future.successful(Ok(jamieInfo(form)))
   }
 //  def displayEnteredDetails(): Action[AnyContent] = Action {
 //    implicit request => Ok(detailsPage)
 //  }
 
-  def onSubmit(): Action[AnyContent] = ???
+  def onSubmit(): Action[AnyContent] = {
+    ???
+  }
   //    Action.async { implicit request =>
   //    form.bindFromRequest().fold(
   //      formWithErrors => {

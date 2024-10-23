@@ -25,7 +25,7 @@ import play.api.i18n.Messages
 import views.html.jamie_form_page
 
 
-class JamieFormPageSpec extends ViewTestHelper {
+class JamieInputPageSpec extends ViewTestHelper {
   "view" should {
     "display correct content" in new Setup {
       titleShouldBeCorrect(view, "cf.cash-account.detail.title")
