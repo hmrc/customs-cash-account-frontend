@@ -20,10 +20,10 @@ feedback.after=yn ein helpu i’w wella.
 # Cash CSV
 cf.cash-account.csv.date=Dyddiad y trafodyn
 cf.cash-account.csv.transactionType=Trafodyn
-cf.cash-account.csv.movementReferenceNumber=<abbr title="Cyfeirnod Symud (MRN)">MRN</abbr> y datganiad
-cf.cash-account.csv.uniqueConsignmentReference=<abbr title="Cyfeirnod Unigryw y Llwyth (UCR)">UCR</abbr> y datganiad
-cf.cash-account.csv.declarantEori=<abbr title="Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)">EORI</abbr> y datganydd
-cf.cash-account.csv.importerEori=<abbr title="Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)">EORI</abbr> y mewnforiwr
+cf.cash-account.csv.movementReferenceNumber=MRN y datganiad
+cf.cash-account.csv.uniqueConsignmentReference=UCR y datganiad
+cf.cash-account.csv.declarantEori=EORI y datganydd
+cf.cash-account.csv.importerEori=EORI y mewnforiwr
 cf.cash-account.csv.vat=TAW
 cf.cash-account.csv.duty=Tollau
 cf.cash-account.csv.excise=Ecséis
@@ -43,6 +43,7 @@ cf.cash-account.csv.withdrawal.account-ending=(i’r cyfrif sy’n gorffen gyda 
 cf.cash-account.csv.filename=Trafodion_Cyfrif_Arian_Parod_{0}.CSV
 cf.cash-account.detail.closing-balance=Balans Cau {0}
 cf.cash-account.detail.opening-balance=Balans Agor
+cf.cash-account.detail.importerEori=<abbr title="Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)">EORI</abbr> y mewnforiwr
 
 
 # Cash Account detail view
@@ -58,15 +59,15 @@ cf.cash-account.detail.csv.download=Lawrlwytho CSV
 cf.cash-account.detail.csv-definition=Lawrlwytho’r ffeil CSV
 cf.cash-account.detail.csv=Lawrlwythwch drafodion ar ffurf <abbr title="Gwerthoedd wedi’u gwahanu gan goma. Gellir defnyddio CSV gyda’r rhan fwyaf o raglenni taenlen.">CSV</abbr>
 cf.cash-account.detail.date=Dyddiad
-cf.cash-account.detail.movement-reference-number=Cyfeirnod Symud
+cf.cash-account.detail.movement-reference-number=Cyfeirnod Symud (MRN)
 cf.cash-account.detail.mrn=MRN
 cf.cash-account.detail.Declarationmrn=MRN y datganiad
 cf.cash-account.detail.unique-consignment-reference=Cyfeirnod Unigryw y Llwyth (UCR)
 cf.cash-account.detail.ucr=UCR
 cf.cash-account.detail.Declarationucr=UCR y datganiad
-cf.cash-account.detail.declarant=EORI
-cf.cash-account.detail.eori=y sawl sy’n datgan nwyddau
-cf.cash-account.detail.eori-definition=Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd
+cf.cash-account.detail.declarant=Datganwr
+cf.cash-account.detail.eori=EORI
+cf.cash-account.detail.eori-definition=Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)
 cf.cash-account.detail.transaction-type = Math o drafodyn
 cf.cash-account.detail.credit = Credyd
 cf.cash-account.detail.debit = Debyd

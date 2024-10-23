@@ -76,19 +76,40 @@ object DeclarationDetailViewModel {
           value = Value(content = HtmlContent(Formatters.dateAsDayMonthAndYear(declaration.date)))
         ),
         SummaryListRow(
-          key = Key(content = HtmlContent(messages("cf.cash-account.csv.movementReferenceNumber"))),
+          key = Key(content = HtmlContent(
+            s"""
+              ${messages("cf.cash-account.csv.declaration")}
+              <abbr title="${messages("cf.cash-account.detail.movement-reference-number")}">
+                ${messages("cf.cash-account.detail.mrn")}
+              </abbr>
+            """)
+          ),
           value = Value(content = HtmlContent(declaration.movementReferenceNumber))
         ),
         SummaryListRow(
-          key = Key(content = HtmlContent(messages("cf.cash-account.csv.uniqueConsignmentReference"))),
+          key = Key(content = HtmlContent(
+            s"""
+              ${messages("cf.cash-account.csv.declaration")}
+              <abbr title="${messages("cf.cash-account.detail.unique-consignment-reference")}">
+                ${messages("cf.cash-account.detail.ucr")}
+              </abbr>
+            """)
+          ),
           value = Value(content = HtmlContent(declaration.declarantReference.getOrElse(emptyString)))
         ),
         SummaryListRow(
-          key = Key(content = HtmlContent(messages("cf.cash-account.csv.declarantEori"))),
+          key = Key(content = HtmlContent(
+            s"""
+              ${messages("cf.cash-account.detail.declarant")}
+              <abbr title="${messages("cf.cash-account.detail.eori-definition")}">
+                ${messages("cf.cash-account.detail.eori")}
+              </abbr>
+            """)
+          ),
           value = Value(content = HtmlContent(declaration.declarantEori))
         ),
         SummaryListRow(
-          key = Key(content = HtmlContent(messages("cf.cash-account.csv.importerEori"))),
+          key = Key(content = HtmlContent(messages("cf.cash-account.detail.importerEori"))),
           value = Value(content = HtmlContent(declaration.importerEori.getOrElse(emptyString)))
         )
       )

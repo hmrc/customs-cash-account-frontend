@@ -25,6 +25,7 @@ import uk.gov.hmrc.govukfrontend
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views
 import utils.SpecBase
+import utils.Utils.singleSpace
 
 import java.time.LocalDate
 import play.api.Application
@@ -37,50 +38,70 @@ class DeclarationDetailViewModelSpec extends SpecBase {
 
   "DeclarationDetailViewModel" should {
 
-    "generate correctly declarationSummaryList data" in new Setup {
+    "generate correctly declarationSummaryList data with normalized HTML content" in new Setup {
 
       val summaryList: _root_.uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList =
         DeclarationDetailViewModel.declarationSummaryList(declaration)
 
-      val extractedResultData: Seq[(String, String)] = summaryList.rows.map(row => (
-        row.key.content.asInstanceOf[HtmlContent].asHtml.toString,
-        row.value.content.asInstanceOf[HtmlContent].asHtml.toString
-      ))
+      val extractedResultData: Seq[(String, String)] = summaryList.rows.map { row =>
+        (
+          normalizeHtml(row.key.content.asInstanceOf[HtmlContent].asHtml.toString),
+          normalizeHtml(row.value.content.asInstanceOf[HtmlContent].asHtml.toString)
+        )
+      }
 
       val expectedDeclarationSummaryData: Seq[(String, String)] = Seq(
-        (messages("cf.cash-account.csv.date"), Formatters.dateAsDayMonthAndYear(declaration.date)),
-        (messages("cf.cash-account.csv.movementReferenceNumber"), declaration.movementReferenceNumber),
-        (messages("cf.cash-account.csv.uniqueConsignmentReference"), declaration.declarantReference
-          .getOrElse(emptyString)),
-        (messages("cf.cash-account.csv.declarantEori"), declaration.declarantEori),
-        (messages("cf.cash-account.csv.importerEori"), declaration.importerEori.getOrElse(emptyString))
+        (normalizeHtml(messages("cf.cash-account.csv.date")), Formatters.dateAsDayMonthAndYear(declaration.date)),
+        (normalizeHtml(
+          s"""
+            ${messages("cf.cash-account.csv.declaration")}
+            <abbr title="${messages("cf.cash-account.detail.movement-reference-number")}">
+              ${messages("cf.cash-account.detail.mrn")}
+            </abbr>
+          """), declaration.movementReferenceNumber),
+        (normalizeHtml(
+          s"""
+            ${messages("cf.cash-account.csv.declaration")}
+            <abbr title="${messages("cf.cash-account.detail.unique-consignment-reference")}">
+              ${messages("cf.cash-account.detail.ucr")}
+            </abbr>
+          """), declaration.declarantReference.getOrElse(emptyString)),
+        (normalizeHtml(
+          s"""
+            ${messages("cf.cash-account.detail.declarant")}
+            <abbr title="${messages("cf.cash-account.detail.eori-definition")}">
+              ${messages("cf.cash-account.detail.eori")}
+            </abbr>
+          """), declaration.declarantEori),
+        (normalizeHtml(messages("cf.cash-account.detail.importerEori")), declaration.importerEori.getOrElse(emptyString))
       )
 
       extractedResultData must contain allElementsOf expectedDeclarationSummaryData
     }
 
-
-    "generate correctly taxSummaryList data" in new Setup {
+    "generate correctly taxSummaryList data with normalized HTML content" in new Setup {
 
       val summaryList: _root_.uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList =
         DeclarationDetailViewModel.taxSummaryList(declaration)
 
-      val extractedResultData: Seq[(String, String)] = summaryList.rows.map(row => (
-        row.key.content.asInstanceOf[HtmlContent].asHtml.toString,
-        row.value.content.asInstanceOf[HtmlContent].asHtml.toString
-      ))
+      val extractedResultData: Seq[(String, String)] = summaryList.rows.map { row =>
+        (
+          normalizeHtml(row.key.content.asInstanceOf[HtmlContent].asHtml.toString),
+          normalizeHtml(row.value.content.asInstanceOf[HtmlContent].asHtml.toString)
+        )
+      }
 
       val expectedTaxData: Seq[(String, String)] = Seq(
-        (messages("cf.cash-account.csv.duty"), Formatters.formatCurrencyAmount(fourHundred)),
-        (messages("cf.cash-account.csv.vat"), Formatters.formatCurrencyAmount(hundred)),
-        (messages("cf.cash-account.csv.excise"), emptyString),
-        (messages("cf.cash-account.detail.total.paid"), Formatters.formatCurrencyAmount(fiveHundred))
+        (normalizeHtml(messages("cf.cash-account.csv.duty")), Formatters.formatCurrencyAmount(fourHundred)),
+        (normalizeHtml(messages("cf.cash-account.csv.vat")), Formatters.formatCurrencyAmount(hundred)),
+        (normalizeHtml(messages("cf.cash-account.csv.excise")), emptyString),
+        (normalizeHtml(messages("cf.cash-account.detail.total.paid")), Formatters.formatCurrencyAmount(fiveHundred))
       )
 
       extractedResultData must contain allElementsOf expectedTaxData
     }
 
-    "handle missing optional fields correctly in declarationSummaryList" in new Setup {
+    "handle missing optional fields correctly in declarationSummaryList with normalized HTML content" in new Setup {
 
       val declarationWithMissingFields: Declaration = declaration.copy(
         importerEori = None,
@@ -90,20 +111,27 @@ class DeclarationDetailViewModelSpec extends SpecBase {
       val summaryList: _root_.uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList =
         DeclarationDetailViewModel.declarationSummaryList(declarationWithMissingFields)
 
-      val extractedResultData: Seq[(String, String)] = summaryList.rows.map(row => (
-        row.key.content.asInstanceOf[HtmlContent].asHtml.toString,
-        row.value.content.asInstanceOf[HtmlContent].asHtml.toString
-      ))
+      val extractedResultData: Seq[(String, String)] = summaryList.rows.map { row =>
+        (
+          normalizeHtml(row.key.content.asInstanceOf[HtmlContent].asHtml.toString),
+          normalizeHtml(row.value.content.asInstanceOf[HtmlContent].asHtml.toString)
+        )
+      }
 
       val expectedDeclarationSummaryData: Seq[(String, String)] = Seq(
-        (messages("cf.cash-account.csv.importerEori"), emptyString),
-        (messages("cf.cash-account.csv.uniqueConsignmentReference"), emptyString)
+        (normalizeHtml(messages("cf.cash-account.detail.importerEori")), emptyString),
+        (normalizeHtml(s"""
+          ${messages("cf.cash-account.csv.declaration")}
+          <abbr title="${messages("cf.cash-account.detail.unique-consignment-reference")}">
+            UCR
+          </abbr>
+        """), emptyString)
       )
 
       extractedResultData must contain allElementsOf expectedDeclarationSummaryData
     }
 
-    "handle excise duty correctly when present" in new Setup {
+    "handle excise duty correctly when present with normalized HTML content" in new Setup {
 
       val declarationWithExcise: Declaration = declaration.copy(
         taxGroups = Seq(
@@ -116,27 +144,31 @@ class DeclarationDetailViewModelSpec extends SpecBase {
       val summaryList: _root_.uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList =
         DeclarationDetailViewModel.taxSummaryList(declarationWithExcise)
 
-      val extractedResultData: Seq[(String, String)] = summaryList.rows.map(row => (
-        row.key.content.asInstanceOf[HtmlContent].asHtml.toString,
-        row.value.content.asInstanceOf[HtmlContent].asHtml.toString
-      ))
+      val extractedResultData: Seq[(String, String)] = summaryList.rows.map { row =>
+        (
+          normalizeHtml(row.key.content.asInstanceOf[HtmlContent].asHtml.toString),
+          normalizeHtml(row.value.content.asInstanceOf[HtmlContent].asHtml.toString)
+        )
+      }
 
       val exciseValue: String = Formatters.formatCurrencyAmount(fifty)
 
-      extractedResultData must contain((messages("cf.cash-account.csv.excise"), exciseValue))
+      extractedResultData must contain((normalizeHtml(messages("cf.cash-account.csv.excise")), exciseValue))
     }
 
-    "handle missing excise duty correctly" in new Setup {
+    "handle missing excise duty correctly with normalized HTML content" in new Setup {
 
       val summaryList: _root_.uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList =
         DeclarationDetailViewModel.taxSummaryList(declaration)
 
-      val extractedResultData: Seq[(String, String)] = summaryList.rows.map(row => (
-        row.key.content.asInstanceOf[HtmlContent].asHtml.toString,
-        row.value.content.asInstanceOf[HtmlContent].asHtml.toString
-      ))
+      val extractedResultData: Seq[(String, String)] = summaryList.rows.map { row =>
+        (
+          normalizeHtml(row.key.content.asInstanceOf[HtmlContent].asHtml.toString),
+          normalizeHtml(row.value.content.asInstanceOf[HtmlContent].asHtml.toString)
+        )
+      }
 
-      extractedResultData must contain(messages("cf.cash-account.csv.excise"), emptyString)
+      extractedResultData must contain((normalizeHtml(messages("cf.cash-account.csv.excise")), emptyString))
     }
   }
 
@@ -176,6 +208,8 @@ class DeclarationDetailViewModelSpec extends SpecBase {
       ),
       secureMovementReferenceNumber = secureMovementReferenceNumber
     )
+
+    def normalizeHtml(html: String): String = html.replaceAll("\\s+", singleSpace).trim
 
     val app: Application = application.build()
     implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
