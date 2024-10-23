@@ -118,7 +118,7 @@ class ConstraintsSpec extends SpecBase with Constraints {
       }
 
       "return Valid when given an valid UCR" in new Setup {
-        val result: ValidationResult = validateSearchInput("error.key")("GB1168562890 9193-9182-888 416D")
+        val result: ValidationResult = validateSearchInput("error.key")("GB11685628909193-9182-888-416D")
         result mustBe Valid
       }
 
