@@ -80,7 +80,9 @@ class RegexPatternsSpec extends SpecBase {
   "UCR Regex" should {
 
     "match valid regex" in {
-      val validInputs: Seq[String] = Seq("GB1234567890 1134-7456-914 121D")
+      val validInputs: Seq[String] = Seq(
+        "GB1234567890-1134-7456-914-121D",
+        "GB0987654321-1234-5678-910-ABC3")
 
       validInputs.foreach { input =>
         ucrRegex.findFirstIn(input) mustBe Some(input)
@@ -89,9 +91,9 @@ class RegexPatternsSpec extends SpecBase {
 
     "not match invalid regex" in {
       val invalidInputs: Seq[String] = Seq(
-        "GB1234567890-1134!7456_914 121D",
-        "GB1234567890 1134-7456-914 121D 3031D",
-        "123GB4567440 5734 3356 914 81D")
+        "gb1234567890-1134-7456-914-121D",
+        "GB1234567890-1134!7456_914-121D",
+        "GB12345 67890 1134 7456 914 121D")
 
       invalidInputs.foreach { input =>
         ucrRegex.findFirstIn(input) mustBe None
