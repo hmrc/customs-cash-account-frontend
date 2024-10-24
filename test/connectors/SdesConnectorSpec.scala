@@ -88,7 +88,7 @@ class SdesConnectorSpec extends SpecBase {
     val dayEnd = 2
 
     val sdesCashStatementUrl =
-      "http://localhost:9754/customs-financials-sdes-stub/files-available/list/CashStatement"
+      "http://localhost:9754/customs-financials-sdes-stub/files-available/list/CDSCashAccount"
 
     val cashStatementFilesSdesResponse: Seq[FileInformation] = List(
       FileInformation("name_04", "download_url_06", size,
