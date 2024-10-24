@@ -23,4 +23,5 @@ object RegexPatterns {
   val paymentRegex: Regex = """^-?£\d+(\.\d{2})?$""".r
   val ucrRegex: Regex = """^[A-Z]{2}\d{10}\s\d{4}-\d{4}-\d{3}\s\d{3}[A-Z]$""".r
   val jamieRegex: Regex = """^JAMIE LETTS$""".r
+  val noDigitsRegex: Regex = """^[^0-9]*$""".r
 }

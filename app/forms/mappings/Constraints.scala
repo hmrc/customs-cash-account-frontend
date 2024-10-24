@@ -20,7 +20,8 @@ import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.{Logger, LoggerLike}
 import uk.gov.hmrc.time.TaxYear
 import uk.gov.hmrc.time.TaxYear.taxYearFor
-import utils.RegexPatterns.{jamieRegex, mrnRegex, paymentRegex, ucrRegex}
+import utils.RegexPatterns
+import utils.RegexPatterns.{jamieRegex, mrnRegex, noDigitsRegex, paymentRegex, ucrRegex}
 
 import java.time.{Clock, LocalDate, LocalDateTime, Period}
 
@@ -84,6 +85,25 @@ trait Constraints {
       Valid
     } else {
       Invalid(errorKey, patterns.map(_.regex): _*)
+    }
+  }
+
+  def validateString(errorKey: String): Constraint[String] = Constraint { input =>
+    val noDigits = noDigitsRegex
+
+    if (!noDigits.matches(input)) {
+      Invalid(ValidationError(errorKey))
+    } else {
+      Valid
+    }
+  }
+
+  def validateInt(errorKey: String): Constraint[Int] = Constraint { input =>
+
+    if (input < 1 || input >= 120) {
+      Invalid(ValidationError(errorKey))
+    } else {
+      Valid
     }
   }
   

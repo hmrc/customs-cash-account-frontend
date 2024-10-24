@@ -16,13 +16,17 @@
 
 package forms
 
+import forms.mappings.Mappings
+import models.JamieFormFields
 import play.api.data.Form
 import play.api.data.Forms.{mapping, nonEmptyText, number}
 
 
-
-class JamieFormProvider {
-  def apply(): Form[String] = Form(
-        "name" -> nonEmptyText
+class JamieFormProvider extends Mappings {
+  def apply(): Form[JamieFormFields] = Form(
+        mapping(
+          "name" -> nonEmptyText.verifying(validateString(errorKey = "Enter your name")),
+          "age" -> number.verifying(validateInt(errorKey = "Enter a number between 1 - 120"))
+        )(JamieFormFields.apply)(JamieFormFields.unapply)
   )
 }
