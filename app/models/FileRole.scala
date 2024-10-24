@@ -26,9 +26,9 @@ sealed abstract class FileRole(val name: String,
 
 object FileRole {
 
-  case object CashStatement
+  case object CDSCashAccount
     extends FileRole(
-      name = "CashStatement",
+      name = "CDSCashAccount",
       featureName = "cash-statement",
       transactionName = "Display Cash Statements",
       messageKey = "requested-cash-statement")
@@ -36,7 +36,7 @@ object FileRole {
   val log: LoggerLike = Logger(this.getClass)
 
   def apply(name: String): FileRole = name match {
-    case "CashStatement" => CashStatement
+    case "CDSCashAccount" => CDSCashAccount
     case _ => throw new Exception(s"Unknown file role: $name")
   }
 
