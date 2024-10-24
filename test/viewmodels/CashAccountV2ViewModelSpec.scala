@@ -25,7 +25,7 @@ import models.{
   FileFormat, Payment, Transaction, Withdrawal
 }
 import models.metadata.CashStatementFileMetadata
-import models.FileRole.CashStatement
+import models.FileRole.CDSCashAccount
 import config.AppConfig
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
@@ -145,7 +145,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     notification mustBe notificationPanelComponent(
       showNotification = true,
       preMessage = msgs("cf.cash-account.requested.statements.available.text.pre"),
-      linkUrl = appConfig.requestedStatements(CashStatement),
+      linkUrl = appConfig.requestedStatements(CDSCashAccount),
       linkText = msgs("cf.cash-account.requested.statements.available.link.text"),
       postMessage = msgs("cf.cash-account.requested.statements.available.text.post"))
   }
@@ -317,7 +317,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         periodEndMonth = monthEnd,
         periodEndDay = dayEnd,
         fileFormat = FileFormat.Csv,
-        fileRole = CashStatement,
+        fileRole = CDSCashAccount,
         statementRequestId = Some("abc-defg-1234-abc")
       ),
       eori = eoriNumber

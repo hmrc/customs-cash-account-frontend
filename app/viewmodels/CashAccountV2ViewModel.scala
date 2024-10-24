@@ -17,7 +17,7 @@
 package viewmodels
 
 import config.AppConfig
-import models.FileRole.CashStatement
+import models.FileRole.CDSCashAccount
 import models.{CashAccount, CashAccountViewModel, CashStatementsForEori, CashTransactions}
 import models.domain.EORI
 import utils.Utils.*
@@ -84,7 +84,7 @@ object CashAccountV2ViewModel {
       Some(notificationPanelComponent(
         showNotification = true,
         preMessage = msgs("cf.cash-account.requested.statements.available.text.pre"),
-        linkUrl = config.requestedStatements(CashStatement),
+        linkUrl = config.requestedStatements(CDSCashAccount),
         linkText = msgs("cf.cash-account.requested.statements.available.link.text"),
         postMessage = msgs("cf.cash-account.requested.statements.available.text.post")))
     } else {

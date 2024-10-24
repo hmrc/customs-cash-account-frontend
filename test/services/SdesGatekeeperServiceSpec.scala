@@ -17,7 +17,7 @@
 package services
 
 import models.*
-import models.FileRole.CashStatement
+import models.FileRole.CDSCashAccount
 import models.metadata.{CashStatementFileMetadata, Metadata, MetadataItem}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{times, verify, when}
@@ -43,7 +43,7 @@ class SdesGatekeeperServiceSpec extends SpecBase {
       result.metadata.periodEndMonth mustBe periodEndMonth
       result.metadata.periodEndDay mustBe periodEndDay
       result.metadata.fileFormat mustBe FileFormat(csv)
-      result.metadata.fileRole mustBe CashStatement
+      result.metadata.fileRole mustBe CDSCashAccount
       result.metadata.statementRequestId mustBe someRequestId
     }
   }
@@ -98,7 +98,7 @@ class SdesGatekeeperServiceSpec extends SpecBase {
         MetadataItem("PeriodEndMonth", periodEndMonth.toString),
         MetadataItem("PeriodEndDay", periodEndDay.toString),
         MetadataItem("FileType", csv),
-        MetadataItem("FileRole", "CashStatement"),
+        MetadataItem("FileRole", "CDSCashAccount"),
         MetadataItem("CashAccountNumber", someAccountNumber.getOrElse(emptyString)),
         MetadataItem("statementRequestID", someRequestId.getOrElse(emptyString)))))
 
@@ -114,7 +114,7 @@ class SdesGatekeeperServiceSpec extends SpecBase {
         periodEndMonth = periodEndMonth,
         periodEndDay = periodEndDay,
         fileFormat = FileFormat(csv),
-        fileRole = CashStatement,
+        fileRole = CDSCashAccount,
         statementRequestId = someRequestId), emptyString)
   }
 }

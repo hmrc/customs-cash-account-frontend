@@ -19,7 +19,7 @@ package connectors
 import config.AppConfig
 import models.*
 import models.FileFormat.Csv
-import models.FileRole.CashStatement
+import models.FileRole.CDSCashAccount
 import models.metadata.{CashStatementFileMetadata, Metadata, MetadataItem}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
@@ -88,7 +88,7 @@ class SdesConnectorSpec extends SpecBase {
     val dayEnd = 2
 
     val sdesCashStatementUrl =
-      "http://localhost:9754/customs-financials-sdes-stub/files-available/list/CashStatement"
+      "http://localhost:9754/customs-financials-sdes-stub/files-available/list/CDSCashAccount"
 
     val cashStatementFilesSdesResponse: Seq[FileInformation] = List(
       FileInformation("name_04", "download_url_06", size,
@@ -139,7 +139,7 @@ class SdesConnectorSpec extends SpecBase {
           periodEndMonth = monthEnd,
           periodEndDay = dayEnd,
           fileFormat = FileFormat.Csv,
-          fileRole = CashStatement,
+          fileRole = CDSCashAccount,
           statementRequestId = None
         ), emptyString))
   }

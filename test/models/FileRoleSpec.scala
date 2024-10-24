@@ -25,8 +25,8 @@ class FileRoleSpec extends SpecBase {
   "FileRole" should {
 
     "return CashStatement" in {
-      val fileRole = FileRole("CashStatement")
-      fileRole mustBe FileRole.CashStatement
+      val fileRole = FileRole("CDSCashAccount")
+      fileRole mustBe FileRole.CDSCashAccount
     }
 
     "throw an exception for invalid role" in {
@@ -39,17 +39,17 @@ class FileRoleSpec extends SpecBase {
   "FileRole serialization and deserialization" should {
 
     "serialize CashStatement correctly" in {
-      val fileRole: FileRole = FileRole.CashStatement
+      val fileRole: FileRole = FileRole.CDSCashAccount
       val json: JsValue = Json.toJson(fileRole)
 
-      json mustBe JsString("CashStatement")
+      json mustBe JsString("CDSCashAccount")
     }
 
     "deserialize CashStatement correctly" in {
-      val json: JsValue = JsString("CashStatement")
+      val json: JsValue = JsString("CDSCashAccount")
       val result: JsResult[FileRole] = Json.fromJson[FileRole](json)
 
-      result mustBe JsSuccess(FileRole.CashStatement)
+      result mustBe JsSuccess(FileRole.CDSCashAccount)
     }
   }
 }

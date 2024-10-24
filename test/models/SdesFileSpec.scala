@@ -57,7 +57,7 @@ class SdesFileSpec extends SpecBase {
         periodEndMonth = monthEnd,
         periodEndDay = dayEnd,
         fileFormat = FileFormat.Pdf,
-        fileRole = FileRole.CashStatement,
+        fileRole = FileRole.CDSCashAccount,
         statementRequestId = Some("xyz-1234"))
 
       val otherFile: CashStatementFile = CashStatementFile(
@@ -104,7 +104,7 @@ class SdesFileSpec extends SpecBase {
       periodEndMonth = monthEnd,
       periodEndDay = dayEnd,
       fileFormat = FileFormat.Csv,
-      fileRole = FileRole.CashStatement,
+      fileRole = FileRole.CDSCashAccount,
       statementRequestId = Some("abc-defg-1234-abc"))
 
     val file: CashStatementFile = CashStatementFile(

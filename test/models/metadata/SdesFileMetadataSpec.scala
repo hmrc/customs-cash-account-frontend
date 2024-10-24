@@ -56,7 +56,7 @@ class SdesFileMetadataSpec extends SpecBase {
     val periodEndYear = 2024
     val periodEndMonth = 10
     val periodEndDay = 31
-    val fileRoleName = "CashStatement"
+    val fileRoleName = "CDSCashAccount"
     val statementRequestId: Option[String] = Some("requestId")
   }
 }

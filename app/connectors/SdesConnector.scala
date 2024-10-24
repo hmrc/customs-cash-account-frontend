@@ -19,7 +19,7 @@ package connectors
 import config.AppConfig
 import models.*
 import models.FileFormat.{SdesFileFormats, filterFileFormats}
-import models.FileRole.CashStatement
+import models.FileRole.CDSCashAccount
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import services.{AuditingService, MetricsReporterService, SdesGatekeeperService}
@@ -45,7 +45,7 @@ class SdesConnector @Inject()(httpClientV2: HttpClientV2,
     auditingService.auditCashStatements(eori)
 
     getSdesFiles[FileInformation, CashStatementFile](
-      url = appConfig.filesUrl(CashStatement),
+      url = appConfig.filesUrl(CDSCashAccount),
       key = eori,
       metricsName = "sdes.get.cash-statements",
       transform = transform

@@ -79,7 +79,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   def requestedStatements(fileRole: FileRole): String = {
     fileRole match {
-      case FileRole.CashStatement => s"$requestedStatements${fileRole.featureName}"
+      case FileRole.CDSCashAccount => s"$requestedStatements${fileRole.featureName}"
     }
   }
 
