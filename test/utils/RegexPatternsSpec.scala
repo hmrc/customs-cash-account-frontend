@@ -92,7 +92,10 @@ class RegexPatternsSpec extends SpecBase {
     }
 
     "not match invalid regex" in {
-      val invalidInputs: Seq[String] = Seq("--GB>@23-?567890-1134!7456_914-121D")
+      val invalidInputs: Seq[String] = Seq(
+        "GB1234567890-1134!7456_914-121D",
+        "?_GB 12345 67890 1134 7456 914 121D")
+
       invalidInputs.foreach { input =>
         ucrRegex.findFirstIn(input) mustBe None
       }
