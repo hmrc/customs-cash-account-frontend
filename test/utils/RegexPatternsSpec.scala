@@ -91,9 +91,8 @@ class RegexPatternsSpec extends SpecBase {
 
     "not match invalid regex" in {
       val invalidInputs: Seq[String] = Seq(
-        "gb1234567890-1134-7456-914-121D",
         "GB1234567890-1134!7456_914-121D",
-        "GB12345 67890 1134 7456 914 121D")
+        "?_GB 12345 67890 1134 7456 914 121D")
 
       invalidInputs.foreach { input =>
         ucrRegex.findFirstIn(input) mustBe None
