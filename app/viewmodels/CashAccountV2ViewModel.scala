@@ -56,7 +56,7 @@ object CashAccountV2ViewModel {
             statements: Seq[CashStatementsForEori],
             pageNo: Option[Int])(implicit msgs: Messages, config: AppConfig): CashAccountV2ViewModel = {
 
-    val hasRequestedStatements: Boolean = statements.exists(_.requestedStatements.nonEmpty)
+    val hasStatements: Boolean = statements.exists(_.currentStatements.nonEmpty)
 
     val hasMaxTransactionsExceeded: Boolean = cashTrans.maxTransactionsExceeded.getOrElse(false)
 
@@ -70,7 +70,7 @@ object CashAccountV2ViewModel {
       pageTitle = msgs("cf.cash-account.detail.title"),
       backLink = config.customsFinancialsFrontendHomepage,
       cashAccountBalance = cashAccountBalance,
-      cashStatementNotification = populateNotificationPanel(hasRequestedStatements),
+      cashStatementNotification = populateNotificationPanel(hasStatements),
       dailyStatementsSection = populateDailyStatementsSection(cashTrans, pageNo),
       tooManyTransactionsSection = populateTooManyTransactionsSection(hasMaxTransactionsExceeded),
       downloadCSVFileLinkUrl = downloadCSVFileLinkUrl(hasMaxTransactionsExceeded),
@@ -78,9 +78,9 @@ object CashAccountV2ViewModel {
       paginationModel = populatePaginationModel(pageNo, totalDailyStatementsSize))
   }
 
-  private def populateNotificationPanel(hasRequestedStatements: Boolean)
+  private def populateNotificationPanel(hasStatements: Boolean)
                                        (implicit msgs: Messages, config: AppConfig) = {
-    if (hasRequestedStatements) {
+    if (hasStatements) {
       Some(notificationPanelComponent(
         showNotification = true,
         preMessage = msgs("cf.cash-account.requested.statements.available.text.pre"),
