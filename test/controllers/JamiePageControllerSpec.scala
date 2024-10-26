@@ -1,24 +1,20 @@
 package controllers
 
-import config.AppConfig
-import org.apache.pekko.http.scaladsl.model.HttpHeader.ParsingResult.Ok
+import forms.JamieFormProvider
+import models.JamieFormFields
 import play.api.Application
-import org.mockito.Mockito.when
-import play.api.test.FakeRequest
 import play.api.test.Helpers.{POST, running}
 import utils.SpecBase
-import play.api.inject.bind
 import play.api.mvc.Result
 import play.api.test.Helpers.*
+import views.html.jamie_input_page
+import play.api.data.Form
 
 import scala.concurrent.Future
 
-
-
-
 class JamiePageControllerSpec extends SpecBase {
 
-  "displayEnteredDetails" must {
+  "onPageLoad" must {
     "return ok" in new Setup {
       val app: Application = application.build()
       running(app) {
@@ -29,24 +25,44 @@ class JamiePageControllerSpec extends SpecBase {
     }
   }
 
-//  "onSubmit" must {
-//    "return SEE_OTHER when form submission is successful" in new Setup {
-//      val app: Application = application
-//        .overrides(bind[JamiePageController].toInstance(mockJamieFormController))
-//        .build()
-//
-//      running(app) {
-//        val request = fakeRequest(POST, routes.JamiePageController.onSubmit()
-//          .url).withFormUrlEncodedBody("value" -> "name")
-//      }
-//    }
-//    "return same page when form submission is unsuccessful with error validation present" in new Setup {
-//
-//    }
-//  }
+  "onSubmit" must {
+    "return SEE_OTHER when form submission is successful" in new Setup {
+      val app: Application = application.build()
+      running(app) {
+        val request = fakeRequest(POST, routes.JamiePageController.onSubmit().url)
+          .withFormUrlEncodedBody("name" -> name, "age" -> ageString)
+
+        val result: Future[Result] = route(app, request).value
+        status(result) mustEqual SEE_OTHER
+
+        val expectedRedirectUrl = routes.JamiePageController.displayInputValues(name, ageInt).url
+        redirectLocation(result).value mustEqual expectedRedirectUrl
+      }
+    }
+
+    "return same page when form submission is unsuccessful with error validation present" in new Setup {
+      val app: Application = application.build()
+
+      running(app) {
+        val formWithErrors: Form[JamieFormFields] = new JamieFormProvider()
+          .apply()
+          .bind(Map("name" -> name, "age" -> emptyString))
+
+        val request = fakeRequest(POST, routes.JamiePageController.onSubmit().url)
+          .withFormUrlEncodedBody("name" -> name, "age" -> emptyString)
+
+        val result: Future[Result] = route(app, request).value
+        status(result) mustEqual BAD_REQUEST
+
+        val content = contentAsString(result)
+        content must include("There is a problem")
+      }
+    }
+  }
 
   trait Setup {
     val name = "test name"
-    val age = "28"
+    val ageString = "28"
+    val ageInt = 28
   }
 }

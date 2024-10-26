@@ -76,7 +76,7 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
       },
       enteredValue => Future.successful {
         if (enteredValue == "JAMIE LETTS") {
-          Redirect(routes.CashAccountV2Controller.showJamieInputPage(enteredValue))
+          Redirect(routes.JamiePageController.onPageLoad())
         } else {
           Redirect(routes.DeclarationDetailController.displaySearchDetails(page, enteredValue))
         }
@@ -184,9 +184,5 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
 
   def showAccountUnavailable: Action[AnyContent] = authenticate { implicit req =>
     Ok(unavailable())
-  }
-
-  def showJamieInputPage(enteredValue: String): Action[AnyContent] = authenticate { implicit req =>
-    Ok(jamieInput(form))
   }
 }

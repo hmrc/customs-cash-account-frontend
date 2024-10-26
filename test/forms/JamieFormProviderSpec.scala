@@ -3,6 +3,9 @@ package forms
 import models.JamieFormFields
 import play.api.data.FormError
 import utils.SpecBase
+import utils.RegexPatterns.noDigitsRegex
+
+import scala.collection.immutable.ArraySeq
 
 class JamieFormProviderSpec extends SpecBase {
     "apply" should {
@@ -32,7 +35,8 @@ class JamieFormProviderSpec extends SpecBase {
         val form = new JamieFormProvider()()
         val data = Map("name" -> "28", "age" -> "38")
 
-        form.bind(data).errors mustBe Seq(FormError("name", List("Enter your name")))
+        form.bind(data).errors mustBe Seq(
+          FormError("name", List("Enter your name"), ArraySeq(noDigitsRegex.regex)))
       }
 
       "produce an error when name is correct but number out of required range" in {
@@ -46,7 +50,8 @@ class JamieFormProviderSpec extends SpecBase {
         val form = new JamieFormProvider()()
         val data = Map("name" -> "J4mie", "age" -> "22")
 
-        form.bind(data).errors mustBe Seq(FormError("name", List("Enter your name")))
+        form.bind(data).errors mustBe Seq(
+          FormError("name", List("Enter your name"), ArraySeq(noDigitsRegex.regex)))
       }
 
       "produce an error when both values are a lettered strings" in {

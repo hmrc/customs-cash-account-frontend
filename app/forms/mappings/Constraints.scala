@@ -92,7 +92,7 @@ trait Constraints {
     val noDigits = noDigitsRegex
 
     if (!noDigits.matches(input)) {
-      Invalid(ValidationError(errorKey))
+      Invalid(ValidationError(errorKey, noDigits.regex))
     } else {
       Valid
     }

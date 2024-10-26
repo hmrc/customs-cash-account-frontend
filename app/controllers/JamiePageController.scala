@@ -21,10 +21,12 @@ import cats.data.EitherT.*
 import config.{AppConfig, ErrorHandler}
 import controllers.actions.IdentifierAction
 import forms.JamieFormProvider
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, RequestHeader, Result}
+import models.JamieFormFields
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, RequestHeader, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.*
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -35,31 +37,33 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 class JamiePageController @Inject()(
-                                    jamieInfo: jamie_form_page
-                                   
+                                    jamieInput: jamie_input_page,
+                                    jamieDetails: jamie_details_page,
+                                    jamieForm: JamieFormProvider
                                    )(implicit mcc: MessagesControllerComponents, config: AppConfig) extends FrontendController(mcc) {
 
-  //  val form: Form[String] = formProvider()
-  def onPageLoad(): Action[AnyContent] = Action.async {
-    implicit request =>
-    val form = new JamieFormProvider().apply()
-      Future.successful(Ok(jamieInfo(form)))
-  }
-//  def displayEnteredDetails(): Action[AnyContent] = Action {
-//    implicit request => Ok(detailsPage)
-//  }
+  val form: Form[JamieFormFields] = jamieForm()
 
-  def onSubmit(): Action[AnyContent] = {
-    ???
+  def onPageLoad(): Action[AnyContent] = Action.async {
+    implicit request => Future.successful(Ok(jamieInput(form)))
   }
-  //    Action.async { implicit request =>
-  //    form.bindFromRequest().fold(
-  //      formWithErrors => {
-  //        processAccountDetails(formWithErrors, page)
-  //      },
-  //      enteredValue => Future.successful {
-  //          Redirect(routes.JamieFormController.showJamieFormPage(enteredValue))
-  //      }
-  //    )
-  //  }
+
+  def onSubmit(): Action[AnyContent] = Action.async { implicit request =>
+    form.bindFromRequest().fold (
+      formWithErrors => {
+        showFormWithErrors(formWithErrors)
+      },
+      userData => Future.successful(
+        Redirect(routes.JamiePageController.displayInputValues(userData.name, userData.age)))
+    )
+  }
+
+  def displayInputValues(name: String, age: Int): Action[AnyContent] = Action.async {
+    implicit request => Future.successful(Ok(jamieDetails(name, age)))
+  }
+
+  private def showFormWithErrors(formWithErrors: Form[JamieFormFields])
+                        (implicit request: Request[AnyContent], messages: Messages): Future[Result] = {
+    Future.successful(BadRequest(jamieInput(formWithErrors)))
+  }
 }

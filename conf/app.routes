@@ -33,11 +33,11 @@ GET         /selected-confirmation                 controllers.ConfirmationPageC
 
 GET         /account-unavailable                    controllers.CashAccountController.showAccountUnavailable
 GET         /v2/account-unavailable                 controllers.CashAccountV2Controller.showAccountUnavailable
-GET         /v2/jamie-form-page                     controllers.CashAccountV2Controller.showJamieInputPage(enteredValue: String)
 GET         /not-subscribed-for-cds                 controllers.UnauthorisedController.onPageLoad
 
-GET         /jamie-form-page/jamie_details_page     controllers.JamiePageController.onPageLoad()
-POST        /jamie-form-page/jamie_details_page     controllers.JamiePageController.onSubmit()
+GET         /v2/jamie_input_page                    controllers.JamiePageController.onPageLoad()
+POST        /v2/jamie_input_page                    controllers.JamiePageController.onSubmit()
+GET         /v2/jamie_details_page                  controllers.JamiePageController.displayInputValues(name: String, age: Int)
 
 GET         /logout-survey                          controllers.LogoutController.logout
 GET         /logout                                 controllers.LogoutController.logoutNoSurvey

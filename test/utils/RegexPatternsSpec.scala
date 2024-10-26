@@ -16,12 +16,12 @@
 
 package utils
 
-import utils.RegexPatterns.{mrnRegex, paymentRegex, ucrRegex, jamieRegex}
+import utils.RegexPatterns.{jamieRegex, mrnRegex, noDigitsRegex, paymentRegex, ucrRegex}
 
 class RegexPatternsSpec extends SpecBase {
   
   // *************** JAMIE FORM PAGE *******************//
-  "Jamie Regex" should {
+  "JamieRegex" should {
     "match valid regex" in {
       val validInputs: Seq[String] = Seq("JAMIE LETTS")
 
@@ -38,6 +38,31 @@ class RegexPatternsSpec extends SpecBase {
 
       invalidInputs.foreach { input =>
         ucrRegex.findFirstIn(input) mustBe None
+      }
+    }
+  }
+
+  "noDigitsRegex" should {
+    "match valid Regex" in {
+      val validInputs: Seq[String] = Seq(
+        "jame",
+        "Jamie Letts",
+        "jAmIe LeTTs"
+      )
+      validInputs.foreach { input =>
+        noDigitsRegex.findFirstIn(input) mustBe Some(input)
+      }
+    }
+
+    "not match invalid Regex" in {
+      val invalidInputs: Seq[String] = Seq(
+        "J4m45ie",
+        "123",
+        "Test123"
+      )
+
+      invalidInputs.foreach { input =>
+        noDigitsRegex.findFirstIn(input) mustBe None
       }
     }
   }

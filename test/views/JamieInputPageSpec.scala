@@ -17,6 +17,7 @@
 package views
 
 import config.AppConfig
+import forms.JamieFormProvider
 import play.api.data.Form
 import play.api.data.Forms.*
 import org.jsoup.Jsoup
@@ -83,19 +84,7 @@ class JamieInputPageSpec extends ViewTestHelper {
   }
 
   trait Setup {
-    case class FormData(valueOne: String, valueTwo: String)
-
-    object FormData {
-      def apply(valueOne: String, valueTwo: String): FormData = new FormData(valueOne, valueTwo)
-      def unapply(formData: FormData): Option[(String, String)] = Some((formData.valueOne, formData.valueTwo))
-    }
-
-    val form: Form[FormData] = Form(
-      mapping(
-        "valueOne" -> text,
-        "valueTwo" -> text
-      )(FormData.apply)(FormData.unapply)
-    )
+    val form = new JamieFormProvider()()
 
     val view: Document = Jsoup.parse(app.injector.instanceOf[jamie_form_page].apply(form).body)
   }

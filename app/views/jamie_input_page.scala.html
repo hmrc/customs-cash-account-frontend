@@ -20,6 +20,7 @@
 @this(
     main_template: Layout,
     h1: components.h1,
+    errorSummary: components.errorSummary,
     h2: components.h2,
     formHelper: FormWithCSRF,
     inputText: components.inputText,
@@ -45,6 +46,8 @@
         msg = "Jamie's Super-Duper Form",
         id = Some("main-header")
     )
+
+    @errorSummary(form.errors, None)
 
     @h2(
         msg = "Name and Age Form",

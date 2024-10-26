@@ -18,18 +18,38 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
 
 @this(
-        main_template: Layout
-      )
+        main_template: Layout,
+        h1: components.h1,
+        h2: components.h2
+)
 
-@(
-implicit messages: Messages,
-appConfig: AppConfig,
-request: Request[_]
+@(name: String, age: Int)(
+        implicit messages: Messages,
+        appConfig: AppConfig,
+        request: Request[_]
 )
 
 @main_template(
- pageTitle = Some(messages("cf.cash-account.detail.title")),
- backLink = Some(appConfig.customsFinancialsFrontendHomepage),
- fullWidth = false,
- help = true,
-)
+    pageTitle = Some(messages("cf.cash-account.detail.title")),
+    backLink = Some(appConfig.customsFinancialsFrontendHomepage),
+    fullWidth = false,
+    help = true,
+) {
+
+    @h1(
+        msg = "Person Details",
+        id = Some("details-header")
+    )
+
+    @h2(
+        msg = s"Name: $name",
+        id = Some("details-name")
+    )
+
+    @h2(
+        msg = s"Name: $age",
+        id = Some("details-age")
+    )
+
+}
+

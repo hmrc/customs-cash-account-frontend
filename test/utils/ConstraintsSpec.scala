@@ -18,7 +18,7 @@ package utils
 
 import forms.mappings.Constraints
 import play.api.data.validation.{Invalid, Valid, ValidationError, ValidationResult}
-import utils.RegexPatterns.{jamieRegex, mrnRegex, paymentRegex, ucrRegex}
+import utils.RegexPatterns.{jamieRegex, mrnRegex, paymentRegex, ucrRegex, noDigitsRegex}
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -153,9 +153,40 @@ class ConstraintsSpec extends SpecBase with Constraints {
     }
   }
 
+  // *************** JAMIE FORM PAGE *******************//
+
+  "validateString" must {
+    "return valid when a valid name / string is entered" in new Setup {
+      val validateStringResult: ValidationResult = validateString("error.key")("Jamie")
+      validateStringResult mustBe Valid
+    }
+    "return invalid when invalid name / string is entered" in new Setup {
+      val validateStringResult: ValidationResult = validateString("error.key")("J4m45ie")
+      validateStringResult mustBe Invalid(Seq(ValidationError("error.key", noDigits)))
+    }
+  }
+
+  "validateInt" must {
+    "return valid when a valid number is entered" in new Setup {
+      val validateIntResult: ValidationResult = validateInt("error.key")(validNumber)
+      validateIntResult mustBe Valid
+    }
+    "return invalid when an invalid number range is entered" in new Setup {
+      val validateIntResult: ValidationResult = validateInt("error.key")(invalidNumber)
+      validateIntResult mustBe Invalid(Seq(ValidationError("error.key")))
+    }
+  }
+
+  // *************** JAMIE FORM PAGE *******************//
+
   trait Setup {
-    val patterns: Seq[String] = Seq(mrnRegex.regex, paymentRegex.regex, ucrRegex.regex, jamieRegex.regex)
+    val patterns: Seq[String] = Seq(
+      mrnRegex.regex, paymentRegex.regex, ucrRegex.regex, jamieRegex.regex)
 
     def ld: LocalDate = LocalDateTime.now().toLocalDate
+
+    val noDigits: String = noDigitsRegex.regex
+    val validNumber = 28
+    val invalidNumber = 140
   }
 }
