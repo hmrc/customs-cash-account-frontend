@@ -23,6 +23,15 @@ class JamiePageControllerSpec extends SpecBase {
         status(result) mustEqual OK
       }
     }
+
+    "return Not Found when there is an error loading" in new Setup {
+      val app: Application = application.build()
+      running(app) {
+        val request = fakeRequest(GET, "/incorrect_url")
+        val result: Future[Result] = route(app, request).value
+        status(result) mustEqual NOT_FOUND
+      }
+    }
   }
 
   "onSubmit" must {
@@ -56,12 +65,14 @@ class JamiePageControllerSpec extends SpecBase {
 
         val content = contentAsString(result)
         content must include("There is a problem")
+        content must include("Numeric value expected")
       }
     }
   }
 
   trait Setup {
     val name = "test name"
+    val incorrectName = "J4mie"
     val ageString = "28"
     val ageInt = 28
   }

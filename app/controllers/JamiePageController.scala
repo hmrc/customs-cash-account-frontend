@@ -16,20 +16,16 @@
 
 package controllers
 
-import cats.data.EitherT
-import cats.data.EitherT.*
 import config.{AppConfig, ErrorHandler}
-import controllers.actions.IdentifierAction
 import forms.JamieFormProvider
 import models.JamieFormFields
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, RequestHeader, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.*
 import play.api.data.Form
+import play.api.i18n.Lang.logger
 import play.api.i18n.Messages
-import play.api.libs.json.{Json, OFormat}
-import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,13 +35,19 @@ import scala.concurrent.{ExecutionContext, Future}
 class JamiePageController @Inject()(
                                     jamieInput: jamie_input_page,
                                     jamieDetails: jamie_details_page,
-                                    jamieForm: JamieFormProvider
-                                   )(implicit mcc: MessagesControllerComponents, config: AppConfig) extends FrontendController(mcc) {
+                                    jamieForm: JamieFormProvider,
+                                    errorHandler: ErrorHandler
+                                   )(implicit mcc: MessagesControllerComponents,
+  ec: ExecutionContext, config: AppConfig) extends FrontendController(mcc) {
 
   val form: Form[JamieFormFields] = jamieForm()
 
   def onPageLoad(): Action[AnyContent] = Action.async {
-    implicit request => Future.successful(Ok(jamieInput(form)))
+    implicit request => Future.successful(Ok(jamieInput(form))).recover {
+      case e =>
+        logger.error("There was an error loading the page")
+        NotFound(errorHandler.notFoundTemplate)
+    }
   }
 
   def onSubmit(): Action[AnyContent] = Action.async { implicit request =>
