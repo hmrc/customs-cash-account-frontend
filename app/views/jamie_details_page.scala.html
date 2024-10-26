@@ -20,7 +20,8 @@
 @this(
         main_template: Layout,
         h1: components.h1,
-        h2: components.h2
+        h2: components.h2,
+        newTabLink: components.newTabLink
 )
 
 @(name: String, age: Int)(
@@ -31,7 +32,7 @@
 
 @main_template(
     pageTitle = Some(messages("cf.cash-account.detail.title")),
-    backLink = Some(appConfig.customsFinancialsFrontendHomepage),
+    backLink = Some(routes.JamiePageController.onPageLoad().url),
     fullWidth = false,
     help = true,
 ) {
@@ -47,8 +48,21 @@
     )
 
     @h2(
-        msg = s"Name: $age",
+        msg = s"Age: $age",
         id = Some("details-age")
+    )
+
+    @h2(
+        msg = "cf.cash-account.transactions.request.support.heading",
+        id = Some("help-and-support-header"),
+        classes = "govuk-heading-m govuk-!-margin-top-9"
+    )
+
+    @newTabLink(
+        linkMessage = "cf.cash-account.help-and-support.link.text",
+        href = appConfig.cashAccountForCdsDeclarationsUrl,
+        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
+        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")
     )
 
 }

@@ -18,8 +18,6 @@ package views
 
 import config.AppConfig
 import forms.JamieFormProvider
-import play.api.data.Form
-import play.api.data.Forms.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.i18n.Messages
