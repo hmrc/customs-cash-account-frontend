@@ -91,19 +91,19 @@ trait Constraints {
   def validateString(errorKey: String): Constraint[String] = Constraint { input =>
     val noDigits = noDigitsRegex
 
-    if (!noDigits.matches(input)) {
-      Invalid(ValidationError(errorKey, noDigits.regex))
-    } else {
+    if (noDigits.matches(input)) {
       Valid
+    } else {
+      Invalid(ValidationError(errorKey, noDigits.regex))
     }
   }
 
   def validateInt(errorKey: String): Constraint[Int] = Constraint { input =>
 
-    if (input < 1 || input >= 120) {
-      Invalid(ValidationError(errorKey))
-    } else {
+    if (input > 0 && input <= 121) {
       Valid
+    } else {
+      Invalid(ValidationError(errorKey))
     }
   }
   
