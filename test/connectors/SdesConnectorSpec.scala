@@ -100,7 +100,7 @@ class SdesConnectorSpec extends SpecBase {
           MetadataItem("PeriodEndMonth", "3"),
           MetadataItem("PeriodEndDay", "2"),
           MetadataItem("FileType", "Csv"),
-          MetadataItem("FileRole", "CashStatement")))))
+          MetadataItem("FileRole", "CDSCashAccount")))))
 
     val cashStatementFilesWithUnknownFileTypesSdesResponse: Seq[FileInformation] = List(
       FileInformation("name_04", "download_url_06", size,
@@ -112,7 +112,7 @@ class SdesConnectorSpec extends SpecBase {
           MetadataItem("PeriodEndMonth", "3"),
           MetadataItem("PeriodEndDay", "1"),
           MetadataItem("FileType", "Cho"),
-          MetadataItem("FileRole", "CashStatement")
+          MetadataItem("FileRole", "CDSCashAccount")
         ))
       )
     ) ++ cashStatementFilesSdesResponse ++ List(
@@ -126,7 +126,7 @@ class SdesConnectorSpec extends SpecBase {
           MetadataItem("PeriodEndMonth", "6"),
           MetadataItem("PeriodEndDay", "3"),
           MetadataItem("FileType", "Bar"),
-          MetadataItem("FileRole", "CashStatement")))))
+          MetadataItem("FileRole", "CDSCashAccount")))))
 
     val cashStatementFiles: Seq[CashStatementFile] = List(
       CashStatementFile(
