@@ -43,11 +43,7 @@ class JamiePageController @Inject()(
   val form: Form[JamieFormFields] = jamieForm()
 
   def onPageLoad(): Action[AnyContent] = Action.async {
-    implicit request => Future.successful(Ok(jamieInput(form))).recover {
-      case e =>
-        logger.error("There was an error loading the page")
-        NotFound(errorHandler.notFoundTemplate)
-    }
+    implicit request => Future.successful(Ok(jamieInput(form)))
   }
 
   def onSubmit(): Action[AnyContent] = Action.async { implicit request =>

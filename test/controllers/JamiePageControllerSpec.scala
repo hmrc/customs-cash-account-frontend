@@ -23,57 +23,48 @@ class JamiePageControllerSpec extends SpecBase {
         status(result) mustEqual OK
       }
     }
+  }
+  
+    "onSubmit" must {
+      "return SEE_OTHER when form submission is successful" in new Setup {
+        val app: Application = application.build()
+        running(app) {
+          val request = fakeRequest(POST, routes.JamiePageController.onSubmit().url)
+            .withFormUrlEncodedBody("name" -> name, "age" -> ageString)
 
-    "return Not Found when there is an error loading" in new Setup {
-      val app: Application = application.build()
-      running(app) {
-        val request = fakeRequest(GET, "/incorrect_url")
-        val result: Future[Result] = route(app, request).value
-        status(result) mustEqual NOT_FOUND
+          val result: Future[Result] = route(app, request).value
+          status(result) mustEqual SEE_OTHER
+
+          val expectedRedirectUrl = routes.JamiePageController.displayInputValues(name, ageInt).url
+          redirectLocation(result).value mustEqual expectedRedirectUrl
+        }
+      }
+
+      "return same page when form submission is unsuccessful with error validation present" in new Setup {
+        val app: Application = application.build()
+
+        running(app) {
+          val formWithErrors: Form[JamieFormFields] = new JamieFormProvider()
+            .apply()
+            .bind(Map("name" -> name, "age" -> emptyString))
+
+          val request = fakeRequest(POST, routes.JamiePageController.onSubmit().url)
+            .withFormUrlEncodedBody("name" -> name, "age" -> emptyString)
+
+          val result: Future[Result] = route(app, request).value
+          status(result) mustEqual BAD_REQUEST
+
+          val content = contentAsString(result)
+          content must include("There is a problem")
+          content must include("Numeric value expected")
+        }
       }
     }
-  }
 
-  "onSubmit" must {
-    "return SEE_OTHER when form submission is successful" in new Setup {
-      val app: Application = application.build()
-      running(app) {
-        val request = fakeRequest(POST, routes.JamiePageController.onSubmit().url)
-          .withFormUrlEncodedBody("name" -> name, "age" -> ageString)
-
-        val result: Future[Result] = route(app, request).value
-        status(result) mustEqual SEE_OTHER
-
-        val expectedRedirectUrl = routes.JamiePageController.displayInputValues(name, ageInt).url
-        redirectLocation(result).value mustEqual expectedRedirectUrl
-      }
-    }
-
-    "return same page when form submission is unsuccessful with error validation present" in new Setup {
-      val app: Application = application.build()
-
-      running(app) {
-        val formWithErrors: Form[JamieFormFields] = new JamieFormProvider()
-          .apply()
-          .bind(Map("name" -> name, "age" -> emptyString))
-
-        val request = fakeRequest(POST, routes.JamiePageController.onSubmit().url)
-          .withFormUrlEncodedBody("name" -> name, "age" -> emptyString)
-
-        val result: Future[Result] = route(app, request).value
-        status(result) mustEqual BAD_REQUEST
-
-        val content = contentAsString(result)
-        content must include("There is a problem")
-        content must include("Numeric value expected")
-      }
+    trait Setup {
+      val name = "test name"
+      val incorrectName = "J4mie"
+      val ageString = "28"
+      val ageInt = 28
     }
   }
-
-  trait Setup {
-    val name = "test name"
-    val incorrectName = "J4mie"
-    val ageString = "28"
-    val ageInt = 28
-  }
-}
