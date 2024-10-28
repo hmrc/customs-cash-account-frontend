@@ -18,11 +18,9 @@ package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class JamieFormFields(name: String, age: Int)
+case class PersonDetails(jamieFormFields: JamieFormFields, niNumber: String)
 
-object JamieFormFields {
-  def unapply(jamieFormFields: JamieFormFields): Option[(String, Int)] =
-    Some((jamieFormFields.name, jamieFormFields.age))
-
-  implicit val format: OFormat[JamieFormFields] = Json.format[JamieFormFields]
+object PersonDetails {
+  implicit val format: OFormat[PersonDetails] = Json.format[PersonDetails]
 }
+ 

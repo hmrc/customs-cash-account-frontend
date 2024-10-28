@@ -60,7 +60,15 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
   private val retrieveCashTransactionsDetailUrl = s"$baseUrl/account/cash/transactions-detail"
   private val retrieveCashAccountStatementsUrl = s"$baseUrl/accounts/cashaccountstatementrequest/v1"
   private val retrieveCashAccountStatementSearchUrl = s"$baseUrl/account/cash/transaction-search"
+  private val retrieveJamieNiNumberUrl = s"$baseUrl/person-details/:name"
 
+  // *************** JAMIE FORM PAGE ******************* //
+
+  def getNiNumber(name: String)(implicit hc: HeaderCarrier): Future[Either[ErrorResponse, PersonDetails]] = {
+    ???
+  }
+
+  // *************** JAMIE FORM PAGE ******************* //
 
   def getCashAccount(eori: String)(implicit hc: HeaderCarrier,
                                    request: IdentifierRequest[AnyContent]): Future[Option[CashAccount]] = {

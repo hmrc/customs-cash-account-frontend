@@ -17,8 +17,9 @@
 package controllers
 
 import config.{AppConfig, ErrorHandler}
+import connectors.CustomsFinancialsApiConnector
 import forms.JamieFormProvider
-import models.JamieFormFields
+import models.{JamieFormFields, PersonDetails}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.*
@@ -26,13 +27,13 @@ import play.api.data.Form
 import play.api.i18n.Lang.logger
 import play.api.i18n.Messages
 
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 
 
 class JamiePageController @Inject()(
+                                    apiConnector: CustomsFinancialsApiConnector,
                                     jamieInput: jamie_input_page,
                                     jamieDetails: jamie_details_page,
                                     jamieForm: JamieFormProvider,
