@@ -58,7 +58,7 @@ class AppConfigSpec extends SpecBase {
       appConfig.emailFrontendUrl mustBe "http://localhost:9898/manage-email-cds/service/customs-finance"
 
       appConfig.requestedStatements(CDSCashAccount) mustBe
-        "http://localhost:9396/customs/historic-statement/requested/CDSCashAccount"
+        "http://localhost:9396/customs/historic-statement/requested/cash-statement"
     }
   }
 
