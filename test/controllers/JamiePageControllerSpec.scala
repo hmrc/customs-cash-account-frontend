@@ -104,6 +104,7 @@ class JamiePageControllerSpec extends SpecBase {
       val ageString = "28"
       val ageInt = 28
       val niNumber = "QQ123456B"
+      val age = 41
 
       val jamieForm: JamieFormFields = JamieFormFields(name, ageInt)
       val personDetails: PersonDetails = PersonDetails(jamieForm, niNumber)

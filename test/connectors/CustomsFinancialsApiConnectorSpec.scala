@@ -40,6 +40,46 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
+  "getNiNumber" must {
+    "return PersonDetails when correct name is entered" in new Setup {
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+      when(requestBuilder.execute(any[HttpReads[Either[ErrorResponse, PersonDetails]]], any[ExecutionContext]))
+        .thenReturn(Future.successful(personDetails))
+      when(mockHttpClient.post(any[URL]())(any)).thenReturn(requestBuilder)
+
+      running(appWithHttpClient) {
+        val result: Either[ErrorResponse, PersonDetails] = await(connector().getNiNumber(name)(hc))
+        result mustBe Right(personDetails)
+      }
+    }
+    "return correct error response" when {
+      "API call gets INTERNAL_SERVER_ERROR as a response code" in new Setup {
+        when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+        when(requestBuilder.execute(any[HttpReads[Either[ErrorResponse, PersonDetails]]], any[ExecutionContext]))
+          .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", INTERNAL_SERVER_ERROR)))
+
+        when(mockHttpClient.post(any[URL]())(any)).thenReturn(requestBuilder)
+
+        running(appWithHttpClient) {
+          val result: Either[ErrorResponse, PersonDetails] = await(connector().getNiNumber(name)(hc))
+          result mustBe Left(InternalServerErrorErrorResponse)
+        }
+      }
+      "API call gets BAD_REQUEST Error as a response code" in new Setup {
+        when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+        when(requestBuilder.execute(any[HttpReads[Either[ErrorResponse, PersonDetails]]], any[ExecutionContext]))
+          .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", BAD_REQUEST)))
+
+        when(mockHttpClient.post(any[URL]())(any)).thenReturn(requestBuilder)
+
+        running(appWithHttpClient) {
+          val result: Either[ErrorResponse, PersonDetails] = await(connector().getNiNumber(name)(hc))
+          result mustBe Left(BadRequest)
+        }
+      }
+    }
+  }
+
   "getAccounts" must {
 
     "return all accounts available to the given EORI from the API service" in new Setup {
@@ -797,6 +837,14 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
   }
 
   trait Setup {
+    val name = "jamie"
+    val age = 28
+    val niNumber = "QQ123456B"
+
+    val jamieForm: JamieFormFields = JamieFormFields(name, age)
+    val personDetails: PersonDetails = PersonDetails(jamieForm, niNumber)
+
+
     private val traderEori = "12345678"
     private val cashAccountNumber = "987654"
     private val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"

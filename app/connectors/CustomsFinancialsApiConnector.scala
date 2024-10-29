@@ -65,7 +65,18 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
   // *************** JAMIE FORM PAGE ******************* //
 
   def getNiNumber(name: String)(implicit hc: HeaderCarrier): Future[Either[ErrorResponse, PersonDetails]] = {
-    ???
+    httpClient.post(url"$retrieveJamieNiNumberUrl")
+      .withBody[String](name)
+      .execute[PersonDetails]
+      .map(Right(_))
+  }.recover {
+    case UpstreamErrorResponse(_, INTERNAL_SERVER_ERROR, _, _) =>
+      logger.error("Internal Server error for gerNiNumber")
+      Left(InternalServerErrorErrorResponse)
+
+    case UpstreamErrorResponse(_, BAD_REQUEST, _, _) =>
+      logger.error("Bad request for getNiNumber")
+      Left(BadRequest)
   }
 
   // *************** JAMIE FORM PAGE ******************* //
