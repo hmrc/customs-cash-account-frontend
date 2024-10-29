@@ -16,6 +16,7 @@
 
 package config
 
+import models.FileRole.CDSCashAccount
 import play.api.Application
 import utils.SpecBase
 
@@ -55,6 +56,9 @@ class AppConfigSpec extends SpecBase {
       appConfig.customsDataStore mustBe "http://localhost:9893/customs-data-store"
 
       appConfig.emailFrontendUrl mustBe "http://localhost:9898/manage-email-cds/service/customs-finance"
+
+      appConfig.requestedStatements(CDSCashAccount) mustBe
+        "http://localhost:9396/customs/historic-statement/requested/cash-statement"
     }
   }
 

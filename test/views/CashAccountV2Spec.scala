@@ -26,7 +26,7 @@ import utils.TestData.*
 
 import java.time.LocalDate
 import forms.SearchTransactionsFormProvider
-import models.FileRole.CashStatement
+import models.FileRole.CDSCashAccount
 import models.metadata.CashStatementFileMetadata
 import play.api.data.Form
 
@@ -286,7 +286,7 @@ class CashAccountV2Spec extends ViewTestHelper {
           periodEndMonth = monthEnd,
           periodEndDay = dayEnd,
           fileFormat = FileFormat.Csv,
-          fileRole = CashStatement,
+          fileRole = CDSCashAccount,
           statementRequestId = Some("abc-defg-1234-abc")
         ),
         eori = eoriNumber

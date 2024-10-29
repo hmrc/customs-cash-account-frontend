@@ -110,7 +110,7 @@ class CashStatementsForEoriSpec extends SpecBase {
       periodEndMonth = month,
       periodEndDay = day,
       fileFormat = FileFormat.Pdf,
-      fileRole = FileRole.CashStatement,
+      fileRole = FileRole.CDSCashAccount,
       statementRequestId = Some("pdf-1234"))
 
     val csvMetadata: CashStatementFileMetadata = CashStatementFileMetadata(
@@ -121,7 +121,7 @@ class CashStatementsForEoriSpec extends SpecBase {
       periodEndMonth = month,
       periodEndDay = day,
       fileFormat = FileFormat.Csv,
-      fileRole = FileRole.CashStatement,
+      fileRole = FileRole.CDSCashAccount,
       statementRequestId = Some("csv-5678"))
 
     val pdfFile: CashStatementFile = CashStatementFile(

@@ -88,7 +88,7 @@ class CashStatementsByMonthSpec extends SpecBase {
       periodEndMonth = monthEnd,
       periodEndDay = dayEnd,
       fileFormat = FileFormat.Pdf,
-      fileRole = FileRole.CashStatement,
+      fileRole = FileRole.CDSCashAccount,
       statementRequestId = Some("pdf-1234"))
 
     val csvMetadata: CashStatementFileMetadata = CashStatementFileMetadata(
@@ -99,7 +99,7 @@ class CashStatementsByMonthSpec extends SpecBase {
       periodEndMonth = monthEnd,
       periodEndDay = dayEnd,
       fileFormat = FileFormat.Csv,
-      fileRole = FileRole.CashStatement,
+      fileRole = FileRole.CDSCashAccount,
       statementRequestId = Some("csv-5678"))
 
     val pdfFile: CashStatementFile = CashStatementFile(
