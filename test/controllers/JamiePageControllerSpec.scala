@@ -19,14 +19,13 @@ package controllers
 import connectors.{BadRequest, CustomsFinancialsApiConnector, InternalServerErrorErrorResponse}
 import forms.JamieFormProvider
 import models.{JamieFormFields, PersonDetails}
-import org.mockito.ArgumentMatchers.eq as eqTo
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.Application
 import play.api.test.Helpers.{POST, running}
 import utils.SpecBase
 import play.api.mvc.Result
 import play.api.test.Helpers.*
-import views.html.jamie_input_page
 import play.api.data.Form
 import play.api.inject.bind
 
