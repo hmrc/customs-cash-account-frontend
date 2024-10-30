@@ -15,6 +15,7 @@ class JamieDetailsPageSpec extends ViewTestHelper {
     shouldContainCorrectAgeField(view)
     shouldDisplayHelpAndSupportHeader(view)
     shouldDisplayHelpAndSupportTextAndLink(view)
+    shouldContainCorrectNiNumberField(view)
   }
 
   private def shouldContainCorrectTitle(viewDocument: Document) = {
@@ -23,6 +24,10 @@ class JamieDetailsPageSpec extends ViewTestHelper {
   
   private def shouldContainCorrectNameField(viewDocument: Document) = {
     viewDocument.getElementById("details-name").text mustBe "Name: Jamie"
+  }
+
+  private def shouldContainCorrectNiNumberField(viewDocument: Document) = {
+    viewDocument.getElementById("details-ni-number").text mustBe "NI Number: DF45667a"
   }
   
   private def shouldContainCorrectAgeField(viewDocument: Document) = {
@@ -48,8 +53,9 @@ class JamieDetailsPageSpec extends ViewTestHelper {
   trait Setup {
     val name = "Jamie"
     val age = 41
+    val niNumber = "DF45667a"
     val expectedBackLinkUrl: String =
       controllers.routes.JamiePageController.onPageLoad().url
-    val view: Document = Jsoup.parse(app.injector.instanceOf[jamie_details_page].apply(name, age).body)
+    val view: Document = Jsoup.parse(app.injector.instanceOf[jamie_details_page].apply(name, age, Some(niNumber)).body)
   }
 }

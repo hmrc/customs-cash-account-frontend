@@ -24,7 +24,7 @@
         newTabLink: components.newTabLink
 )
 
-@(name: String, age: Int)(
+@(name: String, age: Int, niNumber: Option[String])(
         implicit messages: Messages,
         appConfig: AppConfig,
         request: Request[_]
@@ -50,6 +50,11 @@
     @h2(
         msg = s"Age: $age",
         id = Some("details-age")
+    )
+
+    @h2(
+        msg = s"NI Number: ${niNumber.getOrElse("No Data")}",
+        id = Some("details-ni-number")
     )
 
     @h2(

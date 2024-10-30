@@ -60,7 +60,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
   private val retrieveCashTransactionsDetailUrl = s"$baseUrl/account/cash/transactions-detail"
   private val retrieveCashAccountStatementsUrl = s"$baseUrl/accounts/cashaccountstatementrequest/v1"
   private val retrieveCashAccountStatementSearchUrl = s"$baseUrl/account/cash/transaction-search"
-  private val retrieveJamieNiNumberUrl = s"$baseUrl/person-details/:name"
+  private val retrieveJamieNiNumberUrl = s"$baseUrl/person-details"
 
   // *************** JAMIE FORM PAGE ******************* //
 
@@ -71,7 +71,7 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       .map(Right(_))
   }.recover {
     case UpstreamErrorResponse(_, INTERNAL_SERVER_ERROR, _, _) =>
-      logger.error("Internal Server error for gerNiNumber")
+      logger.error("Internal Server error for getNiNumber")
       Left(InternalServerErrorErrorResponse)
 
     case UpstreamErrorResponse(_, BAD_REQUEST, _, _) =>

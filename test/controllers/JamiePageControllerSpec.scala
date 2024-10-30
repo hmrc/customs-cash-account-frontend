@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.CustomsFinancialsApiConnector
+import connectors.{BadRequest, CustomsFinancialsApiConnector, InternalServerErrorErrorResponse}
 import forms.JamieFormProvider
 import models.{JamieFormFields, PersonDetails}
 import org.mockito.ArgumentMatchers.eq as eqTo
@@ -29,7 +29,9 @@ import play.api.test.Helpers.*
 import views.html.jamie_input_page
 import play.api.data.Form
 import play.api.inject.bind
+
 import scala.concurrent.Future
+import org.mockito.ArgumentMatchers.any
 
 
 class JamiePageControllerSpec extends SpecBase {
@@ -47,7 +49,13 @@ class JamiePageControllerSpec extends SpecBase {
 
     "onSubmit" must {
       "return SEE_OTHER when form submission is successful" in new Setup {
-        val app: Application = application.build()
+        val app: Application = application
+          .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+          .build()
+
+        when(mockCustomsFinancialsApiConnector.getNiNumber(any)(any))
+          .thenReturn(Future.successful(Right(PersonDetails(name, niNumber))))
+
         running(app) {
           val request = fakeRequest(POST, routes.JamiePageController.onSubmit().url)
             .withFormUrlEncodedBody("name" -> name, "age" -> ageString)
@@ -55,7 +63,47 @@ class JamiePageControllerSpec extends SpecBase {
           val result: Future[Result] = route(app, request).value
           status(result) mustEqual SEE_OTHER
 
-          val expectedRedirectUrl = routes.JamiePageController.displayInputValues(name, ageInt).url
+          val expectedRedirectUrl = routes.JamiePageController.displayInputValues(name, ageInt, Some(niNumber)).url
+          redirectLocation(result).value mustEqual expectedRedirectUrl
+        }
+      }
+
+      "return SEE_OTHER and do not display NI number when API call fails due to internal server error" in new Setup {
+        val app: Application = application
+          .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+          .build()
+
+        when(mockCustomsFinancialsApiConnector.getNiNumber(any)(any))
+          .thenReturn(Future.successful(Left(InternalServerErrorErrorResponse)))
+
+        running(app) {
+          val request = fakeRequest(POST, routes.JamiePageController.onSubmit().url)
+            .withFormUrlEncodedBody("name" -> name, "age" -> ageString)
+
+          val result: Future[Result] = route(app, request).value
+          status(result) mustEqual SEE_OTHER
+
+          val expectedRedirectUrl = routes.JamiePageController.displayInputValues(name, ageInt, None).url
+          redirectLocation(result).value mustEqual expectedRedirectUrl
+        }
+      }
+
+      "return SEE_OTHER and do not display NI number when API call fails due to Bad Request" in new Setup {
+        val app: Application = application
+          .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+          .build()
+
+        when(mockCustomsFinancialsApiConnector.getNiNumber(any)(any))
+          .thenReturn(Future.successful(Left(BadRequest)))
+
+        running(app) {
+          val request = fakeRequest(POST, routes.JamiePageController.onSubmit().url)
+            .withFormUrlEncodedBody("name" -> name, "age" -> ageString)
+
+          val result: Future[Result] = route(app, request).value
+          status(result) mustEqual SEE_OTHER
+
+          val expectedRedirectUrl = routes.JamiePageController.displayInputValues(name, ageInt, None).url
           redirectLocation(result).value mustEqual expectedRedirectUrl
         }
       }
@@ -79,23 +127,6 @@ class JamiePageControllerSpec extends SpecBase {
           content must include("Numeric value expected")
         }
       }
-
-      "connect to API and retrieve NI with correct name input" in new Setup {
-        when(mockCustomsFinancialsApiConnector.getNiNumber(eqTo(name)))
-          .thenReturn(Future.successful(personDetails))
-
-        val app: Application = application
-          .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-          .build()
-
-        running(app) {
-          val request = fakeRequest(GET, routes.JamiePageController.displayInputValues(name, ageInt).url)
-          val result: Future[Result] = route(app, request).value
-
-          status(result) mustEqual OK
-          contentAsString(result) must include(s"NI Number: $niNumber")
-        }
-      }
     }
 
     trait Setup {
@@ -104,10 +135,6 @@ class JamiePageControllerSpec extends SpecBase {
       val ageString = "28"
       val ageInt = 28
       val niNumber = "QQ123456B"
-      val age = 41
-
-      val jamieForm: JamieFormFields = JamieFormFields(name, ageInt)
-      val personDetails: PersonDetails = PersonDetails(jamieForm, niNumber)
 
       val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
     }

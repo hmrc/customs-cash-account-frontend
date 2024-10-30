@@ -840,9 +840,8 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     val name = "jamie"
     val age = 28
     val niNumber = "QQ123456B"
-
-    val jamieForm: JamieFormFields = JamieFormFields(name, age)
-    val personDetails: PersonDetails = PersonDetails(jamieForm, niNumber)
+    
+    val personDetails: PersonDetails = PersonDetails(name, niNumber)
 
 
     private val traderEori = "12345678"

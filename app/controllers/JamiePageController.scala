@@ -52,13 +52,23 @@ class JamiePageController @Inject()(
       formWithErrors => {
         showFormWithErrors(formWithErrors)
       },
-      userData => Future.successful(
-        Redirect(routes.JamiePageController.displayInputValues(userData.name, userData.age)))
+      userData => {
+        apiConnector.getNiNumber(userData.name).flatMap {
+          case Right(personDetails) =>
+            val niNumber = personDetails.niNumber
+            Future.successful(Redirect(routes.JamiePageController
+              .displayInputValues(userData.name, userData.age, Some(niNumber))))
+
+          case Left(_) =>
+            Future.successful(Redirect(routes.JamiePageController
+              .displayInputValues(userData.name, userData.age, None)))
+        }
+      }
     )
   }
 
-  def displayInputValues(name: String, age: Int): Action[AnyContent] = Action.async {
-    implicit request => Future.successful(Ok(jamieDetails(name, age)))
+  def displayInputValues(name: String, age: Int, niNumber: Option[String]): Action[AnyContent] = Action.async {
+    implicit request => Future.successful(Ok(jamieDetails(name, age, niNumber)))
   }
 
   private def showFormWithErrors(formWithErrors: Form[JamieFormFields])
