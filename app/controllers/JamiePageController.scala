@@ -24,7 +24,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, 
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.*
 import play.api.data.Form
-import play.api.i18n.Lang.logger
 import play.api.i18n.Messages
 
 import javax.inject.Inject
@@ -56,19 +55,15 @@ class JamiePageController @Inject()(
         apiConnector.getNiNumber(userData.name).flatMap {
           case Right(personDetails) =>
             val niNumber = personDetails.niNumber
-            Future.successful(Redirect(routes.JamiePageController
+            Future.successful(Redirect(routes.JamieDetailsPageController
               .displayInputValues(userData.name, userData.age, Some(niNumber))))
 
           case Left(_) =>
-            Future.successful(Redirect(routes.JamiePageController
+            Future.successful(Redirect(routes.JamieDetailsPageController
               .displayInputValues(userData.name, userData.age, None)))
         }
       }
     )
-  }
-
-  def displayInputValues(name: String, age: Int, niNumber: Option[String]): Action[AnyContent] = Action.async {
-    implicit request => Future.successful(Ok(jamieDetails(name, age, niNumber)))
   }
 
   private def showFormWithErrors(formWithErrors: Form[JamieFormFields])

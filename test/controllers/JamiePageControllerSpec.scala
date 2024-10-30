@@ -63,12 +63,12 @@ class JamiePageControllerSpec extends SpecBase {
           val result: Future[Result] = route(app, request).value
           status(result) mustEqual SEE_OTHER
 
-          val expectedRedirectUrl = routes.JamiePageController.displayInputValues(name, ageInt, Some(niNumber)).url
+          val expectedRedirectUrl = routes.JamieDetailsPageController.displayInputValues(name, ageInt, Some(niNumber)).url
           redirectLocation(result).value mustEqual expectedRedirectUrl
         }
       }
 
-      "return SEE_OTHER and do not display NI number when API call fails due to internal server error" in new Setup {
+      "return SEE_OTHER and do not display NI number when API call fails due to Internal_Server_Error" in new Setup {
         val app: Application = application
           .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
           .build()
@@ -83,12 +83,12 @@ class JamiePageControllerSpec extends SpecBase {
           val result: Future[Result] = route(app, request).value
           status(result) mustEqual SEE_OTHER
 
-          val expectedRedirectUrl = routes.JamiePageController.displayInputValues(name, ageInt, None).url
+          val expectedRedirectUrl = routes.JamieDetailsPageController.displayInputValues(name, ageInt, None).url
           redirectLocation(result).value mustEqual expectedRedirectUrl
         }
       }
 
-      "return SEE_OTHER and do not display NI number when API call fails due to Bad Request" in new Setup {
+      "return SEE_OTHER and do not display NI number when API call fails due to Bad_Request" in new Setup {
         val app: Application = application
           .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
           .build()
@@ -103,7 +103,7 @@ class JamiePageControllerSpec extends SpecBase {
           val result: Future[Result] = route(app, request).value
           status(result) mustEqual SEE_OTHER
 
-          val expectedRedirectUrl = routes.JamiePageController.displayInputValues(name, ageInt, None).url
+          val expectedRedirectUrl = routes.JamieDetailsPageController.displayInputValues(name, ageInt, None).url
           redirectLocation(result).value mustEqual expectedRedirectUrl
         }
       }

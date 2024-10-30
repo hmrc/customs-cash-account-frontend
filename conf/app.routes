@@ -37,7 +37,7 @@ GET         /not-subscribed-for-cds                 controllers.UnauthorisedCont
 
 GET         /v2/jamie_input_page                    controllers.JamiePageController.onPageLoad()
 POST        /v2/jamie_input_page                    controllers.JamiePageController.onSubmit()
-GET         /v2/jamie_details_page                  controllers.JamiePageController.displayInputValues(name: String, age: Int, niNumber: Option[String])
+GET         /v2/jamie_details_page                  controllers.JamieDetailsPageController.displayInputValues(name: String, age: Int, niNumber: Option[String])
 
 GET         /logout-survey                          controllers.LogoutController.logout
 GET         /logout                                 controllers.LogoutController.logoutNoSurvey

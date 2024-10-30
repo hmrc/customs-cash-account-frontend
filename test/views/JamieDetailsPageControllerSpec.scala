@@ -6,7 +6,7 @@ import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import views.html.jamie_details_page
 
-class JamieDetailsPageSpec extends ViewTestHelper {
+class JamieDetailsPageControllerSpec extends ViewTestHelper {
   "view should" in new Setup {
     titleShouldBeCorrect(view, "cf.cash-account.detail.title")
     shouldContainBackLinkUrl(view, expectedBackLinkUrl)
