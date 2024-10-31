@@ -17,6 +17,7 @@
 package controllers
 
 import config.AppConfig
+import connectors.CustomsFinancialsApiConnector
 import forms.JamieFormProvider
 import models.JamieFormFields
 import play.api.data.Form
@@ -29,10 +30,18 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class JamieDetailsPageController @Inject(
                                           jamieDetails: jamie_details_page,
+                                          apiConnector: CustomsFinancialsApiConnector,
                                          )(implicit mcc: MessagesControllerComponents,
                                            ec: ExecutionContext, config: AppConfig) extends FrontendController(mcc) {
-  
-  def displayInputValues(name: String, age: Int, niNumber: Option[String]): Action[AnyContent] = Action.async {
-    implicit request => Future.successful(Ok(jamieDetails(name, age, niNumber)))
+
+  def getNiNumberAndDisplay(name: String, age: Int): Action[AnyContent] = Action.async{
+    implicit request =>
+    apiConnector.getNiNumber(name).flatMap {
+      case Right(personDetails) =>
+        val niNumber = personDetails.niNumber
+        Future.successful(Ok(jamieDetails(name, age, Some(niNumber))))
+      case Left(_) =>
+        Future.successful(Ok(jamieDetails(name, age, None)))
+    }
   }
 }

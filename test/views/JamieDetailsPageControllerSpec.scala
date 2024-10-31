@@ -55,7 +55,7 @@ class JamieDetailsPageControllerSpec extends ViewTestHelper {
     val age = 41
     val niNumber = "DF45667a"
     val expectedBackLinkUrl: String =
-      controllers.routes.JamiePageController.onPageLoad().url
+      controllers.routes.JamiePageController.onPageLoad(None, None).url
     val view: Document = Jsoup.parse(app.injector.instanceOf[jamie_details_page].apply(name, age, Some(niNumber)).body)
   }
 }

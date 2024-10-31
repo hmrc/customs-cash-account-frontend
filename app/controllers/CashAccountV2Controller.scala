@@ -76,7 +76,7 @@ class CashAccountV2Controller @Inject()(authenticate: IdentifierAction,
       },
       enteredValue => Future.successful {
         if (enteredValue == "JAMIE LETTS") {
-          Redirect(routes.JamiePageController.onPageLoad())
+          Redirect(routes.JamiePageController.onPageLoad(None, None))
         } else {
           Redirect(routes.DeclarationDetailController.displaySearchDetails(page, enteredValue))
         }

@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.AppConfig
 import connectors.{BadRequest, CustomsFinancialsApiConnector, InternalServerErrorErrorResponse}
 import forms.JamieFormProvider
 import models.{JamieFormFields, PersonDetails}
@@ -31,17 +32,40 @@ import play.api.inject.bind
 
 import scala.concurrent.Future
 import org.mockito.ArgumentMatchers.any
+import play.api.i18n.Messages
+import views.html.jamie_input_page
 
 
 class JamiePageControllerSpec extends SpecBase {
 
   "onPageLoad" must {
-    "return ok" in new Setup {
+    "return ok with an empty form" in new Setup {
       val app: Application = application.build()
       running(app) {
-        val request = fakeRequest(GET, routes.JamiePageController.onPageLoad().url)
+        val request = fakeRequest(GET, routes.JamiePageController.onPageLoad(None, None).url)
         val result: Future[Result] = route(app, request).value
         status(result) mustEqual OK
+      }
+    }
+
+    "return ok with a pre-filled form" in new Setup {
+      val app: Application = application.build()
+
+      implicit val msgs: Messages = messages(app)
+      implicit val config: AppConfig = appConfig(app)
+
+      running(app) {
+        implicit val request = fakeRequest(GET, routes.JamiePageController.onPageLoad(Some(name), Some(ageInt)).url)
+        val result: Future[Result] = route(app, request).value
+
+        val formProvider:JamieFormProvider = app.injector.instanceOf[JamieFormProvider]
+        val preFilledForm = formProvider().fill(JamieFormFields(name, ageInt))
+
+        status(result) mustEqual OK
+
+        val content = contentAsString(result)
+        content must include("test name")
+        content must include("28")
       }
     }
   }
@@ -62,47 +86,7 @@ class JamiePageControllerSpec extends SpecBase {
           val result: Future[Result] = route(app, request).value
           status(result) mustEqual SEE_OTHER
 
-          val expectedRedirectUrl = routes.JamieDetailsPageController.displayInputValues(name, ageInt, Some(niNumber)).url
-          redirectLocation(result).value mustEqual expectedRedirectUrl
-        }
-      }
-
-      "return SEE_OTHER and do not display NI number when API call fails due to Internal_Server_Error" in new Setup {
-        val app: Application = application
-          .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-          .build()
-
-        when(mockCustomsFinancialsApiConnector.getNiNumber(any)(any))
-          .thenReturn(Future.successful(Left(InternalServerErrorErrorResponse)))
-
-        running(app) {
-          val request = fakeRequest(POST, routes.JamiePageController.onSubmit().url)
-            .withFormUrlEncodedBody("name" -> name, "age" -> ageString)
-
-          val result: Future[Result] = route(app, request).value
-          status(result) mustEqual SEE_OTHER
-
-          val expectedRedirectUrl = routes.JamieDetailsPageController.displayInputValues(name, ageInt, None).url
-          redirectLocation(result).value mustEqual expectedRedirectUrl
-        }
-      }
-
-      "return SEE_OTHER and do not display NI number when API call fails due to Bad_Request" in new Setup {
-        val app: Application = application
-          .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-          .build()
-
-        when(mockCustomsFinancialsApiConnector.getNiNumber(any)(any))
-          .thenReturn(Future.successful(Left(BadRequest)))
-
-        running(app) {
-          val request = fakeRequest(POST, routes.JamiePageController.onSubmit().url)
-            .withFormUrlEncodedBody("name" -> name, "age" -> ageString)
-
-          val result: Future[Result] = route(app, request).value
-          status(result) mustEqual SEE_OTHER
-
-          val expectedRedirectUrl = routes.JamieDetailsPageController.displayInputValues(name, ageInt, None).url
+          val expectedRedirectUrl = routes.JamieDetailsPageController.getNiNumberAndDisplay(name, ageInt).url
           redirectLocation(result).value mustEqual expectedRedirectUrl
         }
       }

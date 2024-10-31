@@ -32,7 +32,7 @@
 
 @main_template(
     pageTitle = Some(messages("cf.cash-account.detail.title")),
-    backLink = Some(routes.JamiePageController.onPageLoad().url),
+    backLink = Some(routes.JamiePageController.onPageLoad(Some(name), Some(age)).url),
     fullWidth = false,
     help = true,
 ) {

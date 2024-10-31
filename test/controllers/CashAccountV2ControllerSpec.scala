@@ -408,7 +408,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
           .build()
 
         running(app) {
-          val request = FakeRequest(GET, routes.JamiePageController.onPageLoad().url)
+          val request = FakeRequest(GET, routes.JamiePageController.onPageLoad(None, None).url)
           val result = route(app, request).value
 
           status(result) mustEqual OK

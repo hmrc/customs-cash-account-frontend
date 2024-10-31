@@ -35,9 +35,9 @@ GET         /account-unavailable                    controllers.CashAccountContr
 GET         /v2/account-unavailable                 controllers.CashAccountV2Controller.showAccountUnavailable
 GET         /not-subscribed-for-cds                 controllers.UnauthorisedController.onPageLoad
 
-GET         /v2/jamie_input_page                    controllers.JamiePageController.onPageLoad()
+GET         /v2/jamie_input_page                    controllers.JamiePageController.onPageLoad(name: Option[String], age: Option[Int])
 POST        /v2/jamie_input_page                    controllers.JamiePageController.onSubmit()
-GET         /v2/jamie_details_page                  controllers.JamieDetailsPageController.displayInputValues(name: String, age: Int, niNumber: Option[String])
+GET         /v2/jamie_details_page                  controllers.JamieDetailsPageController.getNiNumberAndDisplay(name: String, age: Int)
 
 GET         /logout-survey                          controllers.LogoutController.logout
 GET         /logout                                 controllers.LogoutController.logoutNoSurvey

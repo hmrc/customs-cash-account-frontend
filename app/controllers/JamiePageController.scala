@@ -42,8 +42,12 @@ class JamiePageController @Inject()(
 
   val form: Form[JamieFormFields] = jamieForm()
 
-  def onPageLoad(): Action[AnyContent] = Action.async {
-    implicit request => Future.successful(Ok(jamieInput(form)))
+  def onPageLoad(name: Option[String], age: Option[Int]): Action[AnyContent] = Action.async { implicit request =>
+    val displayForm = (name, age) match {
+      case (Some(name), Some(age)) => form.fill(JamieFormFields(name, age))
+      case _ => form
+    }
+    Future.successful(Ok(jamieInput(displayForm)))
   }
 
   def onSubmit(): Action[AnyContent] = Action.async { implicit request =>
@@ -52,17 +56,9 @@ class JamiePageController @Inject()(
         showFormWithErrors(formWithErrors)
       },
       userData => {
-        apiConnector.getNiNumber(userData.name).flatMap {
-          case Right(personDetails) =>
-            val niNumber = personDetails.niNumber
             Future.successful(Redirect(routes.JamieDetailsPageController
-              .displayInputValues(userData.name, userData.age, Some(niNumber))))
-
-          case Left(_) =>
-            Future.successful(Redirect(routes.JamieDetailsPageController
-              .displayInputValues(userData.name, userData.age, None)))
+              .getNiNumberAndDisplay(userData.name, userData.age)))
         }
-      }
     )
   }
 
