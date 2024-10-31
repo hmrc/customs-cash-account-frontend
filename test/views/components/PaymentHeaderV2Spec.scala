@@ -36,7 +36,7 @@ class PaymentHeaderV2Spec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application.build()
+    val app: Application = buildApp
     implicit val msgs: Messages = messages(app)
 
     protected def expectedHeaderCells: Seq[HeadCell] = {

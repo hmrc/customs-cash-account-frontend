@@ -111,7 +111,7 @@ class ConfirmationPageControllerSpec extends SpecBase {
 
     val cashDates: CashTransactionDates = CashTransactionDates(start = fromDate, end = toDate)
 
-    val app: Application = application
+    val app: Application = applicationBuilder
       .overrides(
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
         bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache),

@@ -324,7 +324,7 @@ class SelectedTransactionsControllerSpec extends SpecBase {
     val accountResCommon02: AccountResponseCommon = AccountResponseCommon(
       "OK", Some("602-Exceeded maximum threshold of transactions"), "2021-12-17T09:30:47Z", None)
 
-    val app: Application = application
+    val app: Application = applicationBuilder
       .overrides(
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
         bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache)

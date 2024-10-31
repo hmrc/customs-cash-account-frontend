@@ -35,7 +35,7 @@ class FooterLinksSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application.build()
+    val app: Application = buildApp
 
     implicit val msgs: Messages = messages(app)
     implicit val config: AppConfig = app.injector.instanceOf[AppConfig]

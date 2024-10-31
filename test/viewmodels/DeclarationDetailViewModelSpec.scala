@@ -211,7 +211,7 @@ class DeclarationDetailViewModelSpec extends SpecBase {
 
     def normalizeHtml(html: String): String = html.replaceAll("\\s+", singleSpace).trim
 
-    val app: Application = application.build()
+    val app: Application = buildApp
     implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
   }
 }

@@ -57,7 +57,7 @@ class P1Spec extends SpecBase {
     val link: Option[Html] = Some(Html("test_Link"))
     val tabLink: Option[Html] = Some(Html("tab_link"))
 
-    val app: Application = application.build()
+    val app: Application = buildApp
 
     implicit val msgs: Messages = messages(app)
 

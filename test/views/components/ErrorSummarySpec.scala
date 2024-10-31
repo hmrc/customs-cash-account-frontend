@@ -46,7 +46,7 @@ class ErrorSummarySpec extends SpecBase {
 
       when(mockGovSummary.apply(any[ErrorSummary])).thenReturn(govSummaryHtmlFormat)
 
-      val app: Application = application.overrides(
+      val app: Application = applicationBuilder.overrides(
         inject.bind[GovukErrorSummary].toInstance(mockGovSummary)
       ).build()
 
@@ -72,7 +72,7 @@ class ErrorSummarySpec extends SpecBase {
 
       when(mockGovSummary.apply(any[ErrorSummary])).thenReturn(govSummaryHtmlFormat)
 
-      val app: Application = application.overrides(
+      val app: Application = applicationBuilder.overrides(
         inject.bind[GovukErrorSummary].toInstance(mockGovSummary)
       ).build()
 
@@ -102,7 +102,7 @@ class ErrorSummarySpec extends SpecBase {
 
       when(mockGovSummary.apply(any[ErrorSummary])).thenReturn(govSummaryHtmlFormat)
 
-      val app: Application = application.overrides(
+      val app: Application = applicationBuilder.overrides(
         inject.bind[GovukErrorSummary].toInstance(mockGovSummary)
       ).build()
 
@@ -132,7 +132,7 @@ class ErrorSummarySpec extends SpecBase {
 
       when(mockGovSummary.apply(any[ErrorSummary])).thenReturn(govSummaryHtmlFormat)
 
-      val app: Application = application.overrides(
+      val app: Application = applicationBuilder.overrides(
         inject.bind[GovukErrorSummary].toInstance(mockGovSummary)
       ).build()
 
@@ -162,7 +162,7 @@ class ErrorSummarySpec extends SpecBase {
 
       when(mockGovSummary.apply(any[ErrorSummary])).thenReturn(govSummaryHtmlFormat)
 
-      val app: Application = application.overrides(
+      val app: Application = applicationBuilder.overrides(
         inject.bind[GovukErrorSummary].toInstance(mockGovSummary)
       ).build()
 

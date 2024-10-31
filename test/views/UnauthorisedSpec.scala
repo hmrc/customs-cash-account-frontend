@@ -57,7 +57,7 @@ class UnauthorisedSpec extends SpecBase {
     val deskProLinkText = "Is this page not working properly? (opens in new tab)"
     val cdsSubscribeUrl = "https://www.tax.service.gov.uk/customs-enrolment-services/cds/subscribe"
 
-    val app: Application = application.build()
+    val app: Application = buildApp
 
     implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
     implicit val msg: Messages = messages(app)

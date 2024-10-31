@@ -53,7 +53,7 @@ class VerifyYourEmailSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application.build()
+    val app: Application = buildApp
     val nextPageUrl = "test_url"
     val email: Option[String] = Some("test@test.com")
 

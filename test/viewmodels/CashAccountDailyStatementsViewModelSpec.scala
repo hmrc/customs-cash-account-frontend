@@ -241,7 +241,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
 
     val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
 
-    val app: Application = application.build()
+    val app: Application = buildApp
     implicit val msgs: Messages = messages(app)
     implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
   }

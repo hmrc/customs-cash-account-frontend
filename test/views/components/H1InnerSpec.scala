@@ -77,7 +77,7 @@ class H1InnerSpec extends SpecBase {
 
   trait Setup {
 
-    val app: Application = application.build()
+    val app: Application = buildApp
     val msgKey: String = "cf.message"
     val innerMsgKey: String = "cf.message.inner"
     val idValue: Option[String] = Some("test-id")

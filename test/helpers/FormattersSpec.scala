@@ -126,7 +126,7 @@ class FormattersSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application.build()
+    val app: Application = buildApp
     implicit val msg: Messages = messages(app)
     val date: LocalDate = LocalDate.parse("2020-07-21")
   }

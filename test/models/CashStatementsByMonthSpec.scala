@@ -61,7 +61,7 @@ class CashStatementsByMonthSpec extends SpecBase {
 
   trait Setup {
 
-    val app: Application = application.build()
+    val app: Application = buildApp
     implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
     val year = 2024

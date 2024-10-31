@@ -163,7 +163,7 @@ class inputMonthAndYearSpec extends SpecBase {
       val id: String = "value"
       val headline: String = "Date of birth"
 
-      val app: Application = application.build()
+      val app: Application = buildApp
     }
   }
 }

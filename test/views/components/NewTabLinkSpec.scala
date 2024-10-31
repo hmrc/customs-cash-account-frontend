@@ -98,7 +98,7 @@ class NewTabLinkSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application.build()
+    val app: Application = buildApp
 
     val linkMessage: String = "go to test page"
     val href = "www.test.com"

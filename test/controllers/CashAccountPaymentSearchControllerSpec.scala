@@ -121,14 +121,13 @@ class CashAccountPaymentSearchControllerSpec extends SpecBase {
       AccountStatusOpen,
       CDSCashBalance(Some(BigDecimal(123456.78))))
 
-    val app: Application = application
+    val app: Application = applicationBuilder
       .overrides(
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
         bind[CashAccountSearchRepository].toInstance(mockCashAccountSearchRepo)
       ).build()
 
     implicit val msgs: Messages = messages(app)
-    implicit val config: AppConfig = appConfig(app)
 
     val noResultsReturnedMessage: String = msgs(
       "cf.cash-account.detail.declaration.search-no-results-guidance-not-returned-any-results", PAYMENT_SEARCH_VALUE)

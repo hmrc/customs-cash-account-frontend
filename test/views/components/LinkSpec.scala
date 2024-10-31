@@ -59,7 +59,7 @@ class LinkSpec extends SpecBase {
     val testPreLinkMsg = "preLink_message"
     val testPostLinkMsg = "postLink_message"
 
-    val app: Application = application.build()
+    val app: Application = buildApp
 
     implicit val msgs: Messages = messages(app)
 

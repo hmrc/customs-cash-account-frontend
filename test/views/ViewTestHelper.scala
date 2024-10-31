@@ -27,9 +27,8 @@ import utils.SpecBase
 
 trait ViewTestHelper extends SpecBase {
 
-  implicit lazy val app: Application = application.build()
+  implicit lazy val app: Application = buildApp
   implicit val messages: Messages = messages(app)
-  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest()
 
   def titleShouldBeCorrect(view: Document,

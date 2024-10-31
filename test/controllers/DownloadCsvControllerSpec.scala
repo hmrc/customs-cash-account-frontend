@@ -50,7 +50,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -69,7 +69,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -112,7 +112,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -132,7 +132,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -154,7 +154,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Left(UnknownException)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -172,7 +172,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
         ).configure("features.fixed-systemdate-for-tests" -> "true"
@@ -197,7 +197,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(someCan), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
           bind[AuditingService].toInstance(mockAuditingService)
@@ -222,7 +222,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(None))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
         ).configure("features.fixed-systemdate-for-tests" -> "true"
@@ -237,7 +237,7 @@ class DownloadCsvControllerSpec extends SpecBase {
 
     "paginator" should {
       "be compatible with the page and mrn query parameter" in new Setup {
-        val app: Application = application
+        val app: Application = applicationBuilder
           .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
           .configure("application.cash-account.numberOfDaysToShow" -> "10")
           .build()
@@ -279,7 +279,7 @@ class DownloadCsvControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsDetail(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(TooManyTransactionsRequested)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
       running(app) {
@@ -445,7 +445,7 @@ class DownloadCsvControllerSpec extends SpecBase {
 
     val cashTransactionResponse: CashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements)
 
-    val newApp: Application = application
+    val newApp: Application = applicationBuilder
       .overrides(
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
         bind[AuditingService].toInstance(mockAuditingService)

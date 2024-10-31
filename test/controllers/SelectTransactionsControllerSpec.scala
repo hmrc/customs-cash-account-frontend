@@ -197,7 +197,7 @@ class SelectTransactionsControllerSpec extends SpecBase {
 
     val day: String = "1"
 
-    val app: Application = application
+    val app: Application = applicationBuilder
       .overrides(
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
         bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache)

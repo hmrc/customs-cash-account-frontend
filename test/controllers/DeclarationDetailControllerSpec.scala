@@ -535,11 +535,10 @@ class DeclarationDetailControllerSpec extends SpecBase {
 
     val declarationWrapper: DeclarationWrapper = DeclarationWrapper(declarationSearch)
 
-    val app: Application = application
+    val app: Application = applicationBuilder
       .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
       .build()
 
     implicit val msgs: Messages = messages(app)
-    implicit val config: AppConfig = appConfig(app)
   }
 }

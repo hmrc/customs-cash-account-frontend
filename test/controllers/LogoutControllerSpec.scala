@@ -51,7 +51,7 @@ class LogoutControllerSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application
+    val app: Application = applicationBuilder
       .configure("feedback.url" -> "/some-continue", "feedback.source" -> "/CDS-FIN")
       .build()
   }

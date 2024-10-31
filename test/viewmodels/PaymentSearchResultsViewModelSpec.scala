@@ -137,7 +137,7 @@ class PaymentSearchResultsViewModelSpec extends SpecBase {
     val can: String = "12345678"
     val balance: BigDecimal = BigDecimal(8788.00)
 
-    val app: Application = application.build()
+    val app: Application = buildApp
 
     implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
     implicit val msgs: Messages = messages(app)

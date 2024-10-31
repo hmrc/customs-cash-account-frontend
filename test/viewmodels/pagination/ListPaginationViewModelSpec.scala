@@ -227,8 +227,7 @@ class ListPaginationViewModelSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application.build()
-    implicit val config: AppConfig = appConfig(app)
+    val app: Application = buildApp
     implicit val msgs: Messages = messages(app)
 
     val testHref = "href"

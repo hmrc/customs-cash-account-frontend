@@ -87,7 +87,7 @@ class EmailActionSpec extends SpecBase {
     val eori = "GB12345678"
     val mockDataStoreConnector: CustomsDataStoreConnector = mock[CustomsDataStoreConnector]
 
-    val app: Application = application.overrides(
+    val app: Application = applicationBuilder.overrides(
       inject.bind[CustomsDataStoreConnector].toInstance(mockDataStoreConnector)
     ).build()
 

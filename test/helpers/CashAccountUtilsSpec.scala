@@ -31,7 +31,7 @@ class CashAccountUtilsSpec extends SpecBase {
 
   when(mockDateTimeService.localDateTime()).thenReturn(LocalDateTime.parse("2020-04-19T09:30:59"))
 
-  val app: Application = application
+  val app: Application = applicationBuilder
     .overrides(
       bind[DateTimeService].toInstance(mockDateTimeService)
     ).build()

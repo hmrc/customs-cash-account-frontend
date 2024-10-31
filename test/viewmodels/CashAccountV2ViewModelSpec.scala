@@ -255,7 +255,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     val size: Long = 300L
     val totalElements = 8
 
-    val app: Application = application.build()
+    val app: Application = buildApp
 
     implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
     implicit val msgs: Messages = messages(app)

@@ -215,7 +215,7 @@ class RequestedTransactionsControllerSpec extends SpecBase {
     val cashTransactionResponse: CashTransactions =
       CashTransactions(listOfPendingTransactions, cashDailyStatements)
 
-    val app: Application = application
+    val app: Application = applicationBuilder
       .overrides(
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
         bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache)

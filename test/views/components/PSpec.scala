@@ -55,7 +55,7 @@ class PSpec extends SpecBase {
     val classes = "custom_class"
     val defaultClass = "govuk-body"
 
-    val app: Application = application.build()
+    val app: Application = buildApp
 
     implicit val msgs: Messages = messages(app)
 

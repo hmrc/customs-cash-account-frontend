@@ -157,7 +157,7 @@ class CashAccountBalanceSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application.build()
+    val app: Application = buildApp
     implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
     implicit val msgs: Messages = messages(app)
 

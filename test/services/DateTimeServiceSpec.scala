@@ -27,7 +27,7 @@ class DateTimeServiceSpec extends SpecBase {
   "DateTimeService" should {
 
     "return the future date as system date/time when fixed-systemdate-for-tests is enabled" in new Setup {
-      val newApp: GuiceApplicationBuilder = application.configure("features.fixed-systemdate-for-tests" -> true)
+      val newApp: GuiceApplicationBuilder = applicationBuilder.configure("features.fixed-systemdate-for-tests" -> true)
 
       override val appConfig: AppConfig = newApp.injector().instanceOf[AppConfig]
       override val service = new DateTimeService(appConfig)
@@ -37,7 +37,7 @@ class DateTimeServiceSpec extends SpecBase {
     }
 
     "return the future date as local date time when fixed-systemdate-for-tests is enabled" in new Setup {
-      val newApp: GuiceApplicationBuilder = application.configure("features.fixed-systemdate-for-tests" -> true)
+      val newApp: GuiceApplicationBuilder = applicationBuilder.configure("features.fixed-systemdate-for-tests" -> true)
 
       override val appConfig: AppConfig = newApp.injector().instanceOf[AppConfig]
       override val service = new DateTimeService(appConfig)
@@ -47,7 +47,7 @@ class DateTimeServiceSpec extends SpecBase {
     }
 
     "return the future date as utc when fixed-systemdate-for-tests is enabled" in new Setup {
-      val newApp: GuiceApplicationBuilder = application.configure("features.fixed-systemdate-for-tests" -> true)
+      val newApp: GuiceApplicationBuilder = applicationBuilder.configure("features.fixed-systemdate-for-tests" -> true)
 
       override val appConfig: AppConfig = newApp.injector().instanceOf[AppConfig]
       override val service = new DateTimeService(appConfig)
@@ -57,7 +57,7 @@ class DateTimeServiceSpec extends SpecBase {
     }
 
     "return the time now when fixed-systemdate-for-tests is disabled" in new Setup {
-      val newApp: GuiceApplicationBuilder = application.configure("features.fixed-systemdate-for-tests" -> false)
+      val newApp: GuiceApplicationBuilder = applicationBuilder.configure("features.fixed-systemdate-for-tests" -> false)
 
       override val appConfig: AppConfig = newApp.injector().instanceOf[AppConfig]
       override val service = new DateTimeService(appConfig)
@@ -77,7 +77,7 @@ class DateTimeServiceSpec extends SpecBase {
     val fixedTestDateTime: LocalDateTime =
       LocalDateTime.of(LocalDate.of(year, month, day), LocalTime.of(hour, minute))
 
-    val appConfig: AppConfig = application.injector().instanceOf[AppConfig]
+    val appConfig: AppConfig = applicationBuilder.injector().instanceOf[AppConfig]
     val service = new DateTimeService(appConfig)
   }
 }

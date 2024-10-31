@@ -149,7 +149,7 @@ class ResultsPageSummarySpec extends SpecBase {
     val fromDate: LocalDate = LocalDate.of(year, month3rd, day8th)
     val toDate: LocalDate = LocalDate.of(year, month4th, day10th)
 
-    val app: Application = application.build()
+    val app: Application = buildApp
 
     implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 

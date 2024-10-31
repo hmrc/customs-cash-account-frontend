@@ -102,7 +102,7 @@ class InputTextSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application.build()
+    val app: Application = buildApp
     implicit val msg: Messages = messages(app)
 
     val validForm: Form[String] = new SearchTransactionsFormProvider().apply().bind(Map("value" -> "GB123456789012"))

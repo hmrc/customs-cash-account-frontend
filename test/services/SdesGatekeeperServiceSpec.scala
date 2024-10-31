@@ -69,7 +69,7 @@ class SdesGatekeeperServiceSpec extends SpecBase {
 
   trait Setup {
 
-    val app: Application = application.build()
+    val app: Application = buildApp
     implicit val msg: Messages = messages(app)
 
     val sdesGatekeeperService = new SdesGatekeeperService()

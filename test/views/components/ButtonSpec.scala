@@ -49,7 +49,7 @@ class ButtonSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application.build()
+    val app: Application = buildApp
     val msgKey: String = "cf.verify.your.email.change.button"
     val hrefValue = "www.test.com"
     val classesValue = "govuk-!-margin-bottom-7"
