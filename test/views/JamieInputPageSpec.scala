@@ -21,7 +21,7 @@ import forms.JamieFormProvider
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.i18n.Messages
-import views.html.jamie_form_page
+import views.html.jamie_input_page
 
 
 class JamieInputPageSpec extends ViewTestHelper {
@@ -84,6 +84,6 @@ class JamieInputPageSpec extends ViewTestHelper {
   trait Setup {
     val form = new JamieFormProvider()()
 
-    val view: Document = Jsoup.parse(app.injector.instanceOf[jamie_form_page].apply(form).body)
+    val view: Document = Jsoup.parse(app.injector.instanceOf[jamie_input_page].apply(form).body)
   }
 }

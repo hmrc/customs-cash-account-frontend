@@ -19,7 +19,7 @@ package controllers
 import config.{AppConfig, ErrorHandler}
 import connectors.CustomsFinancialsApiConnector
 import forms.JamieFormProvider
-import models.{JamieFormFields, PersonDetails}
+import models.JamieFormFields
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.*
@@ -44,7 +44,7 @@ class JamiePageController @Inject()(
 
   def onPageLoad(name: Option[String], age: Option[Int]): Action[AnyContent] = Action.async { implicit request =>
     val displayForm = (name, age) match {
-      case (Some(name), Some(age)) => form.fill(JamieFormFields(name, age))
+      case (Some(n), Some(a)) => form.fill(JamieFormFields(n, a))
       case _ => form
     }
     Future.successful(Ok(jamieInput(displayForm)))

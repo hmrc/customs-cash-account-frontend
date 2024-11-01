@@ -58,9 +58,6 @@ class JamiePageControllerSpec extends SpecBase {
         implicit val request = fakeRequest(GET, routes.JamiePageController.onPageLoad(Some(name), Some(ageInt)).url)
         val result: Future[Result] = route(app, request).value
 
-        val formProvider:JamieFormProvider = app.injector.instanceOf[JamieFormProvider]
-        val preFilledForm = formProvider().fill(JamieFormFields(name, ageInt))
-
         status(result) mustEqual OK
 
         val content = contentAsString(result)

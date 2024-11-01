@@ -18,12 +18,9 @@ package controllers
 
 import config.AppConfig
 import connectors.CustomsFinancialsApiConnector
-import forms.JamieFormProvider
-import models.JamieFormFields
-import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.{jamie_details_page, jamie_input_page}
+import views.html.jamie_details_page
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

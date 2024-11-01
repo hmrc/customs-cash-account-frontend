@@ -44,7 +44,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import models.request.CashAccountStatementRequestDetail.jsonBodyWritable
 import models.response.CashAccountTransactionSearchResponseDetail
-import play.api.libs.json.{JsResult, Json}
+import play.api.libs.json.Json
 import utils.EtmpErrorCode
 
 class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
