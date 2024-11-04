@@ -32,7 +32,7 @@ class ButtonSpec extends SpecBase {
       "it contains msg, href and classes value" in new Setup {
         private val btnComponentAsText = buttonComponent.text()
 
-        btnComponentAsText.contains(messages(app)(msgKey)) mustBe true
+        btnComponentAsText.contains(messages(msgKey)) mustBe true
         buttonComponent.html().contains(hrefValue) mustBe true
 
         buttonComponent.getElementsByClass(classesValue).size() mustBe 1
@@ -41,7 +41,7 @@ class ButtonSpec extends SpecBase {
       "it does not contain href and classes" in new Setup {
         private val buttonComponentWithNoHrefAsText = buttonComponentWithNoHref.text()
 
-        buttonComponentWithNoHrefAsText.contains(messages(app)(msgKey)) mustBe true
+        buttonComponentWithNoHrefAsText.contains(messages(msgKey)) mustBe true
         buttonComponentWithNoHref.html().contains(hrefValue) mustBe false
         buttonComponentWithNoHref.html().contains(classesValue) mustBe false
       }
@@ -53,8 +53,6 @@ class ButtonSpec extends SpecBase {
     val msgKey: String = "cf.verify.your.email.change.button"
     val hrefValue = "www.test.com"
     val classesValue = "govuk-!-margin-bottom-7"
-
-    implicit val msg: Messages = messages(app)
 
     val buttonComponent: Document =
       Jsoup.parse(app.injector.instanceOf[button].apply(msgKey, Some(hrefValue), classesValue).body)

@@ -42,7 +42,6 @@ class H2Spec extends SpecBase {
 
   trait Setup {
     val app: Application = buildApp
-    implicit val msgs: Messages = messages(app)
 
     val msg: String = "some message"
     val id: String = "test_id"

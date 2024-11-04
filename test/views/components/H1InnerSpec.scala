@@ -33,7 +33,7 @@ class H1InnerSpec extends SpecBase {
 
         private val h1InnerComponentAsText = h1InnerComponent.text()
 
-        h1InnerComponentAsText mustBe messages(app)(msgKey, messages(app)(innerMsgKey))
+        h1InnerComponentAsText mustBe messages(msgKey, messages(innerMsgKey))
         h1InnerComponent.select("h1").attr("class") mustBe classesValue
         h1InnerComponent.select("h1").attr("id") mustBe idValue.get
       }
@@ -42,7 +42,7 @@ class H1InnerSpec extends SpecBase {
 
         private val h1InnerComponentWithNoIdAsText = h1InnerComponentWithNoId.text()
 
-        h1InnerComponentWithNoIdAsText mustBe messages(app)(msgKey, messages(app)(innerMsgKey))
+        h1InnerComponentWithNoIdAsText mustBe messages(msgKey, messages(innerMsgKey))
         h1InnerComponentWithNoId.select("h1").attr("class") mustBe classesValue
         h1InnerComponentWithNoId.select("h1").hasAttr("id") mustBe false
       }
@@ -51,7 +51,7 @@ class H1InnerSpec extends SpecBase {
 
         private val h1InnerComponentWithDefaultClassAsText = h1InnerComponentWithDefaultClass.text()
 
-        h1InnerComponentWithDefaultClassAsText mustBe messages(app)(msgKey, messages(app)(innerMsgKey))
+        h1InnerComponentWithDefaultClassAsText mustBe messages(msgKey, messages(innerMsgKey))
         h1InnerComponentWithDefaultClass.select("h1").attr("class") mustBe "govuk-heading-xl"
       }
 
@@ -59,7 +59,7 @@ class H1InnerSpec extends SpecBase {
 
         private val h1InnerComponentWithEmptyInnerMsgAsText = h1InnerComponentWithEmptyInnerMsg.text()
 
-        h1InnerComponentWithEmptyInnerMsgAsText mustBe messages(app)(msgKey, emptyString)
+        h1InnerComponentWithEmptyInnerMsgAsText mustBe messages(msgKey, emptyString)
         h1InnerComponentWithEmptyInnerMsg.select("h1").attr("class") mustBe classesValue
         h1InnerComponentWithEmptyInnerMsg.select("h1").hasAttr("id") mustBe false
       }
@@ -68,7 +68,7 @@ class H1InnerSpec extends SpecBase {
 
         private val h1InnerComponentWithEmptyClassAsText = h1InnerComponentWithEmptyClass.text()
 
-        h1InnerComponentWithEmptyClassAsText mustBe messages(app)(msgKey, messages(app)(innerMsgKey))
+        h1InnerComponentWithEmptyClassAsText mustBe messages(msgKey, messages(innerMsgKey))
         h1InnerComponentWithEmptyClass.select("h1").attr("class") mustBe emptyString
         h1InnerComponentWithEmptyClass.select("h1").attr("id") mustBe idValue.get
       }
@@ -82,8 +82,6 @@ class H1InnerSpec extends SpecBase {
     val innerMsgKey: String = "cf.message.inner"
     val idValue: Option[String] = Some("test-id")
     val classesValue: String = "govuk-heading-xl"
-
-    implicit val msg: Messages = messages(app)
 
     val h1InnerComponent: Document =
       Jsoup.parse(app.injector.instanceOf[h1Inner].apply(msgKey, innerMsgKey, idValue, classesValue).body)

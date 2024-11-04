@@ -67,7 +67,5 @@ class FormattersSpec extends SpecBase {
 
   trait Setup {
     val formatterOb: Formatters = new Formatters {}
-    val app: Application = buildApp
-    implicit val msg: Messages = messages(app)
   }
 }

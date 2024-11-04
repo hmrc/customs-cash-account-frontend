@@ -127,9 +127,7 @@ class CashAccountPaymentSearchControllerSpec extends SpecBase {
         bind[CashAccountSearchRepository].toInstance(mockCashAccountSearchRepo)
       ).build()
 
-    implicit val msgs: Messages = messages(app)
-
-    val noResultsReturnedMessage: String = msgs(
+    val noResultsReturnedMessage: String = messages(
       "cf.cash-account.detail.declaration.search-no-results-guidance-not-returned-any-results", PAYMENT_SEARCH_VALUE)
   }
 }

@@ -67,12 +67,10 @@ class SdesConnectorSpec extends SpecBase {
       bind[RequestBuilder].toInstance(requestBuilder)
     ).build()
 
-    val mockAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
     val sdesConnector: SdesConnector = app.injector.instanceOf[SdesConnector]
 
     implicit val hc: HeaderCarrier = HeaderCarrier()
     implicit val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
-    implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
     val someDan = "1234"
     val someEori = "eori1"

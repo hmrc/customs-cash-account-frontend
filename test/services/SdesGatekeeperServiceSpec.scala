@@ -32,7 +32,7 @@ class SdesGatekeeperServiceSpec extends SpecBase {
     "convert FileInformation to CashStatementFile correctly" in new Setup {
       val sdesFileInformation: FileInformation = validCashStatementFileInformation
 
-      val result: CashStatementFile = sdesGatekeeperService.convertToCashStatementFile(sdesFileInformation)(msg)
+      val result: CashStatementFile = sdesGatekeeperService.convertToCashStatementFile(sdesFileInformation)(messages)
 
       result.filename mustBe sdesFileInformation.filename
       result.downloadURL mustBe sdesFileInformation.downloadURL
@@ -68,9 +68,6 @@ class SdesGatekeeperServiceSpec extends SpecBase {
   }
 
   trait Setup {
-
-    val app: Application = buildApp
-    implicit val msg: Messages = messages(app)
 
     val sdesGatekeeperService = new SdesGatekeeperService()
     val periodStartYear = 2017

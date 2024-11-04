@@ -16,7 +16,6 @@
 
 package viewmodels
 
-import config.AppConfig
 import models.{CashDailyStatement, CashTransactions, Declaration, Payment, Transaction, Transfer, Withdrawal}
 import helpers.Formatters
 import org.scalatest.Assertion
@@ -240,10 +239,6 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
     val dailyStatements: Seq[CashDailyStatement] = Seq(dailyStatement1, dailyStatement2)
 
     val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
-
-    val app: Application = buildApp
-    implicit val msgs: Messages = messages(app)
-    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
   }
 
 }

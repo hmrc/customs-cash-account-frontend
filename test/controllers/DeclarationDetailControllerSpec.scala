@@ -538,7 +538,5 @@ class DeclarationDetailControllerSpec extends SpecBase {
     val app: Application = applicationBuilder
       .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
       .build()
-
-    implicit val msgs: Messages = messages(app)
   }
 }

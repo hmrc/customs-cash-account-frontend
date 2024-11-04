@@ -18,7 +18,6 @@ package models
 
 import models.metadata.CashStatementFileMetadata
 import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.FakeRequest
 import utils.SpecBase
 
@@ -75,9 +74,6 @@ class CashStatementsForEoriSpec extends SpecBase {
   }
 
   trait Setup {
-
-    val app: Application = buildApp
-    implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
     val year = 2024
     val month = 5

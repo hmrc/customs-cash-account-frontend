@@ -17,8 +17,6 @@
 package views.components
 
 import org.scalatest.matchers.should.Matchers.should
-import play.api.Application
-import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases.HeadCell
 import utils.SpecBase
@@ -27,7 +25,7 @@ class PaymentSearchResultHeaderV2Spec extends SpecBase {
 
   "apply" should {
 
-    "produce correct output" in new Setup {
+    "produce correct output" in {
 
       val header: Seq[HeadCell] = PaymentSearchResultHeader()
 
@@ -38,11 +36,6 @@ class PaymentSearchResultHeaderV2Spec extends SpecBase {
       header.last.content.toString.contains("Debit") mustBe true
       header.last.format.get.contains("numeric") mustBe true
     }
-  }
-
-  trait Setup {
-    val app: Application = buildApp
-    implicit val msgs: Messages = messages(app)
   }
 
 }

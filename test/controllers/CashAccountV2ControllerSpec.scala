@@ -249,8 +249,6 @@ class CashAccountV2ControllerSpec extends SpecBase {
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
-      implicit val msgs: Messages = messages(app)
-
       running(app) {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
@@ -260,7 +258,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) must
-          include regex msgs("cf.cash-account.transactions.no-transactions-for-last-six-months")
+          include regex messages("cf.cash-account.transactions.no-transactions-for-last-six-months")
       }
     }
 
@@ -270,8 +268,6 @@ class CashAccountV2ControllerSpec extends SpecBase {
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
         ).build()
-
-      implicit val msgs: Messages = messages(app)
 
       val cashAccountWithZeroBalance: CashAccount = cashAccount.copy(balances = CDSCashBalance(Some(0)))
 
@@ -581,7 +577,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustEqual SEE_OTHER
 
-        val renderedView = view.apply(formWithErrors, viewModel)(messages(app), appConfig, request).body
+        val renderedView = view.apply(formWithErrors, viewModel)(messages, appConfig, request).body
         renderedView must include("There is a problem")
         renderedView must include(s"Enter an MRN, UCR or exact payment amount that includes &#x27;$poundSymbol&#x27;")
       }

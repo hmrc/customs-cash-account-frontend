@@ -74,7 +74,7 @@ class CashTransactionsEncrypterSpec extends SpecBase {
         encrypter.decryptCashTransactions(encryptedCashTransactions, secretKey)
 
       decryptedCashTransactions mustEqual cashTransactions02
-      decryptedCashTransactions.maxTransactionsExceeded mustEqual Some(true)
+      decryptedCashTransactions.maxTransactionsExceeded mustBe Some(true)
     }
 
     "decrypt cashTransactions" in new Setup {

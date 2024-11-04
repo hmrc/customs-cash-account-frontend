@@ -52,7 +52,7 @@ class inputMonthAndYearSpec extends SpecBase {
           legendClasses = "legend-class",
           hintText = None,
           legendAsPageHeading = false
-        )(messages(app))
+        )(messages)
 
         val html: Document = Jsoup.parse(output.toString)
 
@@ -83,7 +83,7 @@ class inputMonthAndYearSpec extends SpecBase {
           legendClasses = "legend-class",
           hintText = None,
           legendAsPageHeading = false
-        )(messages(app))
+        )(messages)
 
         val html: Document = Jsoup.parse(output.toString)
 
@@ -114,7 +114,7 @@ class inputMonthAndYearSpec extends SpecBase {
           legendClasses = "legend-class",
           hintText = None,
           legendAsPageHeading = false
-        )(messages(app))
+        )(messages)
 
         val html: Document = Jsoup.parse(output.toString)
 
@@ -145,7 +145,7 @@ class inputMonthAndYearSpec extends SpecBase {
           legendClasses = "legend-class",
           hintText = None,
           legendAsPageHeading = false
-        )(messages(app))
+        )(messages)
 
         val html: Document = Jsoup.parse(output.toString)
 

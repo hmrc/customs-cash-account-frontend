@@ -257,9 +257,6 @@ class CashAccountV2ViewModelSpec extends SpecBase {
 
     val app: Application = buildApp
 
-    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-    implicit val msgs: Messages = messages(app)
-
     val cashAccount: CashAccount = CashAccount(number = can,
       owner = eoriNumber,
       status = AccountStatusOpen,

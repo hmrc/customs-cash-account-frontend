@@ -71,13 +71,8 @@ class RequestedTooManyTransactionsViewModelSpec extends SpecBase {
   }
 
   trait Setup {
-
     val fromDate: LocalDate = LocalDate.parse("2020-07-18")
     val toDate: LocalDate = LocalDate.parse("2020-07-20")
     val selectedTxnUrl: String = controllers.routes.SelectedTransactionsController.onPageLoad().url
-
-    val app: Application = buildApp
-
-    implicit val msgs: Messages = messages(app)
   }
 }

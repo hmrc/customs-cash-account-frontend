@@ -38,13 +38,12 @@ trait GuidancePageBehaviour {
   val linksToVerify: List[LinkDetails] = List.empty
 
   implicit lazy val app: Application = buildApp
-  implicit val msgs: Messages = messages(app)
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest()
 
   def guidancePage(): Unit =
 
     "display correct title" in {
-      view.title() mustBe s"${msgs(titleMsgKey)} - ${msgs("service.name")} - GOV.UK"
+      view.title() mustBe s"${messages(titleMsgKey)} - ${messages("service.name")} - GOV.UK"
     }
 
     "display correct back link" in {
@@ -53,13 +52,13 @@ trait GuidancePageBehaviour {
 
     "display correct help and support guidance" in {
       if (helpAndSupportMsgKeys.isDefined) {
-        helpAndSupportMsgKeys.map(msgsKey => view.html().contains(msgs(msgsKey)) mustBe true)
+        helpAndSupportMsgKeys.map(msgsKey => view.html().contains(messages(msgsKey)) mustBe true)
       } else {
         val viewAsHtml = view.html()
 
-        viewAsHtml must include(msgs("cf.cash-account.help-and-support.link.text"))
-        viewAsHtml must include(msgs("cf.cash-account.help-and-support.link.text.post"))
-        viewAsHtml must include(msgs("cf.cash-account.help-and-support.link.text.pre"))
+        viewAsHtml must include(messages("cf.cash-account.help-and-support.link.text"))
+        viewAsHtml must include(messages("cf.cash-account.help-and-support.link.text.post"))
+        viewAsHtml must include(messages("cf.cash-account.help-and-support.link.text.pre"))
         viewAsHtml must include(
           helpAndSupportLink.getOrElse("https://www.gov.uk/guidance/use-a-cash-account-for-cds-declarations"))
       }

@@ -18,9 +18,6 @@ package views.components
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
-import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.FakeRequest
 import utils.SpecBase
 import utils.Utils.notificationPanelComponent
 
@@ -64,9 +61,6 @@ class NotificationPanelSpec extends SpecBase {
   }
 
   trait Setup {
-
-    val app: Application = buildApp
-    implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
     val showNotification: Boolean
     val preMessage: String = "preMessage"

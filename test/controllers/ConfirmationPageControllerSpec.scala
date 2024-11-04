@@ -118,7 +118,5 @@ class ConfirmationPageControllerSpec extends SpecBase {
         bind[CustomsDataStoreConnector].toInstance(mockCustomsDataStoreConnector))
       .configure("features.fixed-systemdate-for-tests" -> "true")
       .build()
-
-    val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
   }
 }

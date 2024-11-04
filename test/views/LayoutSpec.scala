@@ -112,9 +112,7 @@ class LayoutSpec extends SpecBase {
   trait Setup {
     val app: Application = buildApp
 
-    implicit val msgs: Messages = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", "test_path")
-    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
     val content: Html = Html("test")
   }

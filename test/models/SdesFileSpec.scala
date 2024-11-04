@@ -79,9 +79,6 @@ class SdesFileSpec extends SpecBase {
 
   trait Setup {
 
-    val app: Application = buildApp
-    implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
-
     val yearStart = 2024
     val monthStart = 5
     val dayStart = 5

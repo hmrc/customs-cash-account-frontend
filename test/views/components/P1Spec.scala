@@ -19,7 +19,6 @@ package views.components
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.Application
-import play.api.i18n.Messages
 import play.twirl.api.Html
 import utils.SpecBase
 import views.html.components.p1
@@ -58,8 +57,6 @@ class P1Spec extends SpecBase {
     val tabLink: Option[Html] = Some(Html("tab_link"))
 
     val app: Application = buildApp
-
-    implicit val msgs: Messages = messages(app)
 
     val p1Component: Document =
       Jsoup.parse(app.injector.instanceOf[p1].apply(content, Some(id), Some(classes), link, tabLink).body)

@@ -19,7 +19,6 @@ package views.components
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.Application
-import play.api.i18n.Messages
 import utils.SpecBase
 import views.html.components.p
 
@@ -30,21 +29,21 @@ class PSpec extends SpecBase {
     "display correct contents" when {
 
       "only message key has been provided" in new Setup {
-        pComponent.text() mustBe msgs(msgKey)
-        pComponent.getElementsByClass(defaultClass).text() mustBe msgs(msgKey)
+        pComponent.text() mustBe messages(msgKey)
+        pComponent.getElementsByClass(defaultClass).text() mustBe messages(msgKey)
       }
 
       "id and classes have been provided along with msg key" in new Setup {
-        pComponentWithIdAndClasses.getElementById(id).text() mustBe msgs(msgKey)
-        pComponentWithIdAndClasses.getElementsByClass(classes).text() mustBe msgs(msgKey)
+        pComponentWithIdAndClasses.getElementById(id).text() mustBe messages(msgKey)
+        pComponentWithIdAndClasses.getElementsByClass(classes).text() mustBe messages(msgKey)
       }
 
       "id, classes have been provided along with msg key and bold attribute is true" in new Setup {
-        pComponentBoldWithIdAndClasses.getElementById(id).text() mustBe msgs(msgKey)
-        pComponentBoldWithIdAndClasses.getElementsByClass(classes).text() mustBe msgs(msgKey)
+        pComponentBoldWithIdAndClasses.getElementById(id).text() mustBe messages(msgKey)
+        pComponentBoldWithIdAndClasses.getElementsByClass(classes).text() mustBe messages(msgKey)
         pComponentBoldWithIdAndClasses.getElementsByClass(defaultClass).text() mustBe empty
         pComponentBoldWithIdAndClasses.getElementsByClass(
-          "govuk-!-font-weight-bold").text() mustBe msgs(msgKey)
+          "govuk-!-font-weight-bold").text() mustBe messages(msgKey)
       }
     }
   }
@@ -56,8 +55,6 @@ class PSpec extends SpecBase {
     val defaultClass = "govuk-body"
 
     val app: Application = buildApp
-
-    implicit val msgs: Messages = messages(app)
 
     val pComponent: Document = Jsoup.parse(app.injector.instanceOf[p].apply(msgKey).body)
     val pComponentWithIdAndClasses: Document =

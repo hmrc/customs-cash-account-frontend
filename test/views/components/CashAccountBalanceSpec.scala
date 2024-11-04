@@ -158,8 +158,6 @@ class CashAccountBalanceSpec extends SpecBase {
 
   trait Setup {
     val app: Application = buildApp
-    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
-    implicit val msgs: Messages = messages(app)
 
     val eori: String = "test_eori"
     val accountBalance: Int = 6000

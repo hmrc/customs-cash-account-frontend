@@ -202,8 +202,7 @@ class SelectTransactionsControllerSpec extends SpecBase {
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
         bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache)
       )
-      .configure(
-        "features.fixed-systemdate-for-tests" -> "true")
+      .configure("features.fixed-systemdate-for-tests" -> "true")
       .build()
   }
 }

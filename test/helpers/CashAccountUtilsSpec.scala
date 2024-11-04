@@ -36,7 +36,6 @@ class CashAccountUtilsSpec extends SpecBase {
       bind[DateTimeService].toInstance(mockDateTimeService)
     ).build()
 
-  implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
   val cashAccountUtils: CashAccountUtils = app.injector.instanceOf[CashAccountUtils]
 
   "filenameWithDateTime" should {

@@ -169,9 +169,6 @@ class DeclarationDetailSearchViewModelSpec extends SpecBase {
       )
     )
 
-    val app: Application = buildApp
-    implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
-
     def extractSummaryData(summaryList: SummaryList): Seq[(String, String)] = {
       summaryList.rows.map { row =>
         (

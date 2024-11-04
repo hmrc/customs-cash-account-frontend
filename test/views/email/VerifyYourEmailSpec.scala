@@ -16,11 +16,9 @@
 
 package views.email
 
-import config.AppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.Application
-import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.SpecBase
@@ -33,15 +31,15 @@ class VerifyYourEmailSpec extends SpecBase {
     "display correct guidance and text" in new Setup {
 
       view.title() mustBe
-        s"${messages(app)("cf.verify.your.email.title")} - ${messages(app)("service.name")} - GOV.UK"
+        s"${messages("cf.verify.your.email.title")} - ${messages("service.name")} - GOV.UK"
 
-      view.getElementsByTag("h1").text() mustBe messages(app)("cf.verify.your.email.heading")
+      view.getElementsByTag("h1").text() mustBe messages("cf.verify.your.email.heading")
 
-      view.text().contains(messages(app)("cf.verify.your.email.p1")) mustBe true
-      view.html.contains(messages(app)("cf.verify.your.email.p2", email))
+      view.text().contains(messages("cf.verify.your.email.p1")) mustBe true
+      view.html.contains(messages("cf.verify.your.email.p2", email))
 
-      view.text().contains(messages(app)("cf.verify.your.email.p3")) mustBe true
-      view.text().contains(messages(app)("cf.verify.your.email.change.button")) mustBe true
+      view.text().contains(messages("cf.verify.your.email.p3")) mustBe true
+      view.text().contains(messages("cf.verify.your.email.change.button")) mustBe true
 
       view.html() must include(nextPageUrl)
       view.text().contains(email.get) mustBe true
@@ -57,8 +55,6 @@ class VerifyYourEmailSpec extends SpecBase {
     val nextPageUrl = "test_url"
     val email: Option[String] = Some("test@test.com")
 
-    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-    implicit val msg: Messages = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val view: Document = Jsoup.parse(

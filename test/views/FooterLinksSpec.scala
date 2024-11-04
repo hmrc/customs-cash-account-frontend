@@ -27,17 +27,11 @@ class FooterLinksSpec extends SpecBase {
 
     "return correct list of FooterItems" when {
 
-      "matching message key is present for FooterItems" in new Setup {
+      "matching message key is present for FooterItems" in {
 
-        FooterLinks()(msgs, config).size mustBe 4
+        FooterLinks()(messages, appConfig).size mustBe 4
       }
     }
   }
 
-  trait Setup {
-    val app: Application = buildApp
-
-    implicit val msgs: Messages = messages(app)
-    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
-  }
 }

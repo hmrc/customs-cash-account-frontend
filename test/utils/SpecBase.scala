@@ -60,7 +60,7 @@ trait SpecBase extends AnyWordSpecLike
                   path: String = emptyString): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(method, path).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
-  def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(
+  implicit lazy val messages: Messages = buildApp.injector.instanceOf[MessagesApi].preferred(
     fakeRequest(emptyString, emptyString))
 
   implicit lazy val appConfig: AppConfig = applicationBuilder.injector().instanceOf[AppConfig]

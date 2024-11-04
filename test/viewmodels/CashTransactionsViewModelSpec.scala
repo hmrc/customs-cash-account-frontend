@@ -146,6 +146,5 @@ class CashTransactionsViewModelSpec extends SpecBase {
 
     val modelWithNoDailyStatement: CashTransactionsViewModel =
       CashTransactionsViewModel(cashTransactionsWithNoDailyStatement, None)(mockAppConfig)
-
   }
 }

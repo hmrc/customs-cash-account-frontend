@@ -232,9 +232,5 @@ class CashTransactionCsvRowSpec extends SpecBase {
       debit = None,
       balance = None
     )
-
-    val app: Application = buildApp
-
-    implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
   }
 }

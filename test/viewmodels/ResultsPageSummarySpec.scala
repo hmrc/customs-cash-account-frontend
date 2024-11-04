@@ -149,10 +149,6 @@ class ResultsPageSummarySpec extends SpecBase {
     val fromDate: LocalDate = LocalDate.of(year, month3rd, day8th)
     val toDate: LocalDate = LocalDate.of(year, month4th, day10th)
 
-    val app: Application = buildApp
-
-    implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
-
     val resultPageSummary01: ResultsPageSummary = new ResultsPageSummary(fromDate, toDate, true)
     val resultPageSummary02: ResultsPageSummary = new ResultsPageSummary(fromDate, toDate, false)
   }

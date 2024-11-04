@@ -44,7 +44,7 @@ class InputTextSpec extends SpecBase {
         hint = None
       ).body)
 
-      view.getElementsByTag("label").html() mustBe messages(app)("eoriNumber.heading")
+      view.getElementsByTag("label").html() mustBe messages("eoriNumber.heading")
       view.getElementById("value").`val`() mustBe "GB123456789012"
 
       intercept[RuntimeException] {
@@ -103,7 +103,6 @@ class InputTextSpec extends SpecBase {
 
   trait Setup {
     val app: Application = buildApp
-    implicit val msg: Messages = messages(app)
 
     val validForm: Form[String] = new SearchTransactionsFormProvider().apply().bind(Map("value" -> "GB123456789012"))
     val invalidForm: Form[String] = new SearchTransactionsFormProvider().apply().bind(Map("value" -> emptyString))

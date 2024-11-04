@@ -19,7 +19,6 @@ package views.components
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.Application
-import play.api.i18n.Messages
 import utils.SpecBase
 import viewmodels.ResultsPageSummary
 import views.html.components.summaryList
@@ -48,7 +47,6 @@ class SummaryListSpec extends SpecBase {
 
   trait Setup {
     val app: Application = buildApp
-    implicit val msgs: Messages = messages(app)
 
     val day10th = 10
     val day11th = 11
