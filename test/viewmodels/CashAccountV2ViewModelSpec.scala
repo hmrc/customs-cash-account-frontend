@@ -55,7 +55,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         shouldProduceCorrectAccountBalance(cashAccountViewModel.cashAccountBalance, eoriNumber, cashAccount)
         shouldProduceCorrectDownloadCSVFileLink(cashAccountViewModel.downloadCSVFileLinkUrl)
         shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
-        shouldContainCorrectDailyStatementsSection(app, cashAccountViewModel.dailyStatementsSection.get, cashTransactions)
+        shouldContainCorrectDailyStatementsSection(application, cashAccountViewModel.dailyStatementsSection.get, cashTransactions)
       }
 
       "maxTransactionsExceeded is true" in new Setup {
@@ -83,7 +83,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         shouldContainNotificationPanel(cashAccountViewModel.cashStatementNotification.get)
         shouldProduceCorrectDownloadCSVFileLink(cashAccountViewModel.downloadCSVFileLinkUrl)
         shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
-        shouldContainCorrectDailyStatementsSection(app, cashAccountViewModel.dailyStatementsSection.get, cashTransactions)
+        shouldContainCorrectDailyStatementsSection(application, cashAccountViewModel.dailyStatementsSection.get, cashTransactions)
       }
     }
 
@@ -254,8 +254,6 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     val dayEnd: Int = 8
     val size: Long = 300L
     val totalElements = 8
-
-    val app: Application = application
 
     val cashAccount: CashAccount = CashAccount(number = can,
       owner = eoriNumber,
