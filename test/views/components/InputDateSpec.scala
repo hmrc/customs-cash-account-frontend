@@ -202,7 +202,7 @@ class InputDateSpec extends SpecBase {
       val id = "value"
       val headline = "Date of birth"
 
-      val app: Application = buildApp
+      val app: Application = application
     }
   }
 }

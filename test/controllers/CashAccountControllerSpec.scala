@@ -494,7 +494,7 @@ class CashAccountControllerSpec extends SpecBase {
     val cashTransactionResponse: CashTransactions = CashTransactions(
       listOfPendingTransactions, cashDailyStatements)
 
-    val appConfigOb: AppConfig = buildApp.injector.instanceOf[AppConfig]
+    val appConfigOb: AppConfig = application.injector.instanceOf[AppConfig]
 
     assume(!appConfigOb.isCashAccountV2FeatureFlagEnabled)
   }

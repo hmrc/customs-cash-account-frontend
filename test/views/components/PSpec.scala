@@ -54,7 +54,7 @@ class PSpec extends SpecBase {
     val classes = "custom_class"
     val defaultClass = "govuk-body"
 
-    val app: Application = buildApp
+    val app: Application = application
 
     val pComponent: Document = Jsoup.parse(app.injector.instanceOf[p].apply(msgKey).body)
     val pComponentWithIdAndClasses: Document =

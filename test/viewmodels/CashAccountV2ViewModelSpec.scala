@@ -255,7 +255,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     val size: Long = 300L
     val totalElements = 8
 
-    val app: Application = buildApp
+    val app: Application = application
 
     val cashAccount: CashAccount = CashAccount(number = can,
       owner = eoriNumber,

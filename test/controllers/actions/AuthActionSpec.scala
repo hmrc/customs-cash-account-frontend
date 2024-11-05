@@ -41,7 +41,7 @@ class AuthActionSpec extends SpecBase {
 
       "redirect the user to log in " in {
 
-        val app = buildApp
+        val app = application
         val config = app.injector.instanceOf[AppConfig]
 
         val bodyParsers = applicationBuilder.injector().instanceOf[BodyParsers.Default]
@@ -62,7 +62,7 @@ class AuthActionSpec extends SpecBase {
 
       "redirect the user to log in " in {
 
-        val app = buildApp
+        val app = application
         val config = app.injector.instanceOf[AppConfig]
 
         val bodyParsers = applicationBuilder.injector().instanceOf[BodyParsers.Default]
@@ -83,7 +83,7 @@ class AuthActionSpec extends SpecBase {
 
       "redirect the user to the unauthorised page" in {
 
-        val app = buildApp
+        val app = application
         val config = app.injector.instanceOf[AppConfig]
 
         val bodyParsers = applicationBuilder.injector().instanceOf[BodyParsers.Default]
@@ -104,7 +104,7 @@ class AuthActionSpec extends SpecBase {
 
       "redirect the user to the unauthorised page" in {
 
-        val app = buildApp
+        val app = application
         val config = app.injector.instanceOf[AppConfig]
 
         val bodyParsers = applicationBuilder.injector().instanceOf[BodyParsers.Default]
@@ -125,7 +125,7 @@ class AuthActionSpec extends SpecBase {
 
       "redirect the user to the unauthorised page" in {
 
-        val app = buildApp
+        val app = application
         val config = app.injector.instanceOf[AppConfig]
 
         val bodyParsers = applicationBuilder.injector().instanceOf[BodyParsers.Default]
@@ -146,7 +146,7 @@ class AuthActionSpec extends SpecBase {
 
       "redirect the user to the unauthorised page" in {
 
-        val app = buildApp
+        val app = application
         val config = app.injector.instanceOf[AppConfig]
 
         val bodyParsers = applicationBuilder.injector().instanceOf[BodyParsers.Default]
@@ -167,7 +167,7 @@ class AuthActionSpec extends SpecBase {
 
       "redirect the user to the unauthorised page" in {
 
-        val app = buildApp
+        val app = application
         val config = app.injector.instanceOf[AppConfig]
 
         val bodyParsers = applicationBuilder.injector().instanceOf[BodyParsers.Default]

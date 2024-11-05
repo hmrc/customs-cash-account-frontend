@@ -56,7 +56,7 @@ class UndeliverableEmailSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = buildApp
+    val app: Application = application
     val nextPageUrl = "test_url"
     val email: Option[String] = Some("test@test.com")
 

@@ -107,7 +107,7 @@ class NewTabLinkSpec extends SpecBase {
                             preLinkMessage: Option[String] = None,
                             postLinkMessage: Option[String] = None,
                             classes: String = defaultClasses): Document =
-      Jsoup.parse(buildApp.injector.instanceOf[newTabLink].
+      Jsoup.parse(application.injector.instanceOf[newTabLink].
         apply(linkMessage, href, preLinkMessage, postLinkMessage, classes).body)
 
   }

@@ -58,7 +58,7 @@ class LinkSpec extends SpecBase {
     val testPreLinkMsg = "preLink_message"
     val testPostLinkMsg = "postLink_message"
 
-    val app: Application = buildApp
+    val app: Application = application
 
     val linkComponent: Document =
       Jsoup.parse(app.injector.instanceOf[link].apply(linkMessageKey, location, Some(linkId)).body)

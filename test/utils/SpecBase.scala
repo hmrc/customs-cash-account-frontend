@@ -55,12 +55,12 @@ trait SpecBase extends AnyWordSpecLike
     "play.filters.csp.nonce.enabled" -> "false",
     "auditing.enabled" -> "false")
 
-  lazy val buildApp: Application = applicationBuilder.build()
+  lazy val application: Application = applicationBuilder.build()
   def fakeRequest(method: String = emptyString,
                   path: String = emptyString): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(method, path).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
-  implicit lazy val messages: Messages = buildApp.injector.instanceOf[MessagesApi].preferred(
+  implicit lazy val messages: Messages = application.injector.instanceOf[MessagesApi].preferred(
     fakeRequest(emptyString, emptyString))
 
   implicit lazy val appConfig: AppConfig = applicationBuilder.injector().instanceOf[AppConfig]

@@ -35,7 +35,7 @@ trait GuidancePageBehaviour {
   val otherComponentGuidanceList: List[ComponentDetailsForAssertion] = List.empty
   val linksToVerify: List[LinkDetails] = List.empty
 
-  implicit lazy val app: Application = buildApp
+  implicit lazy val app: Application = application
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest()
 
   def guidancePage(): Unit =

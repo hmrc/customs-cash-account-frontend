@@ -101,7 +101,7 @@ class InputTextSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = buildApp
+    val app: Application = application
 
     val validForm: Form[String] = new SearchTransactionsFormProvider().apply().bind(Map("value" -> "GB123456789012"))
     val invalidForm: Form[String] = new SearchTransactionsFormProvider().apply().bind(Map("value" -> emptyString))

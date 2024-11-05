@@ -156,7 +156,7 @@ class CashAccountBalanceSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = buildApp
+    val app: Application = application
 
     val eori: String = "test_eori"
     val accountBalance: Int = 6000

@@ -40,7 +40,7 @@ class H2Spec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = buildApp
+    val app: Application = application
 
     val msg: String = "some message"
     val id: String = "test_id"

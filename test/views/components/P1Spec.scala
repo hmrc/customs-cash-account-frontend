@@ -56,7 +56,7 @@ class P1Spec extends SpecBase {
     val link: Option[Html] = Some(Html("test_Link"))
     val tabLink: Option[Html] = Some(Html("tab_link"))
 
-    val app: Application = buildApp
+    val app: Application = application
 
     val p1Component: Document =
       Jsoup.parse(app.injector.instanceOf[p1].apply(content, Some(id), Some(classes), link, tabLink).body)

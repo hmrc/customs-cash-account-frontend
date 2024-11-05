@@ -46,7 +46,7 @@ class SummaryListSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = buildApp
+    val app: Application = application
 
     val day10th = 10
     val day11th = 11
