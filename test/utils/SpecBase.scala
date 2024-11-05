@@ -56,6 +56,7 @@ trait SpecBase extends AnyWordSpecLike
     "auditing.enabled" -> "false")
 
   lazy val application: Application = applicationBuilder.build()
+
   def fakeRequest(method: String = emptyString,
                   path: String = emptyString): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(method, path).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
