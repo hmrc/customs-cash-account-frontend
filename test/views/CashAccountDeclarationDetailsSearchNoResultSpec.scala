@@ -63,7 +63,7 @@ class CashAccountDeclarationDetailsSearchNoResultSpec extends SpecBase with Guid
     val searchResultParagraph1 = ComponentDetailsForAssertion(
       testDescription = "display correct search result guidance's first paragraph",
       id = Some("search-result-guidance-not-returned-any-results"),
-      expectedValue = s"Your search \"$searchInput\" has not returned any results.")
+      expectedValue = s"""Your search \"$searchInput\" has not returned any results.""")
 
     val searchResultParagraph2 = ComponentDetailsForAssertion(
       testDescription = "display correct search result guidance's second paragraph",
