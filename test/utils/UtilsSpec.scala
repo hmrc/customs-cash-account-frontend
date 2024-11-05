@@ -16,7 +16,6 @@
 
 package utils
 
-import play.api.Application
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
 import utils.Utils.*

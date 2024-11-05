@@ -16,7 +16,6 @@
 
 package views.components
 
-import config.AppConfig
 import helpers.Formatters.formatCurrencyAmount
 import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel}
 import org.jsoup.Jsoup

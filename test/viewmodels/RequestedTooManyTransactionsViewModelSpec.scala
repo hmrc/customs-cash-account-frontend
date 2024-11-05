@@ -18,7 +18,6 @@ package viewmodels
 
 import controllers.routes
 import org.scalatest.Assertion
-import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
 import java.time.LocalDate

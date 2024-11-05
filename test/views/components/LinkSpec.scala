@@ -20,7 +20,6 @@ import play.api.Application
 import views.html.components.link
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.i18n.Messages
 import utils.SpecBase
 
 class LinkSpec extends SpecBase {

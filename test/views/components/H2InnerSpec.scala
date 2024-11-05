@@ -19,7 +19,6 @@ package views.components
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.Application
-import play.api.i18n.Messages
 import utils.SpecBase
 import views.html.components.h2Inner
 

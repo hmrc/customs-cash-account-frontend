@@ -22,7 +22,6 @@ import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import play.api.Application
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent

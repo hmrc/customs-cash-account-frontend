@@ -19,7 +19,6 @@ package viewmodels
 import config.AppConfig
 import models.*
 import org.scalatest.Assertion
-import play.api.Application
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import utils.SpecBase
