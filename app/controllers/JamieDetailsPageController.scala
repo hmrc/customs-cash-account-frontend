@@ -25,18 +25,15 @@ import views.html.jamie_details_page
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class JamieDetailsPageController @Inject(
-                                          jamieDetails: jamie_details_page,
-                                          apiConnector: CustomsFinancialsApiConnector,
-                                        )(implicit mcc: MessagesControllerComponents,
-                                          ec: ExecutionContext, config: AppConfig) extends FrontendController(mcc) {
+class JamieDetailsPageController @Inject(jamieDetails: jamie_details_page,
+                                         apiConnector: CustomsFinancialsApiConnector)
+                                        (implicit mcc: MessagesControllerComponents,
+                                         ec: ExecutionContext, config: AppConfig) extends FrontendController(mcc) {
 
   def getNiNumberAndDisplay(name: String, age: Int): Action[AnyContent] = Action.async { implicit request =>
     apiConnector.getNiNumber(name).flatMap {
-      case Right(personDetails) =>
-        Future.successful(Ok(jamieDetails(name, age, Some(personDetails.niNumber))))
-      case Left(_) =>
-        Future.successful(Ok(jamieDetails(name, age, None)))
+      case Right(personDetails) => Future.successful(Ok(jamieDetails(name, age, Some(personDetails.niNumber))))
+      case Left(_) => Future.successful(Ok(jamieDetails(name, age, None)))
     }
   }
 }

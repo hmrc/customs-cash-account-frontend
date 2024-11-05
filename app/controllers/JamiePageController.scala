@@ -30,15 +30,13 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 
-
-class JamiePageController @Inject()(
-                                    apiConnector: CustomsFinancialsApiConnector,
+class JamiePageController @Inject()(apiConnector: CustomsFinancialsApiConnector,
                                     jamieInput: jamie_input_page,
                                     jamieDetails: jamie_details_page,
                                     jamieForm: JamieFormProvider,
-                                    errorHandler: ErrorHandler
-                                   )(implicit mcc: MessagesControllerComponents,
-  ec: ExecutionContext, config: AppConfig) extends FrontendController(mcc) {
+                                    errorHandler: ErrorHandler)
+                                   (implicit mcc: MessagesControllerComponents,
+                                    ec: ExecutionContext, config: AppConfig) extends FrontendController(mcc) {
 
   val form: Form[JamieFormFields] = jamieForm()
 
@@ -47,23 +45,24 @@ class JamiePageController @Inject()(
       case (Some(n), Some(a)) => form.fill(JamieFormFields(n, a))
       case _ => form
     }
+
     Future.successful(Ok(jamieInput(displayForm)))
   }
 
   def onSubmit(): Action[AnyContent] = Action.async { implicit request =>
-    form.bindFromRequest().fold (
+    form.bindFromRequest().fold(
       formWithErrors => {
         showFormWithErrors(formWithErrors)
       },
       userData => {
-            Future.successful(Redirect(routes.JamieDetailsPageController
-              .getNiNumberAndDisplay(userData.name, userData.age)))
-        }
+        Future.successful(Redirect(routes.JamieDetailsPageController
+          .getNiNumberAndDisplay(userData.name, userData.age)))
+      }
     )
   }
 
   private def showFormWithErrors(formWithErrors: Form[JamieFormFields])
-                        (implicit request: Request[AnyContent], messages: Messages): Future[Result] = {
+                                (implicit request: Request[AnyContent], messages: Messages): Future[Result] = {
     Future.successful(BadRequest(jamieInput(formWithErrors)))
   }
 }

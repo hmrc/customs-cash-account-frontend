@@ -415,9 +415,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
         }
       }
     }
-
     // *************** JAMIE FORM PAGE ******************* //
-    
     "redirect to 'verify your email' page when an unverified email response is received" in new Setup {
       when(mockDataStoreConnector.getEmail(any)(any))
         .thenReturn(Future.successful(Left(UnverifiedEmail)))

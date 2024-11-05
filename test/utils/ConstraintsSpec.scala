@@ -106,9 +106,7 @@ class ConstraintsSpec extends SpecBase with Constraints {
     }
 
     "validateSearchInput" must {
-
       // *************** JAMIE FORM PAGE *******************//
-      
       "return valid when given a valid jamie letts" in new Setup {
         val result: ValidationResult = validateSearchInput("error.key")("JAMIE LETTS")
         result mustBe Valid
@@ -119,7 +117,6 @@ class ConstraintsSpec extends SpecBase with Constraints {
         result mustBe Invalid(Seq(ValidationError("error.key", patterns: _*)))
       }
       // *************** JAMIE FORM PAGE *******************//
-
       "return Valid when given a valid MRN" in new Setup {
         val result: ValidationResult = validateSearchInput("error.key")("GDRC1345317D1113315")
         result mustBe Valid

@@ -77,7 +77,6 @@ trait Constraints {
   }
 
   // *************** JAMIE FORM PAGE *******************//
-  
   protected def validateSearchInput(errorKey: String): Constraint[String] = Constraint { input =>
     val patterns = Seq(mrnRegex, paymentRegex, ucrRegex, jamieRegex)
 
@@ -106,6 +105,5 @@ trait Constraints {
       Invalid(ValidationError(errorKey))
     }
   }
-  
   // *************** JAMIE FORM PAGE *******************//
 }

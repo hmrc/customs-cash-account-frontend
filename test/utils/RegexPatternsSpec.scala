@@ -19,7 +19,6 @@ package utils
 import utils.RegexPatterns.{jamieRegex, mrnRegex, noDigitsRegex, paymentRegex, ucrRegex}
 
 class RegexPatternsSpec extends SpecBase {
-  
   // *************** JAMIE FORM PAGE *******************//
   "JamieRegex" should {
     "match valid regex" in {
@@ -31,10 +30,7 @@ class RegexPatternsSpec extends SpecBase {
     }
 
     "not match invalid regex" in {
-      val invalidInputs: Seq[String] = Seq(
-        "jame letts",
-        "Jamie Letts",
-        "jAmIe LeTTs")
+      val invalidInputs: Seq[String] = Seq("jame letts", "Jamie Letts", "jAmIe LeTTs")
 
       invalidInputs.foreach { input =>
         ucrRegex.findFirstIn(input) mustBe None
@@ -44,31 +40,22 @@ class RegexPatternsSpec extends SpecBase {
 
   "noDigitsRegex" should {
     "match valid Regex" in {
-      val validInputs: Seq[String] = Seq(
-        "jame",
-        "Jamie Letts",
-        "jAmIe LeTTs"
-      )
+      val validInputs: Seq[String] = Seq("jame", "Jamie Letts", "jAmIe LeTTs")
+
       validInputs.foreach { input =>
         noDigitsRegex.findFirstIn(input) mustBe Some(input)
       }
     }
 
     "not match invalid Regex" in {
-      val invalidInputs: Seq[String] = Seq(
-        "J4m45ie",
-        "123",
-        "Test123"
-      )
+      val invalidInputs: Seq[String] = Seq("J4m45ie", "123", "Test123")
 
       invalidInputs.foreach { input =>
         noDigitsRegex.findFirstIn(input) mustBe None
       }
     }
   }
-
   // *************** JAMIE FORM PAGE *******************//
-
   "MRN Regex" should {
 
     "match valid regex" in {

@@ -29,11 +29,12 @@ class JamieFormFieldsSpec extends SpecBase {
         case _ => fail("Pattern did not match")
       }
     }
+
     "return a Option containing name and age" in new Setup {
       val result: Option[(String, Int)] = JamieFormFields.unapply(jamieForm)
       result shouldBe Some(("Jamie", 41))
     }
-    
+
     "should not return a None for valid instances" in new Setup {
       JamieFormFields.unapply(jamieForm) should not be None
     }

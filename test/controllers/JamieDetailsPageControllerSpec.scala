@@ -24,21 +24,21 @@ import play.api.Application
 import play.api.i18n.Messages
 import play.api.test.Helpers.{GET, running}
 import utils.SpecBase
-import play.api.mvc.Result
+import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.Helpers.*
 import views.html.jamie_details_page
 import play.api.inject.bind
 import org.mockito.ArgumentMatchers.any
+import play.api.test.FakeRequest
 
 import scala.concurrent.Future
 
-
 class JamieDetailsPageControllerSpec extends SpecBase {
+
   "getNiNumberAndDisplay" should {
     "return Ok with correct name value" in new Setup {
       val app: Application = application
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
+        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)).build()
 
       when(mockCustomsFinancialsApiConnector.getNiNumber(any)(any))
         .thenReturn(Future.successful(Right(PersonDetails(name, niNumber))))
@@ -47,7 +47,9 @@ class JamieDetailsPageControllerSpec extends SpecBase {
       implicit val config: AppConfig = appConfig(app)
 
       running(app) {
-        implicit val request = fakeRequest(GET, routes.JamieDetailsPageController.getNiNumberAndDisplay(name, age).url)
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          fakeRequest(GET, routes.JamieDetailsPageController.getNiNumberAndDisplay(name, age).url)
+
         val result: Future[Result] = route(app, request).value
 
         status(result) mustEqual OK
@@ -69,7 +71,9 @@ class JamieDetailsPageControllerSpec extends SpecBase {
       implicit val config: AppConfig = appConfig(app)
 
       running(app) {
-        implicit val request = fakeRequest(GET, routes.JamieDetailsPageController.getNiNumberAndDisplay(name, age).url)
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          fakeRequest(GET, routes.JamieDetailsPageController.getNiNumberAndDisplay(name, age).url)
+
         val result: Future[Result] = route(app, request).value
 
         status(result) mustEqual OK
@@ -101,7 +105,6 @@ class JamieDetailsPageControllerSpec extends SpecBase {
       }
     }
   }
-
 
   trait Setup {
     val name = "Jamie"
