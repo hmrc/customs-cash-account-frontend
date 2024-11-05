@@ -18,7 +18,6 @@ package views.components
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
 import utils.SpecBase
 import views.html.components.button
 

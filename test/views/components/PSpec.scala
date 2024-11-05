@@ -18,7 +18,6 @@ package views.components
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
 import utils.SpecBase
 import views.html.components.p
 
@@ -54,13 +53,11 @@ class PSpec extends SpecBase {
     val classes = "custom_class"
     val defaultClass = "govuk-body"
 
-    val app: Application = application
-
-    val pComponent: Document = Jsoup.parse(app.injector.instanceOf[p].apply(msgKey).body)
+    val pComponent: Document = Jsoup.parse(application.injector.instanceOf[p].apply(msgKey).body)
     val pComponentWithIdAndClasses: Document =
-      Jsoup.parse(app.injector.instanceOf[p].apply(msgKey, classes = classes, id = Some(id)).body)
+      Jsoup.parse(application.injector.instanceOf[p].apply(msgKey, classes = classes, id = Some(id)).body)
 
     val pComponentBoldWithIdAndClasses: Document =
-      Jsoup.parse(app.injector.instanceOf[p].apply(msgKey, classes = classes, id = Some(id), bold = true).body)
+      Jsoup.parse(application.injector.instanceOf[p].apply(msgKey, classes = classes, id = Some(id), bold = true).body)
   }
 }

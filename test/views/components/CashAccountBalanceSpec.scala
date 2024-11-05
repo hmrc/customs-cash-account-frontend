@@ -21,7 +21,6 @@ import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewMo
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
-import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
 import views.html.components.cash_account_balance
@@ -156,8 +155,6 @@ class CashAccountBalanceSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application
-
     val eori: String = "test_eori"
     val accountBalance: Int = 6000
     val balances: CDSCashBalance = CDSCashBalance(None)
@@ -166,7 +163,7 @@ class CashAccountBalanceSpec extends SpecBase {
     def view(accountModel: CashAccountViewModel,
              showBalance: Boolean = true,
              displayLastSixMonthsHeading: Boolean = true): Document =
-      Jsoup.parse(app.injector.instanceOf[cash_account_balance]
+      Jsoup.parse(application.injector.instanceOf[cash_account_balance]
         .apply(accountModel, showBalance, displayLastSixMonthsHeading).body)
   }
 }

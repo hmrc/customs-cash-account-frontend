@@ -20,7 +20,6 @@ import forms.SelectTransactionsFormProvider
 import models.CashTransactionDates
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
 import play.api.data.Form
 import play.api.test.Helpers.*
 import play.twirl.api.HtmlFormat
@@ -41,8 +40,8 @@ class inputMonthAndYearSpec extends SpecBase {
         )
       )
 
-      running(app) {
-        val inputDateView = app.injector.instanceOf[inputMonthAndYear]
+      running(application) {
+        val inputDateView = application.injector.instanceOf[inputMonthAndYear]
 
         val output: HtmlFormat.Appendable = inputDateView(
           formWithValues,
@@ -72,8 +71,8 @@ class inputMonthAndYearSpec extends SpecBase {
         )
       )
 
-      running(app) {
-        val inputDateView = app.injector.instanceOf[inputMonthAndYear]
+      running(application) {
+        val inputDateView = application.injector.instanceOf[inputMonthAndYear]
 
         val output: HtmlFormat.Appendable = inputDateView(
           formWithValues,
@@ -103,8 +102,8 @@ class inputMonthAndYearSpec extends SpecBase {
         )
       )
 
-      running(app) {
-        val inputDateView = app.injector.instanceOf[inputMonthAndYear]
+      running(application) {
+        val inputDateView = application.injector.instanceOf[inputMonthAndYear]
 
         val output: HtmlFormat.Appendable = inputDateView(
           formWithValues,
@@ -134,8 +133,8 @@ class inputMonthAndYearSpec extends SpecBase {
         )
       )
 
-      running(app) {
-        val inputDateView = app.injector.instanceOf[inputMonthAndYear]
+      running(application) {
+        val inputDateView = application.injector.instanceOf[inputMonthAndYear]
 
         val output: HtmlFormat.Appendable = inputDateView(
           formWithValues,
@@ -162,8 +161,6 @@ class inputMonthAndYearSpec extends SpecBase {
       val form: Form[CashTransactionDates] = new SelectTransactionsFormProvider().apply()
       val id: String = "value"
       val headline: String = "Date of birth"
-
-      val app: Application = application
     }
   }
 }

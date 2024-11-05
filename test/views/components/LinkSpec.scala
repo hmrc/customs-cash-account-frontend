@@ -16,7 +16,6 @@
 
 package views.components
 
-import play.api.Application
 import views.html.components.link
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -58,23 +57,21 @@ class LinkSpec extends SpecBase {
     val testPreLinkMsg = "preLink_message"
     val testPostLinkMsg = "postLink_message"
 
-    val app: Application = application
-
     val linkComponent: Document =
-      Jsoup.parse(app.injector.instanceOf[link].apply(linkMessageKey, location, Some(linkId)).body)
+      Jsoup.parse(application.injector.instanceOf[link].apply(linkMessageKey, location, Some(linkId)).body)
 
     val linkComponentWithPId: Document =
-      Jsoup.parse(app.injector.instanceOf[link].apply(
+      Jsoup.parse(application.injector.instanceOf[link].apply(
         linkMessageKey = linkMessageKey, location = location, pId = Some(pId)).body)
 
-    val linkComponentWithPreAndPostLinkMsg: Document = Jsoup.parse(app.injector.instanceOf[link].apply(
+    val linkComponentWithPreAndPostLinkMsg: Document = Jsoup.parse(application.injector.instanceOf[link].apply(
       linkMessageKey = linkMessageKey,
       location = location,
       pId = Some(pId),
       preLinkMessage = Some(testPreLinkMsg),
       postLinkMessage = Some(testPostLinkMsg)).body)
 
-    val linkComponentWithLinkMessage: Document = Jsoup.parse(app.injector.instanceOf[link].apply(
+    val linkComponentWithLinkMessage: Document = Jsoup.parse(application.injector.instanceOf[link].apply(
       linkMessageKey = linkMessageKey,
       location = location,
       linkId = Some(linkId),

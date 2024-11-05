@@ -18,7 +18,6 @@ package views.email
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.SpecBase
@@ -51,17 +50,15 @@ class VerifyYourEmailSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application
     val nextPageUrl = "test_url"
     val email: Option[String] = Some("test@test.com")
 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
     val view: Document = Jsoup.parse(
-      app.injector.instanceOf[verify_your_email].apply(nextPageUrl, email).body)
+      application.injector.instanceOf[verify_your_email].apply(nextPageUrl, email).body)
 
     val viewWithNoEmail: Document = Jsoup.parse(
-      app.injector.instanceOf[verify_your_email].apply(nextPageUrl).body)
-
+      application.injector.instanceOf[verify_your_email].apply(nextPageUrl).body)
   }
 }

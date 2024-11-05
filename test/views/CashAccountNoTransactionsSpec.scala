@@ -21,7 +21,6 @@ import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewMo
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
-import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest

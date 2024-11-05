@@ -17,10 +17,11 @@
 package views.components
 
 import forms.CashTransactionsRequestPageFormProvider
-import play.api.Application
+import models.CashTransactionDates
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.test.Helpers._
+import play.api.data.Form
+import play.api.test.Helpers.*
 import play.twirl.api.HtmlFormat
 import utils.SpecBase
 import views.html.components.inputDate
@@ -33,7 +34,7 @@ class InputDateSpec extends SpecBase {
 
     "render correctly with no errors" in new Setup {
 
-      val formWithValues = form.bind(
+      val formWithValues: Form[CashTransactionDates] = form.bind(
         Map(
           s"$id.day" -> "01",
           s"$id.month" -> "01",
@@ -41,8 +42,8 @@ class InputDateSpec extends SpecBase {
         )
       )
 
-      running(app) {
-        val inputDateView = app.injector.instanceOf[inputDate]
+      running(application) {
+        val inputDateView = application.injector.instanceOf[inputDate]
 
         val output: HtmlFormat.Appendable = inputDateView(
           formWithValues,
@@ -66,7 +67,7 @@ class InputDateSpec extends SpecBase {
 
     "render h1 tag correctly" in new Setup {
 
-      val formWithValues = form.bind(
+      val formWithValues: Form[CashTransactionDates] = form.bind(
         Map(
           s"$id.day" -> "01",
           s"$id.month" -> "01",
@@ -74,8 +75,8 @@ class InputDateSpec extends SpecBase {
         )
       )
 
-      running(app) {
-        val inputDateView = app.injector.instanceOf[inputDate]
+      running(application) {
+        val inputDateView = application.injector.instanceOf[inputDate]
 
         val output: HtmlFormat.Appendable = inputDateView(
           formWithValues,
@@ -107,8 +108,8 @@ class InputDateSpec extends SpecBase {
         )
       )
 
-      running(app) {
-        val inputDateView = app.injector.instanceOf[inputDate]
+      running(application) {
+        val inputDateView = application.injector.instanceOf[inputDate]
 
         val output: HtmlFormat.Appendable = inputDateView(
           formWithValues,
@@ -132,7 +133,7 @@ class InputDateSpec extends SpecBase {
 
     "render correctly with year error" in new Setup {
 
-      val formWithValues = form.bind(
+      val formWithValues: Form[CashTransactionDates] = form.bind(
         Map(
           s"$id.day" -> "01",
           s"$id.month" -> "01",
@@ -140,8 +141,8 @@ class InputDateSpec extends SpecBase {
         )
       )
 
-      running(app) {
-        val inputDateView = app.injector.instanceOf[inputDate]
+      running(application) {
+        val inputDateView = application.injector.instanceOf[inputDate]
 
         val output: HtmlFormat.Appendable = inputDateView(
           formWithValues,
@@ -165,7 +166,7 @@ class InputDateSpec extends SpecBase {
 
     "render correctly with both day, month and year errors" in new Setup {
 
-      val formWithValues = form.bind(
+      val formWithValues: Form[CashTransactionDates] = form.bind(
         Map(
           s"$id.day" -> "",
           s"$id.month" -> "",
@@ -173,8 +174,8 @@ class InputDateSpec extends SpecBase {
         )
       )
 
-      running(app) {
-        val inputDateView = app.injector.instanceOf[inputDate]
+      running(application) {
+        val inputDateView = application.injector.instanceOf[inputDate]
 
         val output: HtmlFormat.Appendable = inputDateView(
           formWithValues,
@@ -198,11 +199,10 @@ class InputDateSpec extends SpecBase {
 
     trait Setup {
       implicit val clk: Clock = Clock.systemUTC()
-      val form = new CashTransactionsRequestPageFormProvider().apply()
+
+      val form: Form[CashTransactionDates] = new CashTransactionsRequestPageFormProvider().apply()
       val id = "value"
       val headline = "Date of birth"
-
-      val app: Application = application
     }
   }
 }

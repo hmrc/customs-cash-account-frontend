@@ -18,7 +18,6 @@ package views.components
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
 import utils.SpecBase
 import views.html.components.h2Inner
 
@@ -76,25 +75,24 @@ class H2InnerSpec extends SpecBase {
 
   trait Setup {
 
-    val app: Application = application
     val msgKey: String = "cf.message"
     val innerMsgKey: String = "cf.message.inner"
     val idValue: Option[String] = Some("test-id")
     val classesValue: String = "govuk-heading-m"
 
     val h2InnerComponent: Document =
-      Jsoup.parse(app.injector.instanceOf[h2Inner].apply(msgKey, innerMsgKey, idValue, classesValue).body)
+      Jsoup.parse(application.injector.instanceOf[h2Inner].apply(msgKey, innerMsgKey, idValue, classesValue).body)
 
     val h2InnerComponentWithNoId: Document =
-      Jsoup.parse(app.injector.instanceOf[h2Inner].apply(msgKey, innerMsgKey, None, classesValue).body)
+      Jsoup.parse(application.injector.instanceOf[h2Inner].apply(msgKey, innerMsgKey, None, classesValue).body)
 
     val h2InnerComponentWithDefaultClass: Document =
-      Jsoup.parse(app.injector.instanceOf[h2Inner].apply(msgKey, innerMsgKey, idValue).body)
+      Jsoup.parse(application.injector.instanceOf[h2Inner].apply(msgKey, innerMsgKey, idValue).body)
 
     val h2InnerComponentWithEmptyInnerMsg: Document =
-      Jsoup.parse(app.injector.instanceOf[h2Inner].apply(msgKey, emptyString, None, classesValue).body)
+      Jsoup.parse(application.injector.instanceOf[h2Inner].apply(msgKey, emptyString, None, classesValue).body)
 
     val h2InnerComponentWithEmptyClass: Document =
-      Jsoup.parse(app.injector.instanceOf[h2Inner].apply(msgKey, innerMsgKey, idValue, emptyString).body)
+      Jsoup.parse(application.injector.instanceOf[h2Inner].apply(msgKey, innerMsgKey, idValue, emptyString).body)
   }
 }
