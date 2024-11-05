@@ -99,7 +99,7 @@ trait Constraints {
 
   def validateInt(errorKey: String): Constraint[Int] = Constraint { input =>
 
-    if (input > 0 && input <= 121) {
+    if (input > 0 && input < 121) {
       Valid
     } else {
       Invalid(ValidationError(errorKey))

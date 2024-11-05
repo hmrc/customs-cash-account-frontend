@@ -330,3 +330,5 @@ pagination.ellipses.hidden = Ellipses
 
 # Search Form Error Validation
 cf.search.form.error.required = Nodwch MRN, UCR neu union swm y taliad sy’n cynnwys ''£''
+cf.jamie.search.form.error.name.required = Rhowch eich enw
+cf.jamie.search.form.error.age.required = Rhowch rif rhwng 1 - 120

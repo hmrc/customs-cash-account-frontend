@@ -18,11 +18,7 @@ package forms.mappings
 
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import play.api.i18n.Messages
 import utils.Utils.{comma, emptyString}
-
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import scala.util.control.Exception.nonFatalCatch
 import scala.util.{Failure, Success, Try}
 
@@ -40,6 +36,25 @@ trait Formatters {
       Map(key -> value)
   }
 
+  // ***************************** JAMIE FORM PAGE ************************************
+  private[mappings] def numberFormatter(errorKey: String): Formatter[Int] = new Formatter[Int] {
+
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Int] =
+      data.get(key) match {
+        case None => Left(Seq(FormError(key, errorKey)))
+        case Some(s) =>
+          try {
+            Right(s.toInt)
+          } catch {
+            case _: NumberFormatException => Left(Seq(FormError(key, errorKey)))
+          }
+      }
+
+    override def unbind(key: String, value: Int): Map[String, String] =
+      Map(key -> value.toString)
+  }
+
+  // ***************************** JAMIE FORM PAGE ************************************
   private[mappings] def intFormatter(requiredKey: String,
                                      wholeNumberKey: String,
                                      nonNumericKey: String,

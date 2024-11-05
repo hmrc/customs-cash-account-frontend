@@ -332,3 +332,5 @@ pagination.ellipses.hidden = Ellipses
 
 # Search Form Error Validation
 cf.search.form.error.required = Enter an MRN, UCR or exact payment amount that includes ''£''
+cf.jamie.search.form.error.name.required = Enter your name
+cf.jamie.search.form.error.age.required = Enter a number between 1 - 120

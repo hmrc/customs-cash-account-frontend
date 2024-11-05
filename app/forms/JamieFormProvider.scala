@@ -24,8 +24,10 @@ import play.api.data.Forms.{mapping, nonEmptyText, number}
 class JamieFormProvider extends Mappings {
   def apply(): Form[JamieFormFields] = Form(
     mapping(
-      "name" -> nonEmptyText.verifying(validateString(errorKey = "Enter your name")),
-      "age" -> number.verifying(validateInt(errorKey = "Enter a number between 1 - 120"))
+      "name" -> text(errorKey = "cf.jamie.search.form.error.name.required")
+        .verifying(validateString(errorKey = "cf.jamie.search.form.error.name.required")),
+      "age" -> ageNumber(errorKey = "cf.jamie.search.form.error.age.required")
+        .verifying(validateInt(errorKey = "cf.jamie.search.form.error.age.required"))
     )(JamieFormFields.apply)(JamieFormFields.unapply)
   )
 }

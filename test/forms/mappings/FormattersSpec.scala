@@ -65,9 +65,26 @@ class FormattersSpec extends SpecBase {
     }
   }
 
+  "numberFormatter" should {
+    "return correct value when key is bound" in new Setup {
+      val key = "38"
+      formatterOb.numberFormatter(key).bind(
+        key, Map(key -> "38")).mustEqual(Right(keyInt))
+    }
+    "return error when key is invalid" in new Setup {
+      val key = "500"
+      val errorKey = "invalid key"
+
+      formatterOb.numberFormatter(errorKey).bind(
+        key, Map(key -> "invalid key")).mustEqual(Left(Seq(FormError(key, errorKey)))
+      )
+    }
+  }
+
   trait Setup {
     val formatterOb: Formatters = new Formatters {}
     val app: Application = application.build()
     implicit val msg: Messages = messages(app)
+    val keyInt = 38
   }
 }
