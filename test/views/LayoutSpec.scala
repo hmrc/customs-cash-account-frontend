@@ -38,7 +38,7 @@ class LayoutSpec extends SpecBase {
         val title = "test_title"
         val linkUrl = "test.com"
 
-        val layoutView: Document = Jsoup.parse(app.injector.instanceOf[Layout].apply(
+        val layoutView: Document = Jsoup.parse(application.injector.instanceOf[Layout].apply(
           pageTitle = Some(title),
           backLink = Some(linkUrl),
           fullWidth = true
@@ -51,7 +51,7 @@ class LayoutSpec extends SpecBase {
       }
 
       "there is no value for title and back link" in new Setup {
-        val layoutView: Document = Jsoup.parse(app.injector.instanceOf[Layout].apply(
+        val layoutView: Document = Jsoup.parse(application.injector.instanceOf[Layout].apply(
           fullWidth = true)(content).body)
 
         shouldContainCorrectTitle(layoutView)
@@ -63,7 +63,7 @@ class LayoutSpec extends SpecBase {
 
 
     "display correct page-not-working-properly link (desk-pro) and margin" in new Setup {
-      val layoutView: Document = Jsoup.parse(app.injector.instanceOf[Layout].apply(fullWidth = true)(content).body)
+      val layoutView: Document = Jsoup.parse(application.injector.instanceOf[Layout].apply(fullWidth = true)(content).body)
 
       shouldContainCorrectHMRCTechnicalHelper(layoutView)
     }
@@ -110,10 +110,7 @@ class LayoutSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application
-
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", "test_path")
-
     val content: Html = Html("test")
   }
 }

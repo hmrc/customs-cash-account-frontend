@@ -143,11 +143,10 @@ class CashAccountNoTransactionsSpec extends SpecBase {
 
     val model: CashAccountViewModel = CashAccountViewModel(eori, cashAccount)
 
-    val app: Application = application
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest()
 
     def view(accountModel: CashAccountViewModel): Document =
-      Jsoup.parse(app.injector.instanceOf[cash_account_no_transactions].apply(accountModel).body)
+      Jsoup.parse(application.injector.instanceOf[cash_account_no_transactions].apply(accountModel).body)
 
     val viewDoc: Document = view(model)
   }
