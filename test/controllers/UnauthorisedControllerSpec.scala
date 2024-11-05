@@ -24,10 +24,9 @@ class UnauthorisedControllerSpec extends SpecBase {
   "onPageLoad" must {
 
     "return OK" in {
-      val app = application
 
-      running(app) {
-        val result = route(app, fakeRequest("GET", routes.UnauthorisedController.onPageLoad.url)).value
+      running(application) {
+        val result = route(application, fakeRequest("GET", routes.UnauthorisedController.onPageLoad.url)).value
         status(result) mustEqual OK
       }
     }
