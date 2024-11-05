@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.AppConfig
 import connectors.*
 import models.response.*
 import models.*
@@ -24,7 +23,6 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito
 import org.mockito.Mockito.when
 import play.api.Application
-import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*

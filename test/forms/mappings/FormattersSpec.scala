@@ -16,9 +16,7 @@
 
 package forms.mappings
 
-import play.api.Application
 import play.api.data.FormError
-import play.api.i18n.Messages
 import utils.SpecBase
 
 class FormattersSpec extends SpecBase {

@@ -17,7 +17,6 @@
 package config
 
 import models.FileRole.CDSCashAccount
-import play.api.Application
 import utils.SpecBase
 
 class AppConfigSpec extends SpecBase {

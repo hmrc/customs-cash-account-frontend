@@ -18,9 +18,6 @@ package models
 
 import models.metadata.CashStatementFileMetadata
 import java.time.LocalDate
-import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.FakeRequest
 import utils.SpecBase
 
 class CashStatementsByMonthSpec extends SpecBase {

@@ -16,13 +16,10 @@
 
 package views.components
 
-import config.AppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalatest.Assertion
-import play.api.Application
-import play.api.i18n.Messages
 import utils.SpecBase
 import utils.Utils.{period, singleSpace}
 import views.html.components.newTabLink

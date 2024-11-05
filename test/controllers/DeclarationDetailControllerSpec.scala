@@ -35,7 +35,6 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito
 import org.mockito.Mockito.when
 import play.api.Application
-import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -46,7 +45,6 @@ import utils.SpecBase
 import java.time.LocalDate
 import scala.concurrent.Future
 import views.html.cash_account_declaration_details_search_no_result
-import config.AppConfig
 import utils.TestData.{PAYMENT_SEARCH_VALUE, SEQ_PAYMENT_DETAILS_CONTAINER_01}
 
 class DeclarationDetailControllerSpec extends SpecBase {

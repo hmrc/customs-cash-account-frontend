@@ -20,7 +20,6 @@ import helpers.Formatters
 import models.domain.EORI
 import models.{CustomsDuty, Declaration, ExciseDuty, ImportVat, TaxGroup, TaxType}
 import org.mockito.Mockito.*
-import play.api.i18n.{Messages, MessagesApi}
 import uk.gov.hmrc.govukfrontend
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views
@@ -28,8 +27,6 @@ import utils.SpecBase
 import utils.Utils.singleSpace
 
 import java.time.LocalDate
-import play.api.Application
-import play.api.test.FakeRequest
 import uk.gov
 import uk.gov.hmrc
 import uk.gov.hmrc.govukfrontend.views.Aliases

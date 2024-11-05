@@ -16,9 +16,6 @@
 
 package views
 
-import config.AppConfig
-import play.api.Application
-import play.api.i18n.Messages
 import utils.SpecBase
 
 class FooterLinksSpec extends SpecBase {
@@ -28,7 +25,6 @@ class FooterLinksSpec extends SpecBase {
     "return correct list of FooterItems" when {
 
       "matching message key is present for FooterItems" in {
-
         FooterLinks()(messages, appConfig).size mustBe 4
       }
     }

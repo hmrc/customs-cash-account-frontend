@@ -17,9 +17,6 @@
 package models
 
 import models.metadata.CashStatementFileMetadata
-import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.FakeRequest
 import utils.SpecBase
 
 import java.time.LocalDate

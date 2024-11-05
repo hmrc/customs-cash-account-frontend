@@ -16,9 +16,6 @@
 
 package viewmodels.pagination
 
-import config.AppConfig
-import play.api.Application
-import play.api.i18n.Messages
 import utils.SpecBase
 import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination.{Pagination, PaginationItem}
 import utils.TestData.{

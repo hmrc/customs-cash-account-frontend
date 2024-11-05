@@ -16,11 +16,9 @@
 
 package views
 
-import config.AppConfig
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import play.api.Application
-import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.SpecBase

@@ -21,8 +21,6 @@ import models.FileRole.CDSCashAccount
 import models.metadata.{CashStatementFileMetadata, Metadata, MetadataItem}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{times, verify, when}
-import play.api.Application
-import play.api.i18n.Messages
 import utils.SpecBase
 
 class SdesGatekeeperServiceSpec extends SpecBase {
