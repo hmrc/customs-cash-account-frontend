@@ -45,4 +45,3 @@ trait Mappings extends Formatters with Constraints {
   protected def ageNumber(errorKey: String = "error.required"): FieldMapping[Int] =
     of(numberFormatter(errorKey))
 }
-
