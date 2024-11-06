@@ -17,7 +17,10 @@
 package controllers
 
 import config.AppConfig
-import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested, UnknownException}
+import connectors.{
+  CustomsFinancialsApiConnector, NoTransactionsAvailable,
+  TooManyTransactionsRequested, UnknownException
+}
 import models.*
 import org.jsoup.Jsoup.parseBodyFragment
 import play.api.Application
@@ -173,10 +176,9 @@ class DownloadCsvControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
       val app: Application = applicationBuilder
-        .overrides(
-          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
-        ).configure("features.fixed-systemdate-for-tests" -> "true"
-      ).build()
+        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+        .configure("features.fixed-systemdate-for-tests" -> "true")
+        .build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
@@ -201,8 +203,8 @@ class DownloadCsvControllerSpec extends SpecBase {
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
           bind[AuditingService].toInstance(mockAuditingService)
-        ).configure("features.fixed-systemdate-for-tests" -> "true"
-      ).build()
+        ).configure("features.fixed-systemdate-for-tests" -> "true")
+        .build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
@@ -223,10 +225,9 @@ class DownloadCsvControllerSpec extends SpecBase {
         .thenReturn(Future.successful(None))
 
       val app: Application = applicationBuilder
-        .overrides(
-          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
-        ).configure("features.fixed-systemdate-for-tests" -> "true"
-      ).build()
+        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+        .configure("features.fixed-systemdate-for-tests" -> "true")
+        .build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)

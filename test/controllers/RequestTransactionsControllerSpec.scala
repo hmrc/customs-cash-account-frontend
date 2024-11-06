@@ -31,8 +31,7 @@ import scala.concurrent.Future
 import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers.any
 
-class
-RequestTransactionsControllerSpec extends SpecBase {
+class RequestTransactionsControllerSpec extends SpecBase {
 
   "onPageLoad" should {
 

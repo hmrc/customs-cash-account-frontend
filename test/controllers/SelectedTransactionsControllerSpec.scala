@@ -268,8 +268,8 @@ class SelectedTransactionsControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Some(CashTransactionDates(fromDate, toDate))))
 
       val request: FakeRequest[AnyContentAsEmpty.type] =
-        fakeRequest(GET, routes.SelectedTransactionsController.duplicateDates(
-          "someMsg","someDate","someDate").url)
+        fakeRequest(GET,
+          routes.SelectedTransactionsController.duplicateDates("someMsg", testDate, testDate).url)
 
       running(app) {
         val result = route(app, request).value
@@ -279,6 +279,7 @@ class SelectedTransactionsControllerSpec extends SpecBase {
   }
 
   trait Setup {
+    val testDate: String = "someDate"
     val sMRN: Option[String] = Some("ic62zbad-75fa-445f-962b-cc92311686b8e")
     val cashAccountNumber = "1234567"
     val eori = "exampleEori"
