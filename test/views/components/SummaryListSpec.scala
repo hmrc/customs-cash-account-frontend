@@ -18,8 +18,6 @@ package views.components
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
-import play.api.i18n.Messages
 import utils.SpecBase
 import viewmodels.ResultsPageSummary
 import views.html.components.summaryList
@@ -47,9 +45,6 @@ class SummaryListSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application.build()
-    implicit val msgs: Messages = messages(app)
-
     val day10th = 10
     val day11th = 11
     val month = 3
@@ -67,9 +62,9 @@ class SummaryListSpec extends SpecBase {
     val summary: ResultsPageSummary = new ResultsPageSummary(fromDate, toDate)
 
     val summaryListComponent: Document = Jsoup.parse(
-      app.injector.instanceOf[summaryList].apply(summary = summary).body)
+      application.injector.instanceOf[summaryList].apply(summary = summary).body)
 
     val summaryListComponentWithChange: Document = Jsoup.parse(
-      app.injector.instanceOf[summaryList].apply(summary = summary, isChange = true).body)
+      application.injector.instanceOf[summaryList].apply(summary = summary, isChange = true).body)
   }
 }

@@ -21,7 +21,6 @@ import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewMo
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
-import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -143,13 +142,10 @@ class CashAccountNoTransactionsSpec extends SpecBase {
 
     val model: CashAccountViewModel = CashAccountViewModel(eori, cashAccount)
 
-    val app: Application = application.build()
-    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
-    implicit val msgs: Messages = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest()
 
     def view(accountModel: CashAccountViewModel): Document =
-      Jsoup.parse(app.injector.instanceOf[cash_account_no_transactions].apply(accountModel).body)
+      Jsoup.parse(application.injector.instanceOf[cash_account_no_transactions].apply(accountModel).body)
 
     val viewDoc: Document = view(model)
   }

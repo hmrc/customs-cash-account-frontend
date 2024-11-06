@@ -16,13 +16,10 @@
 
 package views.components
 
-import config.AppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalatest.Assertion
-import play.api.Application
-import play.api.i18n.Messages
 import utils.SpecBase
 import utils.Utils.{period, singleSpace}
 import views.html.components.newTabLink
@@ -98,8 +95,6 @@ class NewTabLinkSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application.build()
-
     val linkMessage: String = "go to test page"
     val href = "www.test.com"
     val preLinkMessage = "test_pre_link_message"
@@ -107,15 +102,12 @@ class NewTabLinkSpec extends SpecBase {
     val classes = "govuk-!-margin-bottom-7"
     val defaultClasses: String = "govuk-body"
 
-    implicit val msg: Messages = messages(app)
-    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
-
     def newTabLinkComponent(linkMessage: String,
                             href: String,
                             preLinkMessage: Option[String] = None,
                             postLinkMessage: Option[String] = None,
                             classes: String = defaultClasses): Document =
-      Jsoup.parse(app.injector.instanceOf[newTabLink].
+      Jsoup.parse(application.injector.instanceOf[newTabLink].
         apply(linkMessage, href, preLinkMessage, postLinkMessage, classes).body)
 
   }

@@ -75,7 +75,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -95,7 +95,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -114,7 +114,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(UnknownException)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -148,7 +148,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(NoTransactionsAvailable)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -178,7 +178,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(NoTransactionsAvailable)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -210,7 +210,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(NoTransactionsAvailable)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -245,11 +245,9 @@ class CashAccountV2ControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(any, any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionsWithNoStatements)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
-
-      implicit val msgs: Messages = messages(app)
 
       running(app) {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
@@ -260,19 +258,16 @@ class CashAccountV2ControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) must
-          include regex msgs("cf.cash-account.transactions.no-transactions-for-last-six-months")
+          include regex messages("cf.cash-account.transactions.no-transactions-for-last-six-months")
       }
     }
 
     "display cash account no transactions' page when user does not have Cash account and balance is zero" in new Setup {
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
         ).build()
-
-      implicit val msgs: Messages = messages(app)
-      implicit val config: AppConfig = appConfig(app)
 
       val cashAccountWithZeroBalance: CashAccount = cashAccount.copy(balances = CDSCashBalance(Some(0)))
 
@@ -306,7 +301,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(TooManyTransactionsRequested)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -327,7 +322,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse02)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -344,7 +339,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(None))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -364,7 +359,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -382,7 +377,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
           Future.failed(nonFatalResponse)
         )
 
-        val app: Application = application
+        val app: Application = applicationBuilder
           .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
           .build()
 
@@ -400,7 +395,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       when(mockDataStoreConnector.getEmail(any)(any))
         .thenReturn(Future.successful(Left(UnverifiedEmail)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
           bind[CustomsDataStoreConnector].toInstance(mockDataStoreConnector)
@@ -422,7 +417,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
       private val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
           bind[CustomsDataStoreConnector].toInstance(mockDataStoreConnector)
@@ -446,7 +441,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
           bind[CustomsDataStoreConnector].toInstance(mockDataStoreConnector)
@@ -464,7 +459,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
   "showAccountUnavailable" must {
     "return OK" in new Setup {
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -480,7 +475,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
   "showUnableToDownloadCSV" must {
 
     "return OK" in new Setup {
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -496,7 +491,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
   "tooManyTransactions" must {
     "return OK" in new Setup {
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -513,7 +508,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
     "return NotFound" in new Setup {
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -532,7 +527,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
   "onSubmit" must {
 
     "return SEE_OTHER when form submission is successful" in new Setup {
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[DeclarationDetailController].toInstance(mockDeclarationDetailController))
         .build()
 
@@ -552,7 +547,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
     }
 
     "return same page when form submission is unsuccessful with error validation present" in new Setup {
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)).build()
 
       running(app) {
@@ -582,7 +577,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustEqual SEE_OTHER
 
-        val renderedView = view.apply(formWithErrors, viewModel)(messages(app), appConfig(app), request).body
+        val renderedView = view.apply(formWithErrors, viewModel)(messages, appConfig, request).body
         renderedView must include("There is a problem")
         renderedView must include(s"Enter an MRN, UCR or exact payment amount that includes &#x27;$poundSymbol&#x27;")
       }

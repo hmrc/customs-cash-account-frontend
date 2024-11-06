@@ -17,9 +17,6 @@
 package models
 
 import models.metadata.CashStatementFileMetadata
-import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.FakeRequest
 import utils.SpecBase
 
 import java.time.LocalDate
@@ -78,9 +75,6 @@ class SdesFileSpec extends SpecBase {
   }
 
   trait Setup {
-
-    val app: Application = application.build()
-    implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
     val yearStart = 2024
     val monthStart = 5

@@ -16,9 +16,6 @@
 
 package utils
 
-import config.AppConfig
-import play.api.Application
-import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
 import utils.Utils.*
@@ -225,11 +222,6 @@ class UtilsSpec extends SpecBase {
   }
 
   trait Setup {
-
-    val app: Application = application.build()
-    implicit val msgs: Messages = messages(app)
-    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
-
     val testMsgKey = "test_key"
     val testMsg = "test_msg"
     val testId = "test_id"

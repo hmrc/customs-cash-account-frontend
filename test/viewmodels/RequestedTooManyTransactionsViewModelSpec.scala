@@ -18,7 +18,6 @@ package viewmodels
 
 import controllers.routes
 import org.scalatest.Assertion
-import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
 import java.time.LocalDate
@@ -71,13 +70,8 @@ class RequestedTooManyTransactionsViewModelSpec extends SpecBase {
   }
 
   trait Setup {
-
     val fromDate: LocalDate = LocalDate.parse("2020-07-18")
     val toDate: LocalDate = LocalDate.parse("2020-07-20")
     val selectedTxnUrl: String = controllers.routes.SelectedTransactionsController.onPageLoad().url
-
-    val app: Application = application.build()
-
-    implicit val msgs: Messages = messages(app)
   }
 }

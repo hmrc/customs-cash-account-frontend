@@ -18,10 +18,10 @@ package viewmodels
 
 import helpers.Formatters
 import models.*
-import models.response.{DeclarationSearch, TaxGroupSearch, TaxGroupWrapper, TaxTypeWithSecurity, TaxTypeWithSecurityContainer}
-import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.FakeRequest
+import models.response.{
+  DeclarationSearch, TaxGroupSearch, TaxGroupWrapper, TaxTypeWithSecurity,
+  TaxTypeWithSecurityContainer
+}
 import uk.gov
 import uk.gov.hmrc
 import uk.gov.hmrc.govukfrontend
@@ -168,9 +168,6 @@ class DeclarationDetailSearchViewModelSpec extends SpecBase {
         )
       )
     )
-
-    val app: Application = application.build()
-    implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
     def extractSummaryData(summaryList: SummaryList): Seq[(String, String)] = {
       summaryList.rows.map { row =>

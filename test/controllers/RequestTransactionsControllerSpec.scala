@@ -31,8 +31,7 @@ import scala.concurrent.Future
 import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers.any
 
-class
-RequestTransactionsControllerSpec extends SpecBase {
+class RequestTransactionsControllerSpec extends SpecBase {
 
   "onPageLoad" should {
 
@@ -199,13 +198,12 @@ RequestTransactionsControllerSpec extends SpecBase {
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
     val mockRequestedTransactionsCache: RequestedTransactionsCache = mock[RequestedTransactionsCache]
 
-    val app: Application = application
+    val app: Application = applicationBuilder
       .overrides(
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
         bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache)
       )
-      .configure(
-        "features.fixed-systemdate-for-tests" -> "true")
+      .configure("features.fixed-systemdate-for-tests" -> "true")
       .build()
   }
 }

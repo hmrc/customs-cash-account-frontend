@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.AppConfig
 import connectors.*
 import models.response.*
 import models.*
@@ -24,7 +23,6 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito
 import org.mockito.Mockito.when
 import play.api.Application
-import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -121,16 +119,13 @@ class CashAccountPaymentSearchControllerSpec extends SpecBase {
       AccountStatusOpen,
       CDSCashBalance(Some(BigDecimal(123456.78))))
 
-    val app: Application = application
+    val app: Application = applicationBuilder
       .overrides(
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
         bind[CashAccountSearchRepository].toInstance(mockCashAccountSearchRepo)
       ).build()
 
-    implicit val msgs: Messages = messages(app)
-    implicit val config: AppConfig = appConfig(app)
-
-    val noResultsReturnedMessage: String = msgs(
+    val noResultsReturnedMessage: String = messages(
       "cf.cash-account.detail.declaration.search-no-results-guidance-not-returned-any-results", PAYMENT_SEARCH_VALUE)
   }
 }

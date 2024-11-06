@@ -16,10 +16,8 @@
 
 package behaviours
 
-import config.AppConfig
 import org.jsoup.nodes.Document
 import play.api.Application
-import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.SpecBase
@@ -37,15 +35,13 @@ trait GuidancePageBehaviour {
   val otherComponentGuidanceList: List[ComponentDetailsForAssertion] = List.empty
   val linksToVerify: List[LinkDetails] = List.empty
 
-  implicit lazy val app: Application = application.build()
-  implicit val msgs: Messages = messages(app)
+  implicit lazy val app: Application = application
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest()
-  implicit val appConfig: AppConfig = appConfig(app)
 
   def guidancePage(): Unit =
 
     "display correct title" in {
-      view.title() mustBe s"${msgs(titleMsgKey)} - ${msgs("service.name")} - GOV.UK"
+      view.title() mustBe s"${messages(titleMsgKey)} - ${messages("service.name")} - GOV.UK"
     }
 
     "display correct back link" in {
@@ -54,13 +50,13 @@ trait GuidancePageBehaviour {
 
     "display correct help and support guidance" in {
       if (helpAndSupportMsgKeys.isDefined) {
-        helpAndSupportMsgKeys.map(msgsKey => view.html().contains(msgs(msgsKey)) mustBe true)
+        helpAndSupportMsgKeys.map(msgsKey => view.html().contains(messages(msgsKey)) mustBe true)
       } else {
         val viewAsHtml = view.html()
 
-        viewAsHtml must include(msgs("cf.cash-account.help-and-support.link.text"))
-        viewAsHtml must include(msgs("cf.cash-account.help-and-support.link.text.post"))
-        viewAsHtml must include(msgs("cf.cash-account.help-and-support.link.text.pre"))
+        viewAsHtml must include(messages("cf.cash-account.help-and-support.link.text"))
+        viewAsHtml must include(messages("cf.cash-account.help-and-support.link.text.post"))
+        viewAsHtml must include(messages("cf.cash-account.help-and-support.link.text.pre"))
         viewAsHtml must include(
           helpAndSupportLink.getOrElse("https://www.gov.uk/guidance/use-a-cash-account-for-cds-declarations"))
       }

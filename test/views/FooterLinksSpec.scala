@@ -16,9 +16,6 @@
 
 package views
 
-import config.AppConfig
-import play.api.Application
-import play.api.i18n.Messages
 import utils.SpecBase
 
 class FooterLinksSpec extends SpecBase {
@@ -27,17 +24,10 @@ class FooterLinksSpec extends SpecBase {
 
     "return correct list of FooterItems" when {
 
-      "matching message key is present for FooterItems" in new Setup {
-
-        FooterLinks()(msgs, config).size mustBe 4
+      "matching message key is present for FooterItems" in {
+        FooterLinks()(messages, appConfig).size mustBe 4
       }
     }
   }
 
-  trait Setup {
-    val app: Application = application.build()
-
-    implicit val msgs: Messages = messages(app)
-    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
-  }
 }

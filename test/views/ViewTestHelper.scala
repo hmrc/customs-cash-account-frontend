@@ -16,20 +16,16 @@
 
 package views
 
-import config.AppConfig
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import play.api.Application
-import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.SpecBase
 
 trait ViewTestHelper extends SpecBase {
 
-  implicit lazy val app: Application = application.build()
-  implicit val messages: Messages = messages(app)
-  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit lazy val app: Application = application
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest()
 
   def titleShouldBeCorrect(view: Document,

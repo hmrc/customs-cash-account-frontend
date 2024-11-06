@@ -51,7 +51,7 @@ class CashAccountControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -71,7 +71,7 @@ class CashAccountControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -90,7 +90,7 @@ class CashAccountControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(UnknownException)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -125,7 +125,7 @@ class CashAccountControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Left(NoTransactionsAvailable)))
 
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -156,7 +156,7 @@ class CashAccountControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Left(NoTransactionsAvailable)))
 
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -188,7 +188,7 @@ class CashAccountControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(NoTransactionsAvailable)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -219,7 +219,7 @@ class CashAccountControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Right(CashTransactions(Seq.empty, Seq.empty))))
 
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -249,7 +249,7 @@ class CashAccountControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Left(TooManyTransactionsRequested)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -267,7 +267,7 @@ class CashAccountControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(None))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -286,7 +286,7 @@ class CashAccountControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -304,7 +304,7 @@ class CashAccountControllerSpec extends SpecBase {
           Future.failed(nonFatalResponse)
         )
 
-        val app: Application = application
+        val app: Application = applicationBuilder
           .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
           .build()
 
@@ -322,7 +322,7 @@ class CashAccountControllerSpec extends SpecBase {
       when(mockDataStoreConnector.getEmail(any)(any))
         .thenReturn(Future.successful(Left(UnverifiedEmail)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
           bind[CustomsDataStoreConnector].toInstance(mockDataStoreConnector)
@@ -344,7 +344,7 @@ class CashAccountControllerSpec extends SpecBase {
 
       private val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
           bind[CustomsDataStoreConnector].toInstance(mockDataStoreConnector)
@@ -368,7 +368,7 @@ class CashAccountControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
           bind[CustomsDataStoreConnector].toInstance(mockDataStoreConnector)
@@ -386,7 +386,7 @@ class CashAccountControllerSpec extends SpecBase {
 
   "showAccountUnavailable" must {
     "return OK" in new Setup {
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -402,7 +402,7 @@ class CashAccountControllerSpec extends SpecBase {
   "showUnableToDownloadCSV" must {
 
     "return OK" in new Setup {
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -418,7 +418,7 @@ class CashAccountControllerSpec extends SpecBase {
   "tooManyTransactions" must {
     "return OK" in new Setup {
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -435,7 +435,7 @@ class CashAccountControllerSpec extends SpecBase {
 
     "return NotFound" in new Setup {
 
-      val app: Application = application
+      val app: Application = applicationBuilder
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -494,7 +494,7 @@ class CashAccountControllerSpec extends SpecBase {
     val cashTransactionResponse: CashTransactions = CashTransactions(
       listOfPendingTransactions, cashDailyStatements)
 
-    val appConfigOb: AppConfig = application.build().injector.instanceOf[AppConfig]
+    val appConfigOb: AppConfig = application.injector.instanceOf[AppConfig]
 
     assume(!appConfigOb.isCashAccountV2FeatureFlagEnabled)
   }

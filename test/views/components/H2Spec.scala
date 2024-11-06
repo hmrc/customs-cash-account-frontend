@@ -18,8 +18,6 @@ package views.components
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
-import play.api.i18n.Messages
 import utils.SpecBase
 import views.html.components.h2
 
@@ -41,8 +39,6 @@ class H2Spec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application.build()
-    implicit val msgs: Messages = messages(app)
 
     val msg: String = "some message"
     val id: String = "test_id"
@@ -51,9 +47,9 @@ class H2Spec extends SpecBase {
     val extraContent: String = "some extra content"
 
     val h2Component: Document =
-      Jsoup.parse(app.injector.instanceOf[h2].apply(msg, Some(id), classes, Some(extraContent)).body)
+      Jsoup.parse(application.injector.instanceOf[h2].apply(msg, Some(id), classes, Some(extraContent)).body)
 
     val h2ComponentWithoutContent: Document =
-      Jsoup.parse(app.injector.instanceOf[h2].apply(msg, Some(idNoContent), classes).body)
+      Jsoup.parse(application.injector.instanceOf[h2].apply(msg, Some(idNoContent), classes).body)
   }
 }

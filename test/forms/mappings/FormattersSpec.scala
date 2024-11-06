@@ -16,9 +16,7 @@
 
 package forms.mappings
 
-import play.api.Application
 import play.api.data.FormError
-import play.api.i18n.Messages
 import utils.SpecBase
 
 class FormattersSpec extends SpecBase {
@@ -67,7 +65,5 @@ class FormattersSpec extends SpecBase {
 
   trait Setup {
     val formatterOb: Formatters = new Formatters {}
-    val app: Application = application.build()
-    implicit val msg: Messages = messages(app)
   }
 }

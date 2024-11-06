@@ -18,8 +18,6 @@ package helpers
 
 import helpers.Formatters.*
 import utils.SpecBase
-import play.api.Application
-import play.api.i18n.Messages
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -126,8 +124,6 @@ class FormattersSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application.build()
-    implicit val msg: Messages = messages(app)
     val date: LocalDate = LocalDate.parse("2020-07-21")
   }
 }

@@ -22,7 +22,6 @@ import models.email.UndeliverableEmail
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -111,14 +110,12 @@ class ConfirmationPageControllerSpec extends SpecBase {
 
     val cashDates: CashTransactionDates = CashTransactionDates(start = fromDate, end = toDate)
 
-    val app: Application = application
+    val app: Application = applicationBuilder
       .overrides(
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
         bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache),
         bind[CustomsDataStoreConnector].toInstance(mockCustomsDataStoreConnector))
       .configure("features.fixed-systemdate-for-tests" -> "true")
       .build()
-
-    val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
   }
 }

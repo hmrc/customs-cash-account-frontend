@@ -21,8 +21,6 @@ import models.FileRole.CDSCashAccount
 import models.metadata.{CashStatementFileMetadata, Metadata, MetadataItem}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{times, verify, when}
-import play.api.Application
-import play.api.i18n.Messages
 import utils.SpecBase
 
 class SdesGatekeeperServiceSpec extends SpecBase {
@@ -32,7 +30,7 @@ class SdesGatekeeperServiceSpec extends SpecBase {
     "convert FileInformation to CashStatementFile correctly" in new Setup {
       val sdesFileInformation: FileInformation = validCashStatementFileInformation
 
-      val result: CashStatementFile = sdesGatekeeperService.convertToCashStatementFile(sdesFileInformation)(msg)
+      val result: CashStatementFile = sdesGatekeeperService.convertToCashStatementFile(sdesFileInformation)(messages)
 
       result.filename mustBe sdesFileInformation.filename
       result.downloadURL mustBe sdesFileInformation.downloadURL
@@ -68,9 +66,6 @@ class SdesGatekeeperServiceSpec extends SpecBase {
   }
 
   trait Setup {
-
-    val app: Application = application.build()
-    implicit val msg: Messages = messages(app)
 
     val sdesGatekeeperService = new SdesGatekeeperService()
     val periodStartYear = 2017

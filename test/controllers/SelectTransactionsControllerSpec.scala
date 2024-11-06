@@ -197,13 +197,12 @@ class SelectTransactionsControllerSpec extends SpecBase {
 
     val day: String = "1"
 
-    val app: Application = application
+    val app: Application = applicationBuilder
       .overrides(
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
         bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache)
       )
-      .configure(
-        "features.fixed-systemdate-for-tests" -> "true")
+      .configure("features.fixed-systemdate-for-tests" -> "true")
       .build()
   }
 }

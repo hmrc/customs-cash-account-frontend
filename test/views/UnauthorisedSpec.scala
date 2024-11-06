@@ -16,12 +16,9 @@
 
 package views
 
-import config.AppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import play.api.Application
-import play.api.i18n.Messages
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import utils.SpecBase
@@ -33,21 +30,21 @@ class UnauthorisedSpec extends SpecBase {
 
     "display correct title and guidance" in new Setup {
       view.title() mustBe
-        s"${messages(app)("cf.not-subscribed-to-cds.detail.title")} - ${messages(app)("service.name")} - GOV.UK"
+        s"${messages("cf.not-subscribed-to-cds.detail.title")} - ${messages("service.name")} - GOV.UK"
 
-      view.getElementsByTag("h1").html() mustBe messages(app)("cf.not-subscribed-to-cds.detail.heading")
+      view.getElementsByTag("h1").html() mustBe messages("cf.not-subscribed-to-cds.detail.heading")
 
       view.getElementById("already-subscribed-heading").html() mustBe
-        messages(app)("cf.not-subscribed-to-cds.detail.already-subscribed-to-cds")
+        messages("cf.not-subscribed-to-cds.detail.already-subscribed-to-cds")
       view.getElementById("subscribed-to-cds-heading").html() mustBe
-        messages(app)("cf.not-subscribed-to-cds.details.subscribe-to-cds")
+        messages("cf.not-subscribed-to-cds.details.subscribe-to-cds")
 
       val pElements: Elements = view.getElementsByTag("p")
       pElements.get(1).html() mustBe
-        messages(app)("cf.not-subscribed-to-cds.detail.already-subscribed-to-cds-guidance-text")
+        messages("cf.not-subscribed-to-cds.detail.already-subscribed-to-cds-guidance-text")
 
       view.html().contains(cdsSubscribeUrl)
-      view.html().contains(messages(app)("cf.not-subscribed-to-cds.details.subscribe-to-cds-link-text"))
+      view.html().contains(messages("cf.not-subscribed-to-cds.details.subscribe-to-cds-link-text"))
 
       view.html().contains(deskProLinkText)
     }
@@ -57,13 +54,8 @@ class UnauthorisedSpec extends SpecBase {
     val deskProLinkText = "Is this page not working properly? (opens in new tab)"
     val cdsSubscribeUrl = "https://www.tax.service.gov.uk/customs-enrolment-services/cds/subscribe"
 
-    val app: Application = application.build()
-
-    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-    implicit val msg: Messages = messages(app)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/some/resource/path")
 
-    val view: Document = Jsoup.parse(
-      app.injector.instanceOf[unauthorised].apply().body)
+    val view: Document = Jsoup.parse(application.injector.instanceOf[unauthorised].apply().body)
   }
 }

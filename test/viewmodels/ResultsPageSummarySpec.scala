@@ -17,9 +17,6 @@
 package viewmodels
 
 import org.scalatest.Assertion
-import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.FakeRequest
 import utils.SpecBase
 
 import java.time.LocalDate
@@ -148,10 +145,6 @@ class ResultsPageSummarySpec extends SpecBase {
 
     val fromDate: LocalDate = LocalDate.of(year, month3rd, day8th)
     val toDate: LocalDate = LocalDate.of(year, month4th, day10th)
-
-    val app: Application = application.build()
-
-    implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
     val resultPageSummary01: ResultsPageSummary = new ResultsPageSummary(fromDate, toDate, true)
     val resultPageSummary02: ResultsPageSummary = new ResultsPageSummary(fromDate, toDate, false)

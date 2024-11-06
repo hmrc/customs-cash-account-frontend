@@ -18,9 +18,6 @@ package models
 
 import models.metadata.CashStatementFileMetadata
 import java.time.LocalDate
-import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.FakeRequest
 import utils.SpecBase
 
 class CashStatementsByMonthSpec extends SpecBase {
@@ -60,9 +57,6 @@ class CashStatementsByMonthSpec extends SpecBase {
   }
 
   trait Setup {
-
-    val app: Application = application.build()
-    implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
     val year = 2024
     val month = 5

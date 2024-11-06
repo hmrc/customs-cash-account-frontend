@@ -26,6 +26,7 @@ import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.SpecBase
+import utils.Utils.emptyString
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,10 +42,9 @@ class AuthActionSpec extends SpecBase {
 
       "redirect the user to log in " in {
 
-        val app = application.build()
-        val config = app.injector.instanceOf[AppConfig]
+        val config = application.injector.instanceOf[AppConfig]
 
-        val bodyParsers = application.injector().instanceOf[BodyParsers.Default]
+        val bodyParsers = applicationBuilder.injector().instanceOf[BodyParsers.Default]
 
         val authAction = new AuthenticatedIdentifierAction(
           new FakeFailingAuthConnector(new MissingBearerToken), config, bodyParsers)
@@ -62,10 +62,9 @@ class AuthActionSpec extends SpecBase {
 
       "redirect the user to log in " in {
 
-        val app = application.build()
-        val config = app.injector.instanceOf[AppConfig]
+        val config = application.injector.instanceOf[AppConfig]
 
-        val bodyParsers = application.injector().instanceOf[BodyParsers.Default]
+        val bodyParsers = applicationBuilder.injector().instanceOf[BodyParsers.Default]
 
         val authAction = new AuthenticatedIdentifierAction(
           new FakeFailingAuthConnector(new BearerTokenExpired), config, bodyParsers)
@@ -83,10 +82,9 @@ class AuthActionSpec extends SpecBase {
 
       "redirect the user to the unauthorised page" in {
 
-        val app = application.build()
-        val config = app.injector.instanceOf[AppConfig]
+        val config = application.injector.instanceOf[AppConfig]
 
-        val bodyParsers = application.injector().instanceOf[BodyParsers.Default]
+        val bodyParsers = applicationBuilder.injector().instanceOf[BodyParsers.Default]
 
         val authAction = new AuthenticatedIdentifierAction(
           new FakeFailingAuthConnector(new InsufficientEnrolments), config, bodyParsers)
@@ -104,10 +102,9 @@ class AuthActionSpec extends SpecBase {
 
       "redirect the user to the unauthorised page" in {
 
-        val app = application.build()
-        val config = app.injector.instanceOf[AppConfig]
+        val config = application.injector.instanceOf[AppConfig]
 
-        val bodyParsers = application.injector().instanceOf[BodyParsers.Default]
+        val bodyParsers = applicationBuilder.injector().instanceOf[BodyParsers.Default]
 
         val authAction = new AuthenticatedIdentifierAction(
           new FakeFailingAuthConnector(new InsufficientConfidenceLevel), config, bodyParsers)
@@ -125,10 +122,9 @@ class AuthActionSpec extends SpecBase {
 
       "redirect the user to the unauthorised page" in {
 
-        val app = application.build()
-        val config = app.injector.instanceOf[AppConfig]
+        val config = application.injector.instanceOf[AppConfig]
 
-        val bodyParsers = application.injector().instanceOf[BodyParsers.Default]
+        val bodyParsers = applicationBuilder.injector().instanceOf[BodyParsers.Default]
 
         val authAction = new AuthenticatedIdentifierAction(
           new FakeFailingAuthConnector(new UnsupportedAuthProvider), config, bodyParsers)
@@ -146,10 +142,9 @@ class AuthActionSpec extends SpecBase {
 
       "redirect the user to the unauthorised page" in {
 
-        val app = application.build()
-        val config = app.injector.instanceOf[AppConfig]
+        val config = application.injector.instanceOf[AppConfig]
 
-        val bodyParsers = application.injector().instanceOf[BodyParsers.Default]
+        val bodyParsers = applicationBuilder.injector().instanceOf[BodyParsers.Default]
 
         val authAction = new AuthenticatedIdentifierAction(
           new FakeFailingAuthConnector(new UnsupportedAffinityGroup), config, bodyParsers)
@@ -167,10 +162,9 @@ class AuthActionSpec extends SpecBase {
 
       "redirect the user to the unauthorised page" in {
 
-        val app = application.build()
-        val config = app.injector.instanceOf[AppConfig]
+        val config = application.injector.instanceOf[AppConfig]
 
-        val bodyParsers = application.injector().instanceOf[BodyParsers.Default]
+        val bodyParsers = applicationBuilder.injector().instanceOf[BodyParsers.Default]
 
         val authAction = new AuthenticatedIdentifierAction(
           new FakeFailingAuthConnector(new UnsupportedCredentialRole), config, bodyParsers)
@@ -187,7 +181,7 @@ class AuthActionSpec extends SpecBase {
 }
 
 class FakeFailingAuthConnector @Inject()(exceptionToReturn: Throwable) extends AuthConnector {
-  val serviceUrl: String = ""
+  val serviceUrl: String = emptyString
 
   override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(
     implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] = Future.failed(exceptionToReturn)

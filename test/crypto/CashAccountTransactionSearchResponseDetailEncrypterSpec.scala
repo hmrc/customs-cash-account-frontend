@@ -30,7 +30,6 @@ class CashAccountTransactionSearchResponseDetailEncrypterSpec extends SpecBase {
   private val encrypter = new CashAccountTransactionSearchResponseDetailEncrypter(cipher)
   private val secretKey = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
 
-
   "encrypter" must {
 
     "encrypt and decrypt declaration search response detail correctly" in new Setup {
@@ -59,7 +58,7 @@ class CashAccountTransactionSearchResponseDetailEncrypterSpec extends SpecBase {
   trait Setup {
 
     val accNumber = "testCAN"
-    val eoriData = EoriData(eoriNumber = "GB123456789012", name = "Test Importer")
+    val eoriData: EoriData = EoriData(eoriNumber = "GB123456789012", name = "Test Importer")
 
     val declarations: Seq[DeclarationWrapper] = Seq(
       DeclarationWrapper(DeclarationSearch(

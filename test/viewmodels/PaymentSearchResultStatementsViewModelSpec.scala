@@ -16,9 +16,6 @@
 
 package viewmodels
 
-import config.AppConfig
-import play.api.Application
-import play.api.i18n.Messages
 import utils.SpecBase
 import utils.TestData.*
 
@@ -28,7 +25,7 @@ class PaymentSearchResultStatementsViewModelSpec extends SpecBase {
 
     "return viewModel object with correct content" when {
 
-      "cash transactions are available" in new Setup {
+      "cash transactions are available" in {
         val viewModel01: PaymentSearchResultStatementsViewModel =
           PaymentSearchResultStatementsViewModel(SEQ_OF_PAYMENT_DETAILS_01, None)
 
@@ -38,7 +35,7 @@ class PaymentSearchResultStatementsViewModelSpec extends SpecBase {
         viewModel01.noTransactionsMessage mustBe None
       }
 
-      "cash transactions are not present" in new Setup {
+      "cash transactions are not present" in {
         val viewModel02: PaymentSearchResultStatementsViewModel =
           PaymentSearchResultStatementsViewModel(Seq.empty, None)
 
@@ -49,9 +46,4 @@ class PaymentSearchResultStatementsViewModelSpec extends SpecBase {
     }
   }
 
-  trait Setup {
-    val app: Application = application.build()
-    implicit val msgs: Messages = messages(app)
-    implicit val config: AppConfig = app.injector.instanceOf[AppConfig]
-  }
 }

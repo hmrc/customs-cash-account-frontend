@@ -17,27 +17,22 @@
 package views.helpers
 
 import utils.SpecBase
-import play.api.i18n.Messages
-import play.api.test.Helpers
 
 class PageTitleSpec extends SpecBase {
 
   "fullPageTitle" should {
 
-    "return correct string for present title" in new Setup {
+    "return correct string for present title" in {
       val res: Option[String] = PageTitle.fullPageTitle(Some("abc"))
 
-      res mustBe Some("abc - service.name - GOV.UK")
+      res mustBe Some("abc - Manage import duties and VAT accounts - GOV.UK")
     }
 
-    "return correct string for no title" in new Setup {
+    "return correct string for no title" in {
       val res: Option[String] = PageTitle.fullPageTitle(Some(""))
 
-      res mustBe Some(" - service.name - GOV.UK")
+      res mustBe Some(" - Manage import duties and VAT accounts - GOV.UK")
     }
   }
 
-  trait Setup {
-    implicit val msgs: Messages = Helpers.stubMessages()
-  }
 }

@@ -48,21 +48,23 @@ trait SpecBase extends AnyWordSpecLike
   val emptyString = ""
   val sessionId: SessionId = SessionId("session_1234")
 
-  def application: GuiceApplicationBuilder = new GuiceApplicationBuilder().overrides(
+  lazy val applicationBuilder: GuiceApplicationBuilder = new GuiceApplicationBuilder().overrides(
     bind[IdentifierAction].to[FakeIdentifierAction],
     bind[Metrics].toInstance(new FakeMetrics)
   ).configure(
     "play.filters.csp.nonce.enabled" -> "false",
     "auditing.enabled" -> "false")
 
+  lazy val application: Application = applicationBuilder.build()
+
   def fakeRequest(method: String = emptyString,
                   path: String = emptyString): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(method, path).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
-  def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(
+  implicit lazy val messages: Messages = application.injector.instanceOf[MessagesApi].preferred(
     fakeRequest(emptyString, emptyString))
 
-  def appConfig(app: Application): AppConfig = app.injector.instanceOf[AppConfig]
+  implicit lazy val appConfig: AppConfig = applicationBuilder.injector().instanceOf[AppConfig]
 
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(sessionId))
 }

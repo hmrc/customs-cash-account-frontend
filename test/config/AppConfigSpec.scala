@@ -17,14 +17,13 @@
 package config
 
 import models.FileRole.CDSCashAccount
-import play.api.Application
 import utils.SpecBase
 
 class AppConfigSpec extends SpecBase {
 
   "AppConfig" should {
 
-    "contain correct values for the provided configuration" in new Setup {
+    "contain correct values for the provided configuration" in {
       appConfig.appName mustBe "customs-cash-account-frontend"
       appConfig.loginUrl mustBe "http://localhost:9553/bas-gateway/sign-in"
       appConfig.loginContinueUrl mustBe "http://localhost:9394/customs/cash-account"
@@ -63,7 +62,7 @@ class AppConfigSpec extends SpecBase {
   }
 
   "isCashAccountV2FeatureFlagEnabled" should {
-    "return the correct value" in new Setup {
+    "return the correct value" in {
       assume(!appConfig.isCashAccountV2FeatureFlagEnabled)
 
       appConfig.isCashAccountV2FeatureFlagEnabled mustBe false
@@ -71,20 +70,15 @@ class AppConfigSpec extends SpecBase {
   }
 
   "numberOfRecordsPerPage" should {
-    "return the correct value" in new Setup {
+    "return the correct value" in {
       appConfig.numberOfRecordsPerPage mustBe 30
     }
   }
 
   "numberOfRecordsToDisableNavigationButtonsInPagination" should {
-    "return the correct value" in new Setup {
+    "return the correct value" in {
       appConfig.numberOfRecordsToDisableNavigationButtonsInPagination mustBe 450
     }
   }
 
-
-  trait Setup {
-    val app: Application = application.build()
-    val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-  }
 }

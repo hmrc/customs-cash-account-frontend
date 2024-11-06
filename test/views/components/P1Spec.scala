@@ -18,11 +18,10 @@ package views.components
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.Application
-import play.api.i18n.Messages
 import play.twirl.api.Html
 import utils.SpecBase
 import views.html.components.p1
+import utils.Utils.singleSpace
 
 class P1Spec extends SpecBase {
 
@@ -32,7 +31,7 @@ class P1Spec extends SpecBase {
 
       "it contains all the parameters' value" in new Setup {
         p1Component.getElementById(id).text() mustBe
-          s"${content.body}$space${link.get.body}$space${tabLink.get.body}"
+          s"${content.body}$singleSpace${link.get.body}$singleSpace${tabLink.get.body}"
 
         p1Component.getElementsByClass(classes).size() mustBe 1
       }
@@ -50,23 +49,18 @@ class P1Spec extends SpecBase {
   }
 
   trait Setup {
-    val space = " "
     val content: Html = Html("test_content")
     val id: String = "test_id"
     val classes: String = "govuk-!-margin-bottom-7"
     val link: Option[Html] = Some(Html("test_Link"))
     val tabLink: Option[Html] = Some(Html("tab_link"))
 
-    val app: Application = application.build()
-
-    implicit val msgs: Messages = messages(app)
-
     val p1Component: Document =
-      Jsoup.parse(app.injector.instanceOf[p1].apply(content, Some(id), Some(classes), link, tabLink).body)
+      Jsoup.parse(application.injector.instanceOf[p1].apply(content, Some(id), Some(classes), link, tabLink).body)
 
-    val p1ComponentWithContentOnly: Document = Jsoup.parse(app.injector.instanceOf[p1].apply(content).body)
+    val p1ComponentWithContentOnly: Document = Jsoup.parse(application.injector.instanceOf[p1].apply(content).body)
 
     val p1ComponentWithContentIdAndClasses: Document =
-      Jsoup.parse(app.injector.instanceOf[p1].apply(content, Some(id), Some(classes)).body)
+      Jsoup.parse(application.injector.instanceOf[p1].apply(content, Some(id), Some(classes)).body)
   }
 }

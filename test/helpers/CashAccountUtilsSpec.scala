@@ -17,9 +17,7 @@
 package helpers
 
 import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
-import play.api.test.FakeRequest
 import services.DateTimeService
 import utils.SpecBase
 import org.mockito.Mockito.when
@@ -31,12 +29,11 @@ class CashAccountUtilsSpec extends SpecBase {
 
   when(mockDateTimeService.localDateTime()).thenReturn(LocalDateTime.parse("2020-04-19T09:30:59"))
 
-  val app: Application = application
+  val app: Application = applicationBuilder
     .overrides(
       bind[DateTimeService].toInstance(mockDateTimeService)
     ).build()
 
-  implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
   val cashAccountUtils: CashAccountUtils = app.injector.instanceOf[CashAccountUtils]
 
   "filenameWithDateTime" should {

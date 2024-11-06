@@ -66,7 +66,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when[Future[Seq[CashAccount]]](mockMetricsReporterService.withResponseTimeLogging(any)(any)(any))
         .thenReturn(Future.successful(Seq(cashAccount)))
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient),
           bind[MetricsReporterService].toInstance(mockMetricsReporterService)
@@ -97,7 +97,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         .thenReturn(Future.successful(successResponse))
       when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient),
           bind[CacheRepository].toInstance(mockCacheRepository),
@@ -142,7 +142,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
       when(mockCacheRepository.set("can", successResponse)).thenReturn(Future.successful(false))
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient),
           bind[MetricsReporterService].toInstance(mockMetricsReporterService),
@@ -165,7 +165,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       when(mockCacheRepository.get(anyString)).thenReturn(Future.successful(Some(successResponse)))
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[AppConfig].toInstance(mockConfig),
           bind[CacheRepository].toInstance(mockCacheRepository)
@@ -185,7 +185,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       when(mockCacheRepository.get("can")).thenReturn(Future.successful(None))
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient),
           bind[CacheRepository].toInstance(mockCacheRepository)
@@ -205,7 +205,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", REQUEST_ENTITY_TOO_LARGE)))
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient),
           bind[CacheRepository].toInstance(mockCacheRepository)
@@ -226,7 +226,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient),
           bind[CacheRepository].toInstance(mockCacheRepository)
@@ -258,7 +258,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-        val appWithMocks: Application = application
+        val appWithMocks: Application = applicationBuilder
           .overrides(
             bind[HttpClientV2].toInstance(mockHttpClient),
             bind[RequestBuilder].toInstance(requestBuilder),
@@ -288,7 +288,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-        val appWithMocks: Application = application
+        val appWithMocks: Application = applicationBuilder
           .overrides(
             bind[HttpClientV2].toInstance(mockHttpClient),
             bind[RequestBuilder].toInstance(requestBuilder),
@@ -316,7 +316,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient)
         ).build()
@@ -337,7 +337,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient)
         ).build()
@@ -358,7 +358,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient)
         ).build()
@@ -379,7 +379,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient)
         ).build()
@@ -404,7 +404,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-        val appWithMocks: Application = application
+        val appWithMocks: Application = applicationBuilder
           .overrides(
             bind[HttpClientV2].toInstance(mockHttpClient)
           ).build()
@@ -427,7 +427,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-        val appWithMocks: Application = application
+        val appWithMocks: Application = applicationBuilder
           .overrides(
             bind[HttpClientV2].toInstance(mockHttpClient)
           ).build()
@@ -450,7 +450,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-        val appWithMocks: Application = application
+        val appWithMocks: Application = applicationBuilder
           .overrides(
             bind[HttpClientV2].toInstance(mockHttpClient)
           ).build()
@@ -473,7 +473,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-        val appWithMocks: Application = application
+        val appWithMocks: Application = applicationBuilder
           .overrides(
             bind[HttpClientV2].toInstance(mockHttpClient)
           ).build()
@@ -496,7 +496,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-        val appWithMocks: Application = application
+        val appWithMocks: Application = applicationBuilder
           .overrides(
             bind[HttpClientV2].toInstance(mockHttpClient)
           ).build()
@@ -519,7 +519,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-        val appWithMocks: Application = application
+        val appWithMocks: Application = applicationBuilder
           .overrides(
             bind[HttpClientV2].toInstance(mockHttpClient)
           ).build()
@@ -543,7 +543,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-        val appWithMocks: Application = application
+        val appWithMocks: Application = applicationBuilder
           .overrides(
             bind[HttpClientV2].toInstance(mockHttpClient)
           ).build()
@@ -567,7 +567,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
         when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-        val appWithMocks: Application = application
+        val appWithMocks: Application = applicationBuilder
           .overrides(
             bind[HttpClientV2].toInstance(mockHttpClient)
           ).build()
@@ -593,7 +593,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         .thenReturn(Future.successful(successResponse))
       when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient),
           bind[RequestBuilder].toInstance(requestBuilder)
@@ -611,7 +611,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         .thenReturn(Future.failed(new HttpException("It's broken", INTERNAL_SERVER_ERROR)))
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient)
         ).build()
@@ -629,7 +629,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", REQUEST_ENTITY_TOO_LARGE)))
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient)
         ).build()
@@ -647,7 +647,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
         .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient)
         ).build()
@@ -668,7 +668,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient),
           bind[RequestBuilder].toInstance(requestBuilder)
@@ -689,7 +689,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(bind[HttpClientV2].toInstance(mockHttpClient)).build()
 
       running(appWithMocks) {
@@ -710,7 +710,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient),
           bind[RequestBuilder].toInstance(requestBuilder)
@@ -730,7 +730,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient)
         ).build()
@@ -749,7 +749,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient)
         ).build()
@@ -768,7 +768,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       when(mockHttpClient.post(any())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient)
         ).build()
@@ -791,7 +791,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
-      val appWithMocks: Application = application
+      val appWithMocks: Application = applicationBuilder
         .overrides(
           bind[HttpClientV2].toInstance(mockHttpClient),
           bind[RequestBuilder].toInstance(requestBuilder)
@@ -935,7 +935,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
     val errorDetailObject: ErrorDetail =
       ErrorDetail(timestamp, correlationId, errorCode, errorMessage, source, sourceFaultDetail)
 
-    val appWithHttpClient: Application = application
+    val appWithHttpClient: Application = applicationBuilder
       .overrides(
         bind[HttpClientV2].toInstance(mockHttpClient),
         bind[RequestBuilder].toInstance(requestBuilder)

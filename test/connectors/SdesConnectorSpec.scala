@@ -16,16 +16,14 @@
 
 package connectors
 
-import config.AppConfig
 import models.*
 import models.FileFormat.Csv
 import models.FileRole.CDSCashAccount
 import models.metadata.{CashStatementFileMetadata, Metadata, MetadataItem}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
-import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
-import play.api.test.{FakeRequest, Helpers}
+import play.api.test.Helpers
 import play.api.test.Helpers.*
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, StringContextOps}
@@ -62,17 +60,15 @@ class SdesConnectorSpec extends SpecBase {
     val mockHttp: HttpClientV2 = mock[HttpClientV2]
     val requestBuilder: RequestBuilder = mock[RequestBuilder]
 
-    val app: Application = application.overrides(
+    val app: Application = applicationBuilder.overrides(
       bind[HttpClientV2].toInstance(mockHttp),
       bind[RequestBuilder].toInstance(requestBuilder)
     ).build()
 
-    val mockAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
     val sdesConnector: SdesConnector = app.injector.instanceOf[SdesConnector]
 
     implicit val hc: HeaderCarrier = HeaderCarrier()
     implicit val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
-    implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
     val someDan = "1234"
     val someEori = "eori1"

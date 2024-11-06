@@ -19,7 +19,6 @@ package viewmodels
 import config.AppConfig
 import models.*
 import org.scalatest.Assertion
-import play.api.Application
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import utils.SpecBase
@@ -136,11 +135,6 @@ class PaymentSearchResultsViewModelSpec extends SpecBase {
     val eoriNumber: String = "test_eori"
     val can: String = "12345678"
     val balance: BigDecimal = BigDecimal(8788.00)
-
-    val app: Application = application.build()
-
-    implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-    implicit val msgs: Messages = messages(app)
 
     val cashAccount: CashAccount = CashAccount(number = can, owner = eoriNumber,
       status = AccountStatusOpen, balances = CDSCashBalance(Some(balance)))

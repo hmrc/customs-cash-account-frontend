@@ -98,7 +98,7 @@ class EmailControllerSpec extends SpecBase {
     val emailUnverifiedResponse: EmailUnverifiedResponse = EmailUnverifiedResponse(Some(emailId))
     val emailUnverifiedResponseWithNoEmailId: EmailUnverifiedResponse = EmailUnverifiedResponse(None)
 
-    val app: Application = application
+    val app: Application = applicationBuilder
       .overrides(
         bind[CustomsDataStoreConnector].toInstance(mockConnector)
       ).build()

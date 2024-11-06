@@ -20,9 +20,7 @@ import forms.SearchTransactionsFormProvider
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
-import play.api.Application
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -35,7 +33,7 @@ class InputTextSpec extends SpecBase {
 
   "InputText" should {
     "display the correct view" in new Setup {
-      val view: Document = Jsoup.parse(app.injector.instanceOf[inputText].apply(
+      val view: Document = Jsoup.parse(application.injector.instanceOf[inputText].apply(
         form = validForm,
         id = "value",
         name = "value",
@@ -44,7 +42,7 @@ class InputTextSpec extends SpecBase {
         hint = None
       ).body)
 
-      view.getElementsByTag("label").html() mustBe messages(app)("eoriNumber.heading")
+      view.getElementsByTag("label").html() mustBe messages("eoriNumber.heading")
       view.getElementById("value").`val`() mustBe "GB123456789012"
 
       intercept[RuntimeException] {
@@ -53,7 +51,7 @@ class InputTextSpec extends SpecBase {
     }
 
     "display the correct hint" in new Setup {
-      val view: Document = Jsoup.parse(app.injector.instanceOf[inputText].apply(
+      val view: Document = Jsoup.parse(application.injector.instanceOf[inputText].apply(
         form = validForm,
         id = "value",
         name = "value",
@@ -71,7 +69,7 @@ class InputTextSpec extends SpecBase {
     "display the inline component if any component is passed as part of FormGroup" in new Setup {
       val button: HtmlFormat.Appendable = new button(new GovukButton()).apply(msg = buttonText)
 
-      val view: Document = Jsoup.parse(app.injector.instanceOf[inputText].apply(
+      val view: Document = Jsoup.parse(application.injector.instanceOf[inputText].apply(
         form = invalidForm,
         id = "value",
         name = "value",
@@ -87,7 +85,7 @@ class InputTextSpec extends SpecBase {
     }
 
     "display error if form has any error" in new Setup {
-      val view: Document = Jsoup.parse(app.injector.instanceOf[inputText].apply(
+      val view: Document = Jsoup.parse(application.injector.instanceOf[inputText].apply(
         form = invalidForm,
         id = "value",
         name = "value",
@@ -102,9 +100,6 @@ class InputTextSpec extends SpecBase {
   }
 
   trait Setup {
-    val app: Application = application.build()
-    implicit val msg: Messages = messages(app)
-
     val validForm: Form[String] = new SearchTransactionsFormProvider().apply().bind(Map("value" -> "GB123456789012"))
     val invalidForm: Form[String] = new SearchTransactionsFormProvider().apply().bind(Map("value" -> emptyString))
 

@@ -17,9 +17,6 @@
 package viewmodels
 
 import models._
-import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.FakeRequest
 import utils.SpecBase
 import viewmodels.CashTransactionCsvRow.DailyStatementCsvRowsViewModel
 
@@ -232,9 +229,5 @@ class CashTransactionCsvRowSpec extends SpecBase {
       debit = None,
       balance = None
     )
-
-    val app: Application = application.build()
-
-    implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
   }
 }
