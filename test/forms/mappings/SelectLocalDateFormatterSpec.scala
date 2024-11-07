@@ -35,14 +35,19 @@ class SelectLocalDateFormatterSpec extends SpecBase {
       )
     }
 
+    "return the correct FormError with key when the supplied data has empty month and year" in new SetUp {
+      localDateFormatterWithEmptyMonthAndYear.bind(key, bindDataDateWithEmptyMonthAndYear) shouldBe
+        Left(Seq(FormError("start.month", List(emptyMonthAndYearMsgKey), List())))
+    }
+
     "return the correct FormError with keys when the supplied data is empty month" in new SetUp {
       localDateFormatter.bind(key, bindDataDateWithEmptyMonth) shouldBe
-        Left(Seq(FormError("start.month", List(invalidMsgKey), List())))
+        Left(Seq(FormError("start.month", List(monthMsgKey), List())))
     }
 
     "return the correct FormError with keys when the supplied data empty year" in new SetUp {
       localDateFormatter.bind(key, bindDataDateWithEmptyYear) shouldBe
-        Left(Seq(FormError("start.year", List(invalidMsgKey), List())))
+        Left(Seq(FormError("start.year", List(yearMsgKey), List())))
     }
 
     "return the correct FormError with keys when the supplied data is invalid month" in new SetUp {
@@ -144,6 +149,7 @@ class SelectLocalDateFormatterSpec extends SpecBase {
 
     val key = "start"
     val invalidMsgKey = "cf.form.error.start.date-number-invalid"
+    val emptyMonthAndYearMsgKey = "cf.form.error.start.date.empty.month.year"
     val monthMsgKey = "cf.form.error.start.date.invalid.month"
     val yearMsgKey = "cf.form.error.start.date.invalid.year"
     val invalidRealDateMsgKey = "cf.form.error.start.date.invalid.real-date"
@@ -163,6 +169,15 @@ class SelectLocalDateFormatterSpec extends SpecBase {
       useLastDayOfMonth = false
     )
 
+    val localDateFormatterWithEmptyMonthAndYear = new SelectLocalDateFormatter(
+      emptyMonthAndYearMsgKey,
+      monthMsgKey,
+      yearMsgKey,
+      invalidRealDateMsgKey,
+      Seq(),
+      useLastDayOfMonth = false
+    )
+
     val localDateFormatterWithLastDay = new SelectLocalDateFormatter(
       invalidMsgKey,
       monthMsgKey,
@@ -171,6 +186,9 @@ class SelectLocalDateFormatterSpec extends SpecBase {
       Seq(),
       useLastDayOfMonth = true
     )
+
+    val bindDataDateWithEmptyMonthAndYear: Map[String, String] =
+      Map("start.day" -> "1", "start.month" -> emptyString, "start.year" -> emptyString)
 
     val bindDataDateWithEmptyMonth: Map[String, String] =
       Map("start.day" -> "1", "start.month" -> "", "start.year" -> "2022")

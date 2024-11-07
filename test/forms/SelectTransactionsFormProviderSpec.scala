@@ -60,7 +60,7 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
 
         val formData: Map[String, String] = startDate ++ validEndDate
 
-        val expectedErrors: Seq[FormError] = error("start.year", emptyMonthAndYearStartDateErrorKey)
+        val expectedErrors: Seq[FormError] = error("start.month", emptyMonthAndYearStartDateErrorKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -172,7 +172,7 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
 
         val formData: Map[String, String] = startDate ++ validEndDate
 
-        val expectedErrors: Seq[FormError] = error("end.year", emptyMonthAndYearEndDateErrorKey)
+        val expectedErrors: Seq[FormError] = error("end.month", emptyMonthAndYearEndDateErrorKey)
 
         checkForError(form, formData, expectedErrors)
       }
