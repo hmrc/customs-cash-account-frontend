@@ -56,7 +56,7 @@ cf.cash-account.top-up.guidance.link.aria-label=Ychwanegu at eich cyfrif arian p
 cf.cash-account.withdraw-funds.guidance.link=Codi arian
 cf.cash-account.withdraw-funds.guidance.link.aria-label=Codi arian o’ch cyfrif arian parod
 cf.cash-account.detail.csv.download=Lawrlwytho CSV
-cf.cash-account.detail.csv-definition=Lawrlwytho’r ffeil CSV
+cf.cash-account.detail.csv-definition=Newid y dyddiadau a ddewiswyd
 cf.cash-account.detail.csv=Lawrlwythwch drafodion ar ffurf <abbr title="Gwerthoedd wedi’u gwahanu gan goma. Gellir defnyddio CSV gyda’r rhan fwyaf o raglenni taenlen.">CSV</abbr>
 cf.cash-account.detail.date=Dyddiad
 cf.cash-account.detail.movement-reference-number=Cyfeirnod Symud (MRN)
@@ -303,7 +303,7 @@ cf.cash-account.transactions.request.date.hint-end-date.v2=Er enghraifft, 3 2021
 
 cf.cash-account.transactions.confirmation.statements=Mae’ch cais am drafodion wedi dod i law
 cf.cash-account.transactions.confirmation.next=Yr hyn sy’n digwydd nesaf
-cf.cash-account.transactions.confirmation.email=Byddwn yn anfon e-bost at {0} cyn pen 48 awr pan fydd eich cais wedi’i brosesu.
+cf.cash-account.transactions.confirmation.email=Byddwn yn anfon e-bost at <strong class="bold">{0}</strong> cyn pen 48 awr pan fydd eich cais wedi’i brosesu.
 cf.cash-account.transactions.confirmation.download=Byddwch yn gallu lawrlwytho’ch trafodion o’r dudalen trafodion cyfrifon arian parod.
 cf.cash-account.transactions.confirmation.back=Yn ôl i ‘cyfrif arian parod’
 
