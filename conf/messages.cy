@@ -56,7 +56,7 @@ cf.cash-account.top-up.guidance.link.aria-label=Ychwanegu at eich cyfrif arian p
 cf.cash-account.withdraw-funds.guidance.link=Codi arian
 cf.cash-account.withdraw-funds.guidance.link.aria-label=Codi arian o’ch cyfrif arian parod
 cf.cash-account.detail.csv.download=Lawrlwytho CSV
-cf.cash-account.detail.csv-definition=Lawrlwytho’r ffeil CSV
+cf.cash-account.detail.csv-definition=Newid y dyddiadau a ddewiswyd
 cf.cash-account.detail.csv=Lawrlwythwch drafodion ar ffurf <abbr title="Gwerthoedd wedi’u gwahanu gan goma. Gellir defnyddio CSV gyda’r rhan fwyaf o raglenni taenlen.">CSV</abbr>
 cf.cash-account.detail.date=Dyddiad
 cf.cash-account.detail.movement-reference-number=Cyfeirnod Symud (MRN)
@@ -139,7 +139,7 @@ cf.accounts.view-customs-account=rheoli tollau mewnforio a chyfrifon TAW
 cf.undeliverable.email.title=Mae problem gyda’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datganiadau Tollau
 cf.undeliverable.email.heading=Mae problem gyda’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datganiadau Tollau
 cf.undeliverable.email.p1=Gwnaethom geisio anfon e-bost atoch ond nid oedd modd ei ddosbarthu.
-cf.undeliverable.email.p2=Eich e-bost cofrestredig yw <strong class="bold">{0}</strong>.
+cf.undeliverable.email.p2=Eich e-bost cofrestredig yw <strong>{0}</strong>.
 
 cf.undeliverable.email.verify.heading=Cadarnhau’ch cyfeiriad e-bost
 cf.undeliverable.email.verify.text.p1=Os mae’r cyfeiriad e-bost hwn yn gywir, bydd angen i chi ei gadarnhau er mwyn parhau i ddefnyddio Gwasanaeth Datganiadau Tollau.
@@ -153,7 +153,7 @@ cf.undeliverable.email.link-text=Dilysu neu newid y cyfeiriad e-bost
 cf.verify.your.email.title=Cadarnhau’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datganiadau Tollau
 cf.verify.your.email.heading=Cadarnhau’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datganiadau Tollau
 cf.verify.your.email.p1=Mae angen i chi gadarnhau’r cyfeiriad e-bost rydych yn ei ddefnyddio ar gyfer y Gwasanaeth Datganiadau Tollau.
-cf.verify.your.email.p2=Eich e-bost cofrestredig yw <strong class="bold">{0}</strong>.
+cf.verify.your.email.p2=Eich e-bost cofrestredig yw <strong>{0}</strong>.
 cf.verify.your.email.p3=Os nad dyma’r cyfeiriad e-bost rydych chi am ei ddefnyddio, gallwch ei newid hefyd gan ddefnyddio’r gwasanaeth hwn.
 cf.verify.your.email.change.button=Dilysu neu newid y cyfeiriad e-bost
 
@@ -303,7 +303,7 @@ cf.cash-account.transactions.request.date.hint-end-date.v2=Er enghraifft, 3 2021
 
 cf.cash-account.transactions.confirmation.statements=Mae’ch cais am drafodion wedi dod i law
 cf.cash-account.transactions.confirmation.next=Yr hyn sy’n digwydd nesaf
-cf.cash-account.transactions.confirmation.email=Byddwn yn anfon e-bost at {0} cyn pen 48 awr pan fydd eich cais wedi’i brosesu.
+cf.cash-account.transactions.confirmation.email=Byddwn yn anfon e-bost at <strong>{0}</strong> cyn pen 48 awr pan fydd eich cais wedi’i brosesu.
 cf.cash-account.transactions.confirmation.download=Byddwch yn gallu lawrlwytho’ch trafodion o’r dudalen trafodion cyfrifon arian parod.
 cf.cash-account.transactions.confirmation.back=Yn ôl i ‘cyfrif arian parod’
 

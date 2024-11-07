@@ -54,7 +54,7 @@ cf.cash-account.top-up.guidance.link.aria-label=Top up your cash account
 cf.cash-account.withdraw-funds.guidance.link=Withdraw funds
 cf.cash-account.withdraw-funds.guidance.link.aria-label=Withdraw funds from your cash account
 cf.cash-account.detail.csv.download=Download CSV
-cf.cash-account.detail.csv-definition=Download CSV file.
+cf.cash-account.detail.csv-definition=Change selected dates
 cf.cash-account.detail.csv=Download transactions as <abbr title="Comma-Separated Values. Can be used with most spreadsheet programs.">CSV</abbr>
 cf.cash-account.detail.payments-heading=Your transactions for the last 6 months
 cf.cash-account.detail.date=Date
@@ -138,7 +138,7 @@ cf.accounts.view-customs-account=manage import duties and VAT accounts
 cf.undeliverable.email.title=There''s a problem with your email address for the Customs Declaration Service
 cf.undeliverable.email.heading=There''s a problem with your email address for the Customs Declaration Service
 cf.undeliverable.email.p1=We tried to send you an email but it could not be delivered.
-cf.undeliverable.email.p2=Your registered email address is <strong class="bold">{0}</strong>.
+cf.undeliverable.email.p2=Your registered email address is <strong>{0}</strong>.
 
 cf.undeliverable.email.verify.heading=Verify your email address
 cf.undeliverable.email.verify.text.p1=If this email address is correct, you will need to verify it to continue using the Customs Declaration Service.
@@ -152,7 +152,7 @@ cf.undeliverable.email.link-text=Verify or change email address
 cf.verify.your.email.title=Verify your email address for the Customs Declaration Service
 cf.verify.your.email.heading=Verify your email address for the Customs Declaration Service
 cf.verify.your.email.p1=You need to verify the email address you use for the Customs Declaration Service.
-cf.verify.your.email.p2=Your registered email address is <strong class="bold">{0}</strong>.
+cf.verify.your.email.p2=Your registered email address is <strong>{0}</strong>.
 cf.verify.your.email.p3=If this is not the email address you want to use, you can also change it using this service.
 cf.verify.your.email.change.button=Verify or change email address
 
@@ -302,7 +302,7 @@ cf.cash-account.transactions.too-many-transactions.hint04 = The CSV file will be
 
 cf.cash-account.transactions.confirmation.statements=We received your request for transactions
 cf.cash-account.transactions.confirmation.next=What happens next
-cf.cash-account.transactions.confirmation.email=We’ll send an email within 48 hours to {0} when your request is processed.
+cf.cash-account.transactions.confirmation.email=We’ll send an email within 48 hours to <strong>{0}</strong> when your request is processed.
 cf.cash-account.transactions.confirmation.download=You’ll be able to download your transactions from the cash account transactions page.
 cf.cash-account.transactions.confirmation.back=Back to cash account
 
