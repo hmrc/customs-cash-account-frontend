@@ -282,9 +282,6 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
     val startKey = "start"
     val endKey = "end"
 
-    val invalidMsgStartKey = "cf.form.error.start.date-number-invalid"
-    val invalidDateMsgStartKey = "cf.form.error.start.date.invalid.real-date"
-
     val emptyMonthStartDateErrorKey = "cf.form.error.start.date.empty.month"
     val emptyYearStartDateErrorKey = "cf.form.error.start.date.empty.year"
     val emptyMonthAndYearStartDateErrorKey = "cf.form.error.start.date.empty.month.year"
