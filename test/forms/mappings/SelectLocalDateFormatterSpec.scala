@@ -63,6 +63,14 @@ class SelectLocalDateFormatterSpec extends SpecBase {
 
   }
 
+  "unbind" must {
+
+    "return the correct plain data" in new SetUp {
+      localDateFormatter.unbind(
+        key, LocalDate.of(year, month, day)) mustBe Map(s"$key.month" -> month.toString, s"$key.year" -> year.toString)
+    }
+  }
+
   "updateFormErrorKeys" must {
     "append the month in the existing key when month is incorrect" in new SetUp {
 
