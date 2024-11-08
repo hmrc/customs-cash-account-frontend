@@ -33,6 +33,10 @@ private[mappings] class SelectLocalDateFormatter(invalidKey: String,
   val log: LoggerLike = Logger(this.getClass)
 
   private val fieldKeys: List[String] = List("month", "year")
+  private val monthValueMin = 1
+  private val monthValueMax = 12
+  private val yearValueMin = 1000
+  private val yearValueMax = 99999
 
   override def bind(key: String,
                     data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
@@ -78,8 +82,8 @@ private[mappings] class SelectLocalDateFormatter(invalidKey: String,
                                             month: Int,
                                             year: Int): String =
     (month, year) match {
-      case (m, _) if m < 1 || m > 12 => s"$key.month"
-      case (_, y) if y < 1000 || y > 99999 => s"$key.year"
+      case (m, _) if m < monthValueMin || m > monthValueMax => s"$key.month"
+      case (_, y) if y < yearValueMin || y > yearValueMax => s"$key.year"
       case _ => s"$key.month"
     }
 
