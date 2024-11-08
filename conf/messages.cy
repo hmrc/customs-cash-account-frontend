@@ -268,16 +268,15 @@ cf.form.error.start.date.invalid.day=Mae’n rhaid i’r dyddiad o gynnwys diwrn
 cf.form.error.start.date.invalid.month=Mae’n rhaid i’r dyddiad i gynnwys mis
 cf.form.error.start.date.invalid.year=Mae’n rhaid i’r dyddiad o gynnwys blwyddyn
 cf.form.error.start.date.invalid.real-date=Mae’n rhaid i’r dyddiad o fod yn ddyddiad go iawn
-cf.form.error.end.date.invalid.day=Mae’n rhaid i’r dyddiad dod i ben gynnwys diwrnod
-cf.form.error.end.date.invalid.month=Mae’n rhaid i’r dyddiad dod i ben gynnwys mis
-cf.form.error.end.date.invalid.year=Mae’n rhaid i’r dyddiad dod i ben gynnwys blwyddyn
-cf.form.error.end.date.invalid.real-date=Mae’n rhaid i’r dyddiad i fod yn ddyddiad go iawn
-
 cf.form.error.start.date.empty.month = Yn eich cais am drafodion, nodwch o ba fis yr hoffech eu cael
 cf.form.error.start.date.empty.year = Yn eich cais am drafodion, nodwch o ba flwyddyn yr hoffech eu cael
 cf.form.error.start.date.empty.month.year = Yn eich cais am drafodion, nodwch o ba fis a blwyddyn yr hoffech eu cael
 cf.form.error.start.date.invalid = Mae’n rhaid i’r dyddiad dechrau fod yn ddyddiad go iawn
 
+cf.form.error.end.date.invalid.day=Mae’n rhaid i’r dyddiad dod i ben gynnwys diwrnod
+cf.form.error.end.date.invalid.month=Mae’n rhaid i’r dyddiad dod i ben gynnwys mis
+cf.form.error.end.date.invalid.year=Mae’n rhaid i’r dyddiad dod i ben gynnwys blwyddyn
+cf.form.error.end.date.invalid.real-date=Mae’n rhaid i’r dyddiad i fod yn ddyddiad go iawn
 cf.form.error.end.date.empty.month = Yn eich cais am drafodion, nodwch hyd at ba fis yr hoffech eu cael
 cf.form.error.end.date.empty.year = Yn eich cais am drafodion, nodwch hyd at ba flwyddyn yr hoffech eu cael
 cf.form.error.end.date.empty.month.year = Yn eich cais am drafodion, nodwch hyd at ba fis a blwyddyn yr hoffech eu cael

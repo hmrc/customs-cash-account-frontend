@@ -268,17 +268,15 @@ cf.form.error.start.date.invalid.day=The from date must include a day
 cf.form.error.start.date.invalid.month=The from date must include a month
 cf.form.error.start.date.invalid.year=The from date must include a year
 cf.form.error.start.date.invalid.real-date=The from date must be a real date
-
-cf.form.error.end.date.invalid.day=The end date must include a day
-cf.form.error.end.date.invalid.month=The end date must include a month
-cf.form.error.end.date.invalid.year=The end date must include a year
-cf.form.error.end.date.invalid.real-date=The to date must be a real date
-
 cf.form.error.start.date.empty.month = Enter the month you want to request transactions from
 cf.form.error.start.date.empty.year = Enter the year you want to request transactions from
 cf.form.error.start.date.empty.month.year = Enter the month and year you want to request transactions from
 cf.form.error.start.date.invalid = Start date must be a real date
 
+cf.form.error.end.date.invalid.day=The end date must include a day
+cf.form.error.end.date.invalid.month=The end date must include a month
+cf.form.error.end.date.invalid.year=The end date must include a year
+cf.form.error.end.date.invalid.real-date=The to date must be a real date
 cf.form.error.end.date.empty.month = Enter the month you want to request transactions to
 cf.form.error.end.date.empty.year = Enter the year you want to request transactions to
 cf.form.error.end.date.empty.month.year = Enter the month and year you want to request transactions to
