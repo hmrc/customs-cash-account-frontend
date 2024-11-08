@@ -41,7 +41,7 @@ private[mappings] class SelectLocalDateFormatter(invalidKey: String,
       field -> data.get(s"$key.$field").filter(_.nonEmpty)
     }.toMap
 
-    if(fields.count(_._2.isDefined) == 0) {
+    if (fields.count(_._2.isDefined) == 0) {
       Left(
         List(
           FormError(
@@ -54,21 +54,6 @@ private[mappings] class SelectLocalDateFormatter(invalidKey: String,
     } else {
       checkForFieldValues(key, data)
     }
-/*
-    fields.count(_._2.isDefined) match {
-      case 2 | 3 => checkForFieldValues(key, data)
-      case 1 => checkForFieldValues(key, data)
-      case _ =>
-        Left(
-          List(
-            FormError(
-              formErrorKeysInCaseOfEmptyOrNonNumericValues(key, data),
-              invalidKey,
-              args
-            )
-          )
-        )
-    }*/
   }
 
   override def unbind(key: String, value: LocalDate): Map[String, String] =
