@@ -98,6 +98,25 @@ private[mappings] class SelectLocalDateFormatter(invalidKey: String,
     }
   }
 
+  private def formatDate(key: String,
+                         data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
+
+    val int = intFormatter(
+      requiredKey = invalidDateKey,
+      wholeNumberKey = invalidDateKey,
+      nonNumericKey = invalidDateKey,
+      args
+    )
+
+    for {
+      month <- int.bind(s"$key.month", data)
+      year <- int.bind(s"$key.year", data)
+      date <- toDate(key, month, year)
+    } yield {
+      date
+    }
+  }
+
   private def toDate(key: String,
                      month: Int,
                      year: Int): Either[Seq[FormError], LocalDate] = {
@@ -119,25 +138,6 @@ private[mappings] class SelectLocalDateFormatter(invalidKey: String,
             )
           )
       }
-    }
-  }
-
-  private def formatDate(key: String,
-                         data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
-
-    val int = intFormatter(
-      requiredKey = invalidDateKey,
-      wholeNumberKey = invalidDateKey,
-      nonNumericKey = invalidDateKey,
-      args
-    )
-
-    for {
-      month <- int.bind(s"$key.month", data)
-      year <- int.bind(s"$key.year", data)
-      date <- toDate(key, month, year)
-    } yield {
-      date
     }
   }
 
