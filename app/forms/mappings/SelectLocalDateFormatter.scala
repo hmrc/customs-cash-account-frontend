@@ -90,15 +90,9 @@ private[mappings] class SelectLocalDateFormatter(invalidKey: String,
   private def checkForFieldValues(key: String,
                                   data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
     data match {
-      case value if value.contains(s"$key.month") && value(s"$key.month").isEmpty =>
-        populateErrorMsg(key, data, monthKey)
-
-      case value if value.contains(s"$key.year") && data(s"$key.year").isEmpty => populateErrorMsg(key, data, yearKey)
-
-      case _ =>
-        formatDate(key, data).left.map {
-          _.map(fe => fe.copy(key = fe.key, args = args))
-        }
+      case value if isMonthEmpty(key, value) => populateErrorMsg(key, data, monthKey)
+      case value if isYearEmpty(key, value) => populateErrorMsg(key, data, yearKey)
+      case _ => createDateOrGenerateFormError(key, data)
     }
   }
 
@@ -157,6 +151,20 @@ private[mappings] class SelectLocalDateFormatter(invalidKey: String,
         )
       )
     )
+  }
+
+  private def isMonthEmpty(key: String, value: Map[String, String]) = {
+    value.contains(s"$key.month") && value(s"$key.month").isEmpty
+  }
+
+  private def isYearEmpty(key: String, value: Map[String, String]) = {
+    value.contains(s"$key.year") && value(s"$key.year").isEmpty
+  }
+
+  private def createDateOrGenerateFormError(key: String, data: Map[String, String]) = {
+    formatDate(key, data).left.map {
+      _.map(fe => fe.copy(key = fe.key, args = args))
+    }
   }
 
 }
