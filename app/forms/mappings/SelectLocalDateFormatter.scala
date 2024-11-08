@@ -23,9 +23,9 @@ import play.api.{Logger, LoggerLike}
 import java.time.{LocalDate, LocalDateTime, YearMonth}
 import scala.util.{Failure, Success, Try}
 
-private[mappings] class SelectLocalDateFormatter(invalidKey: String,
-                                                 monthKey: String,
-                                                 yearKey: String,
+private[mappings] class SelectLocalDateFormatter(emptyMonthAndYearKey: String,
+                                                 emptyMonthKey: String,
+                                                 emptyYearKey: String,
                                                  invalidDateKey: String,
                                                  args: Seq[String],
                                                  useLastDayOfMonth: Boolean) extends Formatter[LocalDate] with Formatters {
@@ -50,7 +50,7 @@ private[mappings] class SelectLocalDateFormatter(invalidKey: String,
         List(
           FormError(
             formErrorKeysInCaseOfEmptyOrNonNumericValues(key, data),
-            invalidKey,
+            emptyMonthAndYearKey,
             args
           )
         )
@@ -90,8 +90,8 @@ private[mappings] class SelectLocalDateFormatter(invalidKey: String,
   private def checkForFieldValues(key: String,
                                   data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
     data match {
-      case value if isMonthEmpty(key, value) => populateErrorMsg(key, data, monthKey)
-      case value if isYearEmpty(key, value) => populateErrorMsg(key, data, yearKey)
+      case value if isMonthEmpty(key, value) => populateErrorMsg(key, data, emptyMonthKey)
+      case value if isYearEmpty(key, value) => populateErrorMsg(key, data, emptyYearKey)
       case _ => createDateOrGenerateFormError(key, data)
     }
   }

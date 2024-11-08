@@ -31,9 +31,9 @@ class SelectTransactionsFormProvider @Inject()(implicit clock: Clock)
     Form(
       mapping(
         "start" -> localDate(
-          invalidKey = "cf.form.error.start.date.empty.month.year",
-          monthKey = "cf.form.error.start.date.empty.month",
-          yearKey = "cf.form.error.start.date.empty.year",
+          emptyMonthAndYearKey = "cf.form.error.start.date.empty.month.year",
+          emptyMonthKey = "cf.form.error.start.date.empty.month",
+          emptyYearKey = "cf.form.error.start.date.empty.year",
           invalidDateKey = "cf.form.error.start.date.invalid"
         ).verifying(
           beforeCurrentDate(errorKey = "cf.form.error.start-future-date")
@@ -45,9 +45,9 @@ class SelectTransactionsFormProvider @Inject()(implicit clock: Clock)
           )
         ),
         "end" -> localDate(
-          invalidKey = "cf.form.error.end.date.empty.month.year",
-          monthKey = "cf.form.error.end.date.empty.month",
-          yearKey = "cf.form.error.end.date.empty.year",
+          emptyMonthAndYearKey = "cf.form.error.end.date.empty.month.year",
+          emptyMonthKey = "cf.form.error.end.date.empty.month",
+          emptyYearKey = "cf.form.error.end.date.empty.year",
           invalidDateKey = "cf.form.error.end.date.invalid",
           useLastDayOfMonth = true
         ).verifying(

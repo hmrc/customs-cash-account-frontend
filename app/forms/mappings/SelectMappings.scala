@@ -27,13 +27,21 @@ trait SelectMappings extends Formatters with Constraints {
                         invalidKey: String = "error.boolean"): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey))
 
-  protected def localDate(invalidKey: String,
-                          monthKey: String,
-                          yearKey: String,
+  protected def localDate(emptyMonthAndYearKey: String,
+                          emptyMonthKey: String,
+                          emptyYearKey: String,
                           invalidDateKey: String,
                           useLastDayOfMonth: Boolean = false): FieldMapping[LocalDate] = {
 
-    of(new SelectLocalDateFormatter(invalidKey, monthKey, yearKey, invalidDateKey, Seq.empty, useLastDayOfMonth))
+    of(
+      new SelectLocalDateFormatter(
+        emptyMonthAndYearKey,
+        emptyMonthKey,
+        emptyYearKey,
+        invalidDateKey,
+        Seq.empty,
+        useLastDayOfMonth)
+    )
   }
 
   protected def decimal(requiredKey: String = "error.required",
