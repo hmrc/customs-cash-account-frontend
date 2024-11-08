@@ -119,7 +119,7 @@ private[mappings] class SelectLocalDateFormatter(emptyMonthAndYearKey: String,
                      month: Int,
                      year: Int): Either[Seq[FormError], LocalDate] = {
 
-    if (month < 1 || month > 12) {
+    if (month < monthValueMin || month > monthValueMax) {
       Left(Seq(FormError(s"$key.month", invalidDateKey, args)))
     } else {
       val day = if (useLastDayOfMonth) YearMonth.of(year, month).lengthOfMonth() else 1
