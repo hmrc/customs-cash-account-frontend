@@ -31,10 +31,10 @@ class SelectTransactionsFormProvider @Inject()(implicit clock: Clock)
     Form(
       mapping(
         "start" -> localDate(
-          emptyMonthAndYearKey = "cf.form.error.start.date.empty.month.year",
-          emptyMonthKey = "cf.form.error.start.date.empty.month",
-          emptyYearKey = "cf.form.error.start.date.empty.year",
-          invalidDateKey = "cf.form.error.start.date.invalid"
+          emptyMonthAndYearKey = "cf.cash-account.transactions.request.start.date.empty.month.year",
+          emptyMonthKey = "cf.cash-account.transactions.request.start.date.empty.month",
+          emptyYearKey = "cf.cash-account.transactions.request.start.date.empty.year",
+          invalidDateKey = "cf.cash-account.transactions.request.start.date.invalid"
         ).verifying(
           beforeCurrentDate(errorKey = "cf.form.error.start-future-date")
         ).verifying(
@@ -45,10 +45,10 @@ class SelectTransactionsFormProvider @Inject()(implicit clock: Clock)
           )
         ),
         "end" -> localDate(
-          emptyMonthAndYearKey = "cf.form.error.end.date.empty.month.year",
-          emptyMonthKey = "cf.form.error.end.date.empty.month",
-          emptyYearKey = "cf.form.error.end.date.empty.year",
-          invalidDateKey = "cf.form.error.end.date.invalid",
+          emptyMonthAndYearKey = "cf.cash-account.transactions.request.end.date.empty.month.year",
+          emptyMonthKey = "cf.cash-account.transactions.request.end.date.empty.month",
+          emptyYearKey = "cf.cash-account.transactions.request.end.date.empty.year",
+          invalidDateKey = "cf.cash-account.transactions.request.end.date.invalid",
           useLastDayOfMonth = true
         ).verifying(
           beforeCurrentDate(errorKey = "cf.form.error.end-future-date")

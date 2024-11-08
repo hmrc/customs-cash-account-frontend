@@ -156,10 +156,10 @@ class SelectLocalDateFormatterSpec extends SpecBase {
     val day: Int = 1
 
     val key = "start"
-    val emptyMonthAndYearMsgKey = "cf.form.error.start.date.empty.month.year"
-    val emptyMonthMsgKey = "cf.form.error.start.date.empty.month"
-    val emptyYearMsgKey = "cf.form.error.start.date.empty.year"
-    val invalidDateMsgKey = "cf.form.error.start.date.invalid"
+    val emptyMonthAndYearMsgKey = "cf.cash-account.transactions.request.start.date.empty.month.year"
+    val emptyMonthMsgKey = "cf.cash-account.transactions.request.start.date.empty.month"
+    val emptyYearMsgKey = "cf.cash-account.transactions.request.start.date.empty.year"
+    val invalidDateMsgKey = "cf.cash-account.transactions.request.start.date.invalid"
 
     val bindDataValid: Map[String, String] = Map(
       "start.day" -> day.toString, "start.month" -> "10", "start.year" -> "2022")

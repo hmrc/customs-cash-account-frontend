@@ -282,15 +282,15 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
     val startKey = "start"
     val endKey = "end"
 
-    val emptyMonthStartDateErrorKey = "cf.form.error.start.date.empty.month"
-    val emptyYearStartDateErrorKey = "cf.form.error.start.date.empty.year"
-    val emptyMonthAndYearStartDateErrorKey = "cf.form.error.start.date.empty.month.year"
-    val invalidStartDateKey = "cf.form.error.start.date.invalid"
+    val emptyMonthStartDateErrorKey = "cf.cash-account.transactions.request.start.date.empty.month"
+    val emptyYearStartDateErrorKey = "cf.cash-account.transactions.request.start.date.empty.year"
+    val emptyMonthAndYearStartDateErrorKey = "cf.cash-account.transactions.request.start.date.empty.month.year"
+    val invalidStartDateKey = "cf.cash-account.transactions.request.start.date.invalid"
 
-    val emptyMonthEndDateErrorKey = "cf.form.error.end.date.empty.month"
-    val emptyYearEndDateErrorKey = "cf.form.error.end.date.empty.year"
-    val emptyMonthAndYearEndDateErrorKey = "cf.form.error.end.date.empty.month.year"
-    val invalidEndDateKey = "cf.form.error.end.date.invalid"
+    val emptyMonthEndDateErrorKey = "cf.cash-account.transactions.request.end.date.empty.month"
+    val emptyYearEndDateErrorKey = "cf.cash-account.transactions.request.end.date.empty.year"
+    val emptyMonthAndYearEndDateErrorKey = "cf.cash-account.transactions.request.end.date.empty.month.year"
+    val invalidEndDateKey = "cf.cash-account.transactions.request.end.date.invalid"
 
     val invalidYearLengthKey = "date.year.length.invalid"
 
