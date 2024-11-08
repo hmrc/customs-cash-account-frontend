@@ -294,9 +294,6 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
 
     val invalidYearLengthKey = "date.year.length.invalid"
 
-    val invalidMsgEndKey = "cf.form.error.end.date-number-invalid"
-    val invalidDateMsgEndKey = "cf.form.error.end.date.invalid.real-date"
-
     lazy val completeValidDates: Map[String, String] =
       populateFormValueMap(startKey, month10AsString, year2021AsString) ++
         Map(s"$endKey.month" -> month10AsString, s"$endKey.year" -> year2021AsString)
