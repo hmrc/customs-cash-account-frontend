@@ -126,9 +126,9 @@ private[mappings] class SelectLocalDateFormatter(invalidKey: String,
                          data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
     val int = intFormatter(
-      requiredKey = invalidKey,
-      wholeNumberKey = invalidKey,
-      nonNumericKey = invalidKey,
+      requiredKey = invalidDateKey,
+      wholeNumberKey = invalidDateKey,
+      nonNumericKey = invalidDateKey,
       args
     )
 

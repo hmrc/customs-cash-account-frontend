@@ -58,7 +58,7 @@ class SelectLocalDateFormatterSpec extends SpecBase {
 
     "return the correct FormError with keys when the supplied data is invalid year" in new SetUp {
       localDateFormatter.bind(key, bindDataInValidYear) shouldBe
-        Left(Seq(FormError("start.year", List(invalidMsgKey), List())))
+        Left(Seq(FormError("start.year", List(invalidRealDateMsgKey), List())))
     }
 
   }
