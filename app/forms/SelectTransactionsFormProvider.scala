@@ -31,24 +31,24 @@ class SelectTransactionsFormProvider @Inject()(implicit clock: Clock)
     Form(
       mapping(
         "start" -> localDate(
-          invalidKey = "cf.form.error.start.date-number-invalid",
-          monthKey = "cf.form.error.start.date.invalid.month",
-          yearKey = "cf.form.error.start.date.invalid.year",
-          invalidDateKey = "cf.form.error.start.date.invalid.real-date"
+          emptyMonthAndYearKey = "cf.cash-account.transactions.request.start.date.empty.month.year",
+          emptyMonthKey = "cf.cash-account.transactions.request.start.date.empty.month",
+          emptyYearKey = "cf.cash-account.transactions.request.start.date.empty.year",
+          invalidDateKey = "cf.cash-account.transactions.request.start.date.invalid"
         ).verifying(
           beforeCurrentDate(errorKey = "cf.form.error.start-future-date")
         ).verifying(
           checkDates(
             systemStartDateErrorKey = "cf.form.error.startDate.date-earlier-than-system-start-date",
             taxYearErrorKey = "cf.form.error.start.date-too-far-in-past",
-            invalidLength = "cf.form.error.year.length"
+            invalidLength = "date.year.length.invalid"
           )
         ),
         "end" -> localDate(
-          invalidKey = "cf.form.error.end.date-number-invalid",
-          monthKey = "cf.form.error.end.date.invalid.month",
-          yearKey = "cf.form.error.end.date.invalid.year",
-          invalidDateKey = "cf.form.error.end.date.invalid.real-date",
+          emptyMonthAndYearKey = "cf.cash-account.transactions.request.end.date.empty.month.year",
+          emptyMonthKey = "cf.cash-account.transactions.request.end.date.empty.month",
+          emptyYearKey = "cf.cash-account.transactions.request.end.date.empty.year",
+          invalidDateKey = "cf.cash-account.transactions.request.end.date.invalid",
           useLastDayOfMonth = true
         ).verifying(
           beforeCurrentDate(errorKey = "cf.form.error.end-future-date")
@@ -56,7 +56,7 @@ class SelectTransactionsFormProvider @Inject()(implicit clock: Clock)
           checkDates(
             systemStartDateErrorKey = "cf.form.error.endDate.date-earlier-than-system-start-date",
             taxYearErrorKey = "cf.form.error.end.date-too-far-in-past",
-            invalidLength = "cf.form.error.year.length"
+            invalidLength = "date.year.length.invalid"
           )
         )
       )(CashTransactionDates.apply)(ctd => Some(Tuple.fromProductTyped(ctd)))

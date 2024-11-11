@@ -25,8 +25,8 @@ import java.time.LocalDate
 class SelectLocalDateFormatterSpec extends SpecBase {
 
   "bind" must {
-    "return the correct LocalDate when the supplied data is valid" in new SetUp {
 
+    "return the correct LocalDate when the supplied data is valid" in new SetUp {
       val localYear = 2022
       val localMonth = 10
 
@@ -35,27 +35,39 @@ class SelectLocalDateFormatterSpec extends SpecBase {
       )
     }
 
+    "return the correct FormError with key when the supplied data has empty month and year" in new SetUp {
+      localDateFormatterWithEmptyMonthAndYear.bind(key, bindDataDateWithEmptyMonthAndYear) shouldBe
+        Left(Seq(FormError("start.month", List(emptyMonthAndYearMsgKey), List())))
+    }
+
     "return the correct FormError with keys when the supplied data is empty month" in new SetUp {
       localDateFormatter.bind(key, bindDataDateWithEmptyMonth) shouldBe
-        Left(Seq(FormError("start.month", List(invalidMsgKey), List())))
+        Left(Seq(FormError("start.month", List(emptyMonthMsgKey), List())))
     }
 
     "return the correct FormError with keys when the supplied data empty year" in new SetUp {
       localDateFormatter.bind(key, bindDataDateWithEmptyYear) shouldBe
-        Left(Seq(FormError("start.year", List(invalidMsgKey), List())))
+        Left(Seq(FormError("start.year", List(emptyYearMsgKey), List())))
     }
 
     "return the correct FormError with keys when the supplied data is invalid month" in new SetUp {
-
       localDateFormatter.bind(key, bindDataInValidMonth) shouldBe
-        Left(Seq(FormError("start.month", List(invalidRealDateMsgKey), List())))
+        Left(Seq(FormError("start.month", List(invalidDateMsgKey), List())))
     }
 
     "return the correct FormError with keys when the supplied data is invalid year" in new SetUp {
       localDateFormatter.bind(key, bindDataInValidYear) shouldBe
-        Left(Seq(FormError("start.year", List(invalidMsgKey), List())))
+        Left(Seq(FormError("start.year", List(invalidDateMsgKey), List())))
     }
 
+  }
+
+  "unbind" must {
+
+    "return the correct plain data" in new SetUp {
+      localDateFormatter.unbind(
+        key, LocalDate.of(year, month, day)) mustBe Map(s"$key.month" -> month.toString, s"$key.year" -> year.toString)
+    }
   }
 
   "updateFormErrorKeys" must {
@@ -82,7 +94,7 @@ class SelectLocalDateFormatterSpec extends SpecBase {
 
     "return key.month as updated key when month value is empty" in new SetUp {
 
-      val formDataWithEmptyMonth: Map[String, String] = Map(s"$key.month" -> "", s"$key.year" -> "2021")
+      val formDataWithEmptyMonth: Map[String, String] = Map(s"$key.month" -> emptyString, s"$key.year" -> "2021")
 
       localDateFormatter.formErrorKeysInCaseOfEmptyOrNonNumericValues(
         key,
@@ -92,7 +104,7 @@ class SelectLocalDateFormatterSpec extends SpecBase {
 
     "return key.year as updated key when year value is empty" in new SetUp {
 
-      val formDataWithEmptyYear: Map[String, String] = Map(s"$key.month" -> "10", s"$key.year" -> "")
+      val formDataWithEmptyYear: Map[String, String] = Map(s"$key.month" -> "10", s"$key.year" -> emptyString)
 
       localDateFormatter.formErrorKeysInCaseOfEmptyOrNonNumericValues(
         key,
@@ -136,50 +148,55 @@ class SelectLocalDateFormatterSpec extends SpecBase {
   trait SetUp {
 
     val year: Int = 2023
-    val year1: Int = -1
     val year2: Int = -2022
     val month: Int = 12
     val month1: Int = 14
     val day: Int = 1
 
     val key = "start"
-    val invalidMsgKey = "cf.form.error.start.date-number-invalid"
-    val monthMsgKey = "cf.form.error.start.date.invalid.month"
-    val yearMsgKey = "cf.form.error.start.date.invalid.year"
-    val invalidRealDateMsgKey = "cf.form.error.start.date.invalid.real-date"
+    val emptyMonthAndYearMsgKey = "cf.cash-account.transactions.request.start.date.empty.month.year"
+    val emptyMonthMsgKey = "cf.cash-account.transactions.request.start.date.empty.month"
+    val emptyYearMsgKey = "cf.cash-account.transactions.request.start.date.empty.year"
+    val invalidDateMsgKey = "cf.cash-account.transactions.request.start.date.invalid"
 
     val bindDataValid: Map[String, String] = Map(
       "start.day" -> day.toString, "start.month" -> "10", "start.year" -> "2022")
 
-    val bindDataEmptyDate: Map[String, String] = Map(
-      "start.day" -> day.toString, "start.month" -> "", "start.year" -> "")
-
     val localDateFormatter = new SelectLocalDateFormatter(
-      invalidMsgKey,
-      monthMsgKey,
-      yearMsgKey,
-      invalidRealDateMsgKey,
+      emptyMonthAndYearMsgKey,
+      emptyMonthMsgKey,
+      emptyYearMsgKey,
+      invalidDateMsgKey,
+      Seq(),
+      useLastDayOfMonth = false
+    )
+
+    val localDateFormatterWithEmptyMonthAndYear = new SelectLocalDateFormatter(
+      emptyMonthAndYearMsgKey,
+      emptyMonthMsgKey,
+      emptyYearMsgKey,
+      invalidDateMsgKey,
       Seq(),
       useLastDayOfMonth = false
     )
 
     val localDateFormatterWithLastDay = new SelectLocalDateFormatter(
-      invalidMsgKey,
-      monthMsgKey,
-      yearMsgKey,
-      invalidRealDateMsgKey,
+      emptyMonthAndYearMsgKey,
+      emptyMonthMsgKey,
+      emptyYearMsgKey,
+      invalidDateMsgKey,
       Seq(),
       useLastDayOfMonth = true
     )
 
+    val bindDataDateWithEmptyMonthAndYear: Map[String, String] =
+      Map("start.day" -> "1", "start.month" -> emptyString, "start.year" -> emptyString)
+
     val bindDataDateWithEmptyMonth: Map[String, String] =
-      Map("start.day" -> "1", "start.month" -> "", "start.year" -> "2022")
+      Map("start.day" -> "1", "start.month" -> emptyString, "start.year" -> "2022")
 
     val bindDataDateWithEmptyYear: Map[String, String] =
-      Map("start.day" -> "1", "start.month" -> "10", "start.year" -> "")
-
-    val bindDataInValidDate: Map[String, String] =
-      Map("start.day" -> "1", "start.month" -> "14", "start.year" -> "2023")
+      Map("start.day" -> "1", "start.month" -> "10", "start.year" -> emptyString)
 
     val bindDataInValidMonth: Map[String, String] =
       Map("start.day" -> "1", "start.month" -> "14", "start.year" -> "2022")
