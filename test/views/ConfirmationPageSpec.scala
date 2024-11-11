@@ -50,7 +50,7 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
       }
 
       "body text email is correct and email address is present" in new Setup {
-        view.html.contains(messages(app)("cf.cash-account.transactions.confirmation.email", email))
+        view.html.contains(messages("cf.cash-account.transactions.confirmation.email", email))
       }
 
       "email address is not present" in new Setup {
