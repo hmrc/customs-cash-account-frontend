@@ -58,8 +58,6 @@ class AppConfigSpec extends SpecBase {
 
       appConfig.requestedStatements(CDSCashAccount) mustBe
         "http://localhost:9396/customs/historic-statement/requested/cash-statement"
-
-      appConfig.sdesFilesAvailableEndPoint mustBe "http://localhost:9754/files-available/list/1730276251907"
     }
   }
 

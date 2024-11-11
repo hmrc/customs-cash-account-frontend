@@ -27,10 +27,7 @@ import utils.Utils.emptyString
 class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
   lazy val footerLinkItems: Seq[String] = config.getOptional[Seq[String]]("footerLinkItems").getOrElse(Seq())
 
-  lazy val sdesApi: String =
-    s"${servicesConfig.baseUrl("sdes")}${config.get[String]("microservice.services.sdes.context")}"
-
-  lazy val sdesFilesAvailableEndPoint: String =
+  lazy val sdesApiEndPoint: String =
     s"${servicesConfig.baseUrl("sdes")}${config.get[String]("microservice.services.sdes.endpoint")}"
 
   lazy val xClientIdHeader: String = config.get[String]("microservice.services.sdes.x-client-id")
@@ -86,6 +83,4 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
       case FileRole.CDSCashAccount => s"$requestedStatements${fileRole.featureName}"
     }
   }
-
-  def filesUrl(fileRole: FileRole): String = s"$sdesApi$sdesFilesAvailableEndPoint"
 }
