@@ -51,7 +51,6 @@ class SelectLocalDateFormatterSpec extends SpecBase {
     }
 
     "return the correct FormError with keys when the supplied data is invalid month" in new SetUp {
-
       localDateFormatter.bind(key, bindDataInValidMonth) shouldBe
         Left(Seq(FormError("start.month", List(invalidDateMsgKey), List())))
     }
@@ -149,7 +148,6 @@ class SelectLocalDateFormatterSpec extends SpecBase {
   trait SetUp {
 
     val year: Int = 2023
-    val year1: Int = -1
     val year2: Int = -2022
     val month: Int = 12
     val month1: Int = 14
@@ -163,9 +161,6 @@ class SelectLocalDateFormatterSpec extends SpecBase {
 
     val bindDataValid: Map[String, String] = Map(
       "start.day" -> day.toString, "start.month" -> "10", "start.year" -> "2022")
-
-    val bindDataEmptyDate: Map[String, String] = Map(
-      "start.day" -> day.toString, "start.month" -> emptyString, "start.year" -> emptyString)
 
     val localDateFormatter = new SelectLocalDateFormatter(
       emptyMonthAndYearMsgKey,
@@ -202,9 +197,6 @@ class SelectLocalDateFormatterSpec extends SpecBase {
 
     val bindDataDateWithEmptyYear: Map[String, String] =
       Map("start.day" -> "1", "start.month" -> "10", "start.year" -> emptyString)
-
-    val bindDataInValidDate: Map[String, String] =
-      Map("start.day" -> "1", "start.month" -> "14", "start.year" -> "2023")
 
     val bindDataInValidMonth: Map[String, String] =
       Map("start.day" -> "1", "start.month" -> "14", "start.year" -> "2022")
