@@ -45,7 +45,7 @@ class SdesConnector @Inject()(httpClientV2: HttpClientV2,
     auditingService.auditCashStatements(eori)
 
     getSdesFiles[FileInformation, CashStatementFile](
-      url = appConfig.filesUrl(CDSCashAccount),
+      url = appConfig.sdesApiEndPoint,
       key = eori,
       metricsName = "sdes.get.cash-statements",
       transform = transform
