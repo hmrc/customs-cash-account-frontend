@@ -58,12 +58,9 @@ class SelectedTransactionsSpec extends ViewTestHelper {
     val toDate: LocalDate = LocalDate.of(year, month, day11th)
 
     val summary: ResultsPageSummary = new ResultsPageSummary(fromDate, toDate)
-    val returnLink: String = "some return link"
     val accountNumber: String = "some account number"
     val displayAccountNumberFormat: String = s"Account: $accountNumber"
 
-    val view: Document =
-      Jsoup.parse(app.injector.instanceOf[selected_transactions].apply(
-        summary, returnLink, accountNumber).body)
+    val view: Document = Jsoup.parse(app.injector.instanceOf[selected_transactions].apply(summary, accountNumber).body)
   }
 }
