@@ -104,6 +104,21 @@ class SelectedTransactionsController @Inject()(selectedTransactionsView: selecte
     }
   }
 
+  def duplicateDates(displayMsg: String, startDate: String, endDate: String): Action[AnyContent] =
+    identify.async {
+      implicit req =>
+        Future.successful(Ok(duplicateDatesView(displayMsg, startDate, endDate)))
+    }
+
+  def tooManyTransactionsSelected(dateRange: RequestedDateRange): Action[AnyContent] =
+    identify {
+      implicit req =>
+        Ok(tooManyResults(
+          new ResultsPageSummary(dateRange.from, dateRange.to),
+          controllers.routes.SelectTransactionsController.onPageLoad().url)
+        )
+    }
+
   private def checkAccountAndDatesThenRedirect(optionalAccount: Option[CashAccount],
                                                optionalDates: Option[CashTransactionDates])
                                               (implicit request: IdentifierRequest[AnyContent]) = {
@@ -143,19 +158,4 @@ class SelectedTransactionsController @Inject()(selectedTransactionsView: selecte
       )
     )
   }
-
-  def duplicateDates(displayMsg: String, startDate: String, endDate: String): Action[AnyContent] =
-    identify.async {
-      implicit req =>
-        Future.successful(Ok(duplicateDatesView(displayMsg, startDate, endDate)))
-    }
-
-  def tooManyTransactionsSelected(dateRange: RequestedDateRange): Action[AnyContent] =
-    identify {
-      implicit req =>
-        Ok(tooManyResults(
-          new ResultsPageSummary(dateRange.from, dateRange.to),
-          controllers.routes.SelectTransactionsController.onPageLoad().url)
-        )
-    }
 }
