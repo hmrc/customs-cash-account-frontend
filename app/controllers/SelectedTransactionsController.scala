@@ -20,7 +20,9 @@ import cats.data.EitherT
 import cats.data.EitherT.fromOptionF
 import cats.implicits.*
 import config.{AppConfig, ErrorHandler}
-import connectors.{CustomsFinancialsApiConnector, EntryAlreadyExists, ErrorResponse, ExceededMaximum, TooManyTransactionsRequested}
+import connectors.{
+  CustomsFinancialsApiConnector, EntryAlreadyExists, ErrorResponse, ExceededMaximum, TooManyTransactionsRequested
+}
 import controllers.actions.IdentifierAction
 import helpers.Formatters.dateAsMonthAndYear
 import models.*
@@ -35,8 +37,7 @@ import views.html.*
 
 import java.time.LocalDate
 import javax.inject.Inject
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, Future}
 
 class SelectedTransactionsController @Inject()(selectedTransactionsView: selected_transactions,
                                                apiConnector: CustomsFinancialsApiConnector,
