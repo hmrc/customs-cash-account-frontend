@@ -20,12 +20,7 @@ import cats.data.EitherT
 import cats.data.EitherT.fromOptionF
 import cats.implicits.*
 import config.{AppConfig, ErrorHandler}
-
-import connectors.{
-  CustomsFinancialsApiConnector, EntryAlreadyExists, ErrorResponse, ExceededMaximum,
-  NoTransactionsAvailable, TooManyTransactionsRequested
-}
-
+import connectors.{CustomsFinancialsApiConnector, EntryAlreadyExists, ErrorResponse, ExceededMaximum, TooManyTransactionsRequested}
 import controllers.actions.IdentifierAction
 import helpers.Formatters.dateAsMonthAndYear
 import models.*
@@ -40,15 +35,14 @@ import views.html.*
 
 import java.time.LocalDate
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 
-class SelectedTransactionsController @Inject()(resultView: selected_transactions,
+class SelectedTransactionsController @Inject()(selectedTransactionsView: selected_transactions,
                                                apiConnector: CustomsFinancialsApiConnector,
-                                               transactionsUnavailable: cash_account_transactions_not_available,
                                                tooManyResults: cash_transactions_too_many_results,
                                                duplicateDatesView: cash_transactions_duplicate_dates,
                                                requestTooManyTransactionsView: cash_account_requested_too_many_transactions,
-                                               noResults: cash_transactions_no_result,
                                                identify: IdentifierAction,
                                                eh: ErrorHandler,
                                                cache: RequestedTransactionsCache,
@@ -61,7 +55,7 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
     val result: EitherT[Future, Result, Result] = for {
       dates <- fromOptionF(cache.get(request.eori), Redirect(routes.SelectTransactionsController.onPageLoad()))
       account <- fromOptionF(apiConnector.getCashAccount(request.eori), NotFound(eh.notFoundTemplate))
-      page <- EitherT.liftF(showAccountWithTransactionDetails(account, dates.start, dates.end))
+      page <- EitherT.liftF(displayResultView(account, dates.start, dates.end))
     } yield page
 
     result.merge.recover {
@@ -136,39 +130,17 @@ class SelectedTransactionsController @Inject()(resultView: selected_transactions
     }
   }
 
-  private def showAccountWithTransactionDetails(account: CashAccount,
-                                                from: LocalDate,
-                                                to: LocalDate)
-                                               (implicit req: IdentifierRequest[AnyContent],
-                                                appConfig: AppConfig): Future[Result] = {
-    apiConnector.retrieveHistoricCashTransactions(account.number, from, to).map {
-
-      case Left(errorResponse) => processErrorResponse(account, from, to, errorResponse)
-
-      case Right(_) =>
-        Ok(resultView(
-          new ResultsPageSummary(from, to, false),
-          controllers.routes.CashAccountController.showAccountDetails(None).url,
+  private def displayResultView(account: CashAccount,
+                                from: LocalDate,
+                                to: LocalDate)
+                               (implicit req: IdentifierRequest[AnyContent], appConfig: AppConfig): Future[Result] = {
+    Future.successful(
+      Ok(
+        selectedTransactionsView(
+          new ResultsPageSummary(from = from, to = to, isDay = false),
           account.number)
-        )
-    }
-  }
-
-  private def processErrorResponse(account: CashAccount,
-                                   from: LocalDate,
-                                   to: LocalDate,
-                                   errorResponse: ErrorResponse)
-                                  (implicit request: IdentifierRequest[AnyContent], appConfig: AppConfig): Result = {
-
-    errorResponse match {
-
-      case NoTransactionsAvailable => Ok(noResults(new ResultsPageSummary(from, to)))
-
-      case TooManyTransactionsRequested => Redirect(
-        routes.SelectedTransactionsController.tooManyTransactionsSelected(RequestedDateRange(from, to)))
-
-      case _ => Ok(transactionsUnavailable(CashAccountViewModel(request.eori, account), appConfig.transactionsTimeoutFlag))
-    }
+      )
+    )
   }
 
   def duplicateDates(displayMsg: String, startDate: String, endDate: String): Action[AnyContent] =
