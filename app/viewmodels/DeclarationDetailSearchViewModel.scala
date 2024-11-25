@@ -17,7 +17,7 @@
 package viewmodels
 
 import helpers.Formatters
-import models.*
+import models._
 import models.response.DeclarationSearch
 import play.api.i18n.Messages
 import play.twirl.api.Html
@@ -113,7 +113,7 @@ object DeclarationDetailSearchViewModel {
           key = Key(content = HtmlContent(messages("cf.cash-account.csv.duty"))),
           value = Value(content = HtmlContent(
             Formatters.formatCurrencyAmount(declaration.taxGroups
-              .find(_.taxGroup.taxGroupDescription == CustomsDuty.toString)
+              .find(_.taxGroup.taxGroupDescription == CustomsDuty.onWire)
               .map(taxGroup => toBigDecimal(taxGroup.taxGroup.amount))
               .getOrElse(BigDecimal(0))
             ))
@@ -122,7 +122,7 @@ object DeclarationDetailSearchViewModel {
           key = Key(content = HtmlContent(messages("cf.cash-account.csv.vat"))),
           value = Value(content = HtmlContent(
             Formatters.formatCurrencyAmount(declaration.taxGroups
-              .find(_.taxGroup.taxGroupDescription == ImportVat.toString)
+              .find(_.taxGroup.taxGroupDescription == ImportVat.onWire)
               .map(taxGroup => toBigDecimal(taxGroup.taxGroup.amount))
               .getOrElse(BigDecimal(0))
             ))
@@ -130,7 +130,7 @@ object DeclarationDetailSearchViewModel {
         SummaryListRow(
           key = Key(content = HtmlContent(messages("cf.cash-account.csv.excise"))),
           value = Value(content = HtmlContent(
-            declaration.taxGroups.find(_.taxGroup.taxGroupDescription == ExciseDuty.toString)
+            declaration.taxGroups.find(_.taxGroup.taxGroupDescription == ExciseDuty.onWire)
               .map(_.taxGroup.amount)
               .fold(emptyString)(amount => Formatters.formatCurrencyAmount(amount))
           ))

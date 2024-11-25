@@ -58,17 +58,45 @@ class DeclarationDetailSearchViewModelSpec extends SpecBase {
 
     "generate correct taxSummaryList data" in new Setup {
 
+      val declarationWithTaxGroups: DeclarationSearch = declaration.copy(
+        taxGroups = Seq(
+          TaxGroupWrapper(
+            taxGroup = TaxGroupSearch(
+              taxGroupDescription = "Import VAT",
+              amount = hundred.toDouble,
+              taxTypes = Seq(taxType1)
+            )
+          ),
+          TaxGroupWrapper(
+            taxGroup = TaxGroupSearch(
+              taxGroupDescription = "Customs",
+              amount = threeHundred.toDouble,
+              taxTypes = Seq(taxType1)
+            )
+          ),
+          TaxGroupWrapper(
+            taxGroup = TaxGroupSearch(
+              taxGroupDescription = "Excise",
+              amount = hundred.toDouble,
+              taxTypes = Seq(taxType1)
+            )
+          )
+        )
+      )
+
       val viewModel: DeclarationDetailSearchViewModel =
-        DeclarationDetailSearchViewModel(searchInput, account, declaration)
+        DeclarationDetailSearchViewModel(searchInput, account, declarationWithTaxGroups)
 
       val extractedResultData: Seq[(String, String)] = extractSummaryData(viewModel.taxSummaryList)
 
       val zeroValue: String = Formatters.formatCurrencyAmount(BigDecimal(0))
+      val hundredValue: String = Formatters.formatCurrencyAmount(hundred.toDouble)
+      val threeHundredValue: String = Formatters.formatCurrencyAmount(threeHundred.toDouble)
 
       val expectedTaxData: Seq[(String, String)] = Seq(
-        messages("cf.cash-account.csv.duty") -> zeroValue,
-        messages("cf.cash-account.csv.vat") -> zeroValue,
-        messages("cf.cash-account.csv.excise") -> emptyString,
+        messages("cf.cash-account.csv.duty") -> threeHundredValue,
+        messages("cf.cash-account.csv.vat") -> hundredValue,
+        messages("cf.cash-account.csv.excise") -> hundredValue,
         messages("cf.cash-account.detail.total.paid") -> zeroValue)
 
       extractedResultData must contain allElementsOf expectedTaxData
@@ -94,11 +122,13 @@ class DeclarationDetailSearchViewModelSpec extends SpecBase {
 
     "handle excise duty correctly when present" in new Setup {
 
+      val hundredValue: String = Formatters.formatCurrencyAmount(hundred.toDouble)
+
       val declarationWithExcise: DeclarationSearch = declaration.copy(
         taxGroups = Seq(
           TaxGroupWrapper(
             taxGroup = TaxGroupSearch(
-              taxGroupDescription = "Import VAT",
+              taxGroupDescription = "Excise",
               amount = hundred.toDouble,
               taxTypes = Seq(taxType1)
             )
@@ -111,7 +141,7 @@ class DeclarationDetailSearchViewModelSpec extends SpecBase {
 
       val extractedResultData: Seq[(String, String)] = extractSummaryData(viewModel.taxSummaryList)
 
-      extractedResultData must contain(messages("cf.cash-account.csv.excise") -> emptyString)
+      extractedResultData must contain(messages("cf.cash-account.csv.excise") -> hundredValue)
     }
 
     "handle missing excise duty correctly" in new Setup {
