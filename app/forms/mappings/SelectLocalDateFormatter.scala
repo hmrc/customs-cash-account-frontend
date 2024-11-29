@@ -145,10 +145,11 @@ private[mappings] class SelectLocalDateFormatter(emptyMonthAndYearKey: String,
     val today = LocalDate.now
     val todayMonth = today.getMonthValue
     val todayYear = today.getYear
-
-    val day = (month, year) match {
+    
+    val day: Int = (month, year) match {
       case _ if useLastDayOfMonth => YearMonth.of(year, month).lengthOfMonth()
-      case (todayMonth, todayYear) => today.getDayOfMonth - 1
+      case (todayMonth, todayYear) =>
+        if((todayYear == year) && (todayMonth == month)) today.getDayOfMonth - 1 else 1
       case _ => 1
     }
     day
