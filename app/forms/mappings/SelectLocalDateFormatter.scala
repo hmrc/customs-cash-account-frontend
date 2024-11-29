@@ -122,7 +122,9 @@ private[mappings] class SelectLocalDateFormatter(emptyMonthAndYearKey: String,
     if (month < monthValueMin || month > monthValueMax) {
       Left(Seq(FormError(s"$key.month", invalidDateKey, args)))
     } else {
-      val day = if (useLastDayOfMonth) YearMonth.of(year, month).lengthOfMonth() else 1
+
+      val day: Int = getDay(month, year)
+
       Try(LocalDate.of(year, month, day)) match {
         case Success(date) => Right(date)
         case Failure(_) =>
@@ -137,6 +139,19 @@ private[mappings] class SelectLocalDateFormatter(emptyMonthAndYearKey: String,
           )
       }
     }
+  }
+
+  private def getDay(month: Int, year: Int) = {
+    val today = LocalDate.now
+    val todayMonth = today.getMonthValue
+    val todayYear = today.getYear
+
+    val day = (month, year) match {
+      case _ if useLastDayOfMonth => YearMonth.of(year, month).lengthOfMonth()
+      case (todayMonth, todayYear) => today.getDayOfMonth - 1
+      case _ => 1
+    }
+    day
   }
 
   private def populateErrorMsg(key: String,
@@ -166,5 +181,4 @@ private[mappings] class SelectLocalDateFormatter(emptyMonthAndYearKey: String,
       _.map(fe => fe.copy(key = fe.key, args = args))
     }
   }
-
 }

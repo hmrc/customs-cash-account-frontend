@@ -31,7 +31,7 @@ class SelectLocalDateFormatterSpec extends SpecBase {
       val localMonth = 10
 
       localDateFormatter.bind(key, bindDataValid) shouldBe Right(
-        LocalDate.of(localYear, localMonth, day)
+        LocalDate.of(localYear, localMonth, today)
       )
     }
 
@@ -59,7 +59,6 @@ class SelectLocalDateFormatterSpec extends SpecBase {
       localDateFormatter.bind(key, bindDataInValidYear) shouldBe
         Left(Seq(FormError("start.year", List(invalidDateMsgKey), List())))
     }
-
   }
 
   "unbind" must {
@@ -152,6 +151,7 @@ class SelectLocalDateFormatterSpec extends SpecBase {
     val month: Int = 12
     val month1: Int = 14
     val day: Int = 1
+    val today: Int = LocalDate.now.getDayOfMonth-1
 
     val key = "start"
     val emptyMonthAndYearMsgKey = "cf.cash-account.transactions.request.start.date.empty.month.year"
