@@ -19,7 +19,7 @@ package forms.mappings
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
 
-import java.time.LocalDate
+import java.time.{LocalDate, YearMonth}
 
 trait SelectMappings extends Formatters with Constraints {
 
@@ -27,20 +27,18 @@ trait SelectMappings extends Formatters with Constraints {
                         invalidKey: String = "error.boolean"): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey))
 
-  protected def localDate(emptyMonthAndYearKey: String,
+  protected def yearMonth(emptyMonthAndYearKey: String,
                           emptyMonthKey: String,
                           emptyYearKey: String,
-                          invalidDateKey: String,
-                          useLastDayOfMonth: Boolean = false): FieldMapping[LocalDate] = {
+                          invalidDateKey: String): FieldMapping[YearMonth] = {
 
     of(
-      new SelectLocalDateFormatter(
+      new SelectYearMonthFormatter(
         emptyMonthAndYearKey,
         emptyMonthKey,
         emptyYearKey,
         invalidDateKey,
-        Seq.empty,
-        useLastDayOfMonth)
+        Seq.empty)
     )
   }
 

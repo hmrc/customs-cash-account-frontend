@@ -108,17 +108,19 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
       }
     }
 
+    "transform start date correctly" when {
+
+      "valid year and month are provided" in new SetUp {
+        val formData: Map[String, String] = populateFormValueMap(startKey, month10AsString, year2021AsString) ++
+          Map(s"$endKey.month" -> month10AsString, s"$endKey.year" -> year2021AsString)
+
+        val boundForm = form.bind(formData)
+
+        boundForm.get.start mustBe validDate
+      }
+    }
+
     "populate CashTransactionDates form correctly (or with correct error) for input end date" when {
-
-      "end date is valid and uses the last day of the month" in new SetUp {
-        val expectedEndDate: LocalDate = LocalDate.of(year, month, day31)
-        form.bind(completeValidDates).get mustBe CashTransactionDates(start = validDate, end = expectedEndDate)
-      }
-
-      "end date is valid and uses yesterday" in new SetUp {
-        val expectedEndDate: LocalDate = LocalDate.of(year, month, day31)
-        form.bind(completeValidDates).get mustBe CashTransactionDates(start = validDate, end = expectedEndDate)
-      }
 
       "the month of end date is blank" in new SetUp {
         val validStartDate: Map[String, String] = populateFormValueMap(startKey, month10AsString, year2021AsString)
@@ -147,71 +149,85 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
         checkForError(form, formData, expectedErrors)
       }
 
-        "the month value is invalid for the end date" in new SetUp {
-          val validStartDate: Map[String, String] = populateFormValueMap(startKey, month10AsString, year2021AsString)
+      "the month value is invalid for the end date" in new SetUp {
+        val validStartDate: Map[String, String] = populateFormValueMap(startKey, month10AsString, year2021AsString)
 
-          val endDate: Map[String, String] =
-            Map(s"$endKey.month" -> month14AsString, s"$endKey.year" -> year2021AsString)
+        val endDate: Map[String, String] =
+          Map(s"$endKey.month" -> month14AsString, s"$endKey.year" -> year2021AsString)
 
-          val formData: Map[String, String] = validStartDate ++ endDate
-          val expectedErrors: Seq[FormError] = Seq(FormError("end.month", invalidEndDateKey))
+        val formData: Map[String, String] = validStartDate ++ endDate
+        val expectedErrors: Seq[FormError] = Seq(FormError("end.month", invalidEndDateKey))
 
-          checkForError(form, formData, expectedErrors)
-        }
+        checkForError(form, formData, expectedErrors)
+      }
 
-        "the year value is invalid for the end date" in new SetUp {
-          val validStartDate: Map[String, String] = populateFormValueMap(startKey, month10AsString, year2021AsString)
-          val endDate: Map[String, String] = populateFormValueMap(endKey, month14AsString, invalidYearValue)
-          val formData: Map[String, String] = validStartDate ++ endDate
-          val expectedErrors: Seq[FormError] = error("end.year", invalidEndDateKey)
+      "the year value is invalid for the end date" in new SetUp {
+        val validStartDate: Map[String, String] = populateFormValueMap(startKey, month10AsString, year2021AsString)
+        val endDate: Map[String, String] = populateFormValueMap(endKey, month14AsString, invalidYearValue)
+        val formData: Map[String, String] = validStartDate ++ endDate
+        val expectedErrors: Seq[FormError] = error("end.year", invalidEndDateKey)
 
-          checkForError(form, formData, expectedErrors)
-        }
+        checkForError(form, formData, expectedErrors)
+      }
 
-        "end date is in future" in new SetUp {
-          val validStartDate: Map[String, String] = populateFormValueMap(startKey, month10AsString, year2021AsString)
-          val endDate: Map[String, String] = populateFormValueMap(endKey, month10AsString, futureYear.toString)
-          val formData: Map[String, String] = validStartDate ++ endDate
-          val expectedErrors: Seq[FormError] = error(endKey, "cf.form.error.end-future-date")
+      "end date is in future" in new SetUp {
+        val validStartDate: Map[String, String] = populateFormValueMap(startKey, month10AsString, year2021AsString)
+        val endDate: Map[String, String] = populateFormValueMap(endKey, month10AsString, futureYear.toString)
+        val formData: Map[String, String] = validStartDate ++ endDate
+        val expectedErrors: Seq[FormError] = error(endKey, "cf.form.error.end-future-date")
 
-          checkForError(form, formData, expectedErrors)
-        }
+        checkForError(form, formData, expectedErrors)
+      }
 
-        "end date has invalid length of the year" in new SetUp {
-          val yearWithInvalidLength = "20112"
-          val validStartDate: Map[String, String] = populateFormValueMap(startKey, month10AsString, year2021AsString)
-          val endDate: Map[String, String] = populateFormValueMap(endKey, month10AsString, yearWithInvalidLength)
-          val formData: Map[String, String] = validStartDate ++ endDate
-          val expectedErrors: Seq[FormError] = error(endKey, invalidYearLengthKey)
+      "end date has invalid length of the year" in new SetUp {
+        val yearWithInvalidLength = "20112"
+        val validStartDate: Map[String, String] = populateFormValueMap(startKey, month10AsString, year2021AsString)
+        val endDate: Map[String, String] = populateFormValueMap(endKey, month10AsString, yearWithInvalidLength)
+        val formData: Map[String, String] = validStartDate ++ endDate
+        val expectedErrors: Seq[FormError] = error(endKey, invalidYearLengthKey)
 
-          checkForError(form, formData, expectedErrors)
-        }
+        checkForError(form, formData, expectedErrors)
+      }
 
-        "the year length is less than 4 digits" in new SetUp {
-          val yearWithInvalidLength = "202"
-          val startDate: Map[String, String] = populateFormValueMap(startKey, month10AsString, year2021AsString)
+      "the year length is less than 4 digits" in new SetUp {
+        val yearWithInvalidLength = "202"
+        val startDate: Map[String, String] = populateFormValueMap(startKey, month10AsString, year2021AsString)
 
-          val endDate: Map[String, String] =
-            populateFormValueMap(endKey, month10AsString, yearWithInvalidLength)
+        val endDate: Map[String, String] =
+          populateFormValueMap(endKey, month10AsString, yearWithInvalidLength)
 
-          val formData: Map[String, String] = startDate ++ endDate
-          val expectedErrors: Seq[FormError] = error(endKey, invalidYearLengthKey)
+        val formData: Map[String, String] = startDate ++ endDate
+        val expectedErrors: Seq[FormError] = error(endKey, invalidYearLengthKey)
 
-          checkForError(form, formData, expectedErrors)
-        }
+        checkForError(form, formData, expectedErrors)
+      }
 
-        "end date is not within ETMP statement date period" in new SetUp {
-          val validStartDate: Map[String, String] =
-            populateFormValueMap(startKey, month10AsString, year2021AsString)
+      "end date is not within ETMP statement date period" in new SetUp {
+        val validStartDate: Map[String, String] =
+          populateFormValueMap(startKey, month10AsString, year2021AsString)
 
-          val endDate: Map[String, String] =
-            populateFormValueMap(endKey, month10AsString, (etmpStatementYear - 1).toString)
+        val endDate: Map[String, String] =
+          populateFormValueMap(endKey, month10AsString, (etmpStatementYear - 1).toString)
 
-          val formData: Map[String, String] = validStartDate ++ endDate
-          val expectedErrors: Seq[FormError] = error(endKey, "cf.form.error.endDate.date-earlier-than-system-start-date")
+        val formData: Map[String, String] = validStartDate ++ endDate
+        val expectedErrors: Seq[FormError] = error(endKey, "cf.form.error.endDate.date-earlier-than-system-start-date")
 
-          checkForError(form, formData, expectedErrors)
-        }
+        checkForError(form, formData, expectedErrors)
+      }
+    }
+
+    "transform end date correctly" when {
+
+      "valid year and month are provided and they are the current month and year" in new SetUp {
+        val expectedEndDate: LocalDate = LocalDate.now.minusDays(1)
+
+        form.bind(validDatesWithCurrentMonthAsEnd).get.end mustBe expectedEndDate
+      }
+
+      "valid year and month are provided and they are not the current month and year" in new SetUp {
+        val expectedEndDate: LocalDate = LocalDate.of(year, month, day31)
+
+        form.bind(completeValidDates).get.end mustBe expectedEndDate
       }
     }
 
@@ -222,11 +238,11 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
 
       val year = 2021
       val month = 10
-      val day = 1
+      val day1 = 1
       val day31 = 31
 
       val todayMinusADay: Int = LocalDate.now.getDayOfMonth - 1
-      val validDate: LocalDate = LocalDate.of(year, month, todayMinusADay)
+      val validDate: LocalDate = LocalDate.of(year, month, day1)
 
       val futureYear: Int = LocalDate.now().getYear + 1
       val etmpStatementYear = 2019
@@ -234,6 +250,9 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
       val year2021AsString = "2021"
       val month10AsString = "10"
       val month14AsString = "14"
+
+      val currentMonth = LocalDate.now.getMonthValue.toString
+      val currentYear = LocalDate.now.getYear.toString
 
       val startKey = "start"
       val endKey = "end"
@@ -255,9 +274,14 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
         populateFormValueMap(startKey, month10AsString, year2021AsString) ++
           Map(s"$endKey.month" -> month10AsString, s"$endKey.year" -> year2021AsString)
 
+      lazy val validDatesWithCurrentMonthAsEnd: Map[String, String] =
+        populateFormValueMap(startKey, month10AsString, year2021AsString) ++
+          Map(s"$endKey.month" -> currentMonth, s"$endKey.year" -> currentYear)
+
       def populateFormValueMap(key: String,
                                month: String,
                                year: String): Map[String, String] =
-        Map(s"$key.day" -> day.toString, s"$key.month" -> month, s"$key.year" -> year)
+        Map(s"$key.day" -> day1.toString, s"$key.month" -> month, s"$key.year" -> year)
     }
   }
+}
