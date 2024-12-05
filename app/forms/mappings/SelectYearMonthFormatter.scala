@@ -20,15 +20,14 @@ import play.api.data.FormError
 import play.api.data.format.Formatter
 import play.api.{Logger, LoggerLike}
 
-import java.time.{LocalDate, LocalDateTime, YearMonth}
-import scala.util.{Failure, Success, Try}
+import java.time.YearMonth
+import scala.util.Try
 
-private[mappings] class SelectLocalDateFormatter(emptyMonthAndYearKey: String,
+private[mappings] class SelectYearMonthFormatter(emptyMonthAndYearKey: String,
                                                  emptyMonthKey: String,
                                                  emptyYearKey: String,
                                                  invalidDateKey: String,
-                                                 args: Seq[String],
-                                                 useLastDayOfMonth: Boolean) extends Formatter[LocalDate] with Formatters {
+                                                 args: Seq[String]) extends Formatter[YearMonth] with Formatters {
 
   val log: LoggerLike = Logger(this.getClass)
 
@@ -39,7 +38,7 @@ private[mappings] class SelectLocalDateFormatter(emptyMonthAndYearKey: String,
   private val yearValueMax = 99999
 
   override def bind(key: String,
-                    data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
+                    data: Map[String, String]): Either[Seq[FormError], YearMonth] = {
 
     val fields: Map[String, Option[String]] = fieldKeys.map { field =>
       field -> data.get(s"$key.$field").filter(_.nonEmpty)
@@ -60,7 +59,7 @@ private[mappings] class SelectLocalDateFormatter(emptyMonthAndYearKey: String,
     }
   }
 
-  override def unbind(key: String, value: LocalDate): Map[String, String] =
+  override def unbind(key: String, value: YearMonth): Map[String, String] =
     Map(
       s"$key.month" -> value.getMonthValue.toString,
       s"$key.year" -> value.getYear.toString
@@ -88,7 +87,7 @@ private[mappings] class SelectLocalDateFormatter(emptyMonthAndYearKey: String,
     }
 
   private def checkForFieldValues(key: String,
-                                  data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
+                                  data: Map[String, String]): Either[Seq[FormError], YearMonth] = {
     data match {
       case value if isMonthEmpty(key, value) => populateErrorMsg(key, data, emptyMonthKey)
       case value if isYearEmpty(key, value) => populateErrorMsg(key, data, emptyYearKey)
@@ -97,7 +96,7 @@ private[mappings] class SelectLocalDateFormatter(emptyMonthAndYearKey: String,
   }
 
   private def formatDate(key: String,
-                         data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
+                         data: Map[String, String]): Either[Seq[FormError], YearMonth] = {
 
     val int = intFormatter(
       requiredKey = invalidDateKey,
@@ -109,33 +108,20 @@ private[mappings] class SelectLocalDateFormatter(emptyMonthAndYearKey: String,
     for {
       month <- int.bind(s"$key.month", data)
       year <- int.bind(s"$key.year", data)
-      date <- toDate(key, month, year)
+      yearMonth <- toYearMonth(key, month, year)
     } yield {
-      date
+      yearMonth
     }
   }
 
-  private def toDate(key: String,
+  private def toYearMonth(key: String,
                      month: Int,
-                     year: Int): Either[Seq[FormError], LocalDate] = {
+                     year: Int): Either[Seq[FormError], YearMonth] = {
 
     if (month < monthValueMin || month > monthValueMax) {
       Left(Seq(FormError(s"$key.month", invalidDateKey, args)))
     } else {
-      val day = if (useLastDayOfMonth) YearMonth.of(year, month).lengthOfMonth() else 1
-      Try(LocalDate.of(year, month, day)) match {
-        case Success(date) => Right(date)
-        case Failure(_) =>
-          Left(
-            Seq(
-              FormError(
-                updateFormErrorKeys(key, month, year),
-                invalidDateKey,
-                args
-              )
-            )
-          )
-      }
+      Right(YearMonth.of(year, month))
     }
   }
 
@@ -166,5 +152,4 @@ private[mappings] class SelectLocalDateFormatter(emptyMonthAndYearKey: String,
       _.map(fe => fe.copy(key = fe.key, args = args))
     }
   }
-
 }

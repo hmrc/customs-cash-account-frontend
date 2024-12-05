@@ -95,7 +95,8 @@ class SelectTransactionsControllerSpec extends SpecBase {
     "return BAD_REQUEST when the start date is earlier than system start date" in new Setup {
       val request: FakeRequest[AnyContentAsFormUrlEncoded] =
         fakeRequest(POST, routes.SelectTransactionsController.onSubmit().url)
-          .withFormUrlEncodedBody("start.day" -> day, "start.month" -> "9", "start.year" -> "2019",
+          .withFormUrlEncodedBody(
+            "start.day" -> day, "start.month" -> "5", "start.year" -> "2019",
             "end.day" -> "10", "end.month" -> "10", "end.year" -> "2019")
 
       running(app) {
