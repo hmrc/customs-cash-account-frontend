@@ -1,5 +1,5 @@
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings.{targetJvm, itSettings}
+import uk.gov.hmrc.DefaultBuildSettings.itSettings
 
 val appName = "customs-cash-account-frontend"
 
@@ -30,7 +30,6 @@ lazy val microservice = Project(appName, file("."))
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(scalastyleSettings)
   .settings(
-    targetJvm := "jvm-11",
     update / evictionWarningOptions :=
       EvictionWarningOptions.default.withWarnScalaVersionEviction(true),
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
