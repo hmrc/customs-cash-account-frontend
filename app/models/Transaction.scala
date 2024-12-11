@@ -16,9 +16,7 @@
 
 package models
 
-case class Transaction(amount: BigDecimal,
-                       transactionType: CashTransactionType,
-                       bankAccountNumber: Option[String]) {
+case class Transaction(amount: BigDecimal, transactionType: CashTransactionType, bankAccountNumber: Option[String]) {
 
   private val bankAccountNumberDigits: Int = 4
 

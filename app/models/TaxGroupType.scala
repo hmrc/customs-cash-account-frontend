@@ -23,22 +23,22 @@ sealed trait TaxGroupType {
 }
 
 object TaxGroupType {
-  implicit val taxGroupReads: Reads[TaxGroupType] = (json: JsValue) => {
+  implicit val taxGroupReads: Reads[TaxGroupType] = (json: JsValue) =>
     json.as[String] match {
       case "Import VAT" => JsSuccess(ImportVat)
-      case "Excise" => JsSuccess(ExciseDuty)
-      case "Customs" => JsSuccess(CustomsDuty)
-      case _ => throw new RuntimeException("Unknown Tax Group Type")
+      case "Excise"     => JsSuccess(ExciseDuty)
+      case "Customs"    => JsSuccess(CustomsDuty)
+      case _            => throw new RuntimeException("Unknown Tax Group Type")
     }
-  }
 
-  implicit val taxGroupWrites: Writes[TaxGroupType] = (o: TaxGroupType) => JsString {
-    o match {
-      case ImportVat => "Import VAT"
-      case ExciseDuty => "Excise"
-      case CustomsDuty => "Customs"
+  implicit val taxGroupWrites: Writes[TaxGroupType] = (o: TaxGroupType) =>
+    JsString {
+      o match {
+        case ImportVat   => "Import VAT"
+        case ExciseDuty  => "Excise"
+        case CustomsDuty => "Customs"
+      }
     }
-  }
 }
 
 case object ImportVat extends TaxGroupType {

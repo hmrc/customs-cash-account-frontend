@@ -99,14 +99,14 @@ class ConfirmationPageControllerSpec extends SpecBase {
 
   trait Setup {
     val emailParagraphId = "body-text-email"
-    val email = "jackiechan@mail.com"
+    val email            = "jackiechan@mail.com"
 
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
-    val mockRequestedTransactionsCache: RequestedTransactionsCache = mock[RequestedTransactionsCache]
-    val mockCustomsDataStoreConnector: CustomsDataStoreConnector = mock[CustomsDataStoreConnector]
+    val mockRequestedTransactionsCache: RequestedTransactionsCache       = mock[RequestedTransactionsCache]
+    val mockCustomsDataStoreConnector: CustomsDataStoreConnector         = mock[CustomsDataStoreConnector]
 
     val fromDate: LocalDate = LocalDate.parse("2023-03-01")
-    val toDate: LocalDate = LocalDate.parse("2023-04-30")
+    val toDate: LocalDate   = LocalDate.parse("2023-04-30")
 
     val cashDates: CashTransactionDates = CashTransactionDates(start = fromDate, end = toDate)
 
@@ -114,7 +114,8 @@ class ConfirmationPageControllerSpec extends SpecBase {
       .overrides(
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
         bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache),
-        bind[CustomsDataStoreConnector].toInstance(mockCustomsDataStoreConnector))
+        bind[CustomsDataStoreConnector].toInstance(mockCustomsDataStoreConnector)
+      )
       .configure("features.fixed-systemdate-for-tests" -> "true")
       .build()
   }

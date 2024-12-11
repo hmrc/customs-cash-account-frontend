@@ -35,8 +35,7 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
       }
 
       "header 1 is correct" in new Setup {
-        view.getElementsByTag("h1").text() mustBe messages(
-          "cf.cash-account.transactions.confirmation.statements")
+        view.getElementsByTag("h1").text() mustBe messages("cf.cash-account.transactions.confirmation.statements")
       }
 
       "header 2 is correct" in new Setup {
@@ -46,7 +45,8 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
 
       "email confirmation is correct" in new Setup {
         view.getElementById("email-confirmation-subheader").text() mustBe messages(
-          "cf.cash-account.transactions.confirmation.next")
+          "cf.cash-account.transactions.confirmation.next"
+        )
       }
 
       "body text email is correct and email address is present" in new Setup {
@@ -59,23 +59,23 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
 
       "body text download is correct" in new Setup {
         view.getElementById("body-text-download").text() mustBe messages(
-          "cf.cash-account.transactions.confirmation.download")
+          "cf.cash-account.transactions.confirmation.download"
+        )
       }
 
       "link text is correct" in new Setup {
-        view.getElementById("link-text").text() mustBe messages(
-          "cf.cash-account.transactions.confirmation.back")
+        view.getElementById("link-text").text() mustBe messages("cf.cash-account.transactions.confirmation.back")
       }
     }
   }
 
   trait Setup {
     val startDate = "March 2022"
-    val endDate = "April 2022"
-    val dates = s"$startDate ${messages("month.to")} $endDate"
-    val email = "jackiechan@mail.com"
+    val endDate   = "April 2022"
+    val dates     = s"$startDate ${messages("month.to")} $endDate"
+    val email     = "jackiechan@mail.com"
 
-    val view: Document = Jsoup.parse(app.injector.instanceOf[confirmation_page].apply(dates, Some(email)).body)
+    val view: Document             = Jsoup.parse(app.injector.instanceOf[confirmation_page].apply(dates, Some(email)).body)
     val viewWithoutEmail: Document = Jsoup.parse(app.injector.instanceOf[confirmation_page].apply(dates, None).body)
   }
 }

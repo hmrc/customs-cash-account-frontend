@@ -39,44 +39,45 @@ import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RequestedTransactionsController @Inject()(resultView: cash_transactions_result_page,
-                                                apiConnector: CustomsFinancialsApiConnector,
-                                                transactionsUnavailable: cash_account_transactions_not_available,
-                                                tooManyResults: cash_transactions_too_many_results,
-                                                noResults: cash_transactions_no_result,
-                                                identify: IdentifierAction,
-                                                eh: ErrorHandler,
-                                                cache: RequestedTransactionsCache,
-                                                mcc: MessagesControllerComponents)
-                                               (implicit executionContext: ExecutionContext, appConfig: AppConfig)
-  extends FrontendController(mcc) with I18nSupport with Logging {
+class RequestedTransactionsController @Inject() (
+  resultView: cash_transactions_result_page,
+  apiConnector: CustomsFinancialsApiConnector,
+  transactionsUnavailable: cash_account_transactions_not_available,
+  tooManyResults: cash_transactions_too_many_results,
+  noResults: cash_transactions_no_result,
+  identify: IdentifierAction,
+  eh: ErrorHandler,
+  cache: RequestedTransactionsCache,
+  mcc: MessagesControllerComponents
+)(implicit executionContext: ExecutionContext, appConfig: AppConfig)
+    extends FrontendController(mcc)
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
     val result: EitherT[Future, Result, Result] = for {
-      dates <- fromOptionF(cache.get(request.eori), Redirect(routes.RequestTransactionsController.onPageLoad()))
+      dates   <- fromOptionF(cache.get(request.eori), Redirect(routes.RequestTransactionsController.onPageLoad()))
       account <- fromOptionF(apiConnector.getCashAccount(request.eori), NotFound(eh.notFoundTemplate))
-      page <- EitherT.liftF(showAccountWithTransactionDetails(account, dates.start, dates.end))
+      page    <- EitherT.liftF(showAccountWithTransactionDetails(account, dates.start, dates.end))
     } yield page
 
-    result.merge.recover {
-      case e =>
-        logger.error(s"Unable to retrieve account details requested: ${e.getMessage}")
-        Redirect(routes.CashAccountController.showAccountUnavailable)
+    result.merge.recover { case e =>
+      logger.error(s"Unable to retrieve account details requested: ${e.getMessage}")
+      Redirect(routes.CashAccountController.showAccountUnavailable)
     }
   }
 
-  private def showAccountWithTransactionDetails(account: CashAccount,
-                                                from: LocalDate,
-                                                to: LocalDate)
-                                               (implicit req: IdentifierRequest[AnyContent],
-                                                appConfig: AppConfig): Future[Result] = {
+  private def showAccountWithTransactionDetails(account: CashAccount, from: LocalDate, to: LocalDate)(implicit
+    req: IdentifierRequest[AnyContent],
+    appConfig: AppConfig
+  ): Future[Result] =
     apiConnector.retrieveHistoricCashTransactions(account.number, from, to).map {
       case Left(errorResponse) =>
         errorResponse match {
           case NoTransactionsAvailable => Ok(noResults(new ResultsPageSummary(from, to)))
 
-          case TooManyTransactionsRequested => Redirect(
-            routes.RequestedTransactionsController.tooManyTransactionsRequested(RequestedDateRange(from, to)))
+          case TooManyTransactionsRequested =>
+            Redirect(routes.RequestedTransactionsController.tooManyTransactionsRequested(RequestedDateRange(from, to)))
 
           case _ =>
             Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
@@ -86,19 +87,18 @@ class RequestedTransactionsController @Inject()(resultView: cash_transactions_re
         Ok(
           resultView(
             new ResultsPageSummary(from, to),
-            controllers.routes.CashAccountController.showAccountDetails(None).url)
+            controllers.routes.CashAccountController.showAccountDetails(None).url
+          )
         )
     }
-  }
 
   def tooManyTransactionsRequested(dateRange: RequestedDateRange): Action[AnyContent] =
-    identify {
-      implicit req =>
-
-        Ok(
-          tooManyResults(
-            new ResultsPageSummary(dateRange.from, dateRange.to),
-            controllers.routes.RequestTransactionsController.onPageLoad().url)
+    identify { implicit req =>
+      Ok(
+        tooManyResults(
+          new ResultsPageSummary(dateRange.from, dateRange.to),
+          controllers.routes.RequestTransactionsController.onPageLoad().url
         )
+      )
     }
 }

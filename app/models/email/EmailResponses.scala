@@ -24,31 +24,37 @@ case object UnverifiedEmail extends EmailResponses
 
 case class UndeliverableEmail(email: String) extends EmailResponses
 
-case class UndeliverableInformationEvent(id: String,
-                                         event: String,
-                                         emailAddress: String,
-                                         detected: String,
-                                         code: Option[Int],
-                                         reason: Option[String],
-                                         enrolment: String)
+case class UndeliverableInformationEvent(
+  id: String,
+  event: String,
+  emailAddress: String,
+  detected: String,
+  code: Option[Int],
+  reason: Option[String],
+  enrolment: String
+)
 
 object UndeliverableInformationEvent {
   implicit val format: OFormat[UndeliverableInformationEvent] = Json.format[UndeliverableInformationEvent]
 }
 
-case class UndeliverableInformation(subject: String,
-                                    eventId: String,
-                                    groupId: String,
-                                    timestamp: String,
-                                    event: UndeliverableInformationEvent)
+case class UndeliverableInformation(
+  subject: String,
+  eventId: String,
+  groupId: String,
+  timestamp: String,
+  event: UndeliverableInformationEvent
+)
 
 object UndeliverableInformation {
   implicit val format: OFormat[UndeliverableInformation] = Json.format[UndeliverableInformation]
 }
 
-case class EmailResponse(address: Option[String],
-                         timestamp: Option[String],
-                         undeliverable: Option[UndeliverableInformation])
+case class EmailResponse(
+  address: Option[String],
+  timestamp: Option[String],
+  undeliverable: Option[UndeliverableInformation]
+)
 
 object EmailResponse {
   implicit val format: OFormat[EmailResponse] = Json.format[EmailResponse]

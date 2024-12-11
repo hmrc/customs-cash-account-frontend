@@ -30,19 +30,21 @@ trait SdesFileMetadata {
   def periodStartMonth: Int
 
   def toMap[T <: SdesFileMetadata with Product]: Map[String, String] = {
-    val fieldNames: Seq[String] = getClass.getDeclaredFields.toIndexedSeq.map(_.getName)
+    val fieldNames: Seq[String]  = getClass.getDeclaredFields.toIndexedSeq.map(_.getName)
     val fieldValues: Seq[String] = productIterator.toSeq.map(_.toString)
 
     fieldNames.zip(fieldValues).toMap
   }
 }
 
-case class CashStatementFileMetadata(periodStartYear: Int,
-                                     periodStartMonth: Int,
-                                     periodStartDay: Int,
-                                     periodEndYear: Int,
-                                     periodEndMonth: Int,
-                                     periodEndDay: Int,
-                                     fileFormat: FileFormat,
-                                     fileRole: FileRole,
-                                     statementRequestId: Option[String]) extends SdesFileMetadata
+case class CashStatementFileMetadata(
+  periodStartYear: Int,
+  periodStartMonth: Int,
+  periodStartDay: Int,
+  periodEndYear: Int,
+  periodEndMonth: Int,
+  periodEndDay: Int,
+  fileFormat: FileFormat,
+  fileRole: FileRole,
+  statementRequestId: Option[String]
+) extends SdesFileMetadata

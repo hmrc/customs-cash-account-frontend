@@ -27,24 +27,24 @@ import views.html.email.{undeliverable_email, verify_your_email}
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class EmailController @Inject()(authenticate: IdentifierAction,
-                                verifyEmailView: verify_your_email,
-                                undeliverableEmailView: undeliverable_email,
-                                dataStoreConnector: CustomsDataStoreConnector
-                               )(implicit mcc: MessagesControllerComponents, ec: ExecutionContext, appConfig: AppConfig)
-  extends FrontendController(mcc)
+class EmailController @Inject() (
+  authenticate: IdentifierAction,
+  verifyEmailView: verify_your_email,
+  undeliverableEmailView: undeliverable_email,
+  dataStoreConnector: CustomsDataStoreConnector
+)(implicit mcc: MessagesControllerComponents, ec: ExecutionContext, appConfig: AppConfig)
+    extends FrontendController(mcc)
     with I18nSupport {
 
   def showUnverified(): Action[AnyContent] = authenticate async { implicit request =>
-    dataStoreConnector.retrieveUnverifiedEmail.map(
-      emailUnverifiedRes => Ok(verifyEmailView(appConfig.emailFrontendUrl, emailUnverifiedRes.unVerifiedEmail))
+    dataStoreConnector.retrieveUnverifiedEmail.map(emailUnverifiedRes =>
+      Ok(verifyEmailView(appConfig.emailFrontendUrl, emailUnverifiedRes.unVerifiedEmail))
     )
   }
 
-  def showUndeliverable(): Action[AnyContent] = authenticate async {
-    implicit request =>
-      dataStoreConnector.verifiedEmail.map {
-        emailVerifiedRes => Ok(undeliverableEmailView(appConfig.emailFrontendUrl, emailVerifiedRes.verifiedEmail))
-      }
+  def showUndeliverable(): Action[AnyContent] = authenticate async { implicit request =>
+    dataStoreConnector.verifiedEmail.map { emailVerifiedRes =>
+      Ok(undeliverableEmailView(appConfig.emailFrontendUrl, emailVerifiedRes.verifiedEmail))
+    }
   }
 }

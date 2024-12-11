@@ -28,33 +28,40 @@ import viewmodels.pagination.ListPaginationViewModel
 
 import scala.collection.Seq
 
-case class GuidanceRow(h2Heading: HtmlFormat.Appendable,
-                       link: Option[HtmlFormat.Appendable] = None,
-                       paragraph: Option[HtmlFormat.Appendable] = None)
+case class GuidanceRow(
+  h2Heading: HtmlFormat.Appendable,
+  link: Option[HtmlFormat.Appendable] = None,
+  paragraph: Option[HtmlFormat.Appendable] = None
+)
 
-case class TooManyTransactionsSection(heading: HtmlFormat.Appendable,
-                                      paragraph: HtmlFormat.Appendable)
+case class TooManyTransactionsSection(heading: HtmlFormat.Appendable, paragraph: HtmlFormat.Appendable)
 
-case class DailyStatementsSection(dailyStatements: HtmlFormat.Appendable,
-                                  requestTransactionsHeading: HtmlFormat.Appendable)
+case class DailyStatementsSection(
+  dailyStatements: HtmlFormat.Appendable,
+  requestTransactionsHeading: HtmlFormat.Appendable
+)
 
-case class CashAccountV2ViewModel(pageTitle: String,
-                                  backLink: String,
-                                  cashAccountBalance: HtmlFormat.Appendable,
-                                  cashStatementNotification: Option[HtmlFormat.Appendable] = None,
-                                  dailyStatementsSection: Option[DailyStatementsSection] = None,
-                                  tooManyTransactionsSection: Option[TooManyTransactionsSection] = None,
-                                  downloadCSVFileLinkUrl: HtmlFormat.Appendable,
-                                  helpAndSupportGuidance: GuidanceRow,
-                                  paginationModel: Option[ListPaginationViewModel] = None)
+case class CashAccountV2ViewModel(
+  pageTitle: String,
+  backLink: String,
+  cashAccountBalance: HtmlFormat.Appendable,
+  cashStatementNotification: Option[HtmlFormat.Appendable] = None,
+  dailyStatementsSection: Option[DailyStatementsSection] = None,
+  tooManyTransactionsSection: Option[TooManyTransactionsSection] = None,
+  downloadCSVFileLinkUrl: HtmlFormat.Appendable,
+  helpAndSupportGuidance: GuidanceRow,
+  paginationModel: Option[ListPaginationViewModel] = None
+)
 
 object CashAccountV2ViewModel {
 
-  def apply(eori: EORI,
-            account: CashAccount,
-            cashTrans: CashTransactions,
-            statements: Seq[CashStatementsForEori],
-            pageNo: Option[Int])(implicit msgs: Messages, config: AppConfig): CashAccountV2ViewModel = {
+  def apply(
+    eori: EORI,
+    account: CashAccount,
+    cashTrans: CashTransactions,
+    statements: Seq[CashStatementsForEori],
+    pageNo: Option[Int]
+  )(implicit msgs: Messages, config: AppConfig): CashAccountV2ViewModel = {
 
     val hasStatements: Boolean = statements.exists(_.currentStatements.nonEmpty)
 
@@ -75,26 +82,29 @@ object CashAccountV2ViewModel {
       tooManyTransactionsSection = populateTooManyTransactionsSection(hasMaxTransactionsExceeded),
       downloadCSVFileLinkUrl = downloadCSVFileLinkUrl(hasMaxTransactionsExceeded),
       helpAndSupportGuidance = helpAndSupport,
-      paginationModel = populatePaginationModel(pageNo, totalDailyStatementsSize))
+      paginationModel = populatePaginationModel(pageNo, totalDailyStatementsSize)
+    )
   }
 
-  private def populateNotificationPanel(hasStatements: Boolean)
-                                       (implicit msgs: Messages, config: AppConfig) = {
+  private def populateNotificationPanel(hasStatements: Boolean)(implicit msgs: Messages, config: AppConfig) =
     if (hasStatements) {
-      Some(notificationPanelComponent(
-        showNotification = true,
-        preMessage = msgs("cf.cash-account.requested.statements.available.text.pre"),
-        linkUrl = config.requestedStatements(CDSCashAccount),
-        linkText = msgs("cf.cash-account.requested.statements.available.link.text"),
-        postMessage = msgs("cf.cash-account.requested.statements.available.text.post")))
+      Some(
+        notificationPanelComponent(
+          showNotification = true,
+          preMessage = msgs("cf.cash-account.requested.statements.available.text.pre"),
+          linkUrl = config.requestedStatements(CDSCashAccount),
+          linkText = msgs("cf.cash-account.requested.statements.available.link.text"),
+          postMessage = msgs("cf.cash-account.requested.statements.available.text.post")
+        )
+      )
     } else {
       None
     }
-  }
 
-  private def populateDailyStatementsSection(cashTrans: CashTransactions,
-                                             pageNo: Option[Int] = None)
-                                            (implicit msgs: Messages, config: AppConfig): Option[DailyStatementsSection] = {
+  private def populateDailyStatementsSection(cashTrans: CashTransactions, pageNo: Option[Int] = None)(implicit
+    msgs: Messages,
+    config: AppConfig
+  ): Option[DailyStatementsSection] = {
     val hasMaxTransactionsExceeded = cashTrans.maxTransactionsExceeded.getOrElse(false)
 
     if (hasMaxTransactionsExceeded) {
@@ -107,33 +117,36 @@ object CashAccountV2ViewModel {
       val requestTransactionsHeading: HtmlFormat.Appendable = h2Component(
         msgKey = "cf.cash-account.transactions.request-transactions.heading",
         id = Some("request-transactions-heading"),
-        classes = "govuk-heading-m govuk-!-margin-top-9")
+        classes = "govuk-heading-m govuk-!-margin-top-9"
+      )
 
       Some(DailyStatementsSection(dailyStatements, requestTransactionsHeading))
     }
   }
 
-  private def populateTooManyTransactionsSection(hasMaxTransactionsExceeded: Boolean)
-                                                (implicit msgs: Messages): Option[TooManyTransactionsSection] = {
+  private def populateTooManyTransactionsSection(
+    hasMaxTransactionsExceeded: Boolean
+  )(implicit msgs: Messages): Option[TooManyTransactionsSection] =
     if (hasMaxTransactionsExceeded) {
       val heading = h2Component(
         msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
-        id = Some("last-six-month-transactions-heading"))
+        id = Some("last-six-month-transactions-heading")
+      )
 
       val paragraph = pComponent(
         id = Some("exceeded-threshold-statement"),
         messageKey = "cf.cash-account.transactions.too-many-transactions.hint01",
-        classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7")
+        classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7"
+      )
 
       Some(TooManyTransactionsSection(heading, paragraph))
     } else {
       None
     }
-  }
 
-  private def downloadCSVFileLinkUrl(hasMaxTransactionsExceeded: Boolean
-                                    )(implicit msgs: Messages): HtmlFormat.Appendable = {
-
+  private def downloadCSVFileLinkUrl(
+    hasMaxTransactionsExceeded: Boolean
+  )(implicit msgs: Messages): HtmlFormat.Appendable =
     if (hasMaxTransactionsExceeded) {
       linkComponent(
         LinkComponentValues(
@@ -143,7 +156,9 @@ object CashAccountV2ViewModel {
           linkMessageKey = "cf.cash-account.transactions.too-many-transactions.hint03",
           postLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint04"),
           enableLineBreakBeforePostMessage = true,
-          pClass = "govuk-body govuk-!-margin-bottom-9"))
+          pClass = "govuk-body govuk-!-margin-bottom-9"
+        )
+      )
 
     } else {
       linkComponent(
@@ -152,37 +167,43 @@ object CashAccountV2ViewModel {
           linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
           location = controllers.routes.SelectTransactionsController.onPageLoad().url,
           postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
-          enableLineBreakBeforePostMessage = true))
+          enableLineBreakBeforePostMessage = true
+        )
+      )
     }
-  }
 
-  private def helpAndSupport(implicit appConfig: AppConfig, messages: Messages): GuidanceRow = {
+  private def helpAndSupport(implicit appConfig: AppConfig, messages: Messages): GuidanceRow =
     GuidanceRow(
       h2Heading = h2Component(
         id = Some("search-transactions-support-message-heading"),
         msgKey = "site.support.heading"
       ),
-
-      link = Some(hmrcNewTabLinkComponent(linkMessage = "cf.cash-account.help-and-support.link.text",
-        href = appConfig.cashAccountForCdsDeclarationsUrl,
-        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
-        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")))
+      link = Some(
+        hmrcNewTabLinkComponent(
+          linkMessage = "cf.cash-account.help-and-support.link.text",
+          href = appConfig.cashAccountForCdsDeclarationsUrl,
+          preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
+          postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")
+        )
+      )
     )
-  }
 
-  private def populatePaginationModel(pageNo: Option[Int],
-                                      totalDailyStatementsSize: Int)
-                                     (implicit config: AppConfig) = {
+  private def populatePaginationModel(pageNo: Option[Int], totalDailyStatementsSize: Int)(implicit
+    config: AppConfig
+  ) = {
     val isPaginationDisabled = totalDailyStatementsSize <= config.numberOfRecordsPerPage
 
     if (isPaginationDisabled) {
       None
     } else {
-      Some(ListPaginationViewModel(
-        totalNumberOfItems = totalDailyStatementsSize,
-        currentPage = pageNo.getOrElse(1),
-        numberOfItemsPerPage = config.numberOfRecordsPerPage,
-        href = controllers.routes.CashAccountV2Controller.showAccountDetails(None).url))
+      Some(
+        ListPaginationViewModel(
+          totalNumberOfItems = totalDailyStatementsSize,
+          currentPage = pageNo.getOrElse(1),
+          numberOfItemsPerPage = config.numberOfRecordsPerPage,
+          href = controllers.routes.CashAccountV2Controller.showAccountDetails(None).url
+        )
+      )
     }
   }
 }

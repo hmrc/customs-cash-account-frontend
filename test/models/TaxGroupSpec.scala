@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json.{JsValue, Json, JsResultException}
+import play.api.libs.json.{JsResultException, JsValue, Json}
 import utils.SpecBase
 
 class TaxGroupSpec extends SpecBase {
@@ -26,8 +26,8 @@ class TaxGroupSpec extends SpecBase {
     "serialize and deserialize TaxType correctly" in new Setup {
 
       val expectedTaxType: TaxType = TaxType(Some("Reason"), "VAT", hundred)
-      val serialized: JsValue = Json.toJson(expectedTaxType)
-      val deserialized: TaxType = serialized.as[TaxType]
+      val serialized: JsValue      = Json.toJson(expectedTaxType)
+      val deserialized: TaxType    = serialized.as[TaxType]
 
       deserialized mustBe expectedTaxType
     }
@@ -52,7 +52,7 @@ class TaxGroupSpec extends SpecBase {
         taxTypes = Seq(taxType)
       )
 
-      val serialized: JsValue = Json.toJson(expectedTaxGroup)
+      val serialized: JsValue    = Json.toJson(expectedTaxGroup)
       val deserialized: TaxGroup = serialized.as[TaxGroup]
 
       deserialized mustBe expectedTaxGroup
@@ -66,7 +66,7 @@ class TaxGroupSpec extends SpecBase {
         taxTypes = Seq.empty
       )
 
-      val serialized: JsValue = Json.toJson(taxGroupWithEmptyTaxTypes)
+      val serialized: JsValue    = Json.toJson(taxGroupWithEmptyTaxTypes)
       val deserialized: TaxGroup = serialized.as[TaxGroup]
 
       deserialized mustBe taxGroupWithEmptyTaxTypes
@@ -84,8 +84,8 @@ class TaxGroupSpec extends SpecBase {
 
   trait Setup {
 
-    val hundred: BigDecimal = BigDecimal(100.50)
-    val twoHundred: BigDecimal = BigDecimal(200.50)
+    val hundred: BigDecimal     = BigDecimal(100.50)
+    val twoHundred: BigDecimal  = BigDecimal(200.50)
     val fiveHundred: BigDecimal = BigDecimal(500.00)
 
     val taxType: TaxType = TaxType(Some("Reason"), "VAT", hundred)

@@ -27,7 +27,7 @@ class DeclarationSpec extends SpecBase {
   "Declaration format" should {
 
     "serialize and deserialize a Declaration with all fields populated" in new Setup {
-      val json: JsValue = Declaration.format.writes(declarations)
+      val json: JsValue       = Declaration.format.writes(declarations)
       val result: Declaration = Declaration.format.reads(json).get
       result mustBe declarations
     }
@@ -39,7 +39,7 @@ class DeclarationSpec extends SpecBase {
         secureMovementReferenceNumber = None
       )
 
-      val json: JsValue = Declaration.format.writes(declarationWithFieldsMissing)
+      val json: JsValue       = Declaration.format.writes(declarationWithFieldsMissing)
       val result: Declaration = Declaration.format.reads(json).get
       result mustBe declarationWithFieldsMissing
     }
@@ -48,7 +48,7 @@ class DeclarationSpec extends SpecBase {
   "EncryptedDeclaration format" should {
 
     "serialize and deserialize an EncryptedDeclaration with all fields populated" in new Setup {
-      val json: JsValue = EncryptedDeclaration.format.writes(encryptedDeclaration)
+      val json: JsValue                = EncryptedDeclaration.format.writes(encryptedDeclaration)
       val result: EncryptedDeclaration = EncryptedDeclaration.format.reads(json).get
       result mustBe encryptedDeclaration
     }
@@ -56,19 +56,19 @@ class DeclarationSpec extends SpecBase {
 
   trait Setup {
 
-    val year = 2024
+    val year  = 2024
     val month = 5
-    val day = 5
+    val day   = 5
 
-    val date: LocalDate = LocalDate.of(year, month, day)
-    val thousand: BigDecimal = BigDecimal(1000.00)
+    val date: LocalDate         = LocalDate.of(year, month, day)
+    val thousand: BigDecimal    = BigDecimal(1000.00)
     val twoThousand: BigDecimal = BigDecimal(2000.00)
 
-    val movementReferenceNumber = "MRN1234567890"
-    val nonce = "someNone"
-    val importerEori = "GB123456789000"
-    val declarantEori = "GB987654321000"
-    val declarantReference = "UCR12345"
+    val movementReferenceNumber       = "MRN1234567890"
+    val nonce                         = "someNone"
+    val importerEori                  = "GB123456789000"
+    val declarantEori                 = "GB987654321000"
+    val declarantReference            = "UCR12345"
     val secureMovementReferenceNumber = "5a71a767-5c1c-4df8-8eef-2b83769b8fda"
 
     val taxTypes: Seq[TaxType] = Seq(TaxType(reasonForSecurity = Some("Reason"), taxTypeID = "50", amount = thousand))

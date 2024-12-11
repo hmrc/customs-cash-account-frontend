@@ -72,22 +72,26 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
 
   trait Setup {
 
-    val eori = "test_eori"
+    val eori      = "test_eori"
     val accNumber = "1234567"
-    val owner = "test_owner"
+    val owner     = "test_owner"
 
     val availBalance: BigDecimal = BigDecimal(100.0)
-    val bal: CDSCashBalance = CDSCashBalance(Some(availBalance))
+    val bal: CDSCashBalance      = CDSCashBalance(Some(availBalance))
 
-    val cashAcc: CashAccount = CashAccount(accNumber, owner, AccountStatusOpen, bal)
+    val cashAcc: CashAccount        = CashAccount(accNumber, owner, AccountStatusOpen, bal)
     val model: CashAccountViewModel = CashAccountViewModel(eori, cashAcc)
 
-    def viewDoc(accountModel: CashAccountViewModel,
-                transactionsTimeout: Boolean): Document =
-      Jsoup.parse(app.injector.instanceOf[cash_account_transactions_not_available].apply(
-        accountModel,
-        transactionsTimeout
-      ).body)
+    def viewDoc(accountModel: CashAccountViewModel, transactionsTimeout: Boolean): Document =
+      Jsoup.parse(
+        app.injector
+          .instanceOf[cash_account_transactions_not_available]
+          .apply(
+            accountModel,
+            transactionsTimeout
+          )
+          .body
+      )
   }
 
   private def shouldContainCashAccountBalanceSection(accNumber: CAN)(implicit view: Document): Assertion = {
@@ -95,19 +99,24 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
 
     view.getElementsByTag("h1").text() mustBe messages("cf.cash-account.detail.heading")
 
-    view.getElementById("balance-available").text().contains(
-      s"£100.00 ${messages("cf.cash-account.detail.available")}"
-    ) mustBe true
+    view
+      .getElementById("balance-available")
+      .text()
+      .contains(
+        s"£100.00 ${messages("cf.cash-account.detail.available")}"
+      ) mustBe true
   }
 
   private def shouldContainNoTransactionAvailableSection(implicit view: Document): Assertion = {
     val noTransactionAvailableSection: String = view.getElementById("no-transactions-available").text()
 
     noTransactionAvailableSection.contains(
-      messages("cf.cash-account.detail.transactions-not-available.first")) mustBe true
+      messages("cf.cash-account.detail.transactions-not-available.first")
+    ) mustBe true
 
     noTransactionAvailableSection.contains(
-      messages("cf.cash-account.detail.transactions-not-available.second")) mustBe true
+      messages("cf.cash-account.detail.transactions-not-available.second")
+    ) mustBe true
   }
 
   private def shouldContainH2Element(implicit view: Document): Assertion =
@@ -128,11 +137,15 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
     view.text().contains(messages("cf.cash-account.detail.transactions-not-available")) mustBe false
 
   private def checkUnavailabilityOfTransactionTimeOutSection(implicit view: Document): Assertion = {
-    view.getElementById("no-transactions-available").text().contains(
-      messages("cf.cash-account.detail.transactions-not-available.first")) mustBe false
+    view
+      .getElementById("no-transactions-available")
+      .text()
+      .contains(messages("cf.cash-account.detail.transactions-not-available.first")) mustBe false
 
-    view.getElementById("no-transactions-available").text().contains(
-      messages("cf.cash-account.detail.transactions-not-available.second")) mustBe false
+    view
+      .getElementById("no-transactions-available")
+      .text()
+      .contains(messages("cf.cash-account.detail.transactions-not-available.second")) mustBe false
   }
 
   private def shouldContainPaymentSection(implicit view: Document): Assertion =

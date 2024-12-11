@@ -41,8 +41,7 @@ class SelectedTransactionsSpec extends ViewTestHelper {
       }
 
       "header is correct" in new Setup {
-        view.getElementsByTag("h1").text() mustBe messages(
-          "cf.cash-account.transactions.request.review.heading")
+        view.getElementsByTag("h1").text() mustBe messages("cf.cash-account.transactions.request.review.heading")
       }
     }
   }
@@ -51,14 +50,14 @@ class SelectedTransactionsSpec extends ViewTestHelper {
 
     val day10th = 10
     val day11th = 11
-    val month = 3
-    val year = 2022
+    val month   = 3
+    val year    = 2022
 
     val fromDate: LocalDate = LocalDate.of(year, month, day10th)
-    val toDate: LocalDate = LocalDate.of(year, month, day11th)
+    val toDate: LocalDate   = LocalDate.of(year, month, day11th)
 
-    val summary: ResultsPageSummary = new ResultsPageSummary(fromDate, toDate)
-    val accountNumber: String = "some account number"
+    val summary: ResultsPageSummary        = new ResultsPageSummary(fromDate, toDate)
+    val accountNumber: String              = "some account number"
     val displayAccountNumberFormat: String = s"Account: $accountNumber"
 
     val view: Document = Jsoup.parse(app.injector.instanceOf[selected_transactions].apply(summary, accountNumber).body)

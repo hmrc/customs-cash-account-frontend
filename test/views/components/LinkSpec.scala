@@ -48,36 +48,52 @@ class LinkSpec extends SpecBase {
   }
 
   trait Setup {
-    val space = " "
-    val linkMessageKey = "test_msg"
+    val space             = " "
+    val linkMessageKey    = "test_msg"
     val linkMessageString = "test_msg_string"
-    val location = "test@test.com"
-    val linkId: String = "test_id"
-    val pId = "test_pid"
-    val testPreLinkMsg = "preLink_message"
-    val testPostLinkMsg = "postLink_message"
+    val location          = "test@test.com"
+    val linkId: String    = "test_id"
+    val pId               = "test_pid"
+    val testPreLinkMsg    = "preLink_message"
+    val testPostLinkMsg   = "postLink_message"
 
     val linkComponent: Document =
       Jsoup.parse(application.injector.instanceOf[link].apply(linkMessageKey, location, Some(linkId)).body)
 
     val linkComponentWithPId: Document =
-      Jsoup.parse(application.injector.instanceOf[link].apply(
-        linkMessageKey = linkMessageKey, location = location, pId = Some(pId)).body)
+      Jsoup.parse(
+        application.injector
+          .instanceOf[link]
+          .apply(linkMessageKey = linkMessageKey, location = location, pId = Some(pId))
+          .body
+      )
 
-    val linkComponentWithPreAndPostLinkMsg: Document = Jsoup.parse(application.injector.instanceOf[link].apply(
-      linkMessageKey = linkMessageKey,
-      location = location,
-      pId = Some(pId),
-      preLinkMessage = Some(testPreLinkMsg),
-      postLinkMessage = Some(testPostLinkMsg)).body)
+    val linkComponentWithPreAndPostLinkMsg: Document = Jsoup.parse(
+      application.injector
+        .instanceOf[link]
+        .apply(
+          linkMessageKey = linkMessageKey,
+          location = location,
+          pId = Some(pId),
+          preLinkMessage = Some(testPreLinkMsg),
+          postLinkMessage = Some(testPostLinkMsg)
+        )
+        .body
+    )
 
-    val linkComponentWithLinkMessage: Document = Jsoup.parse(application.injector.instanceOf[link].apply(
-      linkMessageKey = linkMessageKey,
-      location = location,
-      linkId = Some(linkId),
-      pId = Some(pId),
-      preLinkMessage = Some(testPreLinkMsg),
-      postLinkMessage = Some(testPostLinkMsg),
-      linkMessage = Some(linkMessageString)).body)
+    val linkComponentWithLinkMessage: Document = Jsoup.parse(
+      application.injector
+        .instanceOf[link]
+        .apply(
+          linkMessageKey = linkMessageKey,
+          location = location,
+          linkId = Some(linkId),
+          pId = Some(pId),
+          preLinkMessage = Some(testPreLinkMsg),
+          postLinkMessage = Some(testPostLinkMsg),
+          linkMessage = Some(linkMessageString)
+        )
+        .body
+    )
   }
 }

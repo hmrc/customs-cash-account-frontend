@@ -51,11 +51,11 @@ class ErrorDetailSpec extends SpecBase {
   }
 
   trait Setup {
-    val timestamp = "2019-08-1618:15:41"
+    val timestamp     = "2019-08-1618:15:41"
     val correlationId = "3jh1f6b3-f8b1-4f3c-973a-05b4720e-4567899"
-    val errorCode = "400"
-    val errorMessage = "Bad request received"
-    val source = "CDS Financials"
+    val errorCode     = "400"
+    val errorMessage  = "Bad request received"
+    val source        = "CDS Financials"
 
     val sourceFaultDetailJsonString: String =
       """{

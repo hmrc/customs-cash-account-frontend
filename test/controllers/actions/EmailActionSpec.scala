@@ -39,8 +39,8 @@ class EmailActionSpec extends SpecBase {
 
     "let requests with validated email through" in new Setup {
       running(app) {
-        when(mockDataStoreConnector.getEmail(any)(any)).
-          thenReturn(Future.successful(Right(Email("last.man@standing.co.uk"))))
+        when(mockDataStoreConnector.getEmail(any)(any))
+          .thenReturn(Future.successful(Right(Email("last.man@standing.co.uk"))))
 
         emailAction.filter(authenticatedRequest).map {
           _ mustBe None
@@ -50,8 +50,8 @@ class EmailActionSpec extends SpecBase {
 
     "let request through, when getEmail throws service unavailable exception" in new Setup {
       running(app) {
-        when(mockDataStoreConnector.getEmail(any)(any)).
-          thenReturn(Future.failed(new ServiceUnavailableException(emptyString)))
+        when(mockDataStoreConnector.getEmail(any)(any))
+          .thenReturn(Future.failed(new ServiceUnavailableException(emptyString)))
 
         emailAction.filter(authenticatedRequest).map {
           _ mustBe None
@@ -61,8 +61,7 @@ class EmailActionSpec extends SpecBase {
 
     "redirect users to email verified page when UnverifiedEmail response is returned" in new Setup {
       running(app) {
-        when(mockDataStoreConnector.getEmail(any)(any)).
-          thenReturn(Future.successful(Left(UnverifiedEmail)))
+        when(mockDataStoreConnector.getEmail(any)(any)).thenReturn(Future.successful(Left(UnverifiedEmail)))
 
         val result = emailAction.filter(authenticatedRequest).map(_.get)
 
@@ -73,8 +72,8 @@ class EmailActionSpec extends SpecBase {
 
     "redirect users to undelivered email page when undeliverable email response is returned" in new Setup {
       running(app) {
-        when(mockDataStoreConnector.getEmail(any)(any)).
-          thenReturn(Future.successful(Left(UndeliverableEmail("test@test.com"))))
+        when(mockDataStoreConnector.getEmail(any)(any))
+          .thenReturn(Future.successful(Left(UndeliverableEmail("test@test.com"))))
 
         val response = emailAction.filter(authenticatedRequest).map(a => a.get)
         status(response) mustBe SEE_OTHER
@@ -84,12 +83,14 @@ class EmailActionSpec extends SpecBase {
   }
 
   trait Setup {
-    val eori = "GB12345678"
+    val eori                                              = "GB12345678"
     val mockDataStoreConnector: CustomsDataStoreConnector = mock[CustomsDataStoreConnector]
 
-    val app: Application = applicationBuilder.overrides(
-      inject.bind[CustomsDataStoreConnector].toInstance(mockDataStoreConnector)
-    ).build()
+    val app: Application = applicationBuilder
+      .overrides(
+        inject.bind[CustomsDataStoreConnector].toInstance(mockDataStoreConnector)
+      )
+      .build()
 
     val emailAction: EmailAction = app.injector.instanceOf[EmailAction]
 

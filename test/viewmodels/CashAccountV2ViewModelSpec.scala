@@ -20,9 +20,9 @@ import play.api.Application
 import play.api.i18n.Messages
 import utils.SpecBase
 import models.{
-  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement,
-  CashStatementFile, CashStatementsByMonth, CashStatementsForEori, CashTransactions, Declaration, EoriHistory,
-  FileFormat, Payment, Transaction, Withdrawal
+  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement, CashStatementFile,
+  CashStatementsByMonth, CashStatementsForEori, CashTransactions, Declaration, EoriHistory, FileFormat, Payment,
+  Transaction, Withdrawal
 }
 import models.metadata.CashStatementFileMetadata
 import models.FileRole.CDSCashAccount
@@ -31,8 +31,8 @@ import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
 import utils.TestData.*
 import utils.Utils.{
-  LinkComponentValues, emptyH1Component, emptyH2InnerComponent, emptyPComponent, h2Component,
-  hmrcNewTabLinkComponent, linkComponent, notificationPanelComponent, pComponent
+  LinkComponentValues, emptyH1Component, emptyH2InnerComponent, emptyPComponent, h2Component, hmrcNewTabLinkComponent,
+  linkComponent, notificationPanelComponent, pComponent
 }
 import viewmodels.pagination.ListPaginationViewModel
 import views.html.components.{cash_account_balance, daily_statements_v2}
@@ -56,9 +56,11 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         shouldProduceCorrectDownloadCSVFileLink(cashAccountViewModel.downloadCSVFileLinkUrl)
         shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
 
-        shouldContainCorrectDailyStatementsSection(application,
+        shouldContainCorrectDailyStatementsSection(
+          application,
           cashAccountViewModel.dailyStatementsSection.get,
-          cashTransactions)
+          cashTransactions
+        )
       }
 
       "maxTransactionsExceeded is true" in new Setup {
@@ -68,8 +70,11 @@ class CashAccountV2ViewModelSpec extends SpecBase {
 
         shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
         shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
-        shouldProduceCorrectAccountBalanceWithoutLastTxnHeading(cashAccountViewModel.cashAccountBalance,
-          eoriNumber, cashAccount)
+        shouldProduceCorrectAccountBalanceWithoutLastTxnHeading(
+          cashAccountViewModel.cashAccountBalance,
+          eoriNumber,
+          cashAccount
+        )
         shouldProduceCorrectTooManyTransactionsSection(cashAccountViewModel.tooManyTransactionsSection.get)
         shouldProduceCorrectDownloadCSVFileLinkForMaxTransactionExceeded(cashAccountViewModel.downloadCSVFileLinkUrl)
         shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
@@ -87,9 +92,11 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         shouldProduceCorrectDownloadCSVFileLink(cashAccountViewModel.downloadCSVFileLinkUrl)
         shouldOutputCorrectHelpAndSupportGuidance(cashAccountViewModel.helpAndSupportGuidance)
 
-        shouldContainCorrectDailyStatementsSection(application,
+        shouldContainCorrectDailyStatementsSection(
+          application,
           cashAccountViewModel.dailyStatementsSection.get,
-          cashTransactions)
+          cashTransactions
+        )
       }
     }
 
@@ -98,7 +105,12 @@ class CashAccountV2ViewModelSpec extends SpecBase {
       "daily statements are more than 30 in number" in new Setup {
         val cashAccountViewModel: CashAccountV2ViewModel =
           createCashAccountV2ViewModel(
-            eoriNumber, cashAccount, cashTransactionsWithMoreThan30Records, cashStatementsForEori, Some(1))
+            eoriNumber,
+            cashAccount,
+            cashTransactionsWithMoreThan30Records,
+            cashStatementsForEori,
+            Some(1)
+          )
 
         shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
         shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
@@ -111,8 +123,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
 
       "daily statements are less than 30 in number" in new Setup {
         val cashAccountViewModel: CashAccountV2ViewModel =
-          createCashAccountV2ViewModel(
-            eoriNumber, cashAccount, cashTransactions, cashStatementsForEori, Some(1))
+          createCashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions, cashStatementsForEori, Some(1))
 
         shouldProduceCorrectTitle(cashAccountViewModel.pageTitle)
         shouldProduceCorrectBackLink(cashAccountViewModel.backLink)
@@ -126,18 +137,17 @@ class CashAccountV2ViewModelSpec extends SpecBase {
 
   }
 
-  private def shouldProduceCorrectTitle(title: String)(implicit msgs: Messages): Assertion = {
+  private def shouldProduceCorrectTitle(title: String)(implicit msgs: Messages): Assertion =
     title mustBe msgs("cf.cash-account.detail.title")
-  }
 
-  private def shouldProduceCorrectBackLink(linkStr: String)(implicit appConfig: AppConfig): Assertion = {
+  private def shouldProduceCorrectBackLink(linkStr: String)(implicit appConfig: AppConfig): Assertion =
     linkStr mustBe appConfig.customsFinancialsFrontendHomepage
-  }
 
-  private def shouldProduceCorrectAccountBalance(accBalance: HtmlFormat.Appendable,
-                                                 eori: String,
-                                                 account: CashAccount)
-                                                (implicit msgs: Messages, appConfig: AppConfig): Assertion = {
+  private def shouldProduceCorrectAccountBalance(
+    accBalance: HtmlFormat.Appendable,
+    eori: String,
+    account: CashAccount
+  )(implicit msgs: Messages, appConfig: AppConfig): Assertion = {
     val expectedAccBalance: HtmlFormat.Appendable =
       new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
         .apply(model = CashAccountViewModel(eori, account), displayLastSixMonthsHeading = false)
@@ -145,22 +155,22 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     accBalance mustBe expectedAccBalance
   }
 
-  private def shouldContainNotificationPanel(notification: HtmlFormat.Appendable)
-                                            (implicit msgs: Messages, appConfig: AppConfig): Assertion = {
-
+  private def shouldContainNotificationPanel(
+    notification: HtmlFormat.Appendable
+  )(implicit msgs: Messages, appConfig: AppConfig): Assertion =
     notification mustBe notificationPanelComponent(
       showNotification = true,
       preMessage = msgs("cf.cash-account.requested.statements.available.text.pre"),
       linkUrl = appConfig.requestedStatements(CDSCashAccount),
       linkText = msgs("cf.cash-account.requested.statements.available.link.text"),
-      postMessage = msgs("cf.cash-account.requested.statements.available.text.post"))
-  }
+      postMessage = msgs("cf.cash-account.requested.statements.available.text.post")
+    )
 
-  private def shouldProduceCorrectAccountBalanceWithoutLastTxnHeading(accBalance: HtmlFormat.Appendable,
-                                                                      eori: String,
-                                                                      account: CashAccount)
-                                                                     (implicit msgs: Messages,
-                                                                      appConfig: AppConfig): Assertion = {
+  private def shouldProduceCorrectAccountBalanceWithoutLastTxnHeading(
+    accBalance: HtmlFormat.Appendable,
+    eori: String,
+    account: CashAccount
+  )(implicit msgs: Messages, appConfig: AppConfig): Assertion = {
     val expectedAccBalance: HtmlFormat.Appendable =
       new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
         .apply(model = CashAccountViewModel(eori, account), displayLastSixMonthsHeading = false)
@@ -168,33 +178,36 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     accBalance mustBe expectedAccBalance
   }
 
-  private def shouldProduceCorrectTooManyTransactionsSection(section: TooManyTransactionsSection)
-                                                            (implicit msgs: Messages): Assertion = {
+  private def shouldProduceCorrectTooManyTransactionsSection(
+    section: TooManyTransactionsSection
+  )(implicit msgs: Messages): Assertion = {
     section.heading mustBe h2Component(
       msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
-      id = Some("last-six-month-transactions-heading"))
+      id = Some("last-six-month-transactions-heading")
+    )
 
     section.paragraph mustBe pComponent(
       id = Some("exceeded-threshold-statement"),
       messageKey = "cf.cash-account.transactions.too-many-transactions.hint01",
-      classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7")
+      classes = "govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-7"
+    )
 
   }
 
-  private def shouldProduceCorrectDownloadCSVFileLink(link: HtmlFormat.Appendable)
-                                                     (implicit msgs: Messages): Assertion = {
+  private def shouldProduceCorrectDownloadCSVFileLink(link: HtmlFormat.Appendable)(implicit msgs: Messages): Assertion =
     link mustBe linkComponent(
       LinkComponentValues(
         pId = Some("download-scv-file"),
         linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
         location = controllers.routes.SelectTransactionsController.onPageLoad().url,
         postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
-        enableLineBreakBeforePostMessage = true)
+        enableLineBreakBeforePostMessage = true
+      )
     )
-  }
 
-  private def shouldProduceCorrectDownloadCSVFileLinkForMaxTransactionExceeded(link: HtmlFormat.Appendable)
-                                                                              (implicit msgs: Messages): Assertion = {
+  private def shouldProduceCorrectDownloadCSVFileLinkForMaxTransactionExceeded(
+    link: HtmlFormat.Appendable
+  )(implicit msgs: Messages): Assertion =
     link mustBe linkComponent(
       LinkComponentValues(
         pId = Some("download-scv-file"),
@@ -203,27 +216,33 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         linkMessageKey = "cf.cash-account.transactions.too-many-transactions.hint03",
         postLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint04"),
         enableLineBreakBeforePostMessage = true,
-        pClass = "govuk-body govuk-!-margin-bottom-9"))
-  }
-
-  private def shouldOutputCorrectHelpAndSupportGuidance(guidanceRow: GuidanceRow)
-                                                       (implicit msgs: Messages, config: AppConfig) = {
-
-    guidanceRow mustBe GuidanceRow(h2Heading = h2Component(
-      id = Some("search-transactions-support-message-heading"),
-      msgKey = "site.support.heading"
-    ),
-      link = Some(hmrcNewTabLinkComponent(linkMessage = "cf.cash-account.help-and-support.link.text",
-        href = config.cashAccountForCdsDeclarationsUrl,
-        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
-        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")))
+        pClass = "govuk-body govuk-!-margin-bottom-9"
+      )
     )
-  }
 
-  private def shouldContainCorrectDailyStatementsSection(app: Application,
-                                                         section: DailyStatementsSection,
-                                                         cashTransactions: CashTransactions)
-                                                        (implicit msgs: Messages, config: AppConfig): Assertion = {
+  private def shouldOutputCorrectHelpAndSupportGuidance(
+    guidanceRow: GuidanceRow
+  )(implicit msgs: Messages, config: AppConfig) =
+    guidanceRow mustBe GuidanceRow(
+      h2Heading = h2Component(
+        id = Some("search-transactions-support-message-heading"),
+        msgKey = "site.support.heading"
+      ),
+      link = Some(
+        hmrcNewTabLinkComponent(
+          linkMessage = "cf.cash-account.help-and-support.link.text",
+          href = config.cashAccountForCdsDeclarationsUrl,
+          preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
+          postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")
+        )
+      )
+    )
+
+  private def shouldContainCorrectDailyStatementsSection(
+    app: Application,
+    section: DailyStatementsSection,
+    cashTransactions: CashTransactions
+  )(implicit msgs: Messages, config: AppConfig): Assertion = {
     val expectedDailyStatementsComponent =
       app.injector.instanceOf[daily_statements_v2].apply(CashAccountDailyStatementsViewModel(cashTransactions, None))
 
@@ -232,47 +251,69 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     section.requestTransactionsHeading mustBe h2Component(
       msgKey = "cf.cash-account.transactions.request-transactions.heading",
       id = Some("request-transactions-heading"),
-      classes = "govuk-heading-m govuk-!-margin-top-9")
+      classes = "govuk-heading-m govuk-!-margin-top-9"
+    )
   }
 
-  private def shouldContainCorrectPaginationModel(paginationModel: ListPaginationViewModel)
-                                                 (implicit config: AppConfig): Assertion = {
+  private def shouldContainCorrectPaginationModel(
+    paginationModel: ListPaginationViewModel
+  )(implicit config: AppConfig): Assertion =
     paginationModel mustBe
       ListPaginationViewModel(
-        PAGE_40, PAGE_1, PAGE_30, controllers.routes.CashAccountV2Controller.showAccountDetails(None).url)
-  }
+        PAGE_40,
+        PAGE_1,
+        PAGE_30,
+        controllers.routes.CashAccountV2Controller.showAccountDetails(None).url
+      )
 
-  private def shouldNotContainPaginationModel(paginationModel: Option[ListPaginationViewModel]): Assertion = {
+  private def shouldNotContainPaginationModel(paginationModel: Option[ListPaginationViewModel]): Assertion =
     paginationModel mustBe empty
-  }
 
   trait Setup {
 
-    val eoriNumber: String = "test_eori"
-    val can: String = "12345678"
+    val eoriNumber: String  = "test_eori"
+    val can: String         = "12345678"
     val balance: BigDecimal = BigDecimal(8788.00)
 
-    val yearStart: Int = 2024
+    val yearStart: Int  = 2024
     val monthStart: Int = 5
-    val dayStart: Int = 5
-    val yearEnd: Int = 2025
-    val monthEnd: Int = 8
-    val dayEnd: Int = 8
-    val size: Long = 300L
-    val totalElements = 8
+    val dayStart: Int   = 5
+    val yearEnd: Int    = 2025
+    val monthEnd: Int   = 8
+    val dayEnd: Int     = 8
+    val size: Long      = 300L
+    val totalElements   = 8
 
-    val cashAccount: CashAccount = CashAccount(number = can,
+    val cashAccount: CashAccount = CashAccount(
+      number = can,
       owner = eoriNumber,
       status = AccountStatusOpen,
-      balances = CDSCashBalance(Some(balance)))
+      balances = CDSCashBalance(Some(balance))
+    )
 
     val declaration1: Declaration =
-      Declaration(MOVEMENT_REF_NUMBER, Some(EORI_NUMBER), EORI_NUMBER, Some(DECLARANT_REF), DATE, AMOUNT,
-        Seq(TAX_GROUP), Some(SECURE_MOVEMENT_REF_NUMBER))
+      Declaration(
+        MOVEMENT_REF_NUMBER,
+        Some(EORI_NUMBER),
+        EORI_NUMBER,
+        Some(DECLARANT_REF),
+        DATE,
+        AMOUNT,
+        Seq(TAX_GROUP),
+        Some(SECURE_MOVEMENT_REF_NUMBER)
+      )
 
     val declaration2: Declaration =
-      Declaration(MOVEMENT_REF_NUMBER, Some(EORI_NUMBER), EORI_NUMBER, Some(DECLARANT_REF), DATE_1, AMOUNT,
-        Seq(TAX_GROUP), Some(SECURE_MOVEMENT_REF_NUMBER))
+      Declaration(
+        MOVEMENT_REF_NUMBER,
+        Some(EORI_NUMBER),
+        EORI_NUMBER,
+        Some(DECLARANT_REF),
+        DATE_1,
+        AMOUNT,
+        Seq(TAX_GROUP),
+        Some(SECURE_MOVEMENT_REF_NUMBER)
+      )
 
     val pendingTransactions: Seq[Declaration] = Seq(declaration1, declaration2)
 
@@ -294,8 +335,16 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     val dailyStatements: Seq[CashDailyStatement] = Seq(dailyStatement1, dailyStatement2)
 
     val dailyStatementsMoreThan30: Seq[CashDailyStatement] =
-      Seq(dailyStatement1, dailyStatement2, dailyStatement1, dailyStatement2, dailyStatement1, dailyStatement2,
-        dailyStatement1, dailyStatement2)
+      Seq(
+        dailyStatement1,
+        dailyStatement2,
+        dailyStatement1,
+        dailyStatement2,
+        dailyStatement1,
+        dailyStatement2,
+        dailyStatement1,
+        dailyStatement2
+      )
 
     val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
 
@@ -324,7 +373,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
       eori = eoriNumber
     )
 
-    val currentStatements: Seq[CashStatementsByMonth] = Seq(CashStatementsByMonth(date1, Seq(cashStatementFile)))
+    val currentStatements: Seq[CashStatementsByMonth]   = Seq(CashStatementsByMonth(date1, Seq(cashStatementFile)))
     val requestedStatements: Seq[CashStatementsByMonth] = Seq(CashStatementsByMonth(date2, Seq(cashStatementFile)))
 
     val cashStatementsForEori: Seq[CashStatementsForEori] = Seq(
@@ -335,11 +384,13 @@ class CashAccountV2ViewModelSpec extends SpecBase {
       )
     )
 
-    def createCashAccountV2ViewModel(eori: String,
-                                     account: CashAccount,
-                                     cashTrans: CashTransactions,
-                                     statements: Seq[CashStatementsForEori],
-                                     pageNo: Option[Int] = None): CashAccountV2ViewModel =
+    def createCashAccountV2ViewModel(
+      eori: String,
+      account: CashAccount,
+      cashTrans: CashTransactions,
+      statements: Seq[CashStatementsForEori],
+      pageNo: Option[Int] = None
+    ): CashAccountV2ViewModel =
       CashAccountV2ViewModel(eori, account, cashTrans, statements, pageNo)
   }
 }

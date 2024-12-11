@@ -32,20 +32,22 @@ import org.mongodb.scala.SingleObservableFuture
 import org.mongodb.scala.ToSingleObservablePublisher
 
 @Singleton
-class DefaultRequestedTransactionsCache @Inject()(mongoComponent: MongoComponent,
-                                                  config: Configuration)(implicit executionContext: ExecutionContext)
-  extends PlayMongoRepository[CashTransactionDates](
-    collectionName = "requested-transactions-cache",
-    mongoComponent = mongoComponent,
-    domainFormat = CashTransactionDates.format,
-    indexes = Seq(
-      IndexModel(
-        ascending("lastUpdated"),
-        IndexOptions()
-          .name("requested-transactions-cache-last-updated-index")
-          .expireAfter(config.get[Long]("mongodb.timeToLiveInSeconds"),
-            TimeUnit.SECONDS)
-      ))) with RequestedTransactionsCache {
+class DefaultRequestedTransactionsCache @Inject() (mongoComponent: MongoComponent, config: Configuration)(implicit
+  executionContext: ExecutionContext
+) extends PlayMongoRepository[CashTransactionDates](
+      collectionName = "requested-transactions-cache",
+      mongoComponent = mongoComponent,
+      domainFormat = CashTransactionDates.format,
+      indexes = Seq(
+        IndexModel(
+          ascending("lastUpdated"),
+          IndexOptions()
+            .name("requested-transactions-cache-last-updated-index")
+            .expireAfter(config.get[Long]("mongodb.timeToLiveInSeconds"), TimeUnit.SECONDS)
+        )
+      )
+    )
+    with RequestedTransactionsCache {
 
   override def get(id: String): Future[Option[CashTransactionDates]] = collection
     .find(equal("_id", id))
@@ -53,15 +55,18 @@ class DefaultRequestedTransactionsCache @Inject()(mongoComponent: MongoComponent
     .toFutureOption()
 
   override def clear(id: String): Future[Boolean] =
-    collection.deleteOne(equal("_id", id))
+    collection
+      .deleteOne(equal("_id", id))
       .toFuture()
       .map(_.wasAcknowledged())
 
-  override def set(id: String, data: CashTransactionDates): Future[Boolean] = collection.replaceOne(
-    equal("_id", id),
-    data,
-    ReplaceOptions().upsert(true)
-  ).toFuture()
+  override def set(id: String, data: CashTransactionDates): Future[Boolean] = collection
+    .replaceOne(
+      equal("_id", id),
+      data,
+      ReplaceOptions().upsert(true)
+    )
+    .toFuture()
     .map(_.wasAcknowledged())
 }
 

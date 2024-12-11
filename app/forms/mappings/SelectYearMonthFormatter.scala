@@ -23,22 +23,24 @@ import play.api.{Logger, LoggerLike}
 import java.time.YearMonth
 import scala.util.Try
 
-private[mappings] class SelectYearMonthFormatter(emptyMonthAndYearKey: String,
-                                                 emptyMonthKey: String,
-                                                 emptyYearKey: String,
-                                                 invalidDateKey: String,
-                                                 args: Seq[String]) extends Formatter[YearMonth] with Formatters {
+private[mappings] class SelectYearMonthFormatter(
+  emptyMonthAndYearKey: String,
+  emptyMonthKey: String,
+  emptyYearKey: String,
+  invalidDateKey: String,
+  args: Seq[String]
+) extends Formatter[YearMonth]
+    with Formatters {
 
   val log: LoggerLike = Logger(this.getClass)
 
   private val fieldKeys: List[String] = List("month", "year")
-  private val monthValueMin = 1
-  private val monthValueMax = 12
-  private val yearValueMin = 1000
-  private val yearValueMax = 99999
+  private val monthValueMin           = 1
+  private val monthValueMax           = 12
+  private val yearValueMin            = 1000
+  private val yearValueMax            = 99999
 
-  override def bind(key: String,
-                    data: Map[String, String]): Either[Seq[FormError], YearMonth] = {
+  override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], YearMonth] = {
 
     val fields: Map[String, Option[String]] = fieldKeys.map { field =>
       field -> data.get(s"$key.$field").filter(_.nonEmpty)
@@ -62,41 +64,35 @@ private[mappings] class SelectYearMonthFormatter(emptyMonthAndYearKey: String,
   override def unbind(key: String, value: YearMonth): Map[String, String] =
     Map(
       s"$key.month" -> value.getMonthValue.toString,
-      s"$key.year" -> value.getYear.toString
+      s"$key.year"  -> value.getYear.toString
     )
 
-  private[mappings] def formErrorKeysInCaseOfEmptyOrNonNumericValues(key: String,
-                                                                     data: Map[String, String]): String = {
+  private[mappings] def formErrorKeysInCaseOfEmptyOrNonNumericValues(key: String, data: Map[String, String]): String = {
     val monthValue = data.get(s"$key.month")
-    val yearValue = data.get(s"$key.year")
+    val yearValue  = data.get(s"$key.year")
 
     (monthValue, yearValue) match {
       case (Some(m), _) if m.trim.isEmpty || Try(m.trim.toInt).isFailure => s"$key.month"
       case (_, Some(y)) if y.trim.isEmpty || Try(y.trim.toInt).isFailure => s"$key.year"
-      case _ => s"$key.month"
+      case _                                                             => s"$key.month"
     }
   }
 
-  private[mappings] def updateFormErrorKeys(key: String,
-                                            month: Int,
-                                            year: Int): String =
+  private[mappings] def updateFormErrorKeys(key: String, month: Int, year: Int): String =
     (month, year) match {
       case (m, _) if m < monthValueMin || m > monthValueMax => s"$key.month"
-      case (_, y) if y < yearValueMin || y > yearValueMax => s"$key.year"
-      case _ => s"$key.month"
+      case (_, y) if y < yearValueMin || y > yearValueMax   => s"$key.year"
+      case _                                                => s"$key.month"
     }
 
-  private def checkForFieldValues(key: String,
-                                  data: Map[String, String]): Either[Seq[FormError], YearMonth] = {
+  private def checkForFieldValues(key: String, data: Map[String, String]): Either[Seq[FormError], YearMonth] =
     data match {
       case value if isMonthEmpty(key, value) => populateErrorMsg(key, data, emptyMonthKey)
-      case value if isYearEmpty(key, value) => populateErrorMsg(key, data, emptyYearKey)
-      case _ => createDateOrGenerateFormError(key, data)
+      case value if isYearEmpty(key, value)  => populateErrorMsg(key, data, emptyYearKey)
+      case _                                 => createDateOrGenerateFormError(key, data)
     }
-  }
 
-  private def formatDate(key: String,
-                         data: Map[String, String]): Either[Seq[FormError], YearMonth] = {
+  private def formatDate(key: String, data: Map[String, String]): Either[Seq[FormError], YearMonth] = {
 
     val int = intFormatter(
       requiredKey = invalidDateKey,
@@ -106,28 +102,24 @@ private[mappings] class SelectYearMonthFormatter(emptyMonthAndYearKey: String,
     )
 
     for {
-      month <- int.bind(s"$key.month", data)
-      year <- int.bind(s"$key.year", data)
+      month     <- int.bind(s"$key.month", data)
+      year      <- int.bind(s"$key.year", data)
       yearMonth <- toYearMonth(key, month, year)
-    } yield {
-      yearMonth
-    }
+    } yield yearMonth
   }
 
-  private def toYearMonth(key: String,
-                     month: Int,
-                     year: Int): Either[Seq[FormError], YearMonth] = {
-
+  private def toYearMonth(key: String, month: Int, year: Int): Either[Seq[FormError], YearMonth] =
     if (month < monthValueMin || month > monthValueMax) {
       Left(Seq(FormError(s"$key.month", invalidDateKey, args)))
     } else {
       Right(YearMonth.of(year, month))
     }
-  }
 
-  private def populateErrorMsg(key: String,
-                               data: Map[String, String],
-                               errorMsg: String): Left[List[FormError], Nothing] = {
+  private def populateErrorMsg(
+    key: String,
+    data: Map[String, String],
+    errorMsg: String
+  ): Left[List[FormError], Nothing] =
     Left(
       List(
         FormError(
@@ -137,19 +129,15 @@ private[mappings] class SelectYearMonthFormatter(emptyMonthAndYearKey: String,
         )
       )
     )
-  }
 
-  private def isMonthEmpty(key: String, value: Map[String, String]) = {
+  private def isMonthEmpty(key: String, value: Map[String, String]) =
     value.contains(s"$key.month") && value(s"$key.month").isEmpty
-  }
 
-  private def isYearEmpty(key: String, value: Map[String, String]) = {
+  private def isYearEmpty(key: String, value: Map[String, String]) =
     value.contains(s"$key.year") && value(s"$key.year").isEmpty
-  }
 
-  private def createDateOrGenerateFormError(key: String, data: Map[String, String]) = {
+  private def createDateOrGenerateFormError(key: String, data: Map[String, String]) =
     formatDate(key, data).left.map {
       _.map(fe => fe.copy(key = fe.key, args = args))
     }
-  }
 }

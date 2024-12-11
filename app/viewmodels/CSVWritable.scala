@@ -26,11 +26,13 @@ trait CSVWritable {
 
   def toCSVRow: String = {
 
-    def nestedToCSV(product: Product): String = product.productIterator.map {
-      case nestedProduct: Product => nestedToCSV(nestedProduct)
-      case string: String => quote(string)
-      case rest => rest
-    }.mkString(comma)
+    def nestedToCSV(product: Product): String = product.productIterator
+      .map {
+        case nestedProduct: Product => nestedToCSV(nestedProduct)
+        case string: String         => quote(string)
+        case rest                   => rest
+      }
+      .mkString(comma)
 
     nestedToCSV(this)
   }

@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import utils.Utils.emptyString
 
 @Singleton
-class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
+class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig) {
   lazy val footerLinkItems: Seq[String] = config.getOptional[Seq[String]]("footerLinkItems").getOrElse(Seq())
 
   lazy val sdesApiEndPoint: String =
@@ -35,30 +35,34 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val customsFinancialsApi: String = servicesConfig.baseUrl("customs-financials-api") +
     config.getOptional[String]("customs-financials-api.context").getOrElse("/customs-financials-api")
 
-  lazy val customsDataStore: String = s"${servicesConfig.baseUrl("customs-data-store")}${
-    config.getOptional[String](
-      "microservice.services.customs-data-store.context").getOrElse("/customs-data-store")
-  }"
+  private lazy val customsDataStoreBaseUrl    = servicesConfig.baseUrl("customs-data-store")
+  private lazy val customsDataStoreContextUrl =
+    config.getOptional[String]("microservice.services.customs-data-store.context").getOrElse("/customs-data-store")
 
-  lazy val emailFrontendUrl: String = s"${servicesConfig.baseUrl("customs-email-frontend")}${
+  lazy val customsDataStore: String =
+    s"$customsDataStoreBaseUrl$customsDataStoreContextUrl"
+
+  private lazy val emailFrontendBaseUrl    = servicesConfig.baseUrl("customs-email-frontend")
+  private lazy val emailFrontendContextUrl =
     config.getOptional[String]("customs-email-frontend.context").getOrElse("/manage-email-cds")
-  }${
-    config.get[String]("microservice.services.customs-email-frontend.url")
-  }"
+  private lazy val emailFrontendFinalUrl   = config.get[String]("microservice.services.customs-email-frontend.url")
 
-  lazy val appName: String = config.get[String]("appName")
-  lazy val loginUrl: String = config.get[String]("urls.login")
-  lazy val loginContinueUrl: String = config.get[String]("urls.loginContinue")
-  lazy val signOutUrl: String = config.get[String]("urls.signOut")
-  lazy val cashAccountTopUpGuidanceUrl: String = config.get[String]("urls.cashAccountTopUpGuidanceUrl")
+  lazy val emailFrontendUrl: String =
+    s"$emailFrontendBaseUrl$emailFrontendContextUrl$emailFrontendFinalUrl"
+
+  lazy val appName: String                           = config.get[String]("appName")
+  lazy val loginUrl: String                          = config.get[String]("urls.login")
+  lazy val loginContinueUrl: String                  = config.get[String]("urls.loginContinue")
+  lazy val signOutUrl: String                        = config.get[String]("urls.signOut")
+  lazy val cashAccountTopUpGuidanceUrl: String       = config.get[String]("urls.cashAccountTopUpGuidanceUrl")
   lazy val customsFinancialsFrontendHomepage: String = config.get[String]("urls.customsFinancialsHomepage")
-  lazy val cashAccountForCdsDeclarationsUrl: String = config.get[String]("urls.cashAccountForCdsDeclarationsUrl")
-  lazy val feedbackService: String = config.getOptional[String]("feedback.url").getOrElse("/feedback") +
+  lazy val cashAccountForCdsDeclarationsUrl: String  = config.get[String]("urls.cashAccountForCdsDeclarationsUrl")
+  lazy val feedbackService: String                   = config.getOptional[String]("feedback.url").getOrElse("/feedback") +
     config.getOptional[String]("feedback.source").getOrElse("/CDS-FIN")
 
   lazy val requestedStatements: String = config.get[String]("urls.requestedStatements")
 
-  lazy val timeout: Int = config.get[Int]("timeout.timeout")
+  lazy val timeout: Int   = config.get[Int]("timeout.timeout")
   lazy val countdown: Int = config.get[Int]("timeout.countdown")
 
   lazy val subscribeCdsUrl: String = config.get[String]("urls.cdsSubscribeUrl")
@@ -66,9 +70,9 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val numberOfMonthsOfCashTransactionsToShow: Int =
     config.get[Int]("application.cash-account.numberOfMonthsOfTransactionsToShow")
 
-  lazy val numberOfDaysToShow: Int = config.get[Int]("application.cash-account.numberOfDaysToShow")
-  lazy val fixedTimeTesting: Boolean = config.get[Boolean]("features.fixed-systemdate-for-tests")
-  lazy val transactionsTimeoutFlag: Boolean = config.get[Boolean]("features.transactions-timeout")
+  lazy val numberOfDaysToShow: Int                    = config.get[Int]("application.cash-account.numberOfDaysToShow")
+  lazy val fixedTimeTesting: Boolean                  = config.get[Boolean]("features.fixed-systemdate-for-tests")
+  lazy val transactionsTimeoutFlag: Boolean           = config.get[Boolean]("features.transactions-timeout")
   lazy val isCashAccountV2FeatureFlagEnabled: Boolean = config.get[Boolean]("features.cash-account-v2-enabled")
 
   lazy val helpMakeGovUkBetterUrl: String = config.get[String]("urls.helpMakeGovUkBetterUrl")
@@ -78,9 +82,8 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val numberOfRecordsToDisableNavigationButtonsInPagination: Int =
     config.get[Int]("pagination.no-of-records-to-disable-navigation-buttons")
 
-  def requestedStatements(fileRole: FileRole): String = {
+  def requestedStatements(fileRole: FileRole): String =
     fileRole match {
       case FileRole.CDSCashAccount => s"$requestedStatements${fileRole.featureName}"
     }
-  }
 }

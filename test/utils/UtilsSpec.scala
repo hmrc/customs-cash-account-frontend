@@ -118,13 +118,18 @@ class UtilsSpec extends SpecBase {
 
   "linkComponent" should {
     "create the component correctly with provided input" in new Setup {
-      val result: HtmlFormat.Appendable = linkComponent(LinkComponentValues(pId = Some(testId),
-        linkMessageKey = testMsgKey,
-        location = testLocation,
-        linkClass = testClass,
-        preLinkMessageKey = Some(testMsgKey)))
+      val result: HtmlFormat.Appendable = linkComponent(
+        LinkComponentValues(
+          pId = Some(testId),
+          linkMessageKey = testMsgKey,
+          location = testLocation,
+          linkClass = testClass,
+          preLinkMessageKey = Some(testMsgKey)
+        )
+      )
 
-      result mustBe new link().apply(linkMessageKey = testMsgKey,
+      result mustBe new link().apply(
+        linkMessageKey = testMsgKey,
         location = testLocation,
         linkClass = testClass,
         preLinkMessage = Some(testMsgKey),
@@ -141,33 +146,20 @@ class UtilsSpec extends SpecBase {
 
   "pComponent" should {
     "create the component correctly with provided input" in new Setup {
-      val result: HtmlFormat.Appendable = pComponent(
-        messageKey = testMsgKey,
-        id = Some(testId),
-        classes = testClass,
-        bold = true)
+      val result: HtmlFormat.Appendable =
+        pComponent(messageKey = testMsgKey, id = Some(testId), classes = testClass, bold = true)
 
-      result mustBe new p().apply(
-        message = testMsgKey,
-        id = Some(testId),
-        classes = testClass,
-        bold = true)
+      result mustBe new p().apply(message = testMsgKey, id = Some(testId), classes = testClass, bold = true)
     }
   }
 
   "hmrcNewTabLinkComponent" should {
     "create the component correctly with provided input" in new Setup {
-      val result: HtmlFormat.Appendable = hmrcNewTabLinkComponent(linkMessage,
-        href,
-        Some(preLinkMessage),
-        Some(postLinkMessage),
-        classes)
+      val result: HtmlFormat.Appendable =
+        hmrcNewTabLinkComponent(linkMessage, href, Some(preLinkMessage), Some(postLinkMessage), classes)
 
-      result mustBe new newTabLink(emptyHmrcNewTabLink).apply(linkMessage,
-        href,
-        Some(preLinkMessage),
-        Some(postLinkMessage),
-        classes = classes)
+      result mustBe new newTabLink(emptyHmrcNewTabLink)
+        .apply(linkMessage, href, Some(preLinkMessage), Some(postLinkMessage), classes = classes)
     }
   }
 
@@ -200,38 +192,34 @@ class UtilsSpec extends SpecBase {
   "notificationPanelComponent" should {
     "create the component correctly with provided input" in new Setup {
       val showNotification = true
-      val preMessage = "preMessage"
-      val linkUrl = "linkUrl"
-      val linkText = "linkText"
-      val postMessage = "postMessage"
+      val preMessage       = "preMessage"
+      val linkUrl          = "linkUrl"
+      val linkText         = "linkText"
+      val postMessage      = "postMessage"
 
       val result: HtmlFormat.Appendable = notificationPanelComponent(
         showNotification = showNotification,
         preMessage = preMessage,
         linkUrl = linkUrl,
         linkText = linkText,
-        postMessage = postMessage)
+        postMessage = postMessage
+      )
 
-      result mustBe new notification_panel().apply(
-        showNotification,
-        preMessage,
-        linkUrl,
-        linkText,
-        postMessage)
+      result mustBe new notification_panel().apply(showNotification, preMessage, linkUrl, linkText, postMessage)
     }
   }
 
   trait Setup {
-    val testMsgKey = "test_key"
-    val testMsg = "test_msg"
-    val testId = "test_id"
-    val testClass = "test_class"
+    val testMsgKey   = "test_key"
+    val testMsg      = "test_msg"
+    val testId       = "test_id"
+    val testClass    = "test_class"
     val testLocation = "test_location"
 
     val linkMessage: String = "go to test page"
-    val href = "www.test.com"
-    val preLinkMessage = "test_pre_link_message"
-    val postLinkMessage = "test_post_link_message"
-    val classes = "govuk-!-margin-bottom-7"
+    val href                = "www.test.com"
+    val preLinkMessage      = "test_pre_link_message"
+    val postLinkMessage     = "test_post_link_message"
+    val classes             = "govuk-!-margin-bottom-7"
   }
 }

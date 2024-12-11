@@ -36,7 +36,7 @@ class inputMonthAndYearSpec extends SpecBase {
       val formWithValues: Form[CashTransactionDates] = form.bind(
         Map(
           s"$id.month" -> "01",
-          s"$id.year" -> "2021"
+          s"$id.year"  -> "2021"
         )
       )
 
@@ -55,9 +55,9 @@ class inputMonthAndYearSpec extends SpecBase {
 
         val html: Document = Jsoup.parse(output.toString)
 
-        html.getElementsByTag("legend").text() must include(headline)
+        html.getElementsByTag("legend").text()     must include(headline)
         html.getElementById(s"$id.month").attr(id) must include("01")
-        html.getElementById(s"$id.year").attr(id) must include("2021")
+        html.getElementById(s"$id.year").attr(id)  must include("2021")
         html.getElementsByTag("input").attr("class") mustNot include("govuk-input--error")
       }
     }
@@ -67,7 +67,7 @@ class inputMonthAndYearSpec extends SpecBase {
       val formWithValues: Form[CashTransactionDates] = form.bind(
         Map(
           s"$id.month" -> "",
-          s"$id.year" -> "2021"
+          s"$id.year"  -> "2021"
         )
       )
 
@@ -86,9 +86,9 @@ class inputMonthAndYearSpec extends SpecBase {
 
         val html: Document = Jsoup.parse(output.toString)
 
-        html.getElementsByTag("legend").text() must include(headline)
+        html.getElementsByTag("legend").text()              must include(headline)
         html.getElementById(s"$id.month").attr(id) mustNot include("01")
-        html.getElementById(s"$id.year").attr(id) must include("2021")
+        html.getElementById(s"$id.year").attr(id)           must include("2021")
         html.getElementsByTag("input").get(0).attr("class") must include("govuk-input--error")
       }
     }
@@ -98,7 +98,7 @@ class inputMonthAndYearSpec extends SpecBase {
       val formWithValues: Form[CashTransactionDates] = form.bind(
         Map(
           s"$id.month" -> "01",
-          s"$id.year" -> ""
+          s"$id.year"  -> ""
         )
       )
 
@@ -117,8 +117,8 @@ class inputMonthAndYearSpec extends SpecBase {
 
         val html: Document = Jsoup.parse(output.toString)
 
-        html.getElementsByTag("legend").text() must include(headline)
-        html.getElementById(s"$id.month").attr(id) must include("01")
+        html.getElementsByTag("legend").text()              must include(headline)
+        html.getElementById(s"$id.month").attr(id)          must include("01")
         html.getElementById(s"$id.year").attr(id) mustNot include("2021")
         html.getElementsByTag("input").get(1).attr("class") must include("govuk-input--error")
       }
@@ -129,7 +129,7 @@ class inputMonthAndYearSpec extends SpecBase {
       val formWithValues: Form[CashTransactionDates] = form.bind(
         Map(
           s"$id.month" -> "",
-          s"$id.year" -> ""
+          s"$id.year"  -> ""
         )
       )
 
@@ -148,7 +148,7 @@ class inputMonthAndYearSpec extends SpecBase {
 
         val html: Document = Jsoup.parse(output.toString)
 
-        html.getElementsByTag("legend").text() must include(headline)
+        html.getElementsByTag("legend").text()       must include(headline)
         html.getElementById(s"$id.month").attr(id) mustNot include("01")
         html.getElementById(s"$id.year").attr(id) mustNot include("2021")
         html.getElementsByTag("input").attr("class") must include("govuk-input--error")
@@ -157,10 +157,10 @@ class inputMonthAndYearSpec extends SpecBase {
 
     trait Setup {
 
-      implicit val clk: Clock = Clock.systemUTC()
+      implicit val clk: Clock              = Clock.systemUTC()
       val form: Form[CashTransactionDates] = new SelectTransactionsFormProvider().apply()
-      val id: String = "value"
-      val headline: String = "Date of birth"
+      val id: String                       = "value"
+      val headline: String                 = "Date of birth"
     }
   }
 }

@@ -30,9 +30,10 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailAction @Inject()(dataStoreConnector: CustomsDataStoreConnector)
-                           (implicit val executionContext: ExecutionContext, val messagesApi: MessagesApi)
-  extends ActionFilter[IdentifierRequest]
+class EmailAction @Inject() (dataStoreConnector: CustomsDataStoreConnector)(implicit
+  val executionContext: ExecutionContext,
+  val messagesApi: MessagesApi
+) extends ActionFilter[IdentifierRequest]
     with I18nSupport {
 
   private val logger = Logger(this.getClass)
@@ -40,18 +41,21 @@ class EmailAction @Inject()(dataStoreConnector: CustomsDataStoreConnector)
   def filter[A](request: IdentifierRequest[A]): Future[Option[Result]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    dataStoreConnector.getEmail(request.eori).map {
-      case Left(value) => checkEmailResponseAndRedirect(value)
-      case Right(_) => None
-    }.recover { case err =>
-      logger.error(s"Unable to retrieve email from ETMP: ${err.getMessage}")
-      None
-    }
+    dataStoreConnector
+      .getEmail(request.eori)
+      .map {
+        case Left(value) => checkEmailResponseAndRedirect(value)
+        case Right(_)    => None
+      }
+      .recover { case err =>
+        logger.error(s"Unable to retrieve email from ETMP: ${err.getMessage}")
+        None
+      }
   }
 
   private def checkEmailResponseAndRedirect(value: EmailResponses): Option[Result] =
     value match {
-      case UnverifiedEmail => Some(Redirect(controllers.routes.EmailController.showUnverified()))
+      case UnverifiedEmail       => Some(Redirect(controllers.routes.EmailController.showUnverified()))
       case UndeliverableEmail(_) => Some(Redirect(controllers.routes.EmailController.showUndeliverable()))
     }
 

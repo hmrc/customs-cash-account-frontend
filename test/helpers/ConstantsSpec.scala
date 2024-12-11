@@ -48,11 +48,11 @@ class ConstantsSpec extends SpecBase {
   }
 
   trait Setup {
-    val request: String = "003-Request could not be processed"
+    val request: String   = "003-Request could not be processed"
     val duplicate: String = "004-Duplicate submission acknowledgment reference"
-    val account: String = "092-The account does not exist within ETMP"
-    val invalid: String = "102-Invalid EORI number"
-    val entry: String = "124-Entry already exists for the same period"
-    val exceeded: String = "602-Exceeded maximum threshold of transactions"
+    val account: String   = "092-The account does not exist within ETMP"
+    val invalid: String   = "102-Invalid EORI number"
+    val entry: String     = "124-Entry already exists for the same period"
+    val exceeded: String  = "602-Exceeded maximum threshold of transactions"
   }
 }

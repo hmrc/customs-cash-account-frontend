@@ -63,12 +63,12 @@ class NotificationPanelSpec extends SpecBase {
   trait Setup {
 
     val showNotification: Boolean
-    val preMessage: String = "preMessage"
-    val linkUrl: String = "linkUrl"
-    val linkText: String = "linkText"
+    val preMessage: String  = "preMessage"
+    val linkUrl: String     = "linkUrl"
+    val linkText: String    = "linkText"
     val postMessage: String = "postMessage"
 
-    lazy val renderedView: String = {
+    lazy val renderedView: String =
       notificationPanelComponent(
         showNotification = showNotification,
         preMessage = preMessage,
@@ -76,6 +76,5 @@ class NotificationPanelSpec extends SpecBase {
         linkText = linkText,
         postMessage = postMessage
       ).body
-    }
   }
 }

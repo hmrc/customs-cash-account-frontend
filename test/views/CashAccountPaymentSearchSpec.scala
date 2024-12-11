@@ -72,31 +72,26 @@ class CashAccountPaymentSearchSpec extends SpecBase with ViewTestHelper {
     }
   }
 
-  private def shouldContainCorrectTitle(view: Document): Assertion = {
+  private def shouldContainCorrectTitle(view: Document): Assertion =
     view.title() mustBe s"${messages("cf.cash-account.detail.title")} - ${messages("service.name")} - GOV.UK"
-  }
 
-  private def shouldContainBackLinkUrl(view: Document): Assertion = {
+  private def shouldContainBackLinkUrl(view: Document): Assertion =
     view.html().contains(controllers.routes.CashAccountV2Controller.showAccountDetails(None).url) mustBe true
-  }
 
-  private def shouldContainCorrectAccountDetails(viewDocument: Document, accNumber: String
-                                                )(implicit msgs: Messages) = {
+  private def shouldContainCorrectAccountDetails(viewDocument: Document, accNumber: String)(implicit msgs: Messages) = {
 
     viewDocument.getElementById("account-number").text() mustBe msgs("cf.cash-account.detail.account", accNumber)
     viewDocument.html().contains(msgs("cf.cash-account.detail.heading")) mustBe true
     Option(viewDocument.getElementById("balance-available")) mustBe None
   }
 
-  private def shouldContainCorrectHeading(viewDocument: Document)(implicit msgs: Messages) = {
+  private def shouldContainCorrectHeading(viewDocument: Document)(implicit msgs: Messages) =
     viewDocument.getElementById("search-results-message-heading").text() mustBe
       msgs("cf.cash-account.detail.declaration.search-title", PAYMENT_SEARCH_VALUE)
-  }
 
-  private def shouldContainNoTransactionMessage(viewDocument: Document)(implicit msgs: Messages) = {
+  private def shouldContainNoTransactionMessage(viewDocument: Document)(implicit msgs: Messages) =
     viewDocument.getElementById("no-transactions-to-display").text() mustBe
       msgs("cf.cash-account.transactions.no-transactions.message")
-  }
 
   private def shouldContainCorrectHelpAndSupportGuidance(viewDocument: Document)(implicit msgs: Messages) = {
 
@@ -131,38 +126,46 @@ class CashAccountPaymentSearchSpec extends SpecBase with ViewTestHelper {
     tableRosElementsByClass.size() mustBe 0
   }
 
-  private def shouldDisplayPaginationComponent(viewDocument: Document) = {
+  private def shouldDisplayPaginationComponent(viewDocument: Document) =
     shouldContainTheElement(view = viewDocument, classes = Some("govuk-pagination"))
-  }
 
-  private def shouldNotDisplayPaginationComponent(viewDocument: Document) = {
+  private def shouldNotDisplayPaginationComponent(viewDocument: Document) =
     shouldNotContainTheElement(view = viewDocument, classes = Some("govuk-pagination"))
-  }
 
   trait Setup {
-    val eoriNumber: String = "test_eori"
-    val can: String = "12345678"
+    val eoriNumber: String  = "test_eori"
+    val can: String         = "12345678"
     val balance: BigDecimal = BigDecimal(8788.00)
 
-    val cashAccount: CashAccount = CashAccount(number = can,
+    val cashAccount: CashAccount = CashAccount(
+      number = can,
       owner = eoriNumber,
       status = AccountStatusOpen,
-      balances = CDSCashBalance(Some(balance)))
+      balances = CDSCashBalance(Some(balance))
+    )
 
     val viewModel01: PaymentSearchResultsViewModel = PaymentSearchResultsViewModel.apply(
-      searchValue = PAYMENT_SEARCH_VALUE, account = cashAccount,
-      paymentsWithdrawalsAndTransfers = Seq.empty, pageNo = Some(1))
+      searchValue = PAYMENT_SEARCH_VALUE,
+      account = cashAccount,
+      paymentsWithdrawalsAndTransfers = Seq.empty,
+      pageNo = Some(1)
+    )
 
     val viewModel02: PaymentSearchResultsViewModel = PaymentSearchResultsViewModel.apply(
-      searchValue = PAYMENT_SEARCH_VALUE, account = cashAccount,
-      paymentsWithdrawalsAndTransfers = SEQ_OF_PAYMENT_DETAILS_01, pageNo = Some(1))
+      searchValue = PAYMENT_SEARCH_VALUE,
+      account = cashAccount,
+      paymentsWithdrawalsAndTransfers = SEQ_OF_PAYMENT_DETAILS_01,
+      pageNo = Some(1)
+    )
 
     val viewModel03: PaymentSearchResultsViewModel = PaymentSearchResultsViewModel.apply(
-      searchValue = PAYMENT_SEARCH_VALUE, account = cashAccount,
-      paymentsWithdrawalsAndTransfers = SEQ_OF_PAYMENT_DETAILS_02, pageNo = Some(1))
+      searchValue = PAYMENT_SEARCH_VALUE,
+      account = cashAccount,
+      paymentsWithdrawalsAndTransfers = SEQ_OF_PAYMENT_DETAILS_02,
+      pageNo = Some(1)
+    )
 
-    protected def createView(viewModel: PaymentSearchResultsViewModel): Document = {
+    protected def createView(viewModel: PaymentSearchResultsViewModel): Document =
       Jsoup.parse(app.injector.instanceOf[cash_account_payment_search].apply(viewModel).body)
-    }
   }
 }

@@ -25,16 +25,11 @@ object FormTestHelper extends Matchers {
 
   def singleError(key: String, value: String): FormError = FormError(key, value)
 
-  def checkForError(form: Form[_],
-                    data: Map[String, String],
-                    expectedErrors: Seq[FormError]): Unit = {
-    form.bind(data).fold(
-      formWithErrors => {
-        formWithErrors.errors mustBe expectedErrors
-      },
-      _ => {
-        fail("Expected a validation error when binding the form, but it was bound successfully.")
-      }
-    )
-  }
+  def checkForError(form: Form[_], data: Map[String, String], expectedErrors: Seq[FormError]): Unit =
+    form
+      .bind(data)
+      .fold(
+        formWithErrors => formWithErrors.errors mustBe expectedErrors,
+        _ => fail("Expected a validation error when binding the form, but it was bound successfully.")
+      )
 }

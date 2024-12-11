@@ -47,9 +47,9 @@ class ConstraintsSpec extends SpecBase with Constraints {
       }
 
       "return valid result for date in past" in {
-        val day = 1
+        val day   = 1
         val month = 1
-        val year = 2008
+        val year  = 2008
 
         def oldDate: LocalDate = LocalDate.of(year, month, day)
 
@@ -59,19 +59,19 @@ class ConstraintsSpec extends SpecBase with Constraints {
 
       "return invalid result if request date is not within 6 months in the past and " +
         "request and current date years are not same" in new Setup {
-        val eightMonths = 8
-        val month9th = 9
+          val eightMonths = 8
+          val month9th    = 9
 
-        def monthOld: LocalDate = LocalDateTime.now().minusMonths(eightMonths).toLocalDate
+          def monthOld: LocalDate = LocalDateTime.now().minusMonths(eightMonths).toLocalDate
 
-        val result: ValidationResult = beforeCurrentMonth("error.min").apply(monthOld)
+          val result: ValidationResult = beforeCurrentMonth("error.min").apply(monthOld)
 
-        if (LocalDateTime.now().getMonthValue < month9th) {
-          result mustBe Invalid(List(ValidationError(List("error.min"))))
-        } else {
-          result mustBe Valid
+          if (LocalDateTime.now().getMonthValue < month9th) {
+            result mustBe Invalid(List(ValidationError(List("error.min"))))
+          } else {
+            result mustBe Valid
+          }
         }
-      }
 
       "return invalid result if request is after current month" in new Setup {
         def monthOld: LocalDate = LocalDateTime.now().plusMonths(2).toLocalDate
@@ -134,8 +134,7 @@ class ConstraintsSpec extends SpecBase with Constraints {
 
       "return Invalid when given an invalid payment amount" in new Setup {
         val paymentResult: ValidationResult = validateSearchInput("error.key")("-_£30.00.00")
-        paymentResult mustBe Invalid(
-          Seq(ValidationError("error.key", patterns: _*)))
+        paymentResult mustBe Invalid(Seq(ValidationError("error.key", patterns: _*)))
       }
     }
   }

@@ -30,7 +30,7 @@ class DateTimeServiceSpec extends SpecBase {
       val newApp: GuiceApplicationBuilder = applicationBuilder.configure("features.fixed-systemdate-for-tests" -> true)
 
       override val appConfig: AppConfig = newApp.injector().instanceOf[AppConfig]
-      override val service = new DateTimeService(appConfig)
+      override val service              = new DateTimeService(appConfig)
 
       val testTime: LocalDateTime = service.systemDateTime(ZoneId.systemDefault())
       testTime.isEqual(fixedTestDateTime) mustBe true
@@ -40,7 +40,7 @@ class DateTimeServiceSpec extends SpecBase {
       val newApp: GuiceApplicationBuilder = applicationBuilder.configure("features.fixed-systemdate-for-tests" -> true)
 
       override val appConfig: AppConfig = newApp.injector().instanceOf[AppConfig]
-      override val service = new DateTimeService(appConfig)
+      override val service              = new DateTimeService(appConfig)
 
       val testTime: LocalDateTime = service.localDateTime()
       testTime.isEqual(fixedTestDateTime) mustBe true
@@ -50,7 +50,7 @@ class DateTimeServiceSpec extends SpecBase {
       val newApp: GuiceApplicationBuilder = applicationBuilder.configure("features.fixed-systemdate-for-tests" -> true)
 
       override val appConfig: AppConfig = newApp.injector().instanceOf[AppConfig]
-      override val service = new DateTimeService(appConfig)
+      override val service              = new DateTimeService(appConfig)
 
       val testTime: LocalDateTime = service.utcDateTime()
       testTime.isEqual(fixedTestDateTime) mustBe true
@@ -60,7 +60,7 @@ class DateTimeServiceSpec extends SpecBase {
       val newApp: GuiceApplicationBuilder = applicationBuilder.configure("features.fixed-systemdate-for-tests" -> false)
 
       override val appConfig: AppConfig = newApp.injector().instanceOf[AppConfig]
-      override val service = new DateTimeService(appConfig)
+      override val service              = new DateTimeService(appConfig)
 
       val testTime: LocalDateTime = service.systemDateTime(ZoneId.systemDefault())
       testTime.isBefore(fixedTestDateTime) mustBe true
@@ -68,16 +68,16 @@ class DateTimeServiceSpec extends SpecBase {
   }
 
   trait Setup {
-    val day = 20
-    val month = 12
-    val year = 2027
+    val day    = 20
+    val month  = 12
+    val year   = 2027
     val minute = 30
-    val hour = 12
+    val hour   = 12
 
     val fixedTestDateTime: LocalDateTime =
       LocalDateTime.of(LocalDate.of(year, month, day), LocalTime.of(hour, minute))
 
     val appConfig: AppConfig = applicationBuilder.injector().instanceOf[AppConfig]
-    val service = new DateTimeService(appConfig)
+    val service              = new DateTimeService(appConfig)
   }
 }

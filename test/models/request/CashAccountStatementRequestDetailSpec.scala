@@ -39,17 +39,21 @@ class CashAccountStatementRequestDetailSpec extends SpecBase {
 
   trait Setup {
 
-    val eori = "GB123456789"
-    val can = "123456789"
+    val eori     = "GB123456789"
+    val can      = "123456789"
     val dateFrom = "July 2022"
-    val dateTo = "August 2022"
+    val dateTo   = "August 2022"
 
     val expectedRes: CashAccountStatementRequestDetail = CashAccountStatementRequestDetail(eori, can, dateFrom, dateTo)
 
     val requestJsValue: String =
-     """{"eori": "GB123456789", "can": "123456789", "dateFrom": "July 2022","dateTo": "August 2022"}""".stripMargin
+      """{"eori": "GB123456789", "can": "123456789", "dateFrom": "July 2022","dateTo": "August 2022"}""".stripMargin
 
     val requestDetails: CashAccountStatementRequestDetail = CashAccountStatementRequestDetail(
-      eori = "GB123456789", can = "123456789", dateFrom = "July 2022", dateTo = "August 2022")
+      eori = "GB123456789",
+      can = "123456789",
+      dateFrom = "July 2022",
+      dateTo = "August 2022"
+    )
   }
 }

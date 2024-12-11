@@ -43,34 +43,28 @@ class CashAccountRequestedTooManyTransactionsSpec extends ViewTestHelper {
     }
   }
 
-  private def shouldContainCorrectHeading(view: Document): Assertion = {
+  private def shouldContainCorrectHeading(view: Document): Assertion =
     view.getElementById("requested-too-many-transactions-message-heading").text() mustBe
       messages("cf.cash-account.transactions.requested.tooMany.transactions")
-  }
 
-  private def shouldContainCorrectFromDateInStatement(statementMsg: String,
-                                                      fromDate: LocalDate): Assertion = {
+  private def shouldContainCorrectFromDateInStatement(statementMsg: String, fromDate: LocalDate): Assertion =
     statementMsg.contains(s"${messages(s"month.${fromDate.getMonthValue}")} ${fromDate.getYear}") mustBe true
-  }
 
-  private def shouldContainCorrectToDateInStatement(statementMsg: String,
-                                                    toDate: LocalDate): Assertion = {
+  private def shouldContainCorrectToDateInStatement(statementMsg: String, toDate: LocalDate): Assertion =
     statementMsg.contains(s"${messages(s"month.${toDate.getMonthValue}")} ${toDate.getYear}") mustBe true
-  }
 
-  private def shouldContainCorrectTryAgainLink(implicit view: Document): Assertion = {
+  private def shouldContainCorrectTryAgainLink(implicit view: Document): Assertion =
     view.getElementsByClass("govuk-body govuk-!-margin-bottom-9").text() mustBe
       messages("cf.cash-account.transactions.requested.tryAgain")
-  }
 
   trait Setup {
 
-    val fromDate: LocalDate = LocalDate.parse("2020-07-18")
-    val toDate: LocalDate = LocalDate.parse("2020-07-20")
+    val fromDate: LocalDate    = LocalDate.parse("2020-07-18")
+    val toDate: LocalDate      = LocalDate.parse("2020-07-20")
     val selectedTxnUrl: String = controllers.routes.SelectedTransactionsController.onPageLoad().url
 
-    val model: RequestedTooManyTransactionsViewModel = RequestedTooManyTransactionsViewModel(
-      fromDate, toDate, selectedTxnUrl, selectedTxnUrl)
+    val model: RequestedTooManyTransactionsViewModel =
+      RequestedTooManyTransactionsViewModel(fromDate, toDate, selectedTxnUrl, selectedTxnUrl)
 
     val viewDoc: Document =
       Jsoup.parse(app.injector.instanceOf[cash_account_requested_too_many_transactions].apply(model).body)

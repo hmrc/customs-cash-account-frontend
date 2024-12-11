@@ -28,18 +28,21 @@ trait SdesFile {
 
   def downloadURL: String
 
-  val fileFormat: FileFormat = metadata.fileFormat
+  val fileFormat: FileFormat  = metadata.fileFormat
   val monthAndYear: LocalDate = LocalDate.of(metadata.periodStartYear, metadata.periodStartMonth, 1)
 }
 
-case class CashStatementFile(filename: String,
-                             downloadURL: String,
-                             size: Long,
-                             metadata: CashStatementFileMetadata,
-                             eori: String = emptyString)
-                            (implicit messages: Messages) extends Ordered[CashStatementFile] with SdesFile {
+case class CashStatementFile(
+  filename: String,
+  downloadURL: String,
+  size: Long,
+  metadata: CashStatementFileMetadata,
+  eori: String = emptyString
+)(implicit messages: Messages)
+    extends Ordered[CashStatementFile]
+    with SdesFile {
 
-  val formattedSize: String = Formatters.fileSizeFormat(size)
+  val formattedSize: String  = Formatters.fileSizeFormat(size)
   val formattedMonth: String = Formatters.dateAsMonth(monthAndYear)
 
   def compare(that: CashStatementFile): Int = that.metadata.fileFormat.compare(metadata.fileFormat)

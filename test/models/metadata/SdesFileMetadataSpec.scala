@@ -32,31 +32,33 @@ class SdesFileMetadataSpec extends SpecBase {
         periodEndDay = periodEndDay,
         fileFormat = FileFormat.Pdf,
         fileRole = FileRole(fileRoleName),
-        statementRequestId = statementRequestId)
+        statementRequestId = statementRequestId
+      )
 
       val result: Map[String, String] = metadata.toMap
 
       result mustEqual Map(
-        "periodStartYear" -> s"$periodStartYear",
-        "periodStartMonth" -> s"$periodStartMonth",
-        "periodStartDay" -> s"$periodStartDay",
-        "periodEndYear" -> s"$periodEndYear",
-        "periodEndMonth" -> s"$periodEndMonth",
-        "periodEndDay" -> s"$periodEndDay",
-        "fileFormat" -> s"${FileFormat.Pdf}",
-        "fileRole" -> s"${FileRole(fileRoleName)}",
-        "statementRequestId" -> s"$statementRequestId")
+        "periodStartYear"    -> s"$periodStartYear",
+        "periodStartMonth"   -> s"$periodStartMonth",
+        "periodStartDay"     -> s"$periodStartDay",
+        "periodEndYear"      -> s"$periodEndYear",
+        "periodEndMonth"     -> s"$periodEndMonth",
+        "periodEndDay"       -> s"$periodEndDay",
+        "fileFormat"         -> s"${FileFormat.Pdf}",
+        "fileRole"           -> s"${FileRole(fileRoleName)}",
+        "statementRequestId" -> s"$statementRequestId"
+      )
     }
   }
 
   trait Setup {
-    val periodStartYear = 2024
-    val periodStartMonth = 10
-    val periodStartDay = 1
-    val periodEndYear = 2024
-    val periodEndMonth = 10
-    val periodEndDay = 31
-    val fileRoleName = "CDSCashAccount"
+    val periodStartYear                    = 2024
+    val periodStartMonth                   = 10
+    val periodStartDay                     = 1
+    val periodEndYear                      = 2024
+    val periodEndMonth                     = 10
+    val periodEndDay                       = 31
+    val fileRoleName                       = "CDSCashAccount"
     val statementRequestId: Option[String] = Some("requestId")
   }
 }

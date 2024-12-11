@@ -27,21 +27,21 @@ import utils.Utils.singleSpace
 
 object Formatters {
 
-  val yyyyMMddDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+  val yyyyMMddDateFormatter: DateTimeFormatter       = DateTimeFormatter.ofPattern("yyyy-MM-dd")
   val yyyyMMddHHmmssDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
-  val ddMMyyyyDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyyyy")
-  private val kbMin: Long = 1000
-  private val kbMax: Long = 1000000
+  val ddMMyyyyDateFormatter: DateTimeFormatter       = DateTimeFormatter.ofPattern("ddMMyyyy")
+  private val kbMin: Long                            = 1000
+  private val kbMax: Long                            = 1000000
 
-  private val month_1 = 1
-  private val month_2 = 2
-  private val month_3 = 3
-  private val month_4 = 4
-  private val month_5 = 5
-  private val month_6 = 6
-  private val month_7 = 7
-  private val month_8 = 8
-  private val month_9 = 9
+  private val month_1  = 1
+  private val month_2  = 2
+  private val month_3  = 3
+  private val month_4  = 4
+  private val month_5  = 5
+  private val month_6  = 6
+  private val month_7  = 7
+  private val month_8  = 8
+  private val month_9  = 9
   private val month_10 = 10
   private val month_11 = 11
   private val month_12 = 12
@@ -55,18 +55,17 @@ object Formatters {
   def dateAsMonthAndYear(date: LocalDate)(implicit messages: Messages): String =
     s"${dateAsMonth(date)} ${date.getYear}"
 
-  def dateTimeAsIso8601(dateTime: LocalDateTime): String = {
+  def dateTimeAsIso8601(dateTime: LocalDateTime): String =
     s"${DateTimeFormatter.ISO_DATE_TIME.format(dateTime.truncatedTo(ChronoUnit.SECONDS))}Z"
-  }
 
   def fileSizeFormat(size: Long): String = size match {
     case kb: Long if kbMin until kbMax contains kb => s"${kb / kbMin}KB"
-    case mb if mb >= kbMax => f"${mb / 1000000.0}%.1fMB"
-    case _ => "1KB"
+    case mb if mb >= kbMax                         => f"${mb / 1000000.0}%.1fMB"
+    case _                                         => "1KB"
   }
 
   def formatCurrencyAmount(amount: BigDecimal): String = {
-    val maxDecimalPlaces: Int = if (amount == 0) 0 else 2
+    val maxDecimalPlaces: Int      = if (amount == 0) 0 else 2
     val numberFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.UK)
 
     numberFormat.setMaximumFractionDigits(maxDecimalPlaces)

@@ -39,8 +39,12 @@ class CashAccountPaymentSearchControllerSpec extends SpecBase {
     "return OK with transaction details when search response is available in cache repository" in new Setup {
 
       val cashAccountTransactionSearchResponseDetail: CashAccountTransactionSearchResponseDetail =
-        CashAccountTransactionSearchResponseDetail(can = cashAccountNumber, eoriDetails = Seq.empty,
-          declarations = None, paymentsWithdrawalsAndTransfers = Some(SEQ_PAYMENT_DETAILS_CONTAINER_01))
+        CashAccountTransactionSearchResponseDetail(
+          can = cashAccountNumber,
+          eoriDetails = Seq.empty,
+          declarations = None,
+          paymentsWithdrawalsAndTransfers = Some(SEQ_PAYMENT_DETAILS_CONTAINER_01)
+        )
 
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
@@ -71,7 +75,7 @@ class CashAccountPaymentSearchControllerSpec extends SpecBase {
           FakeRequest(GET, routes.CashAccountPaymentSearchController.search(PAYMENT_SEARCH_VALUE, Some(1)).url)
             .withSession("eori" -> eori)
 
-        val result = route(app, request).value
+        val result      = route(app, request).value
         val htmlContent = contentAsString(result)
 
         status(result) mustEqual OK
@@ -82,8 +86,12 @@ class CashAccountPaymentSearchControllerSpec extends SpecBase {
     "return OK with no-result page when no transactions are available in response detail" in new Setup {
 
       val cashAccountTransactionSearchResponseDetail: CashAccountTransactionSearchResponseDetail =
-        CashAccountTransactionSearchResponseDetail(can = cashAccountNumber, eoriDetails = Seq.empty,
-          declarations = None, paymentsWithdrawalsAndTransfers = None)
+        CashAccountTransactionSearchResponseDetail(
+          can = cashAccountNumber,
+          eoriDetails = Seq.empty,
+          declarations = None,
+          paymentsWithdrawalsAndTransfers = None
+        )
 
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
@@ -96,7 +104,7 @@ class CashAccountPaymentSearchControllerSpec extends SpecBase {
           FakeRequest(GET, routes.CashAccountPaymentSearchController.search(PAYMENT_SEARCH_VALUE, Some(1)).url)
             .withSession("eori" -> eori)
 
-        val result = route(app, request).value
+        val result      = route(app, request).value
         val htmlContent = contentAsString(result)
 
         status(result) mustEqual OK
@@ -108,24 +116,24 @@ class CashAccountPaymentSearchControllerSpec extends SpecBase {
   trait Setup {
 
     val cashAccountNumber: String = "1234567"
-    val eori: String = "exampleEori"
+    val eori: String              = "exampleEori"
 
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
-    val mockCashAccountSearchRepo: CashAccountSearchRepository = mock[CashAccountSearchRepository]
+    val mockCashAccountSearchRepo: CashAccountSearchRepository           = mock[CashAccountSearchRepository]
 
-    val cashAccount: CashAccount = CashAccount(
-      cashAccountNumber,
-      eori,
-      AccountStatusOpen,
-      CDSCashBalance(Some(BigDecimal(123456.78))))
+    val cashAccount: CashAccount =
+      CashAccount(cashAccountNumber, eori, AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))
 
     val app: Application = applicationBuilder
       .overrides(
         bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
         bind[CashAccountSearchRepository].toInstance(mockCashAccountSearchRepo)
-      ).build()
+      )
+      .build()
 
     val noResultsReturnedMessage: String = messages(
-      "cf.cash-account.detail.declaration.search-no-results-guidance-not-returned-any-results", PAYMENT_SEARCH_VALUE)
+      "cf.cash-account.detail.declaration.search-no-results-guidance-not-returned-any-results",
+      PAYMENT_SEARCH_VALUE
+    )
   }
 }

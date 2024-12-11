@@ -19,9 +19,8 @@ package viewmodels.pagination
 import utils.SpecBase
 import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination.{Pagination, PaginationItem}
 import utils.TestData.{
-  TEST_HREF, HREF, PAGE_1, PAGE_10, PAGE_100, PAGE_1000, PAGE_2, PAGE_200, PAGE_230, PAGE_30, PAGE_300,
-  PAGE_4, PAGE_450, PAGE_451, PAGE_460, PAGE_5, PAGE_600, PAGE_650, PAGE_720, PAGE_80, PAGE_800, PAGE_880,
-  PAGE_98, PAGE_99
+  HREF, PAGE_1, PAGE_10, PAGE_100, PAGE_1000, PAGE_2, PAGE_200, PAGE_230, PAGE_30, PAGE_300, PAGE_4, PAGE_450, PAGE_451,
+  PAGE_460, PAGE_5, PAGE_600, PAGE_650, PAGE_720, PAGE_80, PAGE_800, PAGE_880, PAGE_98, PAGE_99, TEST_HREF
 }
 
 class ListPaginationViewModelSpec extends SpecBase {
@@ -30,8 +29,8 @@ class ListPaginationViewModelSpec extends SpecBase {
 
     "return some value when total items are more than 450 and" +
       " current page is less than the total number of pages" in {
-      ListPaginationViewModel(PAGE_460, PAGE_2, PAGE_2, TEST_HREF).next.isDefined mustBe true
-    }
+        ListPaginationViewModel(PAGE_460, PAGE_2, PAGE_2, TEST_HREF).next.isDefined mustBe true
+      }
 
     "return None when current page is not less than the total number of pages" in {
       ListPaginationViewModel(PAGE_10, PAGE_5, PAGE_2, TEST_HREF).next.isDefined mustBe false
@@ -215,11 +214,14 @@ class ListPaginationViewModelSpec extends SpecBase {
 
     "return correct output" in {
       ListPaginationViewModel(PAGE_2, PAGE_2, PAGE_1, HREF).pagination mustBe
-        Pagination(Some(
-          Seq(
-            PaginationItem("href?page=1", Some("1"), None, Some(false), None, Map()),
-            PaginationItem("href?page=2", Some("2"), None, Some(true), None, Map()))
-        ))
+        Pagination(
+          Some(
+            Seq(
+              PaginationItem("href?page=1", Some("1"), None, Some(false), None, Map()),
+              PaginationItem("href?page=2", Some("2"), None, Some(true), None, Map())
+            )
+          )
+        )
     }
   }
 

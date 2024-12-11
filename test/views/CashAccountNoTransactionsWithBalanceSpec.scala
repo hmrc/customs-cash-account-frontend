@@ -47,14 +47,14 @@ class CashAccountNoTransactionsWithBalanceSpec extends ViewTestHelper {
 
   trait Setup {
 
-    val eori = "test_eori"
+    val eori      = "test_eori"
     val accNumber = "1234567"
-    val owner = "test_owner"
+    val owner     = "test_owner"
 
     val availBalance: BigDecimal = BigDecimal(100.0)
-    val bal: CDSCashBalance = CDSCashBalance(Some(availBalance))
+    val bal: CDSCashBalance      = CDSCashBalance(Some(availBalance))
 
-    val cashAcc: CashAccount = CashAccount(accNumber, owner, AccountStatusOpen, bal)
+    val cashAcc: CashAccount        = CashAccount(accNumber, owner, AccountStatusOpen, bal)
     val model: CashAccountViewModel = CashAccountViewModel(eori, cashAcc)
 
     val viewDoc: Document =
@@ -66,15 +66,17 @@ class CashAccountNoTransactionsWithBalanceSpec extends ViewTestHelper {
 
     view.getElementsByTag("h1").text() mustBe messages("cf.cash-account.detail.heading")
 
-    view.getElementById("balance-available").text().contains(
-      s"£100.00 ${messages("cf.cash-account.detail.available")}"
-    ) mustBe true
+    view
+      .getElementById("balance-available")
+      .text()
+      .contains(
+        s"£100.00 ${messages("cf.cash-account.detail.available")}"
+      ) mustBe true
   }
 
-  private def shouldContainTransactionsNotAvailableMsg(implicit view: Document): Assertion = {
+  private def shouldContainTransactionsNotAvailableMsg(implicit view: Document): Assertion =
     view.getElementById("transactions-not-available").text() mustBe
       messages("cf.cash-account.detail.no-transactions-with-balance.p1")
-  }
 
   private def shouldContainMissingDocHeadingMsg(implicit view: Document): Assertion =
     view.getElementById("missing-documents-guidance-heading").text() mustBe

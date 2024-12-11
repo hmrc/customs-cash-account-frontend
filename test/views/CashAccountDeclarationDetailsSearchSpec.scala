@@ -18,11 +18,7 @@ package views
 
 import models.*
 import models.response.{
-  DeclarationSearch,
-  DeclarationWrapper,
-  TaxGroupSearch,
-  TaxGroupWrapper,
-  TaxTypeWithSecurity,
+  DeclarationSearch, DeclarationWrapper, TaxGroupSearch, TaxGroupWrapper, TaxTypeWithSecurity,
   TaxTypeWithSecurityContainer
 }
 import org.jsoup.Jsoup
@@ -72,35 +68,42 @@ class CashAccountDeclarationDetailsSearchSpec extends ViewTestHelper {
     val fiveHundred: BigDecimal = BigDecimal(500.00)
     val pageNumber: Option[Int] = Some(1)
 
-    val eori = "GB987654321000"
-    val number = "123456789"
-    val owner = "GB491235123123"
+    val eori                    = "GB987654321000"
+    val number                  = "123456789"
+    val owner                   = "GB491235123123"
     val movementReferenceNumber = "MRN1234567890"
 
     val declaration: Seq[DeclarationWrapper] = Seq(
-      DeclarationWrapper(DeclarationSearch(
-        declarationID = "18GB9JLC3CU1LFGVR8",
-        declarantEORINumber = "GB123456789",
-        importersEORINumber = "GB987654321",
-        postingDate = "2022-07-15",
-        acceptanceDate = "2022-07-01",
-        amount = 2500.0,
-        taxGroups = Seq(
-          TaxGroupWrapper(TaxGroupSearch(
-            taxGroupDescription = "VAT",
-            amount = 2000.0,
-            taxTypes = Seq(TaxTypeWithSecurityContainer(
-              TaxTypeWithSecurity(
-                reasonForSecurity = Some("Duty"),
-                taxTypeID = "A10",
-                amount = 2000.0
-              )))
-          ))
+      DeclarationWrapper(
+        DeclarationSearch(
+          declarationID = "18GB9JLC3CU1LFGVR8",
+          declarantEORINumber = "GB123456789",
+          importersEORINumber = "GB987654321",
+          postingDate = "2022-07-15",
+          acceptanceDate = "2022-07-01",
+          amount = 2500.0,
+          taxGroups = Seq(
+            TaxGroupWrapper(
+              TaxGroupSearch(
+                taxGroupDescription = "VAT",
+                amount = 2000.0,
+                taxTypes = Seq(
+                  TaxTypeWithSecurityContainer(
+                    TaxTypeWithSecurity(
+                      reasonForSecurity = Some("Duty"),
+                      taxTypeID = "A10",
+                      amount = 2000.0
+                    )
+                  )
+                )
+              )
+            )
+          )
         )
-      ))
+      )
     )
 
-    val singleDeclaration: DeclarationSearch = declaration.head.declaration
+    val singleDeclaration: DeclarationSearch        = declaration.head.declaration
     val viewModel: DeclarationDetailSearchViewModel = DeclarationDetailSearchViewModel(
       searchInput = movementReferenceNumber,
       account = CashAccount(
@@ -108,7 +111,9 @@ class CashAccountDeclarationDetailsSearchSpec extends ViewTestHelper {
         owner = owner,
         status = AccountStatusOpen,
         balances = CDSCashBalance(Some(fiveHundred))
-      ), declaration = singleDeclaration)(messages)
+      ),
+      declaration = singleDeclaration
+    )(messages)
 
     val cashAccountDeclarationDetails: cash_account_declaration_details_search =
       app.injector.instanceOf[cash_account_declaration_details_search]

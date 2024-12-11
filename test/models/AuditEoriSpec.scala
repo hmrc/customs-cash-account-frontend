@@ -24,9 +24,9 @@ class AuditEoriSpec extends SpecBase {
   "AuditEori" should {
 
     "create an instance correctly" in {
-      val eori = "GB123456789002"
+      val eori       = "GB123456789002"
       val isHistoric = true
-      val auditEori = AuditEori(eori, isHistoric)
+      val auditEori  = AuditEori(eori, isHistoric)
 
       auditEori.eori mustBe eori
       auditEori.isHistoric mustBe isHistoric
@@ -37,7 +37,7 @@ class AuditEoriSpec extends SpecBase {
 
     "serialize correctly" in {
       val auditEori = AuditEori("GB123456789000", isHistoric = false)
-      val json = Json.toJson(auditEori)
+      val json      = Json.toJson(auditEori)
 
       val expectedJson = Json.obj("eori" -> "GB123456789000", "isHistoric" -> false)
 
@@ -48,7 +48,7 @@ class AuditEoriSpec extends SpecBase {
       val json = Json.obj("eori" -> "GB123456789000", "isHistoric" -> false)
 
       val expectedAuditEori = AuditEori("GB123456789000", isHistoric = false)
-      val result = json.validate[AuditEori]
+      val result            = json.validate[AuditEori]
 
       result mustBe JsSuccess(expectedAuditEori)
     }

@@ -23,6 +23,8 @@ import javax.inject.Inject
 class SearchTransactionsFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
-    Form("value" -> text(errorKey = "cf.search.form.error.required")
-      .verifying(validateSearchInput(errorKey = "cf.search.form.error.required")))
+    Form(
+      "value" -> text(errorKey = "cf.search.form.error.required")
+        .verifying(validateSearchInput(errorKey = "cf.search.form.error.required"))
+    )
 }

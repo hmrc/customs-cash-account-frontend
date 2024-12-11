@@ -29,17 +29,16 @@ class PaymentHeaderV2Spec extends SpecBase {
       val headerOb: Seq[HeadCell] = PaymentHeaderV2()
 
       headerOb.size mustBe 5
-      headerOb must be (an[Seq[HeadCell]])
+      headerOb must be(an[Seq[HeadCell]])
     }
   }
 
   trait Setup {
-    protected def expectedHeaderCells: Seq[HeadCell] = {
+    protected def expectedHeaderCells: Seq[HeadCell] =
       Seq(
         HeadCell(
           classes = "first-column-width",
-          content = HtmlContent(
-            s"""
+          content = HtmlContent(s"""
                 <abbr title="${messages("cf.cash-account.detail.date")}">
                     ${messages("cf.cash-account.detail.date")}
                 </abbr>
@@ -47,16 +46,14 @@ class PaymentHeaderV2Spec extends SpecBase {
         ),
         HeadCell(
           classes = "second-column-width",
-          content = HtmlContent(
-            s"""
+          content = HtmlContent(s"""
                 <abbr title="${messages("cf.cash-account.detail.transaction-type")}">
                 ${messages("cf.cash-account.detail.transaction-type")}
                 </abbr>
                 """)
         ),
         HeadCell(
-          content = HtmlContent(
-            s"""
+          content = HtmlContent(s"""
                 <abbr title="${messages("cf.cash-account.detail.credit")}">
                 ${messages("cf.cash-account.detail.credit")}
                 </abbr>
@@ -64,8 +61,7 @@ class PaymentHeaderV2Spec extends SpecBase {
         ),
         HeadCell(
           format = Some("numeric"),
-          content = HtmlContent(
-            s"""
+          content = HtmlContent(s"""
                 <abbr title="${messages("cf.cash-account.detail.debit")}">
                 ${messages("cf.cash-account.detail.debit")}
                 </abbr>
@@ -73,13 +69,11 @@ class PaymentHeaderV2Spec extends SpecBase {
         ),
         HeadCell(
           format = Some("numeric"),
-          content = HtmlContent(
-            s"""
+          content = HtmlContent(s"""
                       ${messages("cf.cash-account.detail.balance")}
                       """)
         )
       )
-    }
   }
 
 }

@@ -55,11 +55,11 @@ class CashTransactionsDuplicateDatesSpec extends ViewTestHelper {
     implicit val clk: Clock = Clock.systemUTC()
 
     val displayedMsg = "We are already processing a request for Jan 2021 to Feb 2021"
-    val startDate = "Jan 2021"
-    val endDate = "Feb 2021"
+    val startDate    = "Jan 2021"
+    val endDate      = "Feb 2021"
 
     val view: Document = Jsoup.parse(
-      app.injector.instanceOf[cash_transactions_duplicate_dates].apply(
-        displayedMsg, startDate, endDate).body)
+      app.injector.instanceOf[cash_transactions_duplicate_dates].apply(displayedMsg, startDate, endDate).body
+    )
   }
 }

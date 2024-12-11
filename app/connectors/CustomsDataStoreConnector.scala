@@ -33,31 +33,34 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CustomsDataStoreConnector @Inject()(httpClient: HttpClientV2,
-                                          metricsReporter: MetricsReporterService)
-                                         (implicit appConfig: AppConfig, ec: ExecutionContext) {
+class CustomsDataStoreConnector @Inject() (httpClient: HttpClientV2, metricsReporter: MetricsReporterService)(implicit
+  appConfig: AppConfig,
+  ec: ExecutionContext
+) {
 
   private val log = Logger(this.getClass)
 
   def getEmail(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[EmailResponses, Email]] = {
-    val dataStoreEndpoint = s"${appConfig.customsDataStore}/eori/$eori/verified-email"
+    val dataStoreEndpoint      = s"${appConfig.customsDataStore}/eori/$eori/verified-email"
     val resourceNameForMetrics = "customs-data-store.get.email"
 
     metricsReporter.withResponseTimeLogging(resourceNameForMetrics) {
 
-      httpClient.get(url"$dataStoreEndpoint")
+      httpClient
+        .get(url"$dataStoreEndpoint")
         .execute[EmailResponse]
         .map {
-          case EmailResponse(Some(address), _, None) => Right(Email(address))
+          case EmailResponse(Some(address), _, None)  => Right(Email(address))
           case EmailResponse(Some(email), _, Some(_)) => Left(UndeliverableEmail(email))
-          case _ => Left(UnverifiedEmail)
-        }.recover {
-        case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
-          Left(UnverifiedEmail)
-        case exception =>
-          log.error(s"verified-email API call is Failing and error is ::: ${exception.getMessage}")
-          throw exception
-      }
+          case _                                      => Left(UnverifiedEmail)
+        }
+        .recover {
+          case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
+            Left(UnverifiedEmail)
+          case exception                                 =>
+            log.error(s"verified-email API call is Failing and error is ::: ${exception.getMessage}")
+            throw exception
+        }
     }
   }
 
@@ -67,10 +70,9 @@ class CustomsDataStoreConnector @Inject()(httpClient: HttpClientV2,
     httpClient
       .get(url"$emailDisplayApiUrl")
       .execute[EmailVerifiedResponse]
-      .recover {
-        case _ =>
-          log.error(s"Error occurred while calling API $emailDisplayApiUrl")
-          EmailVerifiedResponse(None)
+      .recover { case _ =>
+        log.error(s"Error occurred while calling API $emailDisplayApiUrl")
+        EmailVerifiedResponse(None)
       }
   }
 
@@ -80,10 +82,9 @@ class CustomsDataStoreConnector @Inject()(httpClient: HttpClientV2,
     httpClient
       .get(url"$unverifiedEmailDisplayApiUrl")
       .execute[EmailUnverifiedResponse]
-      .recover {
-        case _ =>
-          log.error(s"Error occurred while calling API $unverifiedEmailDisplayApiUrl")
-          EmailUnverifiedResponse(None)
+      .recover { case _ =>
+        log.error(s"Error occurred while calling API $unverifiedEmailDisplayApiUrl")
+        EmailUnverifiedResponse(None)
       }
   }
 }

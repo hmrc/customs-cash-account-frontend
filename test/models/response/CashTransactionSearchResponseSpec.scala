@@ -25,7 +25,8 @@ class CashTransactionSearchResponseSpec extends SpecBase {
   "CashAccountTransactionSearchResponseDetail" must {
 
     "generate correct output using Reads with all the fields" in new Setup {
-      Json.parse(responseJsValue)
+      Json
+        .parse(responseJsValue)
         .validate[CashAccountTransactionSearchResponseDetail] mustBe JsSuccess(expectedResponseDetail)
     }
 
@@ -36,49 +37,63 @@ class CashTransactionSearchResponseSpec extends SpecBase {
 
   trait Setup {
 
-    val can = "123456789"
+    val can                                 = "123456789"
     val eoriDetails: Seq[EoriDataContainer] = Seq(
       EoriDataContainer(EoriData(eoriNumber = "GB123456789", name = "eori name")),
-      EoriDataContainer(EoriData(eoriNumber = "GB987654321", name = "eori name two")))
+      EoriDataContainer(EoriData(eoriNumber = "GB987654321", name = "eori name two"))
+    )
 
     val declarations: Seq[DeclarationWrapper] = Seq(
-      DeclarationWrapper(DeclarationSearch(
-        declarationID = "18GB9JLC3CU1LFGVR8",
-        declarantEORINumber = "GB123456789",
-        importersEORINumber = "GB987654321",
-        postingDate = "2022-07-15",
-        acceptanceDate = "2022-07-01",
-        amount = 2500.0,
-        taxGroups = Seq(
-          TaxGroupWrapper(TaxGroupSearch(
-            taxGroupDescription = "VAT",
-            amount = 2000.0,
-            taxTypes = Seq(TaxTypeWithSecurityContainer(TaxTypeWithSecurity(
-              reasonForSecurity = Some("Duty"),
-              taxTypeID = "A10",
-              amount = 2000.0
-            )))
-          ))
+      DeclarationWrapper(
+        DeclarationSearch(
+          declarationID = "18GB9JLC3CU1LFGVR8",
+          declarantEORINumber = "GB123456789",
+          importersEORINumber = "GB987654321",
+          postingDate = "2022-07-15",
+          acceptanceDate = "2022-07-01",
+          amount = 2500.0,
+          taxGroups = Seq(
+            TaxGroupWrapper(
+              TaxGroupSearch(
+                taxGroupDescription = "VAT",
+                amount = 2000.0,
+                taxTypes = Seq(
+                  TaxTypeWithSecurityContainer(
+                    TaxTypeWithSecurity(
+                      reasonForSecurity = Some("Duty"),
+                      taxTypeID = "A10",
+                      amount = 2000.0
+                    )
+                  )
+                )
+              )
+            )
+          )
         )
-      ))
+      )
     )
 
     val paymentsWithdrawalsAndTransfers: Seq[PaymentsWithdrawalsAndTransferContainer] = Seq(
-      PaymentsWithdrawalsAndTransferContainer(PaymentsWithdrawalsAndTransfer(
-        valueDate = "2022-07-20",
-        postingDate = "2022-07-21",
-        paymentReference = "REF123456",
-        amount = 1500.0,
-        `type` = PaymentType.Payment,
-        bankAccount = Some("12345678"),
-        sortCode = Some("12-34-56"))))
+      PaymentsWithdrawalsAndTransferContainer(
+        PaymentsWithdrawalsAndTransfer(
+          valueDate = "2022-07-20",
+          postingDate = "2022-07-21",
+          paymentReference = "REF123456",
+          amount = 1500.0,
+          `type` = PaymentType.Payment,
+          bankAccount = Some("12345678"),
+          sortCode = Some("12-34-56")
+        )
+      )
+    )
 
     val expectedResponseDetail: CashAccountTransactionSearchResponseDetail =
       CashAccountTransactionSearchResponseDetail(
         can = can,
         eoriDetails = eoriDetails,
         declarations = Some(declarations),
-        paymentsWithdrawalsAndTransfers = Some(paymentsWithdrawalsAndTransfers))
+        paymentsWithdrawalsAndTransfers = Some(paymentsWithdrawalsAndTransfers)
+      )
 
     val responseJsValue: String =
       s"""

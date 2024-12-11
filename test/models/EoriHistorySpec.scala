@@ -51,32 +51,25 @@ class EoriHistorySpec extends SpecBase {
 
   trait Setup {
 
-    val year = 2024
-    val month = 1
-    val day = 1
+    val year     = 2024
+    val month    = 1
+    val day      = 1
     val someEori = "GB1234567892002"
 
     val fullEoriHistory: EoriHistory = EoriHistory(
       eori = someEori,
       validFrom = Some(LocalDate.of(year, month, day)),
-      validUntil = Some(LocalDate.of(year + 1, month + 1, day + 1)))
+      validUntil = Some(LocalDate.of(year + 1, month + 1, day + 1))
+    )
 
-    val missingOptionalEoriHistory: EoriHistory = EoriHistory(
-      eori = someEori,
-      validFrom = None,
-      validUntil = None)
+    val missingOptionalEoriHistory: EoriHistory = EoriHistory(eori = someEori, validFrom = None, validUntil = None)
 
-    val fullEoriHistoryJson: JsValue = Json.obj(
-      "eori" -> someEori,
-      "validFrom" -> "2024-01-01",
-      "validUntil" -> "2025-02-02")
+    val fullEoriHistoryJson: JsValue =
+      Json.obj("eori" -> someEori, "validFrom" -> "2024-01-01", "validUntil" -> "2025-02-02")
 
-    val missingOptionalEoriHistoryJson: JsValue = Json.obj(
-      "eori" -> someEori)
+    val missingOptionalEoriHistoryJson: JsValue = Json.obj("eori" -> someEori)
 
-    val jsonInvalidDates: JsValue = Json.obj(
-      "eori" -> someEori,
-      "validFrom" -> "01-01-2020",
-      "validUntil" -> "31-12-2025")
+    val jsonInvalidDates: JsValue =
+      Json.obj("eori" -> someEori, "validFrom" -> "01-01-2020", "validUntil" -> "31-12-2025")
   }
 }

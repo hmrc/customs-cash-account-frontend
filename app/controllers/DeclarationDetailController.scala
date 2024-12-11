@@ -42,47 +42,47 @@ import utils.Utils.extractNumericValue
 
 import java.time.LocalDate
 
-class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
-                                            verifyEmail: EmailAction,
-                                            apiConnector: CustomsFinancialsApiConnector,
-                                            errorHandler: ErrorHandler,
-                                            mcc: MessagesControllerComponents,
-                                            view: cash_account_declaration_details,
-                                            searchView: cash_account_declaration_details_search,
-                                            cashAccountUtils: CashAccountUtils,
-                                            noTransactionsView: cash_transactions_no_result,
-                                            transactionsUnavailableView: cash_account_transactions_not_available,
-                                            noSearchResultView: cash_account_declaration_details_search_no_result
-                                           )(implicit executionContext: ExecutionContext,
-                                             appConfig: AppConfig
-                                           ) extends FrontendController(mcc) with I18nSupport with Logging {
+class DeclarationDetailController @Inject() (
+  authenticate: IdentifierAction,
+  verifyEmail: EmailAction,
+  apiConnector: CustomsFinancialsApiConnector,
+  errorHandler: ErrorHandler,
+  mcc: MessagesControllerComponents,
+  view: cash_account_declaration_details,
+  searchView: cash_account_declaration_details_search,
+  cashAccountUtils: CashAccountUtils,
+  noTransactionsView: cash_transactions_no_result,
+  transactionsUnavailableView: cash_account_transactions_not_available,
+  noSearchResultView: cash_account_declaration_details_search_no_result
+)(implicit executionContext: ExecutionContext, appConfig: AppConfig)
+    extends FrontendController(mcc)
+    with I18nSupport
+    with Logging {
 
   def displaySearchDetails(page: Option[Int], searchInput: String): Action[AnyContent] =
     (authenticate andThen verifyEmail).async { implicit request =>
-
       apiConnector.getCashAccount(request.eori).flatMap {
         case Some(account) => prepareTransactionSearch(account, page, searchInput)
-        case None => Future.successful(NotFound(errorHandler.notFoundTemplate))
+        case None          => Future.successful(NotFound(errorHandler.notFoundTemplate))
       }
     }
 
-  def displayDetails(ref: String,
-                     page: Option[Int]
-                    ): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    for {
-      accountOpt <- apiConnector.getCashAccount(request.eori)
-      result <- accountOpt match {
-        case Some(account) =>
-          val (from, to) = cashAccountUtils.transactionDateRange()
-          retrieveCashAccountTransactionAndDisplay(account, from, to, ref, page)
-        case None => Future.successful(NotFound(errorHandler.notFoundTemplate))
-      }
-    } yield result
+  def displayDetails(ref: String, page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async {
+    implicit request =>
+      for {
+        accountOpt <- apiConnector.getCashAccount(request.eori)
+        result     <- accountOpt match {
+                        case Some(account) =>
+                          val (from, to) = cashAccountUtils.transactionDateRange()
+                          retrieveCashAccountTransactionAndDisplay(account, from, to, ref, page)
+                        case None          => Future.successful(NotFound(errorHandler.notFoundTemplate))
+                      }
+      } yield result
   }
 
-  private def prepareTransactionSearch(account: CashAccount,
-                                       page: Option[Int],
-                                       searchInput: String)(implicit request: IdentifierRequest[_]): Future[Result] = {
+  private def prepareTransactionSearch(account: CashAccount, page: Option[Int], searchInput: String)(implicit
+    request: IdentifierRequest[_]
+  ): Future[Result] = {
 
     val (paramName, searchType, sanitizedSearchValue) = determineParamNameAndTypeAndSearchValue(searchInput)
 
@@ -91,33 +91,44 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
       case SearchType.P => (None, Some(CashAccountPaymentDetails(sanitizedSearchValue.toDouble)))
     }
 
-    apiConnector.retrieveCashTransactionsBySearch(account.number, request.eori, searchType, sanitizedSearchValue,
-      declarationDetails, cashAccountPaymentDetails).map {
-      case Right(transactions) => processTransactions(transactions, searchInput, account, page)
-      case Left(res) if isBusinessErrorResponse(res) => Ok(noSearchResultView(page, account.number, searchInput))
-      case Left(_) =>
-        Ok(transactionsUnavailableView(CashAccountViewModel(request.eori, account), appConfig.transactionsTimeoutFlag))
-    }
+    apiConnector
+      .retrieveCashTransactionsBySearch(
+        account.number,
+        request.eori,
+        searchType,
+        sanitizedSearchValue,
+        declarationDetails,
+        cashAccountPaymentDetails
+      )
+      .map {
+        case Right(transactions)                       => processTransactions(transactions, searchInput, account, page)
+        case Left(res) if isBusinessErrorResponse(res) => Ok(noSearchResultView(page, account.number, searchInput))
+        case Left(_)                                   =>
+          Ok(
+            transactionsUnavailableView(CashAccountViewModel(request.eori, account), appConfig.transactionsTimeoutFlag)
+          )
+      }
   }
 
-  private def processTransactions(cashAccResDetail: CashAccountTransactionSearchResponseDetail,
-                                  searchValue: String,
-                                  account: CashAccount,
-                                  page: Option[Int])(implicit request: IdentifierRequest[_]): Result = {
-
+  private def processTransactions(
+    cashAccResDetail: CashAccountTransactionSearchResponseDetail,
+    searchValue: String,
+    account: CashAccount,
+    page: Option[Int]
+  )(implicit request: IdentifierRequest[_]): Result =
     (cashAccResDetail.declarations, cashAccResDetail.paymentsWithdrawalsAndTransfers) match {
 
       case (Some(_), None | Some(Nil)) => processDeclarations(cashAccResDetail, searchValue, account, page)
       case (None | Some(Nil), Some(_)) => Redirect(routes.CashAccountPaymentSearchController.search(searchValue, page))
-      case _ => Ok(noSearchResultView(page, account.number, searchValue))
+      case _                           => Ok(noSearchResultView(page, account.number, searchValue))
     }
-  }
 
-  private def processDeclarations(cashAccResDetail: CashAccountTransactionSearchResponseDetail,
-                                  searchValue: String,
-                                  account: CashAccount,
-                                  page: Option[Int])(implicit request: IdentifierRequest[_]) = {
-
+  private def processDeclarations(
+    cashAccResDetail: CashAccountTransactionSearchResponseDetail,
+    searchValue: String,
+    account: CashAccount,
+    page: Option[Int]
+  )(implicit request: IdentifierRequest[_]) =
     cashAccResDetail.declarations.flatMap(_.headOption.map(_.declaration)) match {
 
       case Some(declarationSearch) =>
@@ -126,7 +137,6 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
       case None =>
         Ok(noSearchResultView(page, account.number, searchValue))
     }
-  }
 
   private def isBusinessErrorResponse(incomingErrorResponse: ErrorResponse): Boolean = {
     val businessErrorResponseList =
@@ -135,25 +145,26 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
     businessErrorResponseList.contains(incomingErrorResponse)
   }
 
-  private def determineParamNameAndTypeAndSearchValue(searchInput: String
-                                                     ): (ParamName.Value, SearchType.Value, String) = {
+  private def determineParamNameAndTypeAndSearchValue(
+    searchInput: String
+  ): (ParamName.Value, SearchType.Value, String) =
     searchInput match {
-      case input if isValidMRN(input) => (ParamName.MRN, SearchType.D, searchInput)
+      case input if isValidMRN(input)     => (ParamName.MRN, SearchType.D, searchInput)
       case input if isValidPayment(input) => (ParamName.MRN, SearchType.P, extractNumericValue(searchInput))
-      case _ => (ParamName.UCR, SearchType.D, searchInput)
+      case _                              => (ParamName.UCR, SearchType.D, searchInput)
     }
-  }
 
   private def isValidMRN(value: String): Boolean = mrnRegex.matches(value)
 
   private def isValidPayment(value: String): Boolean = paymentRegex.matches(value)
 
-  private def retrieveCashAccountTransactionAndDisplay(account: CashAccount,
-                                                       from: LocalDate,
-                                                       to: LocalDate,
-                                                       ref: String,
-                                                       page: Option[Int])
-                                                      (implicit request: IdentifierRequest[_]): Future[Result] = {
+  private def retrieveCashAccountTransactionAndDisplay(
+    account: CashAccount,
+    from: LocalDate,
+    to: LocalDate,
+    ref: String,
+    page: Option[Int]
+  )(implicit request: IdentifierRequest[_]): Future[Result] =
     apiConnector.retrieveCashTransactions(account.number, from, to).map {
       case Right(transactions) =>
         transactions.cashDailyStatements
@@ -167,5 +178,4 @@ class DeclarationDetailController @Inject()(authenticate: IdentifierAction,
 
       case Left(_) => Ok(noTransactionsView(ResultsPageSummary(from, to)))
     }
-  }
 }

@@ -52,19 +52,16 @@ class DailyStatementsV2Spec extends ViewTestHelper {
     }
   }
 
-  private def shouldDisplayTransForLastSixMonthsHeading(viewDocument: Document)(implicit msgs: Messages) = {
+  private def shouldDisplayTransForLastSixMonthsHeading(viewDocument: Document)(implicit msgs: Messages) =
     viewDocument.getElementById("transactions-for-last-six-months-heading").text() mustBe
       msgs("cf.cash-account.transactions.transactions-for-last-six-months.heading")
-  }
 
-  private def shouldDisplayNoTransactionsFromLastSixMonthsMessage(viewDocument: Document)(implicit msgs: Messages) = {
+  private def shouldDisplayNoTransactionsFromLastSixMonthsMessage(viewDocument: Document)(implicit msgs: Messages) =
     viewDocument.getElementById("no-transactions-for-last-six-months-text").text() mustBe
       msgs("cf.cash-account.transactions.no-transactions-for-last-six-months")
-  }
 
-  private def shouldNotDisplayNoTransactionsFromLastSixMonthsMessage(viewDocument: Document) = {
+  private def shouldNotDisplayNoTransactionsFromLastSixMonthsMessage(viewDocument: Document) =
     Option(viewDocument.getElementById("no-transactions-for-last-six-months-text")) mustBe empty
-  }
 
   private def shouldDisplayTableHeaders(viewDocument: Document)(implicit msgs: Messages) = {
     viewDocument.html().contains(msgs("cf.cash-account.detail.date")) mustBe true
@@ -77,39 +74,38 @@ class DailyStatementsV2Spec extends ViewTestHelper {
   private def shouldDisplayTableElements(viewDocument: Document) = {
     val tableRows = viewDocument.getElementsByClass("govuk-table__row")
 
-    val index_4 = 4
-    val index_5 = 5
-    val index_6 = 6
-    val index_7 = 7
-    val index_8 = 8
-    val index_9 = 9
+    val index_4  = 4
+    val index_5  = 5
+    val index_6  = 6
+    val index_7  = 7
+    val index_8  = 8
+    val index_9  = 9
     val index_10 = 10
 
-    val row1 = tableRows.get(1).html()
-    val row2 = tableRows.get(2).html()
-    val row3 = tableRows.get(3).html()
-    val row4 = tableRows.get(index_4).html()
-    val row5 = tableRows.get(index_5).html()
-    val row6 = tableRows.get(index_6).html()
-    val row7 = tableRows.get(index_7).html()
-    val row8 = tableRows.get(index_8).html()
-    val row9 = tableRows.get(index_9).html()
+    val row1  = tableRows.get(1).html()
+    val row2  = tableRows.get(2).html()
+    val row3  = tableRows.get(3).html()
+    val row4  = tableRows.get(index_4).html()
+    val row5  = tableRows.get(index_5).html()
+    val row6  = tableRows.get(index_6).html()
+    val row7  = tableRows.get(index_7).html()
+    val row8  = tableRows.get(index_8).html()
+    val row9  = tableRows.get(index_9).html()
     val row10 = tableRows.get(index_10).html()
 
     tableRows.size() mustBe 11
 
-    row1 must include("20 July 2020")
-    row2 must include("20 July 2020")
-    row3 must include("20 July 2020")
-    row4 must include("20 July 2020")
-    row5 must include("20 July 2020")
-    row6 must include("18 July 2020")
-    row7 must include("18 July 2020")
-    row8 must include("18 July 2020")
-    row9 must include("18 July 2020")
+    row1  must include("20 July 2020")
+    row2  must include("20 July 2020")
+    row3  must include("20 July 2020")
+    row4  must include("20 July 2020")
+    row5  must include("20 July 2020")
+    row6  must include("18 July 2020")
+    row7  must include("18 July 2020")
+    row8  must include("18 July 2020")
+    row9  must include("18 July 2020")
     row10 must include("18 July 2020")
   }
-
 
   private def shouldNotDisplayTableHeaders(viewDocument: Document) = {
     Option(viewDocument.getElementById("transaction-date")) mustBe empty
@@ -128,12 +124,28 @@ class DailyStatementsV2Spec extends ViewTestHelper {
 
   trait Setup {
     val declaration1: Declaration =
-      Declaration(MOVEMENT_REF_NUMBER, Some(EORI_NUMBER), EORI_NUMBER, Some(DECLARANT_REF), DATE, AMOUNT,
-        Seq(TAX_GROUP), Some(SECURE_MOVEMENT_REF_NUMBER))
+      Declaration(
+        MOVEMENT_REF_NUMBER,
+        Some(EORI_NUMBER),
+        EORI_NUMBER,
+        Some(DECLARANT_REF),
+        DATE,
+        AMOUNT,
+        Seq(TAX_GROUP),
+        Some(SECURE_MOVEMENT_REF_NUMBER)
+      )
 
     val declaration2: Declaration =
-      Declaration(MOVEMENT_REF_NUMBER, Some(EORI_NUMBER), EORI_NUMBER, Some(DECLARANT_REF), DATE_1, AMOUNT,
-        Seq(TAX_GROUP), Some(SECURE_MOVEMENT_REF_NUMBER))
+      Declaration(
+        MOVEMENT_REF_NUMBER,
+        Some(EORI_NUMBER),
+        EORI_NUMBER,
+        Some(DECLARANT_REF),
+        DATE_1,
+        AMOUNT,
+        Seq(TAX_GROUP),
+        Some(SECURE_MOVEMENT_REF_NUMBER)
+      )
 
     val pendingTransactions: Seq[Declaration] = Seq(declaration1, declaration2)
 

@@ -35,23 +35,23 @@ case class EncryptionDecryptionException(method: String, reason: String, message
   val failureReason = s"$reason for $method"
 }
 
-class AesGCMCrypto @Inject()() {
+class AesGCMCrypto @Inject() () {
 
-  private val IV_SIZE = 96
-  private val TAG_BIT_LENGTH = 128
+  private val IV_SIZE               = 96
+  private val TAG_BIT_LENGTH        = 128
   val ALGORITHM_TO_TRANSFORM_STRING = "AES/GCM/NoPadding"
-  private lazy val secureRandom = new SecureRandom()
-  val ALGORITHM_KEY = "AES"
-  private val METHOD_ENCRYPT = "encrypt"
-  private val METHOD_DECRYPT = "decrypt"
+  private lazy val secureRandom     = new SecureRandom()
+  val ALGORITHM_KEY                 = "AES"
+  private val METHOD_ENCRYPT        = "encrypt"
+  private val METHOD_DECRYPT        = "decrypt"
 
   def encrypt(valueToEncrypt: String, aesKey: String): EncryptedValue = {
 
     val initialisationVector = generateInitialisationVector
-    val nonce = new String(Base64.getEncoder.encode(initialisationVector))
-    val gcmParameterSpec = new GCMParameterSpec(TAG_BIT_LENGTH, initialisationVector)
-    val secretKey = validateSecretKey(aesKey, METHOD_ENCRYPT)
-    val cipherText = generateCipherText(valueToEncrypt, gcmParameterSpec, secretKey)
+    val nonce                = new String(Base64.getEncoder.encode(initialisationVector))
+    val gcmParameterSpec     = new GCMParameterSpec(TAG_BIT_LENGTH, initialisationVector)
+    val secretKey            = validateSecretKey(aesKey, METHOD_ENCRYPT)
+    val cipherText           = generateCipherText(valueToEncrypt, gcmParameterSpec, secretKey)
 
     EncryptedValue(cipherText, nonce)
   }
@@ -59,8 +59,8 @@ class AesGCMCrypto @Inject()() {
   def decrypt(valueToDecrypt: EncryptedValue, aesKey: String): String = {
 
     val initialisationVector = Base64.getDecoder.decode(valueToDecrypt.nonce)
-    val gcmParameterSpec = new GCMParameterSpec(TAG_BIT_LENGTH, initialisationVector)
-    val secretKey = validateSecretKey(aesKey, METHOD_DECRYPT)
+    val gcmParameterSpec     = new GCMParameterSpec(TAG_BIT_LENGTH, initialisationVector)
+    val secretKey            = validateSecretKey(aesKey, METHOD_DECRYPT)
 
     decryptCipherText(valueToDecrypt.value, gcmParameterSpec, secretKey)
   }
@@ -76,63 +76,70 @@ class AesGCMCrypto @Inject()() {
     new SecretKeySpec(decodedKey, 0, decodedKey.length, ALGORITHM_KEY)
   } match {
     case Success(secretKey) => secretKey
-    case Failure(ex) => throw EncryptionDecryptionException(method, "The key provided is invalid", ex.getMessage)
+    case Failure(ex)        => throw EncryptionDecryptionException(method, "The key provided is invalid", ex.getMessage)
   }
 
-  def generateCipherText(valueToEncrypt: String, gcmParameterSpec: GCMParameterSpec, secretKey: SecretKey): String = {
+  def generateCipherText(valueToEncrypt: String, gcmParameterSpec: GCMParameterSpec, secretKey: SecretKey): String =
     Try {
       val cipher = getCipherInstance
       cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec, new SecureRandom())
       cipher.doFinal(valueToEncrypt.getBytes)
     } match {
       case Success(cipherTextBytes) => new String(Base64.getEncoder.encode(cipherTextBytes))
-      case Failure(ex) => throw processCipherTextFailure(ex, METHOD_ENCRYPT)
+      case Failure(ex)              => throw processCipherTextFailure(ex, METHOD_ENCRYPT)
     }
-  }
 
-  def decryptCipherText(valueToDecrypt: String, gcmParameterSpec: GCMParameterSpec, secretKey: SecretKey): String = {
+  def decryptCipherText(valueToDecrypt: String, gcmParameterSpec: GCMParameterSpec, secretKey: SecretKey): String =
     Try {
       val cipher = getCipherInstance
       cipher.init(Cipher.DECRYPT_MODE, secretKey, gcmParameterSpec, new SecureRandom())
       cipher.doFinal(Base64.getDecoder.decode(valueToDecrypt))
     } match {
       case Success(value) => new String(value)
-      case Failure(ex) => throw processCipherTextFailure(ex, METHOD_DECRYPT)
+      case Failure(ex)    => throw processCipherTextFailure(ex, METHOD_DECRYPT)
     }
-  }
 
   private[crypto] def getCipherInstance: Cipher = Cipher.getInstance(ALGORITHM_TO_TRANSFORM_STRING)
 
   private def processCipherTextFailure(ex: Throwable, method: String): Throwable = {
     val exception = ex match {
 
-      case e: NoSuchAlgorithmException => EncryptionDecryptionException(
-        method, "Algorithm being requested is not available in this environment",
-        e.getMessage)
+      case e: NoSuchAlgorithmException =>
+        EncryptionDecryptionException(
+          method,
+          "Algorithm being requested is not available in this environment",
+          e.getMessage
+        )
 
-      case e: NoSuchPaddingException => EncryptionDecryptionException(
-        method, "Padding Scheme being requested is not available this environment",
-        e.getMessage)
+      case e: NoSuchPaddingException =>
+        EncryptionDecryptionException(
+          method,
+          "Padding Scheme being requested is not available this environment",
+          e.getMessage
+        )
 
-      case e: InvalidKeyException => EncryptionDecryptionException(
-        method, "Key being used is not valid." +
-          " It could be due to invalid encoding, wrong length or uninitialized", e.getMessage)
+      case e: InvalidKeyException =>
+        EncryptionDecryptionException(
+          method,
+          "Key being used is not valid." +
+            " It could be due to invalid encoding, wrong length or uninitialized",
+          e.getMessage
+        )
 
-      case e: InvalidAlgorithmParameterException => EncryptionDecryptionException(
-        method, "Algorithm parameters being specified are not valid",
-        e.getMessage)
+      case e: InvalidAlgorithmParameterException =>
+        EncryptionDecryptionException(method, "Algorithm parameters being specified are not valid", e.getMessage)
 
-      case e: IllegalStateException => EncryptionDecryptionException(
-        method, "Cipher is in an illegal state", e.getMessage)
+      case e: IllegalStateException =>
+        EncryptionDecryptionException(method, "Cipher is in an illegal state", e.getMessage)
 
-      case e: UnsupportedOperationException => EncryptionDecryptionException(
-        method, "Provider might not be supporting this method", e.getMessage)
+      case e: UnsupportedOperationException =>
+        EncryptionDecryptionException(method, "Provider might not be supporting this method", e.getMessage)
 
-      case e: IllegalBlockSizeException => EncryptionDecryptionException(
-        method, "Error occurred due to block size", e.getMessage)
+      case e: IllegalBlockSizeException =>
+        EncryptionDecryptionException(method, "Error occurred due to block size", e.getMessage)
 
-      case e: BadPaddingException => EncryptionDecryptionException(
-        method, "Error occurred due to padding scheme", e.getMessage)
+      case e: BadPaddingException =>
+        EncryptionDecryptionException(method, "Error occurred due to padding scheme", e.getMessage)
 
       case _ => EncryptionDecryptionException(method, "Unexpected exception", ex.getMessage)
     }

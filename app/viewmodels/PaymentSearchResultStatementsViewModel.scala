@@ -26,31 +26,40 @@ import models.response.PaymentsWithdrawalsAndTransfer
 
 import java.time.LocalDate
 
-case class PaymentSearchResultStatementsViewModel(dailyStatements: Seq[DailyStatementViewModel],
-                                                  hasTransactions: Boolean,
-                                                  noTransactionsMessage: Option[HtmlFormat.Appendable] = None)
+case class PaymentSearchResultStatementsViewModel(
+  dailyStatements: Seq[DailyStatementViewModel],
+  hasTransactions: Boolean,
+  noTransactionsMessage: Option[HtmlFormat.Appendable] = None
+)
 
 object PaymentSearchResultStatementsViewModel {
 
-  def apply(transactions: Seq[PaymentsWithdrawalsAndTransfer],
-            pageNo: Option[Int])
-           (implicit msgs: Messages, config: AppConfig): PaymentSearchResultStatementsViewModel = {
+  def apply(transactions: Seq[PaymentsWithdrawalsAndTransfer], pageNo: Option[Int])(implicit
+    msgs: Messages,
+    config: AppConfig
+  ): PaymentSearchResultStatementsViewModel = {
 
     val dailyStatements: Seq[PaymentsWithdrawalsAndTransfer] = transactions.sortBy(_.valueDate).reverse
-    val hasTransactions = dailyStatements.nonEmpty
+    val hasTransactions                                      = dailyStatements.nonEmpty
 
     PaymentSearchResultStatementsViewModel(
       dailyStatementsBasedOnPageNoForPagination(
-        populateDailyStatementViewModelList(dailyStatements), pageNo, config.numberOfRecordsPerPage),
+        populateDailyStatementViewModelList(dailyStatements),
+        pageNo,
+        config.numberOfRecordsPerPage
+      ),
       hasTransactions,
-      if (hasTransactions) None else Some(noTransactionsMessage))
+      if (hasTransactions) None else Some(noTransactionsMessage)
+    )
   }
 
-  private def dailyStatementsBasedOnPageNoForPagination(statements: Seq[DailyStatementViewModel],
-                                                        pageNo: Option[Int],
-                                                        maxItemPerPage: Int): Seq[DailyStatementViewModel] = {
+  private def dailyStatementsBasedOnPageNoForPagination(
+    statements: Seq[DailyStatementViewModel],
+    pageNo: Option[Int],
+    maxItemPerPage: Int
+  ): Seq[DailyStatementViewModel] =
     pageNo match {
-      case None => statements
+      case None              => statements
       case Some(pageNoValue) =>
         if (pageNoValue == 1) {
           statements.slice(0, maxItemPerPage)
@@ -58,16 +67,16 @@ object PaymentSearchResultStatementsViewModel {
           statements.slice((pageNoValue - 1) * maxItemPerPage, pageNoValue * maxItemPerPage)
         }
     }
-  }
 
-  private def noTransactionsMessage(implicit msgs: Messages): HtmlFormat.Appendable = {
+  private def noTransactionsMessage(implicit msgs: Messages): HtmlFormat.Appendable =
     pComponent(
       messageKey = "cf.cash-account.transactions.no-transactions.message",
-      id = Some("no-transactions-to-display"))
-  }
+      id = Some("no-transactions-to-display")
+    )
 
-  private def populateDailyStatementViewModelList(dailyStatements: Seq[PaymentsWithdrawalsAndTransfer])
-                                                 (implicit msgs: Messages): Seq[DailyStatementViewModel] = {
+  private def populateDailyStatementViewModelList(
+    dailyStatements: Seq[PaymentsWithdrawalsAndTransfer]
+  )(implicit msgs: Messages): Seq[DailyStatementViewModel] = {
     val result: Seq[DailyStatementViewModel] = dailyStatements.map { txn =>
       DailyStatementViewModel(
         date = LocalDate.parse(txn.postingDate, yyyyMMddDateFormatter),
@@ -81,38 +90,36 @@ object PaymentSearchResultStatementsViewModel {
     result.sorted
   }
 
-  private def populateTransactionTypeText(valueObject: PaymentsWithdrawalsAndTransfer)(implicit msgs: Messages) = {
+  private def populateTransactionTypeText(valueObject: PaymentsWithdrawalsAndTransfer)(implicit msgs: Messages) =
     valueObject.`type` match {
-      case response.PaymentType.Payment => msgs("cf.cash-account.detail.top-up.v2")
+      case response.PaymentType.Payment    => msgs("cf.cash-account.detail.top-up.v2")
       case response.PaymentType.Withdrawal => msgs("cf.cash-account.detail.withdrawal")
-      case response.PaymentType.Transfer => msgs("cf.cash-account.detail.transfer.v2")
+      case response.PaymentType.Transfer   => msgs("cf.cash-account.detail.transfer.v2")
     }
-  }
 
-  private def populateCreditAmount(valueObject: PaymentsWithdrawalsAndTransfer): Option[String] = {
+  private def populateCreditAmount(valueObject: PaymentsWithdrawalsAndTransfer): Option[String] =
     valueObject.`type` match {
-      case response.PaymentType.Payment => Some(formatCurrencyAmount(valueObject.amount))
+      case response.PaymentType.Payment    => Some(formatCurrencyAmount(valueObject.amount))
       case response.PaymentType.Withdrawal => None
-      case response.PaymentType.Transfer =>
+      case response.PaymentType.Transfer   =>
         if (valueObject.amount < 0) {
           None
         } else {
           Some(formatCurrencyAmount(valueObject.amount))
         }
     }
-  }
 
-  private def populateDebitAmount(valueObject: PaymentsWithdrawalsAndTransfer): Option[String] = {
+  private def populateDebitAmount(valueObject: PaymentsWithdrawalsAndTransfer): Option[String] =
     valueObject.`type` match {
-      case response.PaymentType.Payment => None
-      case response.PaymentType.Withdrawal => Some(prependNegativeSignWithAmount(formatCurrencyAmount(valueObject.amount)))
-      case response.PaymentType.Transfer =>
+      case response.PaymentType.Payment    => None
+      case response.PaymentType.Withdrawal =>
+        Some(prependNegativeSignWithAmount(formatCurrencyAmount(valueObject.amount)))
+      case response.PaymentType.Transfer   =>
         if (valueObject.amount < 0) {
           Some(prependNegativeSignWithAmount(formatCurrencyAmount(valueObject.amount)))
         } else {
           None
         }
     }
-  }
 
 }

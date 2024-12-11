@@ -35,7 +35,8 @@ class UnorderedListSpec extends SpecBase {
     "display the unordered list correctly when listItems are present" in {
       val itemList = List("test_msg1", "test_msg2", "test_msg3")
 
-      val unorderedList: Document = Jsoup.parse(new unorderedList().apply(id = Some(TEST_ID), listItems = itemList).body)
+      val unorderedList: Document =
+        Jsoup.parse(new unorderedList().apply(id = Some(TEST_ID), listItems = itemList).body)
 
       unorderedList.select(s"#$TEST_ID").size() must be > 0
       unorderedList.getElementsByTag("li").size() mustBe 3
@@ -45,7 +46,7 @@ class UnorderedListSpec extends SpecBase {
 
     "display the unordered list correctly (with provided style class) when classes and listItems are present" in {
       val customClass = "test_class"
-      val itemList = List("test_msg1", "test_msg2", "test_msg3")
+      val itemList    = List("test_msg1", "test_msg2", "test_msg3")
 
       val unorderedList: Document =
         Jsoup.parse(new unorderedList().apply(listItems = itemList, classes = Some(customClass)).body)

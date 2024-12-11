@@ -40,13 +40,13 @@ class FileRoleSpec extends SpecBase {
 
     "serialize CDSCashAccount correctly" in {
       val fileRole: FileRole = FileRole.CDSCashAccount
-      val json: JsValue = Json.toJson(fileRole)
+      val json: JsValue      = Json.toJson(fileRole)
 
       json mustBe JsString("CDSCashAccount")
     }
 
     "deserialize CDSCashAccount correctly" in {
-      val json: JsValue = JsString("CDSCashAccount")
+      val json: JsValue              = JsString("CDSCashAccount")
       val result: JsResult[FileRole] = Json.fromJson[FileRole](json)
 
       result mustBe JsSuccess(FileRole.CDSCashAccount)

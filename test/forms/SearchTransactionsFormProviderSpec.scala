@@ -35,7 +35,7 @@ class SearchTransactionsFormProviderSpec extends SpecBase {
       val form = new SearchTransactionsFormProvider()()
 
       val inputValue = "GAGG1126910LP531340"
-      val data = Map("value" -> inputValue)
+      val data       = Map("value" -> inputValue)
 
       form.bind(data).get mustBe inputValue
     }

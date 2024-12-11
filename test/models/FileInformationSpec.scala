@@ -39,24 +39,26 @@ class FileInformationSpec extends SpecBase {
       }
 
       "handling multiple metadata items" in new Setup {
-        val multiMetadata: Metadata = Metadata(Seq(
-          MetadataItem("keyHolder1", "valueHolder1"),
-          MetadataItem("keyHolder2", "valueHolder2")
-        ))
+        val multiMetadata: Metadata = Metadata(
+          Seq(
+            MetadataItem("keyHolder1", "valueHolder1"),
+            MetadataItem("keyHolder2", "valueHolder2")
+          )
+        )
 
         val multiFileInfo: FileInformation = FileInformation("multi", "multiURL", fileSize + 2000, multiMetadata)
-        val multiJson: JsObject = Json.obj(
-          "filename" -> "multi",
+        val multiJson: JsObject            = Json.obj(
+          "filename"    -> "multi",
           "downloadURL" -> "multiURL",
-          "fileSize" -> (fileSize + 2000),
-          "metadata" -> Json.arr(
+          "fileSize"    -> (fileSize + 2000),
+          "metadata"    -> Json.arr(
             Json.obj(
               "metadata" -> "keyHolder1",
-              "value" -> "valueHolder1"
+              "value"    -> "valueHolder1"
             ),
             Json.obj(
               "metadata" -> "keyHolder2",
-              "value" -> "valueHolder2"
+              "value"    -> "valueHolder2"
             )
           )
         )
@@ -66,15 +68,15 @@ class FileInformationSpec extends SpecBase {
       }
 
       "handling empty metadata" in new Setup {
-        val emptyMetadata: Metadata = Metadata(Seq.empty)
+        val emptyMetadata: Metadata        = Metadata(Seq.empty)
         val emptyFileInfo: FileInformation =
           FileInformation("empty_metadata", "emptyURL", fileSize + 1000, emptyMetadata)
 
         val emptyJson: JsObject = Json.obj(
-          "filename" -> "empty_metadata",
+          "filename"    -> "empty_metadata",
           "downloadURL" -> "emptyURL",
-          "fileSize" -> (fileSize + 1000),
-          "metadata" -> Json.arr()
+          "fileSize"    -> (fileSize + 1000),
+          "metadata"    -> Json.arr()
         )
 
         Json.toJson(emptyFileInfo) mustBe emptyJson
@@ -84,13 +86,13 @@ class FileInformationSpec extends SpecBase {
 
     "fail to deserialize when invalid" in new Setup {
       val invalidJson: JsObject = Json.obj(
-        "filename" -> 12345,
+        "filename"    -> 12345,
         "downloadURL" -> true,
-        "fileSize" -> "large",
-        "metadata" -> Json.arr(
+        "fileSize"    -> "large",
+        "metadata"    -> Json.arr(
           Json.obj(
             "metadata" -> 67890,
-            "value" -> false
+            "value"    -> false
           )
         )
       )
@@ -113,20 +115,20 @@ class FileInformationSpec extends SpecBase {
 
   trait Setup {
 
-    val fileSize: Long = 100L
-    val filename: String = "fileName.csv"
-    val downloadURL: String = "downloadURL"
-    val metadata: Metadata = Metadata(Seq(MetadataItem("keyHolder", "valueHolder")))
+    val fileSize: Long            = 100L
+    val filename: String          = "fileName.csv"
+    val downloadURL: String       = "downloadURL"
+    val metadata: Metadata        = Metadata(Seq(MetadataItem("keyHolder", "valueHolder")))
     val fileInfo: FileInformation = FileInformation(filename, downloadURL, fileSize, metadata)
 
     def expectedJson(file: FileInformation): JsObject = Json.obj(
-      "filename" -> file.filename,
+      "filename"    -> file.filename,
       "downloadURL" -> file.downloadURL,
-      "fileSize" -> file.fileSize,
-      "metadata" -> Json.arr(
+      "fileSize"    -> file.fileSize,
+      "metadata"    -> Json.arr(
         Json.obj(
           "metadata" -> "keyHolder",
-          "value" -> "valueHolder"
+          "value"    -> "valueHolder"
         )
       )
     )

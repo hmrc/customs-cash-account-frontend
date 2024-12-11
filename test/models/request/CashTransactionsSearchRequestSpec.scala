@@ -34,9 +34,9 @@ class CashTransactionsSearchRequestSpec extends SpecBase {
 
   trait Setup {
 
-    val can = "123456789"
-    val ownerEORI = "GB123456789"
-    val searchType: SearchType.Value = SearchType.D
+    val can                                          = "123456789"
+    val ownerEORI                                    = "GB123456789"
+    val searchType: SearchType.Value                 = SearchType.D
     val declarationDetails: DeclarationDetailsSearch = DeclarationDetailsSearch(ParamName.MRN, "18GB9JLC3CU1LFGVR8")
 
     val paymentDetails: CashAccountPaymentDetails =
@@ -47,7 +47,8 @@ class CashTransactionsSearchRequestSpec extends SpecBase {
       ownerEORI = ownerEORI,
       searchType = searchType,
       declarationDetails = Some(declarationDetails),
-      cashAccountPaymentDetails = Some(paymentDetails))
+      cashAccountPaymentDetails = Some(paymentDetails)
+    )
 
     val requestJsValue: String =
       s"""{

@@ -19,17 +19,15 @@ package models
 trait OrderedByEoriHistory[T <: OrderedByEoriHistory[_]] extends Ordered[T] {
   val eoriHistory: EoriHistory
 
-  override def compare(that: T): Int = {
+  override def compare(that: T): Int =
     (for {
       thatValidFrom <- that.eoriHistory.validFrom
       thisValidFrom <- this.eoriHistory.validFrom
-    } yield {
-      thatValidFrom.compareTo(thisValidFrom)
-    }).getOrElse(1)
-  }
+    } yield thatValidFrom.compareTo(thisValidFrom)).getOrElse(1)
 }
 
-case class CashStatementsForEori(eoriHistory: EoriHistory,
-                                 currentStatements: Seq[CashStatementsByMonth],
-                                 requestedStatements: Seq[CashStatementsByMonth]
-                                ) extends OrderedByEoriHistory[CashStatementsForEori]
+case class CashStatementsForEori(
+  eoriHistory: EoriHistory,
+  currentStatements: Seq[CashStatementsByMonth],
+  requestedStatements: Seq[CashStatementsByMonth]
+) extends OrderedByEoriHistory[CashStatementsForEori]

@@ -50,8 +50,8 @@ class FormattersSpec extends SpecBase {
   "yyyyMMddDateFormatter" should {
 
     "return date in correct pattern" in {
-      val year = 2024
-      val month = 1
+      val year       = 2024
+      val month      = 1
       val dayOfMonth = 29
 
       yyyyMMddDateFormatter.format(LocalDate.of(year, month, dayOfMonth)) mustBe "2024-01-29"
@@ -61,28 +61,24 @@ class FormattersSpec extends SpecBase {
   "yyyyMMddHHmmssDateFormatter" should {
 
     "return date in correct pattern" in {
-      val year = 2024
-      val month = 1
+      val year       = 2024
+      val month      = 1
       val dayOfMonth = 29
-      val hourOfDay = 14
-      val minOfHour = 6
-      val secsOfMin = 26
+      val hourOfDay  = 14
+      val minOfHour  = 6
+      val secsOfMin  = 26
 
-      yyyyMMddHHmmssDateFormatter.format(LocalDateTime.of(
-        year,
-        month,
-        dayOfMonth,
-        hourOfDay,
-        minOfHour,
-        secsOfMin)) mustBe "20240129140626"
+      yyyyMMddHHmmssDateFormatter.format(
+        LocalDateTime.of(year, month, dayOfMonth, hourOfDay, minOfHour, secsOfMin)
+      ) mustBe "20240129140626"
     }
   }
 
   "ddMMyyyyDateFormatter" should {
 
     "return date in correct pattern" in {
-      val year = 2024
-      val month = 1
+      val year       = 2024
+      val month      = 1
       val dayOfMonth = 29
 
       ddMMyyyyDateFormatter.format(LocalDate.of(year, month, dayOfMonth)) mustBe "29012024"
@@ -96,10 +92,10 @@ class FormattersSpec extends SpecBase {
     }
 
     "return result with two decimal points when value is greater than 0" in {
-      val wholeValue = 200
-      val valueWithTwoDecimalPoint = 530.45
-      val valueWithFourDigitsAndTwoDecimalPoint = 3489.00
-      val wholeValueWithFiveDigits = 54000
+      val wholeValue                             = 200
+      val valueWithTwoDecimalPoint               = 530.45
+      val valueWithFourDigitsAndTwoDecimalPoint  = 3489.00
+      val wholeValueWithFiveDigits               = 54000
       val valueWithSixDigitsWithTwoDecimalPoints = 554678.56
 
       formatCurrencyAmount(BigDecimal(2)) mustBe "£2.00"

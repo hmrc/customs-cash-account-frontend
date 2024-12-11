@@ -97,54 +97,50 @@ class ResultsPageSummarySpec extends SpecBase {
 
     "return the day of the month with leading 0 if day of the month is less than 10" in new Setup {
       val dateWithDay9th: LocalDate = LocalDate.of(year, month3rd, day9th)
-      val result: String = resultPageSummary01.dateAsDay(dateWithDay9th)
+      val result: String            = resultPageSummary01.dateAsDay(dateWithDay9th)
 
       result mustBe "09"
     }
 
     "return the day of the month without leading 0 if equal to 10" in new Setup {
       val dateWithDay10th: LocalDate = LocalDate.of(year, month3rd, day10th)
-      val result: String = resultPageSummary01.dateAsDay(dateWithDay10th)
+      val result: String             = resultPageSummary01.dateAsDay(dateWithDay10th)
 
       result mustBe "10"
     }
 
     "return the day of the month without leading 0 if greater than 10" in new Setup {
       val dateWithDay11th: LocalDate = LocalDate.of(year, month3rd, day11th)
-      val result: String = resultPageSummary01.dateAsDay(dateWithDay11th)
+      val result: String             = resultPageSummary01.dateAsDay(dateWithDay11th)
 
       result mustBe "11"
     }
   }
 
-  private def shouldProduceCorrectDatesRangeText(summaryList: SummaryListRow, datesRange: String): Assertion = {
+  private def shouldProduceCorrectDatesRangeText(summaryList: SummaryListRow, datesRange: String): Assertion =
     summaryList.value.content.asHtml.body mustBe datesRange
-  }
 
-  private def shouldContainCorrectLinkForAction(summaryList: SummaryListRow, url: String): Assertion = {
+  private def shouldContainCorrectLinkForAction(summaryList: SummaryListRow, url: String): Assertion =
     summaryList.actions.head.items.head.href.contains(url) mustBe true
-  }
 
-  private def shouldNotHaveClasses(summaryList: SummaryListRow): Assertion = {
+  private def shouldNotHaveClasses(summaryList: SummaryListRow): Assertion =
     summaryList.classes mustBe emptyString
-  }
 
-  private def shouldNotHaveSecondValue(summaryList: SummaryListRow): Assertion = {
+  private def shouldNotHaveSecondValue(summaryList: SummaryListRow): Assertion =
     summaryList.secondValue mustBe None
-  }
 
   trait Setup {
-    val day9th = 9
-    val day8th = 8
+    val day9th  = 9
+    val day8th  = 8
     val day10th = 10
     val day11th = 11
 
     val month3rd = 3
     val month4th = 4
-    val year = 2022
+    val year     = 2022
 
     val fromDate: LocalDate = LocalDate.of(year, month3rd, day8th)
-    val toDate: LocalDate = LocalDate.of(year, month4th, day10th)
+    val toDate: LocalDate   = LocalDate.of(year, month4th, day10th)
 
     val resultPageSummary01: ResultsPageSummary = new ResultsPageSummary(fromDate, toDate, true)
     val resultPageSummary02: ResultsPageSummary = new ResultsPageSummary(fromDate, toDate, false)

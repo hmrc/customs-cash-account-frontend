@@ -45,9 +45,9 @@ class AccountsAndBalancesSpec extends SpecBase {
   }
 
   trait Setup {
-    val jsOpen: JsString = JsString("Open")
+    val jsOpen: JsString      = JsString("Open")
     val jsSuspended: JsString = JsString("Suspended")
-    val jsClosed: JsString = JsString("Closed")
-    val jsFailure: JsString = JsString("123")
+    val jsClosed: JsString    = JsString("Closed")
+    val jsFailure: JsString   = JsString("123")
   }
 }

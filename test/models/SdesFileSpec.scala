@@ -55,13 +55,15 @@ class SdesFileSpec extends SpecBase {
         periodEndDay = dayEnd,
         fileFormat = FileFormat.Pdf,
         fileRole = FileRole.CDSCashAccount,
-        statementRequestId = Some("xyz-1234"))
+        statementRequestId = Some("xyz-1234")
+      )
 
       val otherFile: CashStatementFile = CashStatementFile(
         filename = "other_file.pdf",
         downloadURL = "other_file.pdf",
         size = size2,
-        metadata = otherMetadata)(messages)
+        metadata = otherMetadata
+      )(messages)
 
       file.compare(otherFile) mustBe <(0)
       otherFile.compare(file) mustBe >(0)
@@ -76,19 +78,19 @@ class SdesFileSpec extends SpecBase {
 
   trait Setup {
 
-    val yearStart = 2024
+    val yearStart  = 2024
     val monthStart = 5
-    val dayStart = 5
-    val yearEnd = 2025
-    val monthEnd = 8
-    val dayEnd = 8
+    val dayStart   = 5
+    val yearEnd    = 2025
+    val monthEnd   = 8
+    val dayEnd     = 8
 
-    val size = 111L
+    val size  = 111L
     val size2 = 200L
 
-    val year = 2024
+    val year  = 2024
     val month = 5
-    val day = 1
+    val day   = 1
 
     val metadata: CashStatementFileMetadata = CashStatementFileMetadata(
       periodStartYear = yearStart,
@@ -99,12 +101,10 @@ class SdesFileSpec extends SpecBase {
       periodEndDay = dayEnd,
       fileFormat = FileFormat.Csv,
       fileRole = FileRole.CDSCashAccount,
-      statementRequestId = Some("abc-defg-1234-abc"))
+      statementRequestId = Some("abc-defg-1234-abc")
+    )
 
-    val file: CashStatementFile = CashStatementFile(
-      filename = "name_04",
-      downloadURL = "name_04",
-      size = size,
-      metadata = metadata)(messages)
+    val file: CashStatementFile =
+      CashStatementFile(filename = "name_04", downloadURL = "name_04", size = size, metadata = metadata)(messages)
   }
 }

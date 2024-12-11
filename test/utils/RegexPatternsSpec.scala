@@ -23,10 +23,7 @@ class RegexPatternsSpec extends SpecBase {
   "MRN Regex" should {
 
     "match valid regex" in {
-      val validInputs: Seq[String] = Seq(
-        "ABCD123456789012",
-        "ABCD12345678901234",
-        "ABCD1234567890123456")
+      val validInputs: Seq[String] = Seq("ABCD123456789012", "ABCD12345678901234", "ABCD1234567890123456")
 
       validInputs.foreach { input =>
         mrnRegex.findFirstIn(input) mustBe Some(input)
@@ -34,10 +31,7 @@ class RegexPatternsSpec extends SpecBase {
     }
 
     "not match invalid regex" in {
-      val invalidInputs: Seq[String] = Seq(
-        "AB12",
-        "ABCD123456789012345678",
-        "GHRT122317@DC239177")
+      val invalidInputs: Seq[String] = Seq("AB12", "ABCD123456789012345678", "GHRT122317@DC239177")
 
       invalidInputs.foreach { input =>
         mrnRegex.findFirstIn(input) mustBe None
@@ -48,15 +42,8 @@ class RegexPatternsSpec extends SpecBase {
   "Payment Regex" should {
 
     "match valid payment amounts" in {
-      val validInputs: Seq[String] = Seq(
-        "£123",
-        "£123.45",
-        "-£123",
-        "-£123.45",
-        "£1234",
-        "£1234.56",
-        "£12345",
-        "£12345.67")
+      val validInputs: Seq[String] =
+        Seq("£123", "£123.45", "-£123", "-£123.45", "£1234", "£1234.56", "£12345", "£12345.67")
 
       validInputs.foreach { input =>
         paymentRegex.findFirstIn(input) mustBe Some(input)
@@ -64,12 +51,7 @@ class RegexPatternsSpec extends SpecBase {
     }
 
     "not match invalid payment amounts" in {
-      val invalidInputs: Seq[String] = Seq(
-        "123",
-        "-123",
-        "£123.4",
-        "£123.456",
-        "-£123.456")
+      val invalidInputs: Seq[String] = Seq("123", "-123", "£123.4", "£123.456", "-£123.456")
 
       invalidInputs.foreach { input =>
         paymentRegex.findFirstIn(input) mustBe None
@@ -84,7 +66,8 @@ class RegexPatternsSpec extends SpecBase {
         "GB1234567890-1134-7456-914-121D",
         "123GB0987654321-1234-5678-910-ABC3",
         "gB3GB0987654321-123-5678-9-ABC3--",
-        "xG3gb0987re4321 1ee 5678 9 ABC3ear")
+        "xG3gb0987re4321 1ee 5678 9 ABC3ear"
+      )
 
       validInputs.foreach { input =>
         ucrRegex.findFirstIn(input) mustBe Some(input)
@@ -92,9 +75,7 @@ class RegexPatternsSpec extends SpecBase {
     }
 
     "not match invalid regex" in {
-      val invalidInputs: Seq[String] = Seq(
-        "GB1234567890-1134!7456_914-121D",
-        "?_GB 12345 67890 1134 7456 914 121D")
+      val invalidInputs: Seq[String] = Seq("GB1234567890-1134!7456_914-121D", "?_GB 12345 67890 1134 7456 914 121D")
 
       invalidInputs.foreach { input =>
         ucrRegex.findFirstIn(input) mustBe None

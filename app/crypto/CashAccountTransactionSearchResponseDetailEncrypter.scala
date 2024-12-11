@@ -21,16 +21,20 @@ import models.response.CashAccountTransactionSearchResponseDetail
 import play.api.libs.json.Json
 import javax.inject.Inject
 
-class CashAccountTransactionSearchResponseDetailEncrypter @Inject()(crypto: AesGCMCrypto) {
+class CashAccountTransactionSearchResponseDetailEncrypter @Inject() (crypto: AesGCMCrypto) {
 
-  def encryptSearchResponseDetail(cashTransactions: CashAccountTransactionSearchResponseDetail,
-                                  key: String): EncryptedValue = {
+  def encryptSearchResponseDetail(
+    cashTransactions: CashAccountTransactionSearchResponseDetail,
+    key: String
+  ): EncryptedValue = {
     val json = Json.toJson(cashTransactions).toString()
     crypto.encrypt(json, key)
   }
 
-  def decryptSearchResponseDetail(encryptedData: EncryptedValue,
-                                  key: String): CashAccountTransactionSearchResponseDetail = {
+  def decryptSearchResponseDetail(
+    encryptedData: EncryptedValue,
+    key: String
+  ): CashAccountTransactionSearchResponseDetail = {
     val decryptedJson = crypto.decrypt(encryptedData, key)
     Json.parse(decryptedJson).as[CashAccountTransactionSearchResponseDetail]
   }

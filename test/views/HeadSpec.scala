@@ -29,8 +29,8 @@ class HeadSpec extends ViewTestHelper {
     "display correct contents" when {
 
       "headBlock contains Html" in new Setup {
-        val sampleString = "test_str"
-        val view: Document = viewDoc(Some(Html(sampleString)))
+        val sampleString              = "test_str"
+        val view: Document            = viewDoc(Some(Html(sampleString)))
         implicit val htmlView: String = view.html()
 
         view.getElementById("tracking-consent-script-tag").text() mustBe empty
@@ -41,7 +41,7 @@ class HeadSpec extends ViewTestHelper {
       }
 
       "headBlock is empty" in new Setup {
-        val view: Document = viewDoc()
+        val view: Document            = viewDoc()
         implicit val htmlView: String = view.html()
 
         view.getElementById("tracking-consent-script-tag").text() mustBe empty

@@ -18,12 +18,11 @@ package viewmodels
 
 import utils.SpecBase
 
-
 class CSVWritableSpec extends SpecBase {
 
-  case class Foo(columnA: Option[String],
-                 columnB: Option[String],
-                 columnC: Option[String]) extends CSVWritable with FieldNames {
+  case class Foo(columnA: Option[String], columnB: Option[String], columnC: Option[String])
+      extends CSVWritable
+      with FieldNames {
     override def fieldNames: Seq[String] = Seq("columnA", "columnB", "columnC")
   }
 

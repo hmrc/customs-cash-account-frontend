@@ -21,13 +21,11 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{HeadCell, HtmlContent}
 
 object PaymentHeader {
 
-  def apply()(implicit messages: Messages): Seq[HeadCell] = {
-
+  def apply()(implicit messages: Messages): Seq[HeadCell] =
     Seq(
       HeadCell(
         classes = "first-column-width",
-        content = HtmlContent(
-          s"""
+        content = HtmlContent(s"""
               <abbr title="${messages("cf.cash-account.detail.movement-reference-number")}">
               ${messages("cf.cash-account.detail.Declarationmrn")}
               </abbr>
@@ -35,16 +33,14 @@ object PaymentHeader {
       ),
       HeadCell(
         classes = "second-column-width",
-        content = HtmlContent(
-          s"""
+        content = HtmlContent(s"""
               <abbr title="${messages("cf.cash-account.detail.unique-consignment-reference")}">
               ${messages("cf.cash-account.detail.Declarationucr")}
               </abbr>
               """)
       ),
       HeadCell(
-        content = HtmlContent(
-          s"""
+        content = HtmlContent(s"""
               ${messages("cf.cash-account.detail.declarant")}
               <abbr title="${messages("cf.cash-account.detail.eori-definition")}">
               ${messages("cf.cash-account.detail.eori")}
@@ -53,11 +49,9 @@ object PaymentHeader {
       ),
       HeadCell(
         format = Some("numeric"),
-        content = HtmlContent(
-          s"""
+        content = HtmlContent(s"""
                     ${messages("cf.cash-account.detail.amount")}
                     """)
       )
     )
-  }
 }

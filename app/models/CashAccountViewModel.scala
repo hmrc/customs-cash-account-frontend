@@ -18,5 +18,4 @@ package models
 
 import models.domain.EORI
 
-case class CashAccountViewModel(eori: EORI,
-                                account: CashAccount)
+case class CashAccountViewModel(eori: EORI, account: CashAccount)
