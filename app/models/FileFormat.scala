@@ -53,7 +53,7 @@ object FileFormat {
   def apply(name: String): FileFormat = name.toUpperCase match {
     case Pdf.name => Pdf
     case Csv.name => Csv
-    case _ =>
+    case _        =>
       log.warn(s"Unknown file format: $name")
       UnknownFileFormat
   }

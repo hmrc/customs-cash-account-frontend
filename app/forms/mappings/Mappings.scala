@@ -24,19 +24,25 @@ import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
 
-  protected def boolean(requiredKey: String = "error.required",
-                        invalidKey: String = "error.boolean"): FieldMapping[Boolean] =
+  protected def boolean(
+    requiredKey: String = "error.required",
+    invalidKey: String = "error.boolean"
+  ): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey))
 
-  protected def localDate(invalidKey: String,
-                          dayKey: String = emptyString,
-                          monthKey: String,
-                          yearKey: String,
-                          invalidDateKey: String): FieldMapping[LocalDate] =
+  protected def localDate(
+    invalidKey: String,
+    dayKey: String = emptyString,
+    monthKey: String,
+    yearKey: String,
+    invalidDateKey: String
+  ): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, dayKey, monthKey, yearKey, invalidDateKey, Seq.empty))
 
-  protected def decimal(requiredKey: String = "error.required",
-                        nonNumericKey: String = "error.nonNumeric"): FieldMapping[String] =
+  protected def decimal(
+    requiredKey: String = "error.required",
+    nonNumericKey: String = "error.nonNumeric"
+  ): FieldMapping[String] =
     of(decimalFormatter(requiredKey, nonNumericKey))
 
   protected def text(errorKey: String = "error.required"): FieldMapping[String] =

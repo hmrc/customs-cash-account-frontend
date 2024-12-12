@@ -34,14 +34,19 @@ class LayoutSpec extends SpecBase {
     "display correct guidance" when {
 
       "title and back link are provided" in new Setup {
-        val title = "test_title"
+        val title   = "test_title"
         val linkUrl = "test.com"
 
-        val layoutView: Document = Jsoup.parse(application.injector.instanceOf[Layout].apply(
-          pageTitle = Some(title),
-          backLink = Some(linkUrl),
-          fullWidth = true
-        )(content).body)
+        val layoutView: Document = Jsoup.parse(
+          application.injector
+            .instanceOf[Layout]
+            .apply(
+              pageTitle = Some(title),
+              backLink = Some(linkUrl),
+              fullWidth = true
+            )(content)
+            .body
+        )
 
         shouldContainCorrectTitle(layoutView, title)
         shouldContainCorrectServiceUrls(layoutView)
@@ -50,8 +55,8 @@ class LayoutSpec extends SpecBase {
       }
 
       "there is no value for title and back link" in new Setup {
-        val layoutView: Document = Jsoup.parse(application.injector.instanceOf[Layout].apply(
-          fullWidth = true)(content).body)
+        val layoutView: Document =
+          Jsoup.parse(application.injector.instanceOf[Layout].apply(fullWidth = true)(content).body)
 
         shouldContainCorrectTitle(layoutView)
         shouldContainCorrectServiceUrls(layoutView)
@@ -60,21 +65,20 @@ class LayoutSpec extends SpecBase {
       }
     }
 
-
     "display correct page-not-working-properly link (desk-pro) and margin" in new Setup {
-      val layoutView: Document = Jsoup.parse(application.injector.instanceOf[Layout].apply(fullWidth = true)(content).body)
+      val layoutView: Document =
+        Jsoup.parse(application.injector.instanceOf[Layout].apply(fullWidth = true)(content).body)
 
       shouldContainCorrectHMRCTechnicalHelper(layoutView)
     }
   }
 
-  private def shouldContainCorrectTitle(viewDoc: Document, title: String = emptyString)(implicit msgs: Messages) = {
+  private def shouldContainCorrectTitle(viewDoc: Document, title: String = emptyString)(implicit msgs: Messages) =
     if (title.nonEmpty) {
       viewDoc.title() mustBe s"$title - ${msgs("service.name")} - GOV.UK"
     } else {
       viewDoc.title() mustBe s"${msgs("service.name")} - GOV.UK"
     }
-  }
 
   private def shouldContainCorrectServiceUrls(viewDoc: Document)(implicit appConfig: AppConfig) = {
     viewDoc.html().contains(appConfig.customsFinancialsFrontendHomepage) mustBe true
@@ -82,34 +86,35 @@ class LayoutSpec extends SpecBase {
     viewDoc.html().contains("/accessibility-statement/customs-financials") mustBe true
   }
 
-  private def shouldContainCorrectBackLink(viewDoc: Document,
-                                           backLinkUrl: Option[String] = None) = {
-
+  private def shouldContainCorrectBackLink(viewDoc: Document, backLinkUrl: Option[String] = None) =
     if (backLinkUrl.isDefined) {
       viewDoc.getElementsByClass("govuk-back-link").text() mustBe "Back"
-      viewDoc.getElementsByClass("govuk-back-link").attr("href")
+      viewDoc
+        .getElementsByClass("govuk-back-link")
+        .attr("href")
         .contains(backLinkUrl.get) mustBe true
     } else {
       viewDoc.getElementsByClass("govuk-back-link").size() mustBe 0
     }
-  }
 
   private def shouldContainCorrectBanners(viewDoc: Document) = {
-    viewDoc.getElementsByClass("govuk-phase-banner")
+    viewDoc
+      .getElementsByClass("govuk-phase-banner")
       .text() mustBe "BETA This is a new service - your feedback will help us to improve it."
 
-    viewDoc.getElementsByClass("hmrc-user-research-banner")
+    viewDoc
+      .getElementsByClass("hmrc-user-research-banner")
       .text() mustBe "Help make GOV.UK better Sign up to take part in research (opens in new tab)" +
       " Hide message Hide message. I do not want to take part in research"
   }
 
-  private def shouldContainCorrectHMRCTechnicalHelper(viewDoc: Document) = {
-    viewDoc.getElementsByClass("govuk-!-margin-top-9")
+  private def shouldContainCorrectHMRCTechnicalHelper(viewDoc: Document) =
+    viewDoc
+      .getElementsByClass("govuk-!-margin-top-9")
       .text() mustBe "Is this page not working properly? (opens in new tab)"
-  }
 
   trait Setup {
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest("GET", "test_path")
-    val content: Html = Html("test")
+    val content: Html                                         = Html("test")
   }
 }

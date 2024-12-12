@@ -22,22 +22,16 @@ import utils.Utils.emptyString
 
 object ViewUtils {
 
-  def title(form: Form[_],
-            titleStr: String,
-            section: Option[String],
-            titleMessageArgs: Seq[String])(implicit messages: Messages): String = {
+  def title(form: Form[_], titleStr: String, section: Option[String], titleMessageArgs: Seq[String])(implicit
+    messages: Messages
+  ): String =
+    titleNoForm(s"${errorPrefix(form)} ${messages(titleStr, titleMessageArgs: _*)}", section, titleMessageArgs)
 
-    titleNoForm(s"${errorPrefix(form)} ${messages(titleStr, titleMessageArgs: _*)}",
-      section,
-      titleMessageArgs)
-  }
-
-  private def titleNoForm(title: String,
-                          section: Option[String],
-                          titleMessageArgs: Seq[String])(implicit messages: Messages): String =
+  private def titleNoForm(title: String, section: Option[String], titleMessageArgs: Seq[String])(implicit
+    messages: Messages
+  ): String =
     s"${messages(title, titleMessageArgs: _*)}${section.fold(emptyString)(v => s"- ${messages(v)}")}"
 
-  private def errorPrefix(form: Form[_])(implicit messages: Messages): String = {
+  private def errorPrefix(form: Form[_])(implicit messages: Messages): String =
     if (form.hasErrors || form.hasGlobalErrors) messages("error.browser.title.prefix") else emptyString
-  }
 }

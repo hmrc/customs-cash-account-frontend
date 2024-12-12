@@ -47,24 +47,24 @@ class SummaryListSpec extends SpecBase {
   trait Setup {
     val day10th = 10
     val day11th = 11
-    val month = 3
-    val year = 2022
+    val month   = 3
+    val year    = 2022
 
-    val download: String = "Download CSV"
-    val change: String = "Change"
-    val classes: String = "govuk-summary-list__actions"
+    val download: String   = "Download CSV"
+    val change: String     = "Change"
+    val classes: String    = "govuk-summary-list__actions"
     val downloadId: String = "downloadChange"
-    val changeId: String = "changeDates"
+    val changeId: String   = "changeDates"
 
     val fromDate: LocalDate = LocalDate.of(year, month, day10th)
-    val toDate: LocalDate = LocalDate.of(year, month, day11th)
+    val toDate: LocalDate   = LocalDate.of(year, month, day11th)
 
     val summary: ResultsPageSummary = new ResultsPageSummary(fromDate, toDate)
 
-    val summaryListComponent: Document = Jsoup.parse(
-      application.injector.instanceOf[summaryList].apply(summary = summary).body)
+    val summaryListComponent: Document =
+      Jsoup.parse(application.injector.instanceOf[summaryList].apply(summary = summary).body)
 
-    val summaryListComponentWithChange: Document = Jsoup.parse(
-      application.injector.instanceOf[summaryList].apply(summary = summary, isChange = true).body)
+    val summaryListComponentWithChange: Document =
+      Jsoup.parse(application.injector.instanceOf[summaryList].apply(summary = summary, isChange = true).body)
   }
 }

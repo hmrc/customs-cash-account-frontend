@@ -41,19 +41,18 @@ class PSpec extends SpecBase {
         pComponentBoldWithIdAndClasses.getElementById(id).text() mustBe messages(msgKey)
         pComponentBoldWithIdAndClasses.getElementsByClass(classes).text() mustBe messages(msgKey)
         pComponentBoldWithIdAndClasses.getElementsByClass(defaultClass).text() mustBe empty
-        pComponentBoldWithIdAndClasses.getElementsByClass(
-          "govuk-!-font-weight-bold").text() mustBe messages(msgKey)
+        pComponentBoldWithIdAndClasses.getElementsByClass("govuk-!-font-weight-bold").text() mustBe messages(msgKey)
       }
     }
   }
 
   trait Setup {
-    val msgKey = "cf.verify.your.email.p1"
-    val id = "test_id"
-    val classes = "custom_class"
+    val msgKey       = "cf.verify.your.email.p1"
+    val id           = "test_id"
+    val classes      = "custom_class"
     val defaultClass = "govuk-body"
 
-    val pComponent: Document = Jsoup.parse(application.injector.instanceOf[p].apply(msgKey).body)
+    val pComponent: Document                 = Jsoup.parse(application.injector.instanceOf[p].apply(msgKey).body)
     val pComponentWithIdAndClasses: Document =
       Jsoup.parse(application.injector.instanceOf[p].apply(msgKey, classes = classes, id = Some(id)).body)
 

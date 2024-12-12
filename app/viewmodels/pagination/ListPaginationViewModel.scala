@@ -19,19 +19,23 @@ package viewmodels.pagination
 import config.AppConfig
 import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination.*
 
-case class ListPaginationViewModel(results: MetaData,
-                                   previous: Option[PaginationLink],
-                                   next: Option[PaginationLink],
-                                   items: Seq[PaginationItem],
-                                   pageNumber: Int) extends PaginationViewModel
+case class ListPaginationViewModel(
+  results: MetaData,
+  previous: Option[PaginationLink],
+  next: Option[PaginationLink],
+  items: Seq[PaginationItem],
+  pageNumber: Int
+) extends PaginationViewModel
 
 object ListPaginationViewModel {
 
-  def apply(totalNumberOfItems: Int,
-            currentPage: Int,
-            numberOfItemsPerPage: Int,
-            href: String,
-            additionalParams: Seq[(String, String)] = Seq.empty)(implicit config: AppConfig): ListPaginationViewModel =
+  def apply(
+    totalNumberOfItems: Int,
+    currentPage: Int,
+    numberOfItemsPerPage: Int,
+    href: String,
+    additionalParams: Seq[(String, String)] = Seq.empty
+  )(implicit config: AppConfig): ListPaginationViewModel =
     PaginationViewModel(
       totalNumberOfItems,
       currentPage,

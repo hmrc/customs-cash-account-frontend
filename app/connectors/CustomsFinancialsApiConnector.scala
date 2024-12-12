@@ -27,8 +27,7 @@ import models.request.{
 }
 import org.slf4j.LoggerFactory
 import play.api.http.Status.{
-  BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK,
-  REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE
+  BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE
 }
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.mvc.AnyContent
@@ -49,46 +48,51 @@ import play.api.libs.json.Json
 import utils.EtmpErrorCode
 import utils.Utils.buildCacheId
 
-class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
-                                              appConfig: AppConfig,
-                                              metricsReporter: MetricsReporterService,
-                                              cacheRepository: CacheRepository,
-                                              searchRepository: CashAccountSearchRepository)
-                                             (implicit executionContext: ExecutionContext) {
+class CustomsFinancialsApiConnector @Inject() (
+  httpClient: HttpClientV2,
+  appConfig: AppConfig,
+  metricsReporter: MetricsReporterService,
+  cacheRepository: CacheRepository,
+  searchRepository: CashAccountSearchRepository
+)(implicit executionContext: ExecutionContext) {
 
-  private val logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
-  private val baseUrl = appConfig.customsFinancialsApi
-  private val accountsUrl = s"$baseUrl/eori/accounts"
-  private val retrieveCashTransactionsUrl = s"$baseUrl/account/cash/transactions"
-  private val retrieveCashTransactionsDetailUrl = s"$baseUrl/account/cash/transactions-detail"
-  private val retrieveCashAccountStatementsUrl = s"$baseUrl/accounts/cashaccountstatementrequest/v1"
+  private val logger                                = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
+  private val baseUrl                               = appConfig.customsFinancialsApi
+  private val accountsUrl                           = s"$baseUrl/eori/accounts"
+  private val retrieveCashTransactionsUrl           = s"$baseUrl/account/cash/transactions"
+  private val retrieveCashTransactionsDetailUrl     = s"$baseUrl/account/cash/transactions-detail"
+  private val retrieveCashAccountStatementsUrl      = s"$baseUrl/accounts/cashaccountstatementrequest/v1"
   private val retrieveCashAccountStatementSearchUrl = s"$baseUrl/account/cash/transaction-search"
 
-
-  def getCashAccount(eori: String)(implicit hc: HeaderCarrier,
-                                   request: IdentifierRequest[AnyContent]): Future[Option[CashAccount]] = {
-    val requestDetail = AccountsRequestDetail(eori, None, None, None)
+  def getCashAccount(
+    eori: String
+  )(implicit hc: HeaderCarrier, request: IdentifierRequest[AnyContent]): Future[Option[CashAccount]] = {
+    val requestDetail              = AccountsRequestDetail(eori, None, None, None)
     val accountsAndBalancesRequest = AccountsAndBalancesRequestContainer(
       AccountsAndBalancesRequest(AccountsRequestCommon.generate, requestDetail)
     )
 
-    metricsReporter.withResponseTimeLogging("customs-financials-api.get.accounts") {
-      httpClient.post(url"$accountsUrl")
-        .withBody[AccountsAndBalancesRequestContainer](accountsAndBalancesRequest)
-        .execute[AccountsAndBalancesResponseContainer]
-        .map(_.toCashAccounts)
-    }.map(_.find(_.owner == request.eori))
+    metricsReporter
+      .withResponseTimeLogging("customs-financials-api.get.accounts") {
+        httpClient
+          .post(url"$accountsUrl")
+          .withBody[AccountsAndBalancesRequestContainer](accountsAndBalancesRequest)
+          .execute[AccountsAndBalancesResponseContainer]
+          .map(_.toCashAccounts)
+      }
+      .map(_.find(_.owner == request.eori))
   }
 
-  def retrieveHistoricCashTransactions(can: String,
-                                       from: LocalDate,
-                                       to: LocalDate)
-                                      (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
+  def retrieveHistoricCashTransactions(can: String, from: LocalDate, to: LocalDate)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
-    httpClient.post(url"$retrieveCashTransactionsUrl")
+    httpClient
+      .post(url"$retrieveCashTransactionsUrl")
       .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
-      .execute[CashTransactions].map(Right(_))
+      .execute[CashTransactions]
+      .map(Right(_))
   }.recover {
     case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
       logger.error(s"Entity too large to download")
@@ -103,56 +107,66 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       Left(UnknownException)
   }
 
-  def retrieveCashTransactions(can: String, from: LocalDate, to: LocalDate)
-                              (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
+  def retrieveCashTransactions(can: String, from: LocalDate, to: LocalDate)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[ErrorResponse, CashTransactions]] = {
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
-    cacheRepository.get(can).flatMap {
-      case Some(value) => Future.successful(Right(value))
+    cacheRepository
+      .get(can)
+      .flatMap {
+        case Some(value) => Future.successful(Right(value))
 
-      case None =>
-        httpClient.post(url"$retrieveCashTransactionsUrl")
-          .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
-          .execute[CashTransactions]
-          .flatMap { response =>
+        case None =>
+          httpClient
+            .post(url"$retrieveCashTransactionsUrl")
+            .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
+            .execute[CashTransactions]
+            .flatMap { response =>
 
-            val transactionsWithUUID = addUUIDToCashTransaction(response)
+              val transactionsWithUUID = addUUIDToCashTransaction(response)
 
-            cacheRepository.set(can, transactionsWithUUID).map { successfulWrite =>
-              if (!successfulWrite) {
-                logger.error("Failed to store data in the session cache defaulting to the api response")
+              cacheRepository.set(can, transactionsWithUUID).map { successfulWrite =>
+                if (!successfulWrite) {
+                  logger.error("Failed to store data in the session cache defaulting to the api response")
+                }
+
+                Right(transactionsWithUUID)
               }
-
-              Right(transactionsWithUUID)
             }
-          }
 
-    }.recover {
-      case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
-        logger.error(s"Entity too large to download")
-        Left(TooManyTransactionsRequested)
+      }
+      .recover {
+        case UpstreamErrorResponse(_, REQUEST_ENTITY_TOO_LARGE, _, _) =>
+          logger.error(s"Entity too large to download")
+          Left(TooManyTransactionsRequested)
 
-      case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
-        logger.error(s"No data found")
-        Left(NoTransactionsAvailable)
+        case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
+          logger.error(s"No data found")
+          Left(NoTransactionsAvailable)
 
-      case e =>
-        logger.error(s"Unable to retrieve cash transactions: ${e.getMessage}")
-        Left(UnknownException)
-    }
+        case e =>
+          logger.error(s"Unable to retrieve cash transactions: ${e.getMessage}")
+          Left(UnknownException)
+      }
   }
 
-  def retrieveCashTransactionsBySearch(can: String,
-                                       ownerEORI: String,
-                                       searchType: SearchType.Value,
-                                       searchInput: String,
-                                       declarationDetails: Option[DeclarationDetailsSearch] = None,
-                                       cashAccountPaymentDetails: Option[CashAccountPaymentDetails] = None
-                                      )(implicit hc: HeaderCarrier
-                                      ): Future[Either[ErrorResponse, CashAccountTransactionSearchResponseDetail]] = {
+  def retrieveCashTransactionsBySearch(
+    can: String,
+    ownerEORI: String,
+    searchType: SearchType.Value,
+    searchInput: String,
+    declarationDetails: Option[DeclarationDetailsSearch] = None,
+    cashAccountPaymentDetails: Option[CashAccountPaymentDetails] = None
+  )(implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashAccountTransactionSearchResponseDetail]] = {
 
     val request = CashAccountTransactionSearchRequestDetails(
-      can, ownerEORI, searchType, declarationDetails, cashAccountPaymentDetails)
+      can,
+      ownerEORI,
+      searchType,
+      declarationDetails,
+      cashAccountPaymentDetails
+    )
 
     val cacheId = buildCacheId(can, searchInput)
 
@@ -160,10 +174,11 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       case Some(value) => Future.successful(Right(value))
 
       case None =>
-        httpClient.post(url"$retrieveCashAccountStatementSearchUrl")
+        httpClient
+          .post(url"$retrieveCashAccountStatementSearchUrl")
           .withBody[CashAccountTransactionSearchRequestDetails](request)
           .execute[HttpResponse]
-          .map { jsonResponse => processResponseForTransactionsBySearch(cacheId, jsonResponse) }
+          .map(jsonResponse => processResponseForTransactionsBySearch(cacheId, jsonResponse))
     }
   }.recover {
     case UpstreamErrorResponse(_, BAD_REQUEST, _, _) =>
@@ -183,14 +198,14 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       Left(UnknownException)
   }
 
-  def retrieveCashTransactionsDetail(can: String,
-                                     from: LocalDate,
-                                     to: LocalDate)
-                                    (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, CashTransactions]] = {
+  def retrieveCashTransactionsDetail(can: String, from: LocalDate, to: LocalDate)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[ErrorResponse, CashTransactions]] = {
 
     val cashDailyStatementRequest = CashDailyStatementRequest(can, from, to)
 
-    httpClient.post(url"$retrieveCashTransactionsDetailUrl")
+    httpClient
+      .post(url"$retrieveCashTransactionsDetailUrl")
       .withBody[CashDailyStatementRequest](cashDailyStatementRequest)
       .execute[CashTransactions]
       .map(Right(_))
@@ -208,15 +223,14 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       Left(UnknownException)
   }
 
-  def postCashAccountStatementRequest(eori: String,
-                                      can: String,
-                                      from: LocalDate,
-                                      to: LocalDate)
-                                     (implicit hc: HeaderCarrier): Future[Either[ErrorResponse, AccountResponseCommon]] = {
+  def postCashAccountStatementRequest(eori: String, can: String, from: LocalDate, to: LocalDate)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[ErrorResponse, AccountResponseCommon]] = {
 
     val request = CashAccountStatementRequestDetail(eori, can, from.toString, to.toString)
 
-    httpClient.post(url"$retrieveCashAccountStatementsUrl")
+    httpClient
+      .post(url"$retrieveCashAccountStatementsUrl")
       .withBody[CashAccountStatementRequestDetail](request)
       .execute[AccountResponseCommon]
       .map(processStatusCode)
@@ -239,8 +253,9 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       Left(UnknownException)
   }
 
-  private def processStatusCode(accountResponseCommon: AccountResponseCommon): Either[ErrorResponse, AccountResponseCommon] = {
-
+  private def processStatusCode(
+    accountResponseCommon: AccountResponseCommon
+  ): Either[ErrorResponse, AccountResponseCommon] =
     accountResponseCommon.statusText match {
 
       case Some(REQUEST_COULD_NOT_BE_PROCESSED) =>
@@ -274,10 +289,8 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
       case _ =>
         Right(accountResponseCommon)
     }
-  }
 
-  private def processResponseForTransactionsBySearch(cacheId: String, response: HttpResponse) = {
-
+  private def processResponseForTransactionsBySearch(cacheId: String, response: HttpResponse) =
     response.status match {
       case OK => processOKResponse(cacheId, response)
 
@@ -295,7 +308,6 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
         logger.error("Service Unavailable error while calling ETMP")
         Left(ServiceUnavailableErrorResponse)
     }
-  }
 
   private def processOKResponse(cacheId: String, response: HttpResponse) = {
     val responseDetail = Json.fromJson[CashAccountTransactionSearchResponseDetail](response.json)
@@ -309,16 +321,18 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
     responseDetail.asOpt.fold(Left(UnknownException))(Right(_))
   }
 
-  private def processETMPErrors(res: HttpResponse): Either[ErrorResponse, CashAccountTransactionSearchResponseDetail] = {
+  private def processETMPErrors(
+    res: HttpResponse
+  ): Either[ErrorResponse, CashAccountTransactionSearchResponseDetail] = {
     val errorDetail: Option[ErrorDetail] = Json.fromJson[ErrorDetail](res.json).asOpt
 
     errorDetail match {
       case Some(errorDetail) => checkErrorCodeAndReturnErrorResponse(errorDetail)
-      case _ => Left(UnknownException)
+      case _                 => Left(UnknownException)
     }
   }
 
-  private def checkErrorCodeAndReturnErrorResponse(errorDetail: ErrorDetail) = {
+  private def checkErrorCodeAndReturnErrorResponse(errorDetail: ErrorDetail) =
     errorDetail.errorCode match {
       case EtmpErrorCode.code001 =>
         logger.warn("Invalid Cash Account error")
@@ -342,9 +356,8 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
 
       case _ => Left(UnknownException)
     }
-  }
 
-  private def addUUIDToCashTransaction(response: CashTransactions): CashTransactions = {
+  private def addUUIDToCashTransaction(response: CashTransactions): CashTransactions =
     response.copy(
       cashDailyStatements = response.cashDailyStatements.map { statement =>
         statement.copy(
@@ -354,7 +367,6 @@ class CustomsFinancialsApiConnector @Inject()(httpClient: HttpClientV2,
         )
       }
     )
-  }
 }
 
 sealed trait ErrorResponse

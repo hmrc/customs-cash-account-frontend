@@ -48,8 +48,8 @@ class ButtonSpec extends SpecBase {
 
   trait Setup {
     val msgKey: String = "cf.verify.your.email.change.button"
-    val hrefValue = "www.test.com"
-    val classesValue = "govuk-!-margin-bottom-7"
+    val hrefValue      = "www.test.com"
+    val classesValue   = "govuk-!-margin-bottom-7"
 
     val buttonComponent: Document =
       Jsoup.parse(application.injector.instanceOf[button].apply(msgKey, Some(hrefValue), classesValue).body)

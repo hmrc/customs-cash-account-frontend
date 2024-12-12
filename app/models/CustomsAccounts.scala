@@ -22,7 +22,4 @@ trait Balances
 
 case class CDSCashBalance(AvailableAccountBalance: Option[BigDecimal]) extends Balances
 
-case class CashAccount(number: CAN,
-                       owner: String,
-                       status: CDSAccountStatus,
-                       balances: CDSCashBalance)
+case class CashAccount(number: CAN, owner: String, status: CDSAccountStatus, balances: CDSCashBalance)

@@ -63,23 +63,23 @@ class CashAccountDeclarationDetailsSpec extends ViewTestHelper {
 
   trait Setup {
 
-    val year2024 = 2024
-    val month4 = 4
-    val day4 = 4
+    val year2024        = 2024
+    val month4          = 4
+    val day4            = 4
     val date: LocalDate = LocalDate.of(year2024, month4, day4)
 
     val fiveHundred: BigDecimal = BigDecimal(500.00)
     val fourHundred: BigDecimal = BigDecimal(400.00)
-    val hundred: BigDecimal = BigDecimal(100.00)
+    val hundred: BigDecimal     = BigDecimal(100.00)
 
     val pageNumber: Option[Int] = Some(1)
 
-    val eori = "GB987654321000"
-    val number = "123456789"
-    val owner = "GB491235123123"
-    val movementReferenceNumber = "MRN1234567890"
-    val importerEori: Option[String] = Some("GB123456789000")
-    val declarantEori = "GB987654321000"
+    val eori                               = "GB987654321000"
+    val number                             = "123456789"
+    val owner                              = "GB491235123123"
+    val movementReferenceNumber            = "MRN1234567890"
+    val importerEori: Option[String]       = Some("GB123456789000")
+    val declarantEori                      = "GB987654321000"
     val declarantReference: Option[String] = Some("UCR12345")
 
     val taxTypes: Seq[TaxType] =
@@ -96,7 +96,9 @@ class CashAccountDeclarationDetailsSpec extends ViewTestHelper {
         TaxGroup(CustomsDuty, fiveHundred, taxTypes),
         TaxGroup(ImportVat, fourHundred, taxTypes),
         TaxGroup(ExciseDuty, hundred, taxTypes)
-      ), secureMovementReferenceNumber = None)
+      ),
+      secureMovementReferenceNumber = None
+    )
 
     val viewModel: DeclarationDetailViewModel = DeclarationDetailViewModel(
       eori = eori,
@@ -106,7 +108,8 @@ class CashAccountDeclarationDetailsSpec extends ViewTestHelper {
         status = AccountStatusOpen,
         balances = CDSCashBalance(Some(fiveHundred))
       ),
-      declaration = declaration)(messages)
+      declaration = declaration
+    )(messages)
 
     val cashAccountDeclarationDetails: cash_account_declaration_details =
       app.injector.instanceOf[cash_account_declaration_details]

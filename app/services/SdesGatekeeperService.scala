@@ -26,8 +26,9 @@ import javax.inject.Singleton
 @Singleton
 class SdesGatekeeperService {
 
-  implicit def convertToCashStatementFile(sdesResponseFile: FileInformation)
-                                         (implicit messages: Messages): CashStatementFile = {
+  implicit def convertToCashStatementFile(
+    sdesResponseFile: FileInformation
+  )(implicit messages: Messages): CashStatementFile = {
 
     val metadata = sdesResponseFile.metadata.asMap
 
@@ -44,7 +45,8 @@ class SdesGatekeeperService {
         metadata("PeriodEndDay").toInt,
         FileFormat(metadata("FileType")),
         FileRole(metadata("FileRole")),
-        metadata.get("statementRequestID")),
+        metadata.get("statementRequestID")
+      ),
       emptyString
     )
   }

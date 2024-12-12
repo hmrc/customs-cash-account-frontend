@@ -35,46 +35,42 @@ import play.api.Logger
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi,
-                                           identify: IdentifierAction,
-                                           cache: RequestedTransactionsCache,
-                                           view: confirmation_page,
-                                           customsDataStoreConnector: CustomsDataStoreConnector)
-                                          (implicit mcc: MessagesControllerComponents,
-                                           ec: ExecutionContext,
-                                           appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport {
+class ConfirmationPageController @Inject() (
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  cache: RequestedTransactionsCache,
+  view: confirmation_page,
+  customsDataStoreConnector: CustomsDataStoreConnector
+)(implicit mcc: MessagesControllerComponents, ec: ExecutionContext, appConfig: AppConfig)
+    extends FrontendController(mcc)
+    with I18nSupport {
 
   private val log = Logger(this.getClass)
 
-  def onPageLoad(): Action[AnyContent] = identify.async {
+  def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
 
-    implicit request =>
+    val result: Future[Result] = for {
+      dates <- cache.get(request.eori)
+      email <- customsDataStoreConnector.getEmail(request.eori)
+    } yield email match {
+      case Right(email) => checkDatesAndEmailAndRedirect(dates, Some(email.value))
+      case Left(_)      => checkDatesAndEmailAndRedirect(dates, None)
+    }
 
-      val result: Future[Result] = for {
-        dates <- cache.get(request.eori)
-        email <- customsDataStoreConnector.getEmail(request.eori)
-      } yield {
-        email match {
-          case Right(email) => checkDatesAndEmailAndRedirect(dates, Some(email.value))
-          case Left(_) => checkDatesAndEmailAndRedirect(dates, None)
-        }
-      }
-
-      result.recover {
-        case e: Exception =>
-          log.error(s"Failed to load ConfirmationPageController $e")
-          Redirect(routes.CashAccountController.showAccountUnavailable)
-      }
+    result.recover { case e: Exception =>
+      log.error(s"Failed to load ConfirmationPageController $e")
+      Redirect(routes.CashAccountController.showAccountUnavailable)
+    }
   }
 
-  private def checkDatesAndEmailAndRedirect(optionalDates: Option[CashTransactionDates], email: Option[String])
-                                           (implicit request: IdentifierRequest[AnyContent],
-                                            messages: Messages): Result = {
+  private def checkDatesAndEmailAndRedirect(optionalDates: Option[CashTransactionDates], email: Option[String])(implicit
+    request: IdentifierRequest[AnyContent],
+    messages: Messages
+  ): Result =
     optionalDates match {
       case Some(dates) =>
-
         val startDate = dateAsMonthAndYear(dates.start)
-        val endDate = dateAsMonthAndYear(dates.end)
+        val endDate   = dateAsMonthAndYear(dates.end)
 
         Ok(view(s"$startDate ${messages("month.to")} $endDate", email))
 
@@ -82,5 +78,4 @@ class ConfirmationPageController @Inject()(override val messagesApi: MessagesApi
         log.error(s"Failed to load checkDatesAndEmailAndRedirect $optionalDates")
         Redirect(routes.CashAccountController.showAccountUnavailable)
     }
-  }
 }

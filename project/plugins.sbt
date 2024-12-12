@@ -13,3 +13,4 @@ addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0"
   exclude("org.scala-lang.modules", "scala-xml_2.12"))
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-uglify" % "2.0.0")
+addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.2")

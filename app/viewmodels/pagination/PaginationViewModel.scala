@@ -43,17 +43,21 @@ trait PaginationViewModel {
   def paginatedSearchResult(searchParam: Option[String] = None)(implicit messages: Messages): String =
     searchParam match {
       case Some(value) =>
-        messages("pagination.results.search",
+        messages(
+          "pagination.results.search",
           s"<strong>${results.from}</strong>",
           s"<strong>${results.to}</strong>",
           s"<strong>${results.count}</strong>",
-          value)
+          value
+        )
 
       case None =>
-        messages("pagination.results",
+        messages(
+          "pagination.results",
           s"<strong>${results.from}</strong>",
           s"<strong>${results.to}</strong>",
-          s"<strong>${results.count}</strong>")
+          s"<strong>${results.count}</strong>"
+        )
     }
 
   val pagination: Pagination = Pagination(Some(items), previous, next)
@@ -61,20 +65,23 @@ trait PaginationViewModel {
 
 object PaginationViewModel {
 
-  def apply[T <: PaginationViewModel](totalNumberOfItems: Int,
-                                      currentPage: Int,
-                                      numberOfItemsPerPage: Int,
-                                      href: String,
-                                      additionalParams: Seq[(String, String)])
-                                     (f: (MetaData, Option[PaginationLink], Option[PaginationLink], Seq[PaginationItem]) => T)
-                                     (implicit config: AppConfig): T = {
+  def apply[T <: PaginationViewModel](
+    totalNumberOfItems: Int,
+    currentPage: Int,
+    numberOfItemsPerPage: Int,
+    href: String,
+    additionalParams: Seq[(String, String)]
+  )(
+    f: (MetaData, Option[PaginationLink], Option[PaginationLink], Seq[PaginationItem]) => T
+  )(implicit config: AppConfig): T = {
 
-    val results: MetaData = MetaData(totalNumberOfItems, numberOfItemsPerPage, currentPage)
+    val results: MetaData          = MetaData(totalNumberOfItems, numberOfItemsPerPage, currentPage)
     val isNumberOfItemsInsideLimit = totalNumberOfItems <= config.numberOfRecordsToDisableNavigationButtonsInPagination
 
-    val hrefWithParams: Int => String = page => additionalParams.foldLeft(s"$href?page=$page") {
-      case (href, (key, value)) => href + s"&$key=$value"
-    }
+    val hrefWithParams: Int => String = page =>
+      additionalParams.foldLeft(s"$href?page=$page") { case (href, (key, value)) =>
+        href + s"&$key=$value"
+      }
 
     val previous: Option[PaginationLink] = if (isNumberOfItemsInsideLimit) {
       None
@@ -88,47 +95,54 @@ object PaginationViewModel {
       nextLinkForItemsGreaterThanAcceptedLimit(results.totalPages, currentPage, hrefWithParams(currentPage + 1))
     }
 
-    def populateItems(acc: Seq[PaginationItem], pageNo: Int): Seq[PaginationItem] = {
+    def populateItems(acc: Seq[PaginationItem], pageNo: Int): Seq[PaginationItem] =
       (acc, pageNo) match {
-        case (acc, page) if page == 1 || (page >= currentPage - 1 && page <= currentPage + 1) || page == results.totalPages =>
+        case (acc, page)
+            if page == 1 || (page >= currentPage - 1 && page <= currentPage + 1) || page == results.totalPages =>
           acc :+ PaginationItem(
-            href = hrefWithParams(page), number = Some(page.toString), current = Some(page == currentPage))
+            href = hrefWithParams(page),
+            number = Some(page.toString),
+            current = Some(page == currentPage)
+          )
 
-        case (acc, _) if (acc.lastOption.flatMap(_.ellipsis).contains(true)) => acc
+        case (acc, _) if acc.lastOption.flatMap(_.ellipsis).contains(true) => acc
 
         case _ => acc :+ PaginationItem(ellipsis = Some(true))
       }
-    }
 
-    val items = (1 to results.totalPages).foldLeft[Seq[PaginationItem]](Nil) {
-      (acc, page) =>
-        if (isNumberOfItemsInsideLimit) {
-          acc :+ PaginationItem(
-            href = hrefWithParams(page), number = Some(page.toString), current = Some(page == currentPage))
-        } else {
-          populateItems(acc, page)
-        }
+    val items = (1 to results.totalPages).foldLeft[Seq[PaginationItem]](Nil) { (acc, page) =>
+      if (isNumberOfItemsInsideLimit) {
+        acc :+ PaginationItem(
+          href = hrefWithParams(page),
+          number = Some(page.toString),
+          current = Some(page == currentPage)
+        )
+      } else {
+        populateItems(acc, page)
+      }
     }
 
     f(results, previous, next, items)
   }
 
-  private def previousLinkForItemsGreaterThanAcceptedLimit[T <: PaginationViewModel](currentPage: Int,
-                                                                                     hrefValue: String) = {
+  private def previousLinkForItemsGreaterThanAcceptedLimit[T <: PaginationViewModel](
+    currentPage: Int,
+    hrefValue: String
+  ) =
     if (currentPage > 1) {
       Some(PaginationLink(hrefValue))
     } else {
       None
     }
-  }
 
-  private def nextLinkForItemsGreaterThanAcceptedLimit[T <: PaginationViewModel](totalPages: Int,
-                                                                                 currentPage: Int,
-                                                                                 hrefValue: String) = {
+  private def nextLinkForItemsGreaterThanAcceptedLimit[T <: PaginationViewModel](
+    totalPages: Int,
+    currentPage: Int,
+    hrefValue: String
+  ) =
     if (currentPage < totalPages) {
       Some(PaginationLink(hrefValue))
     } else {
       None
     }
-  }
 }

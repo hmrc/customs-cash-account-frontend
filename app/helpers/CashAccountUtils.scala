@@ -24,28 +24,26 @@ import services.DateTimeService
 import java.time.LocalDate
 import javax.inject.Inject
 
-class CashAccountUtils @Inject()(dateTimeService: DateTimeService, appConfig: AppConfig) {
+class CashAccountUtils @Inject() (dateTimeService: DateTimeService, appConfig: AppConfig) {
 
   def filenameWithDateTime()(implicit messages: Messages): String = {
     val formattedTime = yyyyMMddHHmmssDateFormatter.format(dateTimeService.localDateTime())
     messages("cf.cash-account.csv.filename", formattedTime)
   }
 
-  def filenameRequestCashTransactions(from: LocalDate,
-                                      to: LocalDate)(implicit messages: Messages): String = {
+  def filenameRequestCashTransactions(from: LocalDate, to: LocalDate)(implicit messages: Messages): String =
     messages("cf.cash-account.requested.csv.filename", dateFormat(from), dateFormat(to))
-  }
 
   def makeHumanReadable(columnName: String)(implicit messages: Messages): String = {
     val messagePrefix = "cf.cash-account.csv"
-    val messageKey = s"$messagePrefix.$columnName"
+    val messageKey    = s"$messagePrefix.$columnName"
     messages(messageKey)
   }
 
   private def dateFormat(date: LocalDate): String = ddMMyyyyDateFormatter.format(date)
 
   def transactionDateRange(): (LocalDate, LocalDate) = {
-    val to = dateTimeService.localDateTime().toLocalDate
+    val to   = dateTimeService.localDateTime().toLocalDate
     val from = to.minusMonths(appConfig.numberOfMonthsOfCashTransactionsToShow)
     (from, to)
   }

@@ -60,23 +60,23 @@ class CashTransactionsSpec extends SpecBase {
 
   trait Setup {
 
-    val year = 2024
+    val year  = 2024
     val month = 5
-    val day = 5
+    val day   = 5
 
     val nonce = "someNone"
 
-    val date: LocalDate = LocalDate.of(year, month, day)
-    val thousand: BigDecimal = BigDecimal(1000.00)
-    val twoThousand: BigDecimal = BigDecimal(2000.00)
-    val minusNinety: BigDecimal = BigDecimal(-90.00)
+    val date: LocalDate            = LocalDate.of(year, month, day)
+    val thousand: BigDecimal       = BigDecimal(1000.00)
+    val twoThousand: BigDecimal    = BigDecimal(2000.00)
+    val minusNinety: BigDecimal    = BigDecimal(-90.00)
     val openingBalance: BigDecimal = BigDecimal(600.00)
     val closingBalance: BigDecimal = BigDecimal(1200.00)
 
-    val movementReferenceNumber: String = "MRN1234567890"
-    val importerEori: String = "GB123456789000"
-    val declarantEori: String = "GB987654321000"
-    val declarantReference: String = "UCR12345"
+    val movementReferenceNumber: String       = "MRN1234567890"
+    val importerEori: String                  = "GB123456789000"
+    val declarantEori: String                 = "GB987654321000"
+    val declarantReference: String            = "UCR12345"
     val secureMovementReferenceNumber: String = "5a71a767"
 
     val taxTypes: Seq[TaxType] = Seq(TaxType(reasonForSecurity = Some("Reason"), taxTypeID = "50", amount = thousand))
@@ -97,11 +97,18 @@ class CashTransactionsSpec extends SpecBase {
     )
 
     val declaration02: Declaration = Declaration(
-      "mrn4", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
-      LocalDate.parse("2020-07-20"), minusNinety, Nil, Some("mrn2"))
+      "mrn4",
+      Some("Importer EORI"),
+      "Declarant EORI",
+      Some("Declarant Reference"),
+      LocalDate.parse("2020-07-20"),
+      minusNinety,
+      Nil,
+      Some("mrn2")
+    )
 
-    val cashDailyStatement: CashDailyStatement = CashDailyStatement(
-      LocalDate.parse("2020-07-20"), openingBalance, closingBalance, Seq(declaration02), Nil)
+    val cashDailyStatement: CashDailyStatement =
+      CashDailyStatement(LocalDate.parse("2020-07-20"), openingBalance, closingBalance, Seq(declaration02), Nil)
 
     val cashTxn01: CashTransactions = CashTransactions(Seq(declarations), Seq(cashDailyStatement), None)
 
@@ -119,13 +126,13 @@ class CashTransactionsSpec extends SpecBase {
         TaxGroup(ImportVat, thousand, taxTypes),
         TaxGroup(ExciseDuty, twoThousand, taxTypes)
       ),
-      secureMovementReferenceNumber = secureMovementReferenceNumber)
+      secureMovementReferenceNumber = secureMovementReferenceNumber
+    )
 
-    val encryptedCashTxn01: EncryptedCashTransactions = EncryptedCashTransactions(
-      Seq(encryptedDeclaration), Nil, None)
+    val encryptedCashTxn01: EncryptedCashTransactions = EncryptedCashTransactions(Seq(encryptedDeclaration), Nil, None)
 
-    val encryptedCashTxn02: EncryptedCashTransactions = EncryptedCashTransactions(
-      Seq(encryptedDeclaration), Nil, Some(false))
+    val encryptedCashTxn02: EncryptedCashTransactions =
+      EncryptedCashTransactions(Seq(encryptedDeclaration), Nil, Some(false))
 
   }
 }

@@ -36,18 +36,16 @@ class CashAccountNotAvailableSpec extends ViewTestHelper {
     }
   }
 
-  private def shouldDisplayCashAccountHeader(view: Document)(implicit msgs: Messages) = {
+  private def shouldDisplayCashAccountHeader(view: Document)(implicit msgs: Messages) =
     view.getElementById("account-header").text mustBe msgs("cf.cash-account.detail.title")
-  }
 
-  private def shouldDisplayUnableToShowAccountMessage(view: Document)(implicit msgs: Messages) = {
+  private def shouldDisplayUnableToShowAccountMessage(view: Document)(implicit msgs: Messages) =
     view.getElementById("account-not-available").text mustBe msgs("cf.cash-account.detail.account-not-available")
-  }
 
-  private def shouldDisplayHelpAndSupportHeader(view: Document)(implicit msgs: Messages) = {
-    view.getElementById("help-and-support-header").
-      text mustBe msgs("cf.cash-account.transactions.request.support.heading")
-  }
+  private def shouldDisplayHelpAndSupportHeader(view: Document)(implicit msgs: Messages) =
+    view.getElementById("help-and-support-header").text mustBe msgs(
+      "cf.cash-account.transactions.request.support.heading"
+    )
 
   private def shouldDisplayHelpAndSupportTextAndLink(view: Document)(implicit msgs: Messages, config: AppConfig) = {
     val viewAsHtml = view.html()

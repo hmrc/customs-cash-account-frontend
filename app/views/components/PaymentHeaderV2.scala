@@ -21,12 +21,11 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{HeadCell, HtmlContent}
 
 object PaymentHeaderV2 {
 
-  def apply()(implicit messages: Messages): Seq[HeadCell] = {
+  def apply()(implicit messages: Messages): Seq[HeadCell] =
     Seq(
       HeadCell(
         classes = "first-column-width",
-        content = HtmlContent(
-          s"""
+        content = HtmlContent(s"""
              <abbr title="${messages("cf.cash-account.detail.date")}">
                  ${messages("cf.cash-account.detail.date")}
              </abbr>
@@ -34,16 +33,14 @@ object PaymentHeaderV2 {
       ),
       HeadCell(
         classes = "second-column-width",
-        content = HtmlContent(
-          s"""
+        content = HtmlContent(s"""
              <abbr title="${messages("cf.cash-account.detail.transaction-type")}">
                 ${messages("cf.cash-account.detail.transaction-type")}
              </abbr>
           """)
       ),
       HeadCell(
-        content = HtmlContent(
-          s"""
+        content = HtmlContent(s"""
              <abbr title="${messages("cf.cash-account.detail.credit")}">
                 ${messages("cf.cash-account.detail.credit")}
              </abbr>
@@ -51,8 +48,7 @@ object PaymentHeaderV2 {
       ),
       HeadCell(
         format = Some("numeric"),
-        content = HtmlContent(
-          s"""
+        content = HtmlContent(s"""
              <abbr title="${messages("cf.cash-account.detail.debit")}">
                 ${messages("cf.cash-account.detail.debit")}
              </abbr>
@@ -60,11 +56,9 @@ object PaymentHeaderV2 {
       ),
       HeadCell(
         format = Some("numeric"),
-        content = HtmlContent(
-          s"""
+        content = HtmlContent(s"""
                ${messages("cf.cash-account.detail.balance")}
           """)
       )
     )
-  }
 }

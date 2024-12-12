@@ -34,40 +34,43 @@ import org.mongodb.scala.SingleObservableFuture
 import org.mongodb.scala.ToSingleObservablePublisher
 
 @Singleton
-class CashAccountSearchRepository @Inject()(mongo: MongoComponent,
-                                            config: Configuration,
-                                            encrypter: CashAccountTransactionSearchResponseDetailEncrypter)
-                                           (implicit executionContext: ExecutionContext)
-  extends PlayMongoRepository[CashAccountTransactionSearchResponseDetailMongo](
-    collectionName = "cash-account-search-cache",
-    mongoComponent = mongo,
-    domainFormat = CashAccountTransactionSearchResponseDetailMongo.format,
-    indexes = Seq(
-      IndexModel(
-        ascending("lastUpdated"),
-        IndexOptions().name("cash-account-search-cache-last-updated-index")
-          .expireAfter(config.get[Long]("mongodb.timeToLiveInSeconds"), TimeUnit.SECONDS)
+class CashAccountSearchRepository @Inject() (
+  mongo: MongoComponent,
+  config: Configuration,
+  encrypter: CashAccountTransactionSearchResponseDetailEncrypter
+)(implicit executionContext: ExecutionContext)
+    extends PlayMongoRepository[CashAccountTransactionSearchResponseDetailMongo](
+      collectionName = "cash-account-search-cache",
+      mongoComponent = mongo,
+      domainFormat = CashAccountTransactionSearchResponseDetailMongo.format,
+      indexes = Seq(
+        IndexModel(
+          ascending("lastUpdated"),
+          IndexOptions()
+            .name("cash-account-search-cache-last-updated-index")
+            .expireAfter(config.get[Long]("mongodb.timeToLiveInSeconds"), TimeUnit.SECONDS)
+        )
       )
-    )) with CashAccountSearchRepositoryTrait {
+    )
+    with CashAccountSearchRepositoryTrait {
 
   private val encryptionKey = config.get[String]("mongodb.encryptionKey")
 
-  override def get(id: String): Future[Option[CashAccountTransactionSearchResponseDetail]] = {
+  override def get(id: String): Future[Option[CashAccountTransactionSearchResponseDetail]] =
     for {
       result <- collection.find(equal("_id", id)).toSingle().toFutureOption()
       account = result.map(responseDetailMongo =>
-        encrypter.decryptSearchResponseDetail(responseDetailMongo.responseDetail, encryptionKey))
+                  encrypter.decryptSearchResponseDetail(responseDetailMongo.responseDetail, encryptionKey)
+                )
     } yield account
-  }
 
   override def set(id: String, transactions: CashAccountTransactionSearchResponseDetail): Future[Boolean] = {
     val record: CashAccountTransactionSearchResponseDetailMongo = CashAccountTransactionSearchResponseDetailMongo(
-      encrypter.encryptSearchResponseDetail(transactions, encryptionKey), Instant.now())
+      encrypter.encryptSearchResponseDetail(transactions, encryptionKey),
+      Instant.now()
+    )
 
-    collection.replaceOne(equal("_id", id),
-      record,
-      ReplaceOptions().upsert(true)
-    ).toFuture().map(_.wasAcknowledged())
+    collection.replaceOne(equal("_id", id), record, ReplaceOptions().upsert(true)).toFuture().map(_.wasAcknowledged())
   }
 
   override def remove(id: String): Future[Boolean] =

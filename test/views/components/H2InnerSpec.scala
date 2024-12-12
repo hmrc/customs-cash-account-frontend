@@ -75,10 +75,10 @@ class H2InnerSpec extends SpecBase {
 
   trait Setup {
 
-    val msgKey: String = "cf.message"
-    val innerMsgKey: String = "cf.message.inner"
+    val msgKey: String          = "cf.message"
+    val innerMsgKey: String     = "cf.message.inner"
     val idValue: Option[String] = Some("test-id")
-    val classesValue: String = "govuk-heading-m"
+    val classesValue: String    = "govuk-heading-m"
 
     val h2InnerComponent: Document =
       Jsoup.parse(application.injector.instanceOf[h2Inner].apply(msgKey, innerMsgKey, idValue, classesValue).body)

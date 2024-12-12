@@ -20,18 +20,21 @@ import helpers.Formatters.yyyyMMddDateFormatter
 import models._
 import play.api.i18n.Messages
 
-case class CashTransactionCsvRow(date: Option[String],
-                                 transactionType: Option[String],
-                                 movementReferenceNumber: Option[String],
-                                 uniqueConsignmentReference: Option[String],
-                                 declarantEori: Option[String],
-                                 importerEori: Option[String],
-                                 duty: Option[BigDecimal],
-                                 vat: Option[BigDecimal],
-                                 excise: Option[BigDecimal],
-                                 credit: Option[BigDecimal],
-                                 debit: Option[BigDecimal],
-                                 balance: Option[BigDecimal]) extends CSVWritable with FieldNames {
+case class CashTransactionCsvRow(
+  date: Option[String],
+  transactionType: Option[String],
+  movementReferenceNumber: Option[String],
+  uniqueConsignmentReference: Option[String],
+  declarantEori: Option[String],
+  importerEori: Option[String],
+  duty: Option[BigDecimal],
+  vat: Option[BigDecimal],
+  excise: Option[BigDecimal],
+  credit: Option[BigDecimal],
+  debit: Option[BigDecimal],
+  balance: Option[BigDecimal]
+) extends CSVWritable
+    with FieldNames {
   override def fieldNames: Seq[String] = Seq(
     "date",
     "transactionType",
@@ -86,18 +89,18 @@ object CashTransactionCsvRow {
       )
     }
 
-    private def findTaxGroups(taxGroupType: TaxGroupType, groups: Seq[TaxGroup]): Option[BigDecimal] = {
+    private def findTaxGroups(taxGroupType: TaxGroupType, groups: Seq[TaxGroup]): Option[BigDecimal] =
       groups.find(_.taxGroupDescription == taxGroupType).map(_.amount.abs).orElse(Some(BigDecimal(0)))
-    }
 
     val withdrawals: Seq[CashTransactionCsvRow] = cashDailyStatement.withdrawals.map { withdrawal =>
-      val withdrawalText = withdrawal.bankAccountNumberLastFourDigits.map(
-        digits =>
-          s"""${
-            messages("cf.cash-account.detail.withdrawal")
-          } ${
-            messages("cf.cash-account.detail.withdrawal.account-ending", digits)
-          }""").orElse(Some(messages("cf.cash-account.detail.withdrawal")))
+      val withdrawalText = withdrawal.bankAccountNumberLastFourDigits
+        .map(digits =>
+          s"""${messages("cf.cash-account.detail.withdrawal")} ${messages(
+              "cf.cash-account.detail.withdrawal.account-ending",
+              digits
+            )}"""
+        )
+        .orElse(Some(messages("cf.cash-account.detail.withdrawal")))
 
       CashTransactionCsvRow(
         date = Some(yyyyMMddDateFormatter.format(cashDailyStatement.date)),
@@ -181,8 +184,7 @@ object CashTransactionCsvRow {
       balance = Some(cashDailyStatement.openingBalance)
     )
 
-    def toReportLayout: Seq[CashTransactionCsvRow] = {
+    def toReportLayout: Seq[CashTransactionCsvRow] =
       (closingBalance +: declarations) ++ withdrawals ++ transfersOut ++ topUps ++ transfersIn
-    }
   }
 }

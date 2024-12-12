@@ -24,10 +24,9 @@ import play.api.data.Forms.mapping
 import java.time.Clock
 import javax.inject.Inject
 
-class CashTransactionsRequestPageFormProvider @Inject() (implicit clock: Clock)
-    extends Mappings {
+class CashTransactionsRequestPageFormProvider @Inject() (implicit clock: Clock) extends Mappings {
 
-  def apply(): Form[CashTransactionDates] = {
+  def apply(): Form[CashTransactionDates] =
     Form(
       mapping(
         "start" -> localDate(
@@ -40,13 +39,12 @@ class CashTransactionsRequestPageFormProvider @Inject() (implicit clock: Clock)
           beforeCurrentDate(errorKey = "cf.form.error.start-future-date")
         ).verifying(
           checkDates(
-            systemStartDateErrorKey =
-              "cf.form.error.startDate.date-earlier-than-system-start-date",
+            systemStartDateErrorKey = "cf.form.error.startDate.date-earlier-than-system-start-date",
             taxYearErrorKey = "cf.form.error.start.date-too-far-in-past",
             invalidLength = "cf.form.error.year.length"
           )
         ),
-        "end" -> localDate(
+        "end"   -> localDate(
           invalidKey = "cf.form.error.end.date-number-invalid",
           dayKey = "cf.form.error.end.date.invalid.day",
           monthKey = "cf.form.error.end.date.invalid.month",
@@ -56,13 +54,11 @@ class CashTransactionsRequestPageFormProvider @Inject() (implicit clock: Clock)
           beforeCurrentDate(errorKey = "cf.form.error.end-future-date")
         ).verifying(
           checkDates(
-            systemStartDateErrorKey =
-              "cf.form.error.endDate.date-earlier-than-system-start-date",
+            systemStartDateErrorKey = "cf.form.error.endDate.date-earlier-than-system-start-date",
             taxYearErrorKey = "cf.form.error.end.date-too-far-in-past",
             invalidLength = "cf.form.error.year.length"
           )
         )
       )(CashTransactionDates.apply)(ctd => Some(Tuple.fromProductTyped(ctd)))
     )
-  }
 }

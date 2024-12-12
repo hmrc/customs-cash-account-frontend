@@ -23,26 +23,25 @@ import java.time.{LocalDate, YearMonth}
 
 trait SelectMappings extends Formatters with Constraints {
 
-  protected def boolean(requiredKey: String = "error.required",
-                        invalidKey: String = "error.boolean"): FieldMapping[Boolean] =
+  protected def boolean(
+    requiredKey: String = "error.required",
+    invalidKey: String = "error.boolean"
+  ): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey))
 
-  protected def yearMonth(emptyMonthAndYearKey: String,
-                          emptyMonthKey: String,
-                          emptyYearKey: String,
-                          invalidDateKey: String): FieldMapping[YearMonth] = {
-
+  protected def yearMonth(
+    emptyMonthAndYearKey: String,
+    emptyMonthKey: String,
+    emptyYearKey: String,
+    invalidDateKey: String
+  ): FieldMapping[YearMonth] =
     of(
-      new SelectYearMonthFormatter(
-        emptyMonthAndYearKey,
-        emptyMonthKey,
-        emptyYearKey,
-        invalidDateKey,
-        Seq.empty)
+      new SelectYearMonthFormatter(emptyMonthAndYearKey, emptyMonthKey, emptyYearKey, invalidDateKey, Seq.empty)
     )
-  }
 
-  protected def decimal(requiredKey: String = "error.required",
-                        nonNumericKey: String = "error.nonNumeric"): FieldMapping[String] =
+  protected def decimal(
+    requiredKey: String = "error.required",
+    nonNumericKey: String = "error.nonNumeric"
+  ): FieldMapping[String] =
     of(decimalFormatter(requiredKey, nonNumericKey))
 }

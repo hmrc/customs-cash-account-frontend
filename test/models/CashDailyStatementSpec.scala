@@ -76,12 +76,12 @@ class CashDailyStatementSpec extends SpecBase {
   }
 
   trait Setup {
-    val jsPayment: JsString = JsString("Payment")
+    val jsPayment: JsString    = JsString("Payment")
     val jsWithdrawal: JsString = JsString("Withdrawal")
-    val jsTransfer: JsString = JsString("Transfer")
+    val jsTransfer: JsString   = JsString("Transfer")
 
-    val jsImport: JsString = JsString("Import VAT")
-    val jsExcise: JsString = JsString("Excise")
+    val jsImport: JsString  = JsString("Import VAT")
+    val jsExcise: JsString  = JsString("Excise")
     val jsCustoms: JsString = JsString("Customs")
   }
 }

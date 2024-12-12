@@ -46,10 +46,7 @@ class NewTabLinkSpec extends SpecBase {
 
       "there is no preLinkMessage" in new Setup {
         val component: Document =
-          newTabLinkComponent(
-            linkMessage = linkMessage,
-            href = href,
-            postLinkMessage = Some(postLinkMessage))
+          newTabLinkComponent(linkMessage = linkMessage, href = href, postLinkMessage = Some(postLinkMessage))
 
         elementByParagraph(component).text() mustBe s"$linkMessage$singleSpace$postLinkMessage$period"
 
@@ -62,10 +59,7 @@ class NewTabLinkSpec extends SpecBase {
 
       "there is no postLinkMessage" in new Setup {
         val component: Document =
-          newTabLinkComponent(
-            linkMessage = linkMessage,
-            href = href,
-            preLinkMessage = Some(preLinkMessage))
+          newTabLinkComponent(linkMessage = linkMessage, href = href, preLinkMessage = Some(preLinkMessage))
 
         elementByParagraph(component).text() mustBe s"$preLinkMessage$singleSpace$linkMessage$singleSpace$period"
 
@@ -78,37 +72,39 @@ class NewTabLinkSpec extends SpecBase {
     }
   }
 
-  private def elementByParagraph(component: Document): Elements = {
+  private def elementByParagraph(component: Document): Elements =
     component.getElementsByTag("p")
-  }
 
-  private def elementByClasses(component: Document, classes: String): Elements = {
+  private def elementByClasses(component: Document, classes: String): Elements =
     component.getElementsByClass(classes)
-  }
 
-  private def shouldContainTheMessage(component: Document, msg: String): Assertion = {
+  private def shouldContainTheMessage(component: Document, msg: String): Assertion =
     component.text().contains(msg) mustBe true
-  }
 
-  private def shouldNotContainTheMessage(component: Document, msg: String): Assertion = {
+  private def shouldNotContainTheMessage(component: Document, msg: String): Assertion =
     component.text().contains(msg) mustBe false
-  }
 
   trait Setup {
-    val linkMessage: String = "go to test page"
-    val href = "www.test.com"
-    val preLinkMessage = "test_pre_link_message"
-    val postLinkMessage = "test_post_link_message"
-    val classes = "govuk-!-margin-bottom-7"
+    val linkMessage: String    = "go to test page"
+    val href                   = "www.test.com"
+    val preLinkMessage         = "test_pre_link_message"
+    val postLinkMessage        = "test_post_link_message"
+    val classes                = "govuk-!-margin-bottom-7"
     val defaultClasses: String = "govuk-body"
 
-    def newTabLinkComponent(linkMessage: String,
-                            href: String,
-                            preLinkMessage: Option[String] = None,
-                            postLinkMessage: Option[String] = None,
-                            classes: String = defaultClasses): Document =
-      Jsoup.parse(application.injector.instanceOf[newTabLink].
-        apply(linkMessage, href, preLinkMessage, postLinkMessage, classes).body)
+    def newTabLinkComponent(
+      linkMessage: String,
+      href: String,
+      preLinkMessage: Option[String] = None,
+      postLinkMessage: Option[String] = None,
+      classes: String = defaultClasses
+    ): Document =
+      Jsoup.parse(
+        application.injector
+          .instanceOf[newTabLink]
+          .apply(linkMessage, href, preLinkMessage, postLinkMessage, classes)
+          .body
+      )
 
   }
 }

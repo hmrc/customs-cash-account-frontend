@@ -24,12 +24,14 @@ object SourceFaultDetail {
   implicit val format: OFormat[SourceFaultDetail] = Json.format[SourceFaultDetail]
 }
 
-case class ErrorDetail(timestamp: String,
-                        correlationId: String,
-                        errorCode: String,
-                        errorMessage: String,
-                        source: String,
-                        sourceFaultDetail: SourceFaultDetail)
+case class ErrorDetail(
+  timestamp: String,
+  correlationId: String,
+  errorCode: String,
+  errorMessage: String,
+  source: String,
+  sourceFaultDetail: SourceFaultDetail
+)
 
 object ErrorDetail {
   implicit val format: OFormat[ErrorDetail] = Json.format[ErrorDetail]

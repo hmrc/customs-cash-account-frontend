@@ -48,14 +48,14 @@ class CashAccountExceededThresholdSpec extends ViewTestHelper {
 
   trait Setup {
 
-    val eori = "test_eori"
+    val eori      = "test_eori"
     val accNumber = "1234567"
-    val owner = "test_owner"
+    val owner     = "test_owner"
 
     val availBalance: BigDecimal = BigDecimal(100.0)
-    val bal: CDSCashBalance = CDSCashBalance(Some(availBalance))
+    val bal: CDSCashBalance      = CDSCashBalance(Some(availBalance))
 
-    val cashAcc: CashAccount = CashAccount(accNumber, owner, AccountStatusOpen, bal)
+    val cashAcc: CashAccount        = CashAccount(accNumber, owner, AccountStatusOpen, bal)
     val model: CashAccountViewModel = CashAccountViewModel(eori, cashAcc)
 
     val viewDoc: Document =
@@ -67,15 +67,17 @@ class CashAccountExceededThresholdSpec extends ViewTestHelper {
 
     view.getElementsByTag("h1").text() mustBe messages("cf.cash-account.detail.heading")
 
-    view.getElementById("balance-available").text().contains(
-      s"£100.00 ${messages("cf.cash-account.detail.available")}"
-    ) mustBe true
+    view
+      .getElementById("balance-available")
+      .text()
+      .contains(
+        s"£100.00 ${messages("cf.cash-account.detail.available")}"
+      ) mustBe true
   }
 
-  private def shouldContainExceededThresholdMsg(implicit view: Document): Assertion = {
+  private def shouldContainExceededThresholdMsg(implicit view: Document): Assertion =
     view.getElementById("exceeded-threshold").text() mustBe
       messages("cf.cash-account-detail.exceeded-threshold")
-  }
 
   private def shouldContainMissingDocHeadingMsg(implicit view: Document): Assertion =
     view.getElementById("missing-documents-guidance-heading").text() mustBe

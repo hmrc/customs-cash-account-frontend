@@ -34,10 +34,8 @@ class CashAccountBalanceSpec extends SpecBase {
       "model has available balance with showBalance as true and displayLastSixMonthsHeading as true" in new Setup {
         val balancesValue: CDSCashBalance = CDSCashBalance(Some(BigDecimal(accountBalance)))
 
-        val cashAccount: CashAccount = CashAccount(number = accNumber,
-          owner = eori,
-          status = AccountStatusOpen,
-          balances = balancesValue)
+        val cashAccount: CashAccount =
+          CashAccount(number = accNumber, owner = eori, status = AccountStatusOpen, balances = balancesValue)
 
         val model: CashAccountViewModel = CashAccountViewModel(eori, cashAccount)
 
@@ -50,10 +48,8 @@ class CashAccountBalanceSpec extends SpecBase {
       }
 
       "model has no available balance and showBalance is true" in new Setup {
-        val cashAccount: CashAccount = CashAccount(number = accNumber,
-          owner = eori,
-          status = AccountStatusOpen,
-          balances = balances)
+        val cashAccount: CashAccount =
+          CashAccount(number = accNumber, owner = eori, status = AccountStatusOpen, balances = balances)
 
         val model: CashAccountViewModel = CashAccountViewModel(eori, cashAccount)
 
@@ -68,10 +64,8 @@ class CashAccountBalanceSpec extends SpecBase {
       "model has available balance and showBalance is false" in new Setup {
         val balancesValue: CDSCashBalance = CDSCashBalance(Some(BigDecimal(accountBalance)))
 
-        val cashAccount: CashAccount = CashAccount(number = accNumber,
-          owner = eori,
-          status = AccountStatusOpen,
-          balances = balancesValue)
+        val cashAccount: CashAccount =
+          CashAccount(number = accNumber, owner = eori, status = AccountStatusOpen, balances = balancesValue)
 
         val model: CashAccountViewModel = CashAccountViewModel(eori, cashAccount)
 
@@ -84,10 +78,8 @@ class CashAccountBalanceSpec extends SpecBase {
       }
 
       "model has no available balance and showBalance is false" in new Setup {
-        val cashAccount: CashAccount = CashAccount(number = accNumber,
-          owner = eori,
-          status = AccountStatusOpen,
-          balances = balances)
+        val cashAccount: CashAccount =
+          CashAccount(number = accNumber, owner = eori, status = AccountStatusOpen, balances = balances)
 
         val model: CashAccountViewModel = CashAccountViewModel(eori, cashAccount)
 
@@ -102,10 +94,8 @@ class CashAccountBalanceSpec extends SpecBase {
       "displayLastSixMonthsHeading is false and showBalance is true" in new Setup {
         val balancesValue: CDSCashBalance = CDSCashBalance(Some(BigDecimal(accountBalance)))
 
-        val cashAccount: CashAccount = CashAccount(number = accNumber,
-          owner = eori,
-          status = AccountStatusOpen,
-          balances = balancesValue)
+        val cashAccount: CashAccount =
+          CashAccount(number = accNumber, owner = eori, status = AccountStatusOpen, balances = balancesValue)
 
         val model: CashAccountViewModel = CashAccountViewModel(eori, cashAccount)
 
@@ -119,51 +109,56 @@ class CashAccountBalanceSpec extends SpecBase {
     }
   }
 
-  private def shouldDisplayAccountNumberWithText(viewDoc: Document,
-                                                 accNumber: String)(implicit msgs: Messages): Assertion = {
-    viewDoc.getElementById("account-number")
+  private def shouldDisplayAccountNumberWithText(viewDoc: Document, accNumber: String)(implicit
+    msgs: Messages
+  ): Assertion =
+    viewDoc
+      .getElementById("account-number")
       .text() mustBe msgs("cf.cash-account.detail.account", accNumber)
-  }
 
-  private def shouldDisplayCashAccountHeading(viewDoc: Document)(implicit msgs: Messages): Assertion = {
+  private def shouldDisplayCashAccountHeading(viewDoc: Document)(implicit msgs: Messages): Assertion =
     viewDoc.getElementsByTag("h1").text() mustBe msgs("cf.cash-account.detail.heading")
-  }
 
-  private def shouldDisplayCorrectAmountWithCorrectFormat(viewDoc: Document,
-                                                          balance: Option[BigDecimal] = None)
-                                                         (implicit msgs: Messages): Assertion = {
+  private def shouldDisplayCorrectAmountWithCorrectFormat(viewDoc: Document, balance: Option[BigDecimal] = None)(
+    implicit msgs: Messages
+  ): Assertion =
     if (balance.isDefined) {
-      viewDoc.getElementById("balance-available")
+      viewDoc
+        .getElementById("balance-available")
         .text() mustBe s"${formatCurrencyAmount(balance.get)} ${msgs("cf.cash-account.detail.available")}"
     } else {
-      viewDoc.getElementById("balance-available")
+      viewDoc
+        .getElementById("balance-available")
         .text() mustBe s"${formatCurrencyAmount(0)} ${msgs("cf.cash-account.detail.available")}"
     }
-  }
 
-  private def shouldDisplayLastTransactionsText(viewDoc: Document)(implicit msgs: Messages): Assertion = {
-    viewDoc.getElementById("last-transactions")
+  private def shouldDisplayLastTransactionsText(viewDoc: Document)(implicit msgs: Messages): Assertion =
+    viewDoc
+      .getElementById("last-transactions")
       .text() mustBe msgs("cf.cash-account.detail.last-transactions")
-  }
 
-  private def shouldNotDisplayAmountText(viewDoc: Document): Assertion = {
+  private def shouldNotDisplayAmountText(viewDoc: Document): Assertion =
     Option(viewDoc.getElementById("balance-available")) mustBe empty
-  }
 
-  private def shouldNotDisplayLastTransactionsText(viewDoc: Document): Assertion = {
+  private def shouldNotDisplayLastTransactionsText(viewDoc: Document): Assertion =
     Option(viewDoc.getElementById("last-transactions")) mustBe empty
-  }
 
   trait Setup {
-    val eori: String = "test_eori"
-    val accountBalance: Int = 6000
+    val eori: String             = "test_eori"
+    val accountBalance: Int      = 6000
     val balances: CDSCashBalance = CDSCashBalance(None)
-    val accNumber: String = "12345678"
+    val accNumber: String        = "12345678"
 
-    def view(accountModel: CashAccountViewModel,
-             showBalance: Boolean = true,
-             displayLastSixMonthsHeading: Boolean = true): Document =
-      Jsoup.parse(application.injector.instanceOf[cash_account_balance]
-        .apply(accountModel, showBalance, displayLastSixMonthsHeading).body)
+    def view(
+      accountModel: CashAccountViewModel,
+      showBalance: Boolean = true,
+      displayLastSixMonthsHeading: Boolean = true
+    ): Document =
+      Jsoup.parse(
+        application.injector
+          .instanceOf[cash_account_balance]
+          .apply(accountModel, showBalance, displayLastSixMonthsHeading)
+          .body
+      )
   }
 }

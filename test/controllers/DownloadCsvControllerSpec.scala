@@ -18,8 +18,7 @@ package controllers
 
 import config.AppConfig
 import connectors.{
-  CustomsFinancialsApiConnector, NoTransactionsAvailable,
-  TooManyTransactionsRequested, UnknownException
+  CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested, UnknownException
 }
 import models.*
 import org.jsoup.Jsoup.parseBodyFragment
@@ -59,7 +58,7 @@ class DownloadCsvControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
         status(result) mustEqual OK
         contentAsString(result) must include(""","mrn3",""")
       }
@@ -78,16 +77,19 @@ class DownloadCsvControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
         status(result) mustEqual OK
 
-        val csv = contentAsString(result)
+        val csv        = contentAsString(result)
         val actualRows = csv.split("\n").toList
 
         val htmlTagPattern = "<.*?>".r
-        val actualHeaders = actualRows.head.split(",").map { header =>
-          htmlTagPattern.replaceAllIn(header.replace("\"", ""), "")
-        }.toList
+        val actualHeaders  = actualRows.head
+          .split(",")
+          .map { header =>
+            htmlTagPattern.replaceAllIn(header.replace("\"", ""), "")
+          }
+          .toList
 
         val expectedHeaders = List(
           "Transaction date",
@@ -120,8 +122,8 @@ class DownloadCsvControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-        val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
-        val result = route(app, request).value
+        val request       = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
+        val result        = route(app, request).value
         status(result) mustEqual OK
         val actualHeaders = headers(result)
         actualHeaders("Content-Disposition") must startWith("attachment")
@@ -140,9 +142,8 @@ class DownloadCsvControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-        val request = FakeRequest(GET,
-          routes.DownloadCsvController.downloadCsv(Some("FakeDisposition")).url)
-        val result = route(app, request).value
+        val request       = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(Some("FakeDisposition")).url)
+        val result        = route(app, request).value
         status(result) mustEqual OK
         val actualHeaders = headers(result)
         actualHeaders("Content-Disposition") must startWith("FakeDisposition")
@@ -163,7 +164,7 @@ class DownloadCsvControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
         redirectLocation(result).value mustEqual routes.DownloadCsvController.showUnableToDownloadCSV().url
       }
     }
@@ -181,8 +182,8 @@ class DownloadCsvControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-        val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
-        val result = route(app, request).value
+        val request       = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
+        val result        = route(app, request).value
         status(result) mustEqual OK
         val actualHeaders = headers(result)
         actualHeaders("Content-Disposition") must include(s"filename=Cash_Account_Transactions_20271220123000.CSV")
@@ -203,12 +204,13 @@ class DownloadCsvControllerSpec extends SpecBase {
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
           bind[AuditingService].toInstance(mockAuditingService)
-        ).configure("features.fixed-systemdate-for-tests" -> "true")
+        )
+        .configure("features.fixed-systemdate-for-tests" -> "true")
         .build()
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
         status(result) mustEqual OK
 
         verify(mockAuditingService).auditCsvDownload(
@@ -216,7 +218,8 @@ class DownloadCsvControllerSpec extends SpecBase {
           eqTo("1234567"),
           any[java.time.LocalDateTime],
           any[LocalDate],
-          any[LocalDate])(any)
+          any[LocalDate]
+        )(any)
       }
     }
 
@@ -231,7 +234,7 @@ class DownloadCsvControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
         status(result) mustEqual NOT_FOUND
       }
     }
@@ -254,9 +257,9 @@ class DownloadCsvControllerSpec extends SpecBase {
           .thenReturn(Future.successful(Right(randomCashTransaction(expectedTransaction))))
 
         running(app) {
-          val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(None).url + "?page=5")
-          val result = route(app, request).value
-          val html = parseBodyFragment(contentAsString(result)).body
+          val request         = FakeRequest(GET, routes.CashAccountController.showAccountDetails(None).url + "?page=5")
+          val result          = route(app, request).value
+          val html            = parseBodyFragment(contentAsString(result)).body
           val pageNumberLinks = html.select("li.govuk-pagination__item > a").asScala
 
           withClue("html did not contain any pagination links:") {
@@ -285,7 +288,7 @@ class DownloadCsvControllerSpec extends SpecBase {
         .build()
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
         status(result) mustEqual OK
         contentAsString(result) must include regex "Your search returned too many results"
       }
@@ -305,8 +308,8 @@ class DownloadCsvControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
       running(newApp) {
-        val request = FakeRequest(GET, routes.DownloadCsvController.downloadRequestedCsv(
-          Some("attachment"), dateRange).url)
+        val request =
+          FakeRequest(GET, routes.DownloadCsvController.downloadRequestedCsv(Some("attachment"), dateRange).url)
 
         val result = route(newApp, request).value
         status(result) mustEqual OK
@@ -375,7 +378,6 @@ class DownloadCsvControllerSpec extends SpecBase {
       }
     }
 
-
     "audit the download of the CSV" in new Setup {
       when(mockAuditingService.auditCsvDownload(any, any, any, any, any)(any))
         .thenReturn(Future.successful(AuditResult.Success))
@@ -387,8 +389,8 @@ class DownloadCsvControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
       running(newApp) {
-        val request = FakeRequest(
-          GET, routes.DownloadCsvController.downloadRequestedCsv(Some("attachment"), dateRange).url)
+        val request =
+          FakeRequest(GET, routes.DownloadCsvController.downloadRequestedCsv(Some("attachment"), dateRange).url)
 
         val result = route(newApp, request).value
         status(result) mustEqual OK
@@ -397,52 +399,105 @@ class DownloadCsvControllerSpec extends SpecBase {
           eqTo("1234567"),
           any[java.time.LocalDateTime],
           any[LocalDate],
-          any[LocalDate])(any)
+          any[LocalDate]
+        )(any)
       }
     }
   }
 
   trait Setup {
     val cashAccountNumber = "1234567"
-    val eori = "exampleEori"
-    val someCan = "1234567"
-    val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
+    val eori              = "exampleEori"
+    val someCan           = "1234567"
+    val sMRN              = "ic62zbad-75fa-445f-962b-cc92311686b8e"
 
-    val mockAuditingService: AuditingService = mock[AuditingService]
+    val mockAuditingService: AuditingService                             = mock[AuditingService]
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
-    val cashAccount: CashAccount = CashAccount(cashAccountNumber, eori,
-      AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))
+    val cashAccount: CashAccount                                         =
+      CashAccount(cashAccountNumber, eori, AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))
 
     val listOfPendingTransactions: Seq[Declaration] =
-      Seq(Declaration("pendingDeclarationID", Some("pendingImporterEORI"),
-        "pendingDeclarantEORINumber", Some("pendingDeclarantReference"),
-        LocalDate.parse("2020-07-21"), -100.00, Nil, Some(sMRN)))
+      Seq(
+        Declaration(
+          "pendingDeclarationID",
+          Some("pendingImporterEORI"),
+          "pendingDeclarantEORINumber",
+          Some("pendingDeclarantReference"),
+          LocalDate.parse("2020-07-21"),
+          -100.00,
+          Nil,
+          Some(sMRN)
+        )
+      )
 
-    val day = 10
+    val day   = 10
     val month = 10
-    val year = 2019
+    val year  = 2019
 
     val dateRange: RequestedDateRange =
       RequestedDateRange(LocalDate.of(year, month, day), LocalDate.of(year, month, day))
 
     val cashDailyStatements: Seq[CashDailyStatement] = Seq(
-      CashDailyStatement(LocalDate.parse("2020-07-18"), 0.0, 1000.00,
-        Seq(Declaration("mrn1", Some("Importer EORI"), "Declarant EORI",
-          Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -84.00, Nil, Some(sMRN)),
-          Declaration("mrn2", Some("Importer EORI"), "Declarant EORI",
-            Some("Declarant Reference"), LocalDate.parse("2020-07-18"), -65.00, Nil, Some(sMRN))),
-        Seq(Transaction(45.67, Payment, None), Transaction(-76.34, Withdrawal, Some("77665544")))),
-
-      CashDailyStatement(LocalDate.parse("2020-07-20"), 0.0, 1200.00,
-        Seq(Declaration("mrn3", Some("Importer EORI"), "Declarant EORI",
-          Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -90.00, Nil, Some(sMRN)),
-          Declaration("mrn4", Some("Importer EORI"), "Declarant EORI",
-            Some("Declarant Reference"), LocalDate.parse("2020-07-20"), -30.00, Nil, Some(sMRN))),
-        Seq(Transaction(67.89, Payment, None)))
+      CashDailyStatement(
+        LocalDate.parse("2020-07-18"),
+        0.0,
+        1000.00,
+        Seq(
+          Declaration(
+            "mrn1",
+            Some("Importer EORI"),
+            "Declarant EORI",
+            Some("Declarant Reference"),
+            LocalDate.parse("2020-07-18"),
+            -84.00,
+            Nil,
+            Some(sMRN)
+          ),
+          Declaration(
+            "mrn2",
+            Some("Importer EORI"),
+            "Declarant EORI",
+            Some("Declarant Reference"),
+            LocalDate.parse("2020-07-18"),
+            -65.00,
+            Nil,
+            Some(sMRN)
+          )
+        ),
+        Seq(Transaction(45.67, Payment, None), Transaction(-76.34, Withdrawal, Some("77665544")))
+      ),
+      CashDailyStatement(
+        LocalDate.parse("2020-07-20"),
+        0.0,
+        1200.00,
+        Seq(
+          Declaration(
+            "mrn3",
+            Some("Importer EORI"),
+            "Declarant EORI",
+            Some("Declarant Reference"),
+            LocalDate.parse("2020-07-20"),
+            -90.00,
+            Nil,
+            Some(sMRN)
+          ),
+          Declaration(
+            "mrn4",
+            Some("Importer EORI"),
+            "Declarant EORI",
+            Some("Declarant Reference"),
+            LocalDate.parse("2020-07-20"),
+            -30.00,
+            Nil,
+            Some(sMRN)
+          )
+        ),
+        Seq(Transaction(67.89, Payment, None))
+      )
     )
 
-    val nonFatalResponse: UpstreamErrorResponse = UpstreamErrorResponse("ServiceUnavailable",
-      Status.SERVICE_UNAVAILABLE, Status.SERVICE_UNAVAILABLE)
+    val nonFatalResponse: UpstreamErrorResponse =
+      UpstreamErrorResponse("ServiceUnavailable", Status.SERVICE_UNAVAILABLE, Status.SERVICE_UNAVAILABLE)
 
     val cashTransactionResponse: CashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements)
 
@@ -473,29 +528,32 @@ class DownloadCsvControllerSpec extends SpecBase {
     CashTransactions(randomPendingDailyStatements(pendingStatementsNumber), randomCashDailyStatements(howMany))
   }
 
-
   def randomDeclaration: Declaration = {
     val randomStringLength: Int = 10
 
-    Declaration(randomString(randomStringLength),
+    Declaration(
+      randomString(randomStringLength),
       Some(randomString(randomStringLength)),
       randomString(randomStringLength),
       Some(randomString(randomStringLength)),
       randomLocalDate,
       randomBigDecimal,
       Nil,
-      Some("ic62zbad-75fa-445f-962b-cc92311686b8e"))
+      Some("ic62zbad-75fa-445f-962b-cc92311686b8e")
+    )
   }
 
   def randomCashDailyStatement: CashDailyStatement = {
-    val declarations: Int = 5
+    val declarations: Int      = 5
     val otherTransactions: Int = 7
 
-    CashDailyStatement(randomLocalDate,
+    CashDailyStatement(
+      randomLocalDate,
       randomBigDecimal,
       randomBigDecimal,
       randomDeclarations(declarations),
-      randomTransactions(otherTransactions))
+      randomTransactions(otherTransactions)
+    )
   }
 
   val types: Seq[String] = Seq("Payment", "Withdrawal", "Transfer")

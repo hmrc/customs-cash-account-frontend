@@ -23,29 +23,35 @@ import play.twirl.api.HtmlFormat
 import views.html.components.payment_search_results
 import play.api.i18n.Messages
 import utils.Utils.{
-  emptyGovUkTableComponent, emptyH1InnerComponent, h2Component,
-  h2InnerComponent, hmrcNewTabLinkComponent
+  emptyGovUkTableComponent, emptyH1InnerComponent, h2Component, h2InnerComponent, hmrcNewTabLinkComponent
 }
 import viewmodels.pagination.ListPaginationViewModel
 
-
-case class PaymentSearchResultsViewModel(pageTitle: String,
-                                         backLink: String,
-                                         accountDetails: HtmlFormat.Appendable,
-                                         searchResultsHeader: HtmlFormat.Appendable,
-                                         paymentSearchResultSection: HtmlFormat.Appendable,
-                                         helpAndSupportGuidance: GuidanceRow,
-                                         paginationModel: Option[ListPaginationViewModel] = None)
+case class PaymentSearchResultsViewModel(
+  pageTitle: String,
+  backLink: String,
+  accountDetails: HtmlFormat.Appendable,
+  searchResultsHeader: HtmlFormat.Appendable,
+  paymentSearchResultSection: HtmlFormat.Appendable,
+  helpAndSupportGuidance: GuidanceRow,
+  paginationModel: Option[ListPaginationViewModel] = None
+)
 
 object PaymentSearchResultsViewModel {
 
-  def apply(searchValue: String,
-            account: CashAccount,
-            paymentsWithdrawalsAndTransfers: Seq[PaymentsWithdrawalsAndTransfer],
-            pageNo: Option[Int])(implicit msgs: Messages, config: AppConfig): PaymentSearchResultsViewModel = {
+  def apply(
+    searchValue: String,
+    account: CashAccount,
+    paymentsWithdrawalsAndTransfers: Seq[PaymentsWithdrawalsAndTransfer],
+    pageNo: Option[Int]
+  )(implicit msgs: Messages, config: AppConfig): PaymentSearchResultsViewModel = {
 
     val populateAccountDetails: HtmlFormat.Appendable =
-      h2InnerComponent(id = Some("account-number"), innerMsg = account.number, msgKey = "cf.cash-account.detail.account")
+      h2InnerComponent(
+        id = Some("account-number"),
+        innerMsg = account.number,
+        msgKey = "cf.cash-account.detail.account"
+      )
 
     val totalDailyStatementsSize: Int = paymentsWithdrawalsAndTransfers.size
 
@@ -56,50 +62,56 @@ object PaymentSearchResultsViewModel {
       searchResultsHeader = populateSearchResultsHeader(searchValue),
       paymentSearchResultSection = populatePaymentSearchResultSection(paymentsWithdrawalsAndTransfers, pageNo),
       helpAndSupportGuidance = helpAndSupport,
-      paginationModel = populatePaginationModel(searchValue, pageNo, totalDailyStatementsSize))
+      paginationModel = populatePaginationModel(searchValue, pageNo, totalDailyStatementsSize)
+    )
   }
 
-  private def populateSearchResultsHeader(searchInput: String)(implicit messages: Messages): HtmlFormat.Appendable = {
-    emptyH1InnerComponent(id = Some("search-results-message-heading"),
-      msg = "cf.cash-account.detail.declaration.search-title", innerMsg = searchInput)
-  }
+  private def populateSearchResultsHeader(searchInput: String)(implicit messages: Messages): HtmlFormat.Appendable =
+    emptyH1InnerComponent(
+      id = Some("search-results-message-heading"),
+      msg = "cf.cash-account.detail.declaration.search-title",
+      innerMsg = searchInput
+    )
 
-  private def populatePaymentSearchResultSection(paymentsWithdrawalsAndTransfers: Seq[PaymentsWithdrawalsAndTransfer],
-                                                 pageNo: Option[Int] = None
-                                                )(implicit msgs: Messages, config: AppConfig): HtmlFormat.Appendable = {
-
+  private def populatePaymentSearchResultSection(
+    paymentsWithdrawalsAndTransfers: Seq[PaymentsWithdrawalsAndTransfer],
+    pageNo: Option[Int] = None
+  )(implicit msgs: Messages, config: AppConfig): HtmlFormat.Appendable =
     new payment_search_results(emptyGovUkTableComponent)
       .apply(PaymentSearchResultStatementsViewModel(paymentsWithdrawalsAndTransfers, Some(pageNo.getOrElse(1))))
-  }
 
-  private def helpAndSupport(implicit appConfig: AppConfig, messages: Messages): GuidanceRow = {
+  private def helpAndSupport(implicit appConfig: AppConfig, messages: Messages): GuidanceRow =
     GuidanceRow(
       h2Heading = h2Component(
         id = Some("search-transactions-support-message-heading"),
         msgKey = "site.support.heading"
       ),
-
-      link = Some(hmrcNewTabLinkComponent(linkMessage = "cf.cash-account.help-and-support.link.text",
-        href = appConfig.cashAccountForCdsDeclarationsUrl,
-        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
-        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")))
+      link = Some(
+        hmrcNewTabLinkComponent(
+          linkMessage = "cf.cash-account.help-and-support.link.text",
+          href = appConfig.cashAccountForCdsDeclarationsUrl,
+          preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
+          postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")
+        )
+      )
     )
-  }
 
-  private def populatePaginationModel(searchValue: String,
-                                      pageNo: Option[Int],
-                                      totalDailyStatementsSize: Int)
-                                     (implicit config: AppConfig) = {
+  private def populatePaginationModel(searchValue: String, pageNo: Option[Int], totalDailyStatementsSize: Int)(implicit
+    config: AppConfig
+  ) = {
     val isPaginationDisabled = totalDailyStatementsSize <= config.numberOfRecordsPerPage
 
     if (isPaginationDisabled) {
       None
     } else {
-      Some(ListPaginationViewModel(
-        totalNumberOfItems = totalDailyStatementsSize,
-        currentPage = pageNo.getOrElse(1),
-        numberOfItemsPerPage = config.numberOfRecordsPerPage,
-        href = controllers.routes.CashAccountPaymentSearchController.search(searchValue, None).url))
+      Some(
+        ListPaginationViewModel(
+          totalNumberOfItems = totalDailyStatementsSize,
+          currentPage = pageNo.getOrElse(1),
+          numberOfItemsPerPage = config.numberOfRecordsPerPage,
+          href = controllers.routes.CashAccountPaymentSearchController.search(searchValue, None).url
+        )
+      )
     }
   }
 }

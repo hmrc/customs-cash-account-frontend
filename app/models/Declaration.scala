@@ -22,15 +22,16 @@ import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
 
-case class Declaration(movementReferenceNumber: MRN,
-                       importerEori: Option[String],
-                       declarantEori: EORI,
-                       declarantReference: Option[UCR],
-                       date: LocalDate,
-                       amount: BigDecimal,
-                       taxGroups: Seq[TaxGroup],
-                       secureMovementReferenceNumber: Option[String])
-  extends Ordered[Declaration] {
+case class Declaration(
+  movementReferenceNumber: MRN,
+  importerEori: Option[String],
+  declarantEori: EORI,
+  declarantReference: Option[UCR],
+  date: LocalDate,
+  amount: BigDecimal,
+  taxGroups: Seq[TaxGroup],
+  secureMovementReferenceNumber: Option[String]
+) extends Ordered[Declaration] {
   override def compare(that: Declaration): Int = movementReferenceNumber.compareTo(that.movementReferenceNumber)
 }
 
@@ -38,14 +39,16 @@ object Declaration {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]
 }
 
-case class EncryptedDeclaration(movementReferenceNumber: EncryptedValue,
-                                importerEori: EncryptedValue,
-                                declarantEori: EncryptedValue,
-                                declarantReference: Option[EncryptedValue],
-                                date: LocalDate,
-                                amount: BigDecimal,
-                                taxGroups: Seq[TaxGroup],
-                                secureMovementReferenceNumber: String)
+case class EncryptedDeclaration(
+  movementReferenceNumber: EncryptedValue,
+  importerEori: EncryptedValue,
+  declarantEori: EncryptedValue,
+  declarantReference: Option[EncryptedValue],
+  date: LocalDate,
+  amount: BigDecimal,
+  taxGroups: Seq[TaxGroup],
+  secureMovementReferenceNumber: String
+)
 
 object EncryptedDeclaration {
   implicit val format: OFormat[EncryptedDeclaration] = Json.format[EncryptedDeclaration]

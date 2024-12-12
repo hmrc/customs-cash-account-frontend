@@ -120,9 +120,9 @@ class CashAccountV2Spec extends ViewTestHelper {
     }
   }
 
-  private def shouldContainCorrectAccountBalanceDetails(viewDocument: Document,
-                                                        accNumber: String)
-                                                       (implicit msgs: Messages) = {
+  private def shouldContainCorrectAccountBalanceDetails(viewDocument: Document, accNumber: String)(implicit
+    msgs: Messages
+  ) = {
     viewDocument.getElementById("account-number").text() mustBe
       msgs("cf.cash-account.detail.account", accNumber)
 
@@ -130,8 +130,9 @@ class CashAccountV2Spec extends ViewTestHelper {
     viewDocument.getElementById("balance-available").text() mustBe "£8,788.00 available"
   }
 
-  private def shouldContainCorrectSearchForTransactionsInputTextDetails(viewDocument: Document)
-                                                                       (implicit msgs: Messages) = {
+  private def shouldContainCorrectSearchForTransactionsInputTextDetails(
+    viewDocument: Document
+  )(implicit msgs: Messages) = {
     val inputTextElement: Element = viewDocument.getElementById("value")
     inputTextElement.getElementsByAttribute("name").text() mustBe emptyString
 
@@ -139,16 +140,12 @@ class CashAccountV2Spec extends ViewTestHelper {
       msgs("cf.cash-account.transactions.search-for-transactions.hint")
   }
 
-  private def shouldContainSearchButton(viewDocument: Document)
-                                       (implicit msgs: Messages) = {
+  private def shouldContainSearchButton(viewDocument: Document)(implicit msgs: Messages) =
     viewDocument.getElementsByClass("inline-button").text() mustBe msgs("site.search")
-  }
 
-  private def shouldContainCorrectRequestTransactionsHeading(viewDocument: Document)
-                                                            (implicit msgs: Messages) = {
+  private def shouldContainCorrectRequestTransactionsHeading(viewDocument: Document)(implicit msgs: Messages) =
     viewDocument.getElementById("request-transactions-heading").text() mustBe
       msgs("cf.cash-account.transactions.request-transactions.heading")
-  }
 
   private def shouldContainCorrectDownloadCSVFileLinkUrl(viewDocument: Document)(implicit msgs: Messages) = {
     val element: Element = viewDocument.getElementById("download-scv-file")
@@ -159,8 +156,8 @@ class CashAccountV2Spec extends ViewTestHelper {
   }
 
   private def shouldContainCorrectDownloadCSVFileLinkForMaxTransactionExceededFlag(
-                                                                                    viewDocument: Document
-                                                                                  )(implicit msgs: Messages) = {
+    viewDocument: Document
+  )(implicit msgs: Messages) = {
     val element: Element = viewDocument.getElementById("download-scv-file")
     element.getElementsByAttribute("href").text() mustBe
       msgs("cf.cash-account.transactions.too-many-transactions.hint03")
@@ -206,39 +203,55 @@ class CashAccountV2Spec extends ViewTestHelper {
     tableRosElementsByClass.size() mustBe 0
   }
 
-  private def shouldDisplayPaginationComponent(viewDocument: Document) = {
+  private def shouldDisplayPaginationComponent(viewDocument: Document) =
     shouldContainTheElement(view = viewDocument, classes = Some("govuk-pagination"))
-  }
 
-  private def shouldNotDisplayPaginationComponent(viewDocument: Document) = {
+  private def shouldNotDisplayPaginationComponent(viewDocument: Document) =
     shouldNotContainTheElement(view = viewDocument, classes = Some("govuk-pagination"))
-  }
 
   trait Setup {
-    val eoriNumber = "test_eori"
-    val can = "12345678"
+    val eoriNumber          = "test_eori"
+    val can                 = "12345678"
     val balance: BigDecimal = BigDecimal(8788.00)
 
-    val yearStart = 2024
+    val yearStart  = 2024
     val monthStart = 5
-    val dayStart = 5
-    val yearEnd = 2025
-    val monthEnd = 8
-    val dayEnd = 8
-    val size = 300L
+    val dayStart   = 5
+    val yearEnd    = 2025
+    val monthEnd   = 8
+    val dayEnd     = 8
+    val size       = 300L
 
-    val cashAccount: CashAccount = CashAccount(number = can,
+    val cashAccount: CashAccount = CashAccount(
+      number = can,
       owner = eoriNumber,
       status = AccountStatusOpen,
-      balances = CDSCashBalance(Some(balance)))
+      balances = CDSCashBalance(Some(balance))
+    )
 
     val declaration1: Declaration =
-      Declaration(MOVEMENT_REF_NUMBER, Some(EORI_NUMBER), EORI_NUMBER, Some(DECLARANT_REF), DATE, AMOUNT,
-        Seq(TAX_GROUP), Some(SECURE_MOVEMENT_REF_NUMBER))
+      Declaration(
+        MOVEMENT_REF_NUMBER,
+        Some(EORI_NUMBER),
+        EORI_NUMBER,
+        Some(DECLARANT_REF),
+        DATE,
+        AMOUNT,
+        Seq(TAX_GROUP),
+        Some(SECURE_MOVEMENT_REF_NUMBER)
+      )
 
     val declaration2: Declaration =
-      Declaration(MOVEMENT_REF_NUMBER, Some(EORI_NUMBER), EORI_NUMBER, Some(DECLARANT_REF), DATE_1, AMOUNT,
-        Seq(TAX_GROUP), Some(SECURE_MOVEMENT_REF_NUMBER))
+      Declaration(
+        MOVEMENT_REF_NUMBER,
+        Some(EORI_NUMBER),
+        EORI_NUMBER,
+        Some(DECLARANT_REF),
+        DATE_1,
+        AMOUNT,
+        Seq(TAX_GROUP),
+        Some(SECURE_MOVEMENT_REF_NUMBER)
+      )
 
     val pendingTransactions: Seq[Declaration] = Seq(declaration1, declaration2)
 
@@ -260,9 +273,18 @@ class CashAccountV2Spec extends ViewTestHelper {
     val dailyStatements: Seq[CashDailyStatement] = Seq(dailyStatement1, dailyStatement2)
 
     val dailyStatementsMoteThan30Records: Seq[CashDailyStatement] =
-      Seq(dailyStatement1, dailyStatement2, dailyStatement1, dailyStatement2,
-        dailyStatement1, dailyStatement2, dailyStatement1, dailyStatement2,
-        dailyStatement1, dailyStatement2)
+      Seq(
+        dailyStatement1,
+        dailyStatement2,
+        dailyStatement1,
+        dailyStatement2,
+        dailyStatement1,
+        dailyStatement2,
+        dailyStatement1,
+        dailyStatement2,
+        dailyStatement1,
+        dailyStatement2
+      )
 
     val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
 
@@ -274,27 +296,33 @@ class CashAccountV2Spec extends ViewTestHelper {
     val eoriHistory: EoriHistory = EoriHistory(eori = eoriNumber, validFrom = Some(LocalDate.now()), validUntil = None)
 
     val cashStatementFile: Seq[CashStatementsByMonth] = Seq(
-      CashStatementsByMonth(date1, Seq(CashStatementFile(
-        filename = "statement1.pdf",
-        downloadURL = "statement1",
-        size = size,
-        metadata = CashStatementFileMetadata(
-          periodStartYear = yearStart,
-          periodStartMonth = monthStart,
-          periodStartDay = dayStart,
-          periodEndYear = yearEnd,
-          periodEndMonth = monthEnd,
-          periodEndDay = dayEnd,
-          fileFormat = FileFormat.Csv,
-          fileRole = CDSCashAccount,
-          statementRequestId = Some("abc-defg-1234-abc")
-        ),
-        eori = eoriNumber
-      )))
+      CashStatementsByMonth(
+        date1,
+        Seq(
+          CashStatementFile(
+            filename = "statement1.pdf",
+            downloadURL = "statement1",
+            size = size,
+            metadata = CashStatementFileMetadata(
+              periodStartYear = yearStart,
+              periodStartMonth = monthStart,
+              periodStartDay = dayStart,
+              periodEndYear = yearEnd,
+              periodEndMonth = monthEnd,
+              periodEndDay = dayEnd,
+              fileFormat = FileFormat.Csv,
+              fileRole = CDSCashAccount,
+              statementRequestId = Some("abc-defg-1234-abc")
+            ),
+            eori = eoriNumber
+          )
+        )
+      )
     )
 
     val statements: Seq[CashStatementsForEori] = Seq(
-      CashStatementsForEori(eoriHistory, cashStatementFile, cashStatementFile))
+      CashStatementsForEori(eoriHistory, cashStatementFile, cashStatementFile)
+    )
 
     val viewModelWithTransactions: CashAccountV2ViewModel =
       CashAccountV2ViewModel(eoriNumber, cashAccount, cashTransactions, statements, None)
@@ -310,8 +338,7 @@ class CashAccountV2Spec extends ViewTestHelper {
 
     val form: Form[String] = new SearchTransactionsFormProvider().apply()
 
-    protected def createView(viewModel: CashAccountV2ViewModel): Document = {
+    protected def createView(viewModel: CashAccountV2ViewModel): Document =
       Jsoup.parse(app.injector.instanceOf[cash_account_v2].apply(form, viewModel).body)
-    }
   }
 }

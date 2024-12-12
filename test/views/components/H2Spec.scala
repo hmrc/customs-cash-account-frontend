@@ -25,25 +25,25 @@ class H2Spec extends SpecBase {
 
   "component" should {
 
-   "display correct contents" when {
-     "h2 component has extra content" in new Setup {
-       h2Component.getElementById(id).text() mustBe s"$msg $extraContent"
-       h2Component.getElementsByClass(classes).size() mustBe 1
-     }
+    "display correct contents" when {
+      "h2 component has extra content" in new Setup {
+        h2Component.getElementById(id).text() mustBe s"$msg $extraContent"
+        h2Component.getElementsByClass(classes).size() mustBe 1
+      }
 
-     "h2 component can exist without extra content" in new Setup {
-       h2ComponentWithoutContent.getElementById(idNoContent).text() mustBe msg
-       h2ComponentWithoutContent.getElementsByClass(classes).size() mustBe 1
-     }
-   }
+      "h2 component can exist without extra content" in new Setup {
+        h2ComponentWithoutContent.getElementById(idNoContent).text() mustBe msg
+        h2ComponentWithoutContent.getElementsByClass(classes).size() mustBe 1
+      }
+    }
   }
 
   trait Setup {
 
-    val msg: String = "some message"
-    val id: String = "test_id"
-    val idNoContent: String = "test_id_noContent"
-    val classes: String = "govuk-heading-m"
+    val msg: String          = "some message"
+    val id: String           = "test_id"
+    val idNoContent: String  = "test_id_noContent"
+    val classes: String      = "govuk-heading-m"
     val extraContent: String = "some extra content"
 
     val h2Component: Document =

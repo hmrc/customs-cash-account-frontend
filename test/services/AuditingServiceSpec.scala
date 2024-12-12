@@ -42,14 +42,14 @@ class AuditingServiceSpec extends SpecBase {
 
       await(auditingService.auditCashStatements(eori))
 
-      val dataEventCaptor = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
+      val dataEventCaptor              = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
       verify(mockAuditConnector).sendExtendedEvent(dataEventCaptor.capture())(any, any)
       val dataEvent: ExtendedDataEvent = dataEventCaptor.getValue
 
-      dataEvent.auditSource should be(expectedAuditSource)
-      dataEvent.auditType should be("DisplayCashStatement")
-      dataEvent.detail.toString() should include(eori)
-      dataEvent.detail.toString() should include("false")
+      dataEvent.auditSource             should be(expectedAuditSource)
+      dataEvent.auditType               should be("DisplayCashStatement")
+      dataEvent.detail.toString()       should include(eori)
+      dataEvent.detail.toString()       should include("false")
       dataEvent.tags("transactionName") should be("Display Cash Statements")
     }
 
@@ -57,28 +57,28 @@ class AuditingServiceSpec extends SpecBase {
       val model: AuditModel = AuditModel("auditType", "transactionName", json.Json.toJson("the details"))
       await(auditingService.audit(model))
 
-      val dataEventCaptor = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
+      val dataEventCaptor              = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
       verify(mockAuditConnector).sendExtendedEvent(dataEventCaptor.capture())(any, any)
       val dataEvent: ExtendedDataEvent = dataEventCaptor.getValue
 
-      dataEvent.auditSource should be(expectedAuditSource)
-      dataEvent.auditType should be("auditType")
+      dataEvent.auditSource       should be(expectedAuditSource)
+      dataEvent.auditType         should be("auditType")
       dataEvent.detail.toString() should include("the details")
-      dataEvent.tags.toString() should include("transactionName")
+      dataEvent.tags.toString()   should include("transactionName")
     }
 
     "create the correct data event for recording a successful CSV download" in new Setup {
       await(auditingService.auditCsvDownload("eori1", "can1", now, today, tomorrow))
 
-      val dataEventCaptor = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
+      val dataEventCaptor              = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
       verify(mockAuditConnector).sendExtendedEvent(dataEventCaptor.capture())(any, any)
       val dataEvent: ExtendedDataEvent = dataEventCaptor.getValue
 
-      dataEvent.auditSource should be(expectedAuditSource)
-      dataEvent.auditType should be("DownloadCashStatement")
-      dataEvent.detail.toString() should include("eori1")
-      dataEvent.detail.toString() should include("can1")
-      dataEvent.detail.toString() should include(today.toString)
+      dataEvent.auditSource             should be(expectedAuditSource)
+      dataEvent.auditType               should be("DownloadCashStatement")
+      dataEvent.detail.toString()       should include("eori1")
+      dataEvent.detail.toString()       should include("can1")
+      dataEvent.detail.toString()       should include(today.toString)
       dataEvent.tags("transactionName") should be("Download cash transactions")
     }
 
@@ -89,14 +89,14 @@ class AuditingServiceSpec extends SpecBase {
       val model: AuditModel = AuditModel("auditType", "transactionName", json.Json.toJson("the details"))
       await(auditingService.audit(model))
 
-      val dataEventCaptor = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
+      val dataEventCaptor              = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
       verify(mockAuditConnector).sendExtendedEvent(dataEventCaptor.capture())(any, any)
       val dataEvent: ExtendedDataEvent = dataEventCaptor.getValue
 
-      dataEvent.auditSource should be(expectedAuditSource)
-      dataEvent.auditType should be("auditType")
+      dataEvent.auditSource       should be(expectedAuditSource)
+      dataEvent.auditType         should be("auditType")
       dataEvent.detail.toString() should include("the details")
-      dataEvent.tags.toString() should include("transactionName")
+      dataEvent.tags.toString()   should include("transactionName")
     }
 
     "throw an exception when the send fails to connect" in new Setup {
@@ -113,9 +113,9 @@ class AuditingServiceSpec extends SpecBase {
   trait Setup {
     implicit val hc: HeaderCarrier = HeaderCarrier()
 
-    val oneDay = 1
-    val now: LocalDateTime = LocalDateTime.now()
-    val today: LocalDate = now.toLocalDate
+    val oneDay              = 1
+    val now: LocalDateTime  = LocalDateTime.now()
+    val today: LocalDate    = now.toLocalDate
     val tomorrow: LocalDate = today.plusDays(oneDay)
 
     val expectedAuditSource = "customs-cash-account-frontend"

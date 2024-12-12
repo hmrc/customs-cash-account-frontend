@@ -308,45 +308,42 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
 
     val form: Form[CashTransactionDates] = new CashTransactionsRequestPageFormProvider().apply()
 
-    val year = 2021
+    val year  = 2021
     val month = 10
-    val day = 10
+    val day   = 10
 
-    val validDate: LocalDate = LocalDate.of(year, month, day)
-    val futureYear: Int = LocalDate.now().getYear + 1
-    val etmpStatementYear = 2019
+    val validDate: LocalDate            = LocalDate.of(year, month, day)
+    val futureYear: Int                 = LocalDate.now().getYear + 1
+    val etmpStatementYear               = 2019
     val taxYearDateOlderThan6Years: Int = LocalDate.now().getYear - 7
 
     val year2021AsString = "2021"
-    val month10AsString = "10"
-    val month32AsString = "32"
-    val month40AsString = "40"
-    val month14AsString = "14"
-    val day10AsString = "10"
+    val month10AsString  = "10"
+    val month32AsString  = "32"
+    val month40AsString  = "40"
+    val month14AsString  = "14"
+    val day10AsString    = "10"
 
     val startKey = "start"
-    val endKey = "end"
+    val endKey   = "end"
 
-    val invalidMsgStartKey = "cf.form.error.start.date-number-invalid"
-    val dayMsgStartKey = "cf.form.error.start.date.invalid.day"
-    val monthMsgStartKey = "cf.form.error.start.date.invalid.month"
-    val yearMsgStartKey = "cf.form.error.start.date.invalid.year"
+    val invalidMsgStartKey     = "cf.form.error.start.date-number-invalid"
+    val dayMsgStartKey         = "cf.form.error.start.date.invalid.day"
+    val monthMsgStartKey       = "cf.form.error.start.date.invalid.month"
+    val yearMsgStartKey        = "cf.form.error.start.date.invalid.year"
     val invalidDateMsgStartKey = "cf.form.error.start.date.invalid.real-date"
 
-    val invalidMsgEndKey = "cf.form.error.end.date-number-invalid"
-    val dayMsgEndKey = "cf.form.error.end.date.invalid.day"
-    val monthMsgEndKey = "cf.form.error.end.date.invalid.month"
-    val yearMsgEndKey = "cf.form.error.end.date.invalid.year"
+    val invalidMsgEndKey     = "cf.form.error.end.date-number-invalid"
+    val dayMsgEndKey         = "cf.form.error.end.date.invalid.day"
+    val monthMsgEndKey       = "cf.form.error.end.date.invalid.month"
+    val yearMsgEndKey        = "cf.form.error.end.date.invalid.year"
     val invalidDateMsgEndKey = "cf.form.error.end.date.invalid.real-date"
 
     lazy val completeValidDates: Map[String, String] =
       populateFormValueMap(startKey, day10AsString, month10AsString, year2021AsString) ++
         populateFormValueMap(endKey, day10AsString, month10AsString, year2021AsString)
 
-    def populateFormValueMap(key: String,
-                             day: String,
-                             month: String,
-                             year: String): Map[String, String] =
+    def populateFormValueMap(key: String, day: String, month: String, year: String): Map[String, String] =
       Map(s"$key.day" -> day, s"$key.month" -> month, s"$key.year" -> year)
   }
 }

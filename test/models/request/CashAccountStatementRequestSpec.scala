@@ -39,8 +39,8 @@ class CashAccountStatementRequestSpec extends SpecBase {
 
   trait Setup {
     val fromDate: LocalDate = LocalDate.parse("2019-10-08")
-    val toDate: LocalDate = LocalDate.parse("2020-04-08")
-    val eori = "123456789"
+    val toDate: LocalDate   = LocalDate.parse("2020-04-08")
+    val eori                = "123456789"
 
     val cashDailyStatementRequest: CashDailyStatementRequest = CashDailyStatementRequest("can", fromDate, toDate)
 

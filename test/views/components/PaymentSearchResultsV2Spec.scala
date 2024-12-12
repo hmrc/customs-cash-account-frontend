@@ -48,14 +48,12 @@ class PaymentSearchResultsV2Spec extends ViewTestHelper {
     }
   }
 
-  private def shouldDisplayNoTransactionsMessage(viewDocument: Document)(implicit msgs: Messages) = {
+  private def shouldDisplayNoTransactionsMessage(viewDocument: Document)(implicit msgs: Messages) =
     viewDocument.getElementById("no-transactions-to-display").text() mustBe
       msgs("cf.cash-account.transactions.no-transactions.message")
-  }
 
-  private def shouldNotDisplayNoTransactionsMessage(viewDocument: Document) = {
+  private def shouldNotDisplayNoTransactionsMessage(viewDocument: Document) =
     Option(viewDocument.getElementById("no-transactions-to-display")) mustBe empty
-  }
 
   private def shouldDisplayTableHeaders(viewDocument: Document)(implicit msgs: Messages) = {
     viewDocument.html().contains(msgs("cf.cash-account.detail.date")) mustBe true

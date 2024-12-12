@@ -20,18 +20,18 @@ import play.api.mvc.PathBindable
 import utils.Utils.emptyString
 
 package object domain {
-  type EORI = String
+  type EORI   = String
   type LinkId = String
-  type CAN = String
-  type MRN = String
-  type UCR = String
+  type CAN    = String
+  type MRN    = String
+  type UCR    = String
 
   implicit def optionBindable: PathBindable[Option[LinkId]] = new PathBindable[Option[LinkId]] {
 
     def bind(key: String, value: String): Either[String, Option[LinkId]] =
-      implicitly[PathBindable[LinkId]].
-        bind(key, value).
-        fold(
+      implicitly[PathBindable[LinkId]]
+        .bind(key, value)
+        .fold(
           left => Left(left),
           right => Right(Some(right))
         )

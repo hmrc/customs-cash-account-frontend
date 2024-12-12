@@ -28,14 +28,14 @@ trait GuidancePageBehaviour {
 
   val view: Document
   val titleMsgKey: String
-  val backLink: Option[String] = None
-  val componentIdsToVerify: List[String] = List.empty
-  val helpAndSupportMsgKeys: Option[List[String]] = None
-  val helpAndSupportLink: Option[String] = None
+  val backLink: Option[String]                                       = None
+  val componentIdsToVerify: List[String]                             = List.empty
+  val helpAndSupportMsgKeys: Option[List[String]]                    = None
+  val helpAndSupportLink: Option[String]                             = None
   val otherComponentGuidanceList: List[ComponentDetailsForAssertion] = List.empty
-  val linksToVerify: List[LinkDetails] = List.empty
+  val linksToVerify: List[LinkDetails]                               = List.empty
 
-  implicit lazy val app: Application = application
+  implicit lazy val app: Application                        = application
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest()
 
   def guidancePage(): Unit =
@@ -58,41 +58,39 @@ trait GuidancePageBehaviour {
         viewAsHtml must include(messages("cf.cash-account.help-and-support.link.text.post"))
         viewAsHtml must include(messages("cf.cash-account.help-and-support.link.text.pre"))
         viewAsHtml must include(
-          helpAndSupportLink.getOrElse("https://www.gov.uk/guidance/use-a-cash-account-for-cds-declarations"))
+          helpAndSupportLink.getOrElse("https://www.gov.uk/guidance/use-a-cash-account-for-cds-declarations")
+        )
       }
     }
 
-    componentIdsToVerify.foreach {
-      id =>
-        s"display component with id $id" in {
-          view.select(s"#$id").size() must be > 0
-        }
+    componentIdsToVerify.foreach { id =>
+      s"display component with id $id" in {
+        view.select(s"#$id").size() must be > 0
+      }
     }
 
-    otherComponentGuidanceList.foreach {
-      component =>
-        component.testDescription in {
-          if (component.id.isDefined) {
-            view.getElementById(component.id.getOrElse(emptyString)).text() mustBe component.expectedValue
-          } else {
-            view.html() must include(component.expectedValue)
-          }
+    otherComponentGuidanceList.foreach { component =>
+      component.testDescription in {
+        if (component.id.isDefined) {
+          view.getElementById(component.id.getOrElse(emptyString)).text() mustBe component.expectedValue
+        } else {
+          view.html() must include(component.expectedValue)
         }
+      }
     }
 
-    linksToVerify.foreach {
-      link =>
-        s"display the link for ${link.urlText}" in {
-          if (link.id.isDefined) {
-            val linkElement = view.getElementById(link.id.getOrElse(emptyString))
+    linksToVerify.foreach { link =>
+      s"display the link for ${link.urlText}" in {
+        if (link.id.isDefined) {
+          val linkElement = view.getElementById(link.id.getOrElse(emptyString))
 
-            linkElement.html() must include(link.url)
-            linkElement.html() must include(link.urlText)
-          } else {
-            view.html() must include(link.url)
-            view.html() must include(link.urlText)
-          }
+          linkElement.html() must include(link.url)
+          linkElement.html() must include(link.urlText)
+        } else {
+          view.html() must include(link.url)
+          view.html() must include(link.urlText)
         }
+      }
     }
 
     "display the deskpro link" in {
@@ -102,11 +100,6 @@ trait GuidancePageBehaviour {
     }
 }
 
-case class ComponentDetailsForAssertion(testDescription: String,
-                                        id: Option[String] = None,
-                                        expectedValue: String)
+case class ComponentDetailsForAssertion(testDescription: String, id: Option[String] = None, expectedValue: String)
 
-case class LinkDetails(url: String,
-                       urlText: String,
-                       id: Option[String] = None,
-                       classes: Option[String] = None)
+case class LinkDetails(url: String, urlText: String, id: Option[String] = None, classes: Option[String] = None)

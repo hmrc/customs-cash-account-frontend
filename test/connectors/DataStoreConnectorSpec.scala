@@ -42,15 +42,15 @@ class DataStoreConnectorSpec extends SpecBase {
     "return correct email address when verified email is found" in new Setup {
       private val emailResFromAPI = EmailResponse(Some(emailId), None, None)
 
-      when(mockMetricsReporter.withResponseTimeLogging[EmailResponse](any)(any)(any)).thenReturn(
-        Future.successful(emailResFromAPI))
+      when(mockMetricsReporter.withResponseTimeLogging[EmailResponse](any)(any)(any))
+        .thenReturn(Future.successful(emailResFromAPI))
 
       when(requestBuilder.execute(any[HttpReads[EmailResponse]], any[ExecutionContext]))
         .thenReturn(Future.successful(emailResFromAPI))
       when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
 
-      connector.getEmail(eori).map {
-        res => res mustBe Right(Email(emailId))
+      connector.getEmail(eori).map { res =>
+        res mustBe Right(Email(emailId))
       }
     }
 
@@ -65,8 +65,8 @@ class DataStoreConnectorSpec extends SpecBase {
 
       when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
 
-      connector.getEmail(eori).map {
-        res => res mustBe Left(UndeliverableEmail(emailId))
+      connector.getEmail(eori).map { res =>
+        res mustBe Left(UndeliverableEmail(emailId))
       }
     }
 
@@ -81,8 +81,8 @@ class DataStoreConnectorSpec extends SpecBase {
 
       when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
 
-      connector.getEmail(eori).map {
-        res => res mustBe Left(UnverifiedEmail)
+      connector.getEmail(eori).map { res =>
+        res mustBe Left(UnverifiedEmail)
       }
     }
 
@@ -97,8 +97,8 @@ class DataStoreConnectorSpec extends SpecBase {
 
       when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
 
-      connector.getEmail(eori).map {
-        res => res mustBe Left(UnverifiedEmail)
+      connector.getEmail(eori).map { res =>
+        res mustBe Left(UnverifiedEmail)
       }
     }
   }
@@ -119,15 +119,15 @@ class DataStoreConnectorSpec extends SpecBase {
     "return EmailUnverifiedResponse with None for unverified email if there is an error while" +
       " fetching response from api" in new Setup {
 
-      when(requestBuilder.execute(any[HttpReads[EmailUnverifiedResponse]], any[ExecutionContext]))
-        .thenReturn(Future.failed(new RuntimeException("error occurred")))
+        when(requestBuilder.execute(any[HttpReads[EmailUnverifiedResponse]], any[ExecutionContext]))
+          .thenReturn(Future.failed(new RuntimeException("error occurred")))
 
-      when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
+        when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
 
-      connector.retrieveUnverifiedEmail.map {
-        _.unVerifiedEmail mustBe empty
+        connector.retrieveUnverifiedEmail.map {
+          _.unVerifiedEmail mustBe empty
+        }
       }
-    }
   }
 
   "verifiedEmail" must {
@@ -157,36 +157,42 @@ class DataStoreConnectorSpec extends SpecBase {
   }
 
   trait Setup {
-    val eori = "EORINOTIMESTAMP"
+    val eori    = "EORINOTIMESTAMP"
     val emailId = "test@test.com"
-    val value = 12
+    val value   = 12
 
     val emailUnverifiedRes: EmailUnverifiedResponse = EmailUnverifiedResponse(Some(emailId))
-    val emailVerifiedRes: EmailVerifiedResponse = EmailVerifiedResponse(Some(emailId))
+    val emailVerifiedRes: EmailVerifiedResponse     = EmailVerifiedResponse(Some(emailId))
 
-    val undelInfoEventOb: UndeliverableInformationEvent = UndeliverableInformationEvent("example-id",
+    val undelInfoEventOb: UndeliverableInformationEvent = UndeliverableInformationEvent(
+      "example-id",
       "someEvent",
       "email@email.com",
       "2021-05-14T10:59:45.811+01:00",
       Some(value),
       Some("Inbox full"),
-      "HMRC-CUS-ORG~EORINumber~GB744638982004")
+      "HMRC-CUS-ORG~EORINumber~GB744638982004"
+    )
 
-    val undelInfoOb: UndeliverableInformation = UndeliverableInformation("someSubject",
+    val undelInfoOb: UndeliverableInformation = UndeliverableInformation(
+      "someSubject",
       "example-id",
       "example-group-id",
       "2021-05-14T10:59:45.811+01:00",
-      undelInfoEventOb)
+      undelInfoEventOb
+    )
 
-    val mockHttpClient: HttpClientV2 = mock[HttpClientV2]
-    val requestBuilder: RequestBuilder = mock[RequestBuilder]
+    val mockHttpClient: HttpClientV2                = mock[HttpClientV2]
+    val requestBuilder: RequestBuilder              = mock[RequestBuilder]
     val mockMetricsReporter: MetricsReporterService = mock[MetricsReporterService]
 
-    val app: Application = applicationBuilder.overrides(
-      bind[HttpClientV2].toInstance(mockHttpClient),
-      bind[RequestBuilder].toInstance(requestBuilder),
-      bind[MetricsReporterService].toInstance(mockMetricsReporter)
-    ).build()
+    val app: Application = applicationBuilder
+      .overrides(
+        bind[HttpClientV2].toInstance(mockHttpClient),
+        bind[RequestBuilder].toInstance(requestBuilder),
+        bind[MetricsReporterService].toInstance(mockMetricsReporter)
+      )
+      .build()
 
     implicit val mockConfig: AppConfig = app.injector.instanceOf[AppConfig]
 

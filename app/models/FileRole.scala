@@ -19,25 +19,28 @@ package models
 import play.api.libs.json.{Format, JsString, JsSuccess, JsValue}
 import play.api.{Logger, LoggerLike}
 
-sealed abstract class FileRole(val name: String,
-                               val featureName: String,
-                               val transactionName: String,
-                               val messageKey: String)
+sealed abstract class FileRole(
+  val name: String,
+  val featureName: String,
+  val transactionName: String,
+  val messageKey: String
+)
 
 object FileRole {
 
   case object CDSCashAccount
-    extends FileRole(
-      name = "CDSCashAccount",
-      featureName = "cash-statement",
-      transactionName = "Display Cash Statements",
-      messageKey = "requested-cash-statement")
+      extends FileRole(
+        name = "CDSCashAccount",
+        featureName = "cash-statement",
+        transactionName = "Display Cash Statements",
+        messageKey = "requested-cash-statement"
+      )
 
   val log: LoggerLike = Logger(this.getClass)
 
   def apply(name: String): FileRole = name match {
     case "CDSCashAccount" => CDSCashAccount
-    case _ => throw new Exception(s"Unknown file role: $name")
+    case _                => throw new Exception(s"Unknown file role: $name")
   }
 
   def unapply(fileRole: FileRole): Option[String] = Some(fileRole.name)

@@ -49,28 +49,37 @@ class DeclarationDetailViewModelSpec extends SpecBase {
 
       val expectedDeclarationSummaryData: Seq[(String, String)] = Seq(
         (normalizeHtml(messages("cf.cash-account.csv.date")), Formatters.dateAsDayMonthAndYear(declaration.date)),
-        (normalizeHtml(
-          s"""
+        (
+          normalizeHtml(s"""
             ${messages("cf.cash-account.csv.declaration")}
             <abbr title="${messages("cf.cash-account.detail.movement-reference-number")}">
               ${messages("cf.cash-account.detail.mrn")}
             </abbr>
-          """), declaration.movementReferenceNumber),
-        (normalizeHtml(
-          s"""
+          """),
+          declaration.movementReferenceNumber
+        ),
+        (
+          normalizeHtml(s"""
             ${messages("cf.cash-account.csv.declaration")}
             <abbr title="${messages("cf.cash-account.detail.unique-consignment-reference")}">
               ${messages("cf.cash-account.detail.ucr")}
             </abbr>
-          """), declaration.declarantReference.getOrElse(emptyString)),
-        (normalizeHtml(
-          s"""
+          """),
+          declaration.declarantReference.getOrElse(emptyString)
+        ),
+        (
+          normalizeHtml(s"""
             ${messages("cf.cash-account.detail.declarant")}
             <abbr title="${messages("cf.cash-account.detail.eori-definition")}">
               ${messages("cf.cash-account.detail.eori")}
             </abbr>
-          """), declaration.declarantEori),
-        (normalizeHtml(messages("cf.cash-account.detail.importerEori")), declaration.importerEori.getOrElse(emptyString))
+          """),
+          declaration.declarantEori
+        ),
+        (
+          normalizeHtml(messages("cf.cash-account.detail.importerEori")),
+          declaration.importerEori.getOrElse(emptyString)
+        )
       )
 
       extractedResultData must contain allElementsOf expectedDeclarationSummaryData
@@ -117,12 +126,15 @@ class DeclarationDetailViewModelSpec extends SpecBase {
 
       val expectedDeclarationSummaryData: Seq[(String, String)] = Seq(
         (normalizeHtml(messages("cf.cash-account.detail.importerEori")), emptyString),
-        (normalizeHtml(s"""
+        (
+          normalizeHtml(s"""
           ${messages("cf.cash-account.csv.declaration")}
           <abbr title="${messages("cf.cash-account.detail.unique-consignment-reference")}">
             UCR
           </abbr>
-        """), emptyString)
+        """),
+          emptyString
+        )
       )
 
       extractedResultData must contain allElementsOf expectedDeclarationSummaryData
@@ -171,23 +183,23 @@ class DeclarationDetailViewModelSpec extends SpecBase {
 
   trait Setup {
 
-    val year2024 = 2024
-    val month4 = 4
-    val day4 = 29
+    val year2024        = 2024
+    val month4          = 4
+    val day4            = 29
     val date: LocalDate = LocalDate.of(year2024, month4, day4)
 
     val fiveHundred: BigDecimal = BigDecimal(500.00)
     val fourHundred: BigDecimal = BigDecimal(400.00)
-    val hundred: BigDecimal = BigDecimal(100.00)
-    val fifty: BigDecimal = BigDecimal(50.00)
+    val hundred: BigDecimal     = BigDecimal(100.00)
+    val fifty: BigDecimal       = BigDecimal(50.00)
 
-    val eori = "GB987654321000"
-    val number = "123456789"
-    val owner = "GB491235123123"
-    val movementReferenceNumber = "MRN1234567890"
-    val importerEori: Option[String] = Some("GB123456789000")
-    val declarantEori = "GB987654321000"
-    val declarantReference: Option[String] = Some("UCR12345")
+    val eori                                          = "GB987654321000"
+    val number                                        = "123456789"
+    val owner                                         = "GB491235123123"
+    val movementReferenceNumber                       = "MRN1234567890"
+    val importerEori: Option[String]                  = Some("GB123456789000")
+    val declarantEori                                 = "GB987654321000"
+    val declarantReference: Option[String]            = Some("UCR12345")
     val secureMovementReferenceNumber: Option[String] = Some("5a71a767-5c1c-4df8-8eef-2b83769b8fda")
 
     val taxTypes: Seq[TaxType] = Seq(TaxType(reasonForSecurity = Some("Reason"), taxTypeID = "50", amount = hundred))

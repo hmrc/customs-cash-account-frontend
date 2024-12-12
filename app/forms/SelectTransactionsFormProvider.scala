@@ -24,10 +24,9 @@ import play.api.data.Forms.mapping
 import java.time.{Clock, LocalDate, YearMonth}
 import javax.inject.Inject
 
-class SelectTransactionsFormProvider @Inject()(implicit clock: Clock)
-  extends SelectMappings {
+class SelectTransactionsFormProvider @Inject() (implicit clock: Clock) extends SelectMappings {
 
-  def apply(): Form[CashTransactionDates] = {
+  def apply(): Form[CashTransactionDates] =
     Form(
       mapping(
         "start" -> yearMonth(
@@ -35,39 +34,40 @@ class SelectTransactionsFormProvider @Inject()(implicit clock: Clock)
           emptyMonthKey = "cf.cash-account.transactions.request.start.date.empty.month",
           emptyYearKey = "cf.cash-account.transactions.request.start.date.empty.year",
           invalidDateKey = "cf.cash-account.transactions.request.start.date.invalid"
-        ).transform(_.atDay(1), date => YearMonth.from(date)
-        ).verifying(
-          beforeCurrentDate(errorKey = "cf.form.error.start-future-date")
-        ).verifying(
-          checkDates(
-            systemStartDateErrorKey = "cf.form.error.startDate.date-earlier-than-system-start-date",
-            taxYearErrorKey = "cf.form.error.start.date-too-far-in-past",
-            invalidLength = "date.year.length.invalid"
+        ).transform(_.atDay(1), date => YearMonth.from(date))
+          .verifying(
+            beforeCurrentDate(errorKey = "cf.form.error.start-future-date")
           )
-        ),
-        "end" -> yearMonth(
+          .verifying(
+            checkDates(
+              systemStartDateErrorKey = "cf.form.error.startDate.date-earlier-than-system-start-date",
+              taxYearErrorKey = "cf.form.error.start.date-too-far-in-past",
+              invalidLength = "date.year.length.invalid"
+            )
+          ),
+        "end"   -> yearMonth(
           emptyMonthAndYearKey = "cf.cash-account.transactions.request.end.date.empty.month.year",
           emptyMonthKey = "cf.cash-account.transactions.request.end.date.empty.month",
           emptyYearKey = "cf.cash-account.transactions.request.end.date.empty.year",
           invalidDateKey = "cf.cash-account.transactions.request.end.date.invalid"
-        ).transform(transformToEndDate, date => YearMonth.from(date)
-        ).verifying(
-          beforeCurrentDate(errorKey = "cf.form.error.end-future-date")
-        ).verifying(
-          checkDates(
-            systemStartDateErrorKey = "cf.form.error.endDate.date-earlier-than-system-start-date",
-            taxYearErrorKey = "cf.form.error.end.date-too-far-in-past",
-            invalidLength = "date.year.length.invalid"
+        ).transform(transformToEndDate, date => YearMonth.from(date))
+          .verifying(
+            beforeCurrentDate(errorKey = "cf.form.error.end-future-date")
           )
-        )
+          .verifying(
+            checkDates(
+              systemStartDateErrorKey = "cf.form.error.endDate.date-earlier-than-system-start-date",
+              taxYearErrorKey = "cf.form.error.end.date-too-far-in-past",
+              invalidLength = "date.year.length.invalid"
+            )
+          )
       )(CashTransactionDates.apply)(ctd => Some(Tuple.fromProductTyped(ctd)))
     )
-  }
 
   private def transformToEndDate(yearMonth: YearMonth) = {
-    val today = LocalDate.now
+    val today      = LocalDate.now
     val todayMonth = today.getMonthValue
-    val todayYear = today.getYear
+    val todayYear  = today.getYear
 
     if ((todayYear == yearMonth.getYear) && (todayMonth == yearMonth.getMonthValue)) { today.minusDays(1) }
     else { yearMonth.atEndOfMonth }

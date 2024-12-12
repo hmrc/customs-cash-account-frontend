@@ -33,17 +33,19 @@ trait Formatters {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
       data.get(key) match {
         case None | Some(utils.Utils.emptyString) => Left(Seq(FormError(key, errorKey)))
-        case Some(s) => Right(s)
+        case Some(s)                              => Right(s)
       }
 
     override def unbind(key: String, value: String): Map[String, String] =
       Map(key -> value)
   }
 
-  private[mappings] def intFormatter(requiredKey: String,
-                                     wholeNumberKey: String,
-                                     nonNumericKey: String,
-                                     args: Seq[String]): Formatter[Int] =
+  private[mappings] def intFormatter(
+    requiredKey: String,
+    wholeNumberKey: String,
+    nonNumericKey: String,
+    args: Seq[String]
+  ): Formatter[Int] =
     new Formatter[Int] {
 
       val decimalRegexp = """^-?(\d*\.\d*)$"""
@@ -57,10 +59,11 @@ trait Formatters {
           .flatMap {
             case s if s.matches(decimalRegexp) =>
               Left(Seq(FormError(key, wholeNumberKey, args)))
-            case s =>
+            case s                             =>
               nonFatalCatch
                 .either(s.toInt)
-                .left.map(_ => Seq(FormError(key, nonNumericKey, args)))
+                .left
+                .map(_ => Seq(FormError(key, nonNumericKey, args)))
           }
 
       override def unbind(key: String, value: Int): Map[String, String] =
@@ -76,9 +79,9 @@ trait Formatters {
         baseFormatter
           .bind(key, data)
           .flatMap {
-            case "true" => Right(true)
+            case "true"  => Right(true)
             case "false" => Right(false)
-            case _ => Left(Seq(FormError(key, invalidKey)))
+            case _       => Left(Seq(FormError(key, invalidKey)))
           }
 
       def unbind(key: String, value: Boolean): Map[String, String] = Map(key -> value.toString)
@@ -90,14 +93,14 @@ trait Formatters {
       private val baseFormatter = stringFormatter(requiredKey)
 
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
-        baseFormatter.bind(key, data)
+        baseFormatter
+          .bind(key, data)
           .map(_.replace(comma, emptyString))
-          .flatMap {
-            s =>
-              Try(s.toDouble) match {
-                case Success(_) => Right(s)
-                case Failure(_) => Left(Seq(FormError(key, nonNumericKey)))
-              }
+          .flatMap { s =>
+            Try(s.toDouble) match {
+              case Success(_) => Right(s)
+              case Failure(_) => Left(Seq(FormError(key, nonNumericKey)))
+            }
           }
 
       override def unbind(key: String, value: String): Map[String, String] =

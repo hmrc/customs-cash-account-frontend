@@ -27,9 +27,9 @@ class LocalDateFormatterSpec extends SpecBase {
 
     "return the correct LocalDate when the supplied data is valid" in new SetUp {
 
-      val year = 2022
+      val year  = 2022
       val month = 10
-      val day = 12
+      val day   = 12
 
       localDateFormatter.bind(key, bindDataValid) shouldBe Right(
         LocalDate.of(year, month, day)
@@ -59,13 +59,13 @@ class LocalDateFormatterSpec extends SpecBase {
   }
 
   "updateFormErrorKeys" must {
-    val year = 2023
-    val year1 = -1
-    val year2 = -2022
-    val month = 12
+    val year   = 2023
+    val year1  = -1
+    val year2  = -2022
+    val month  = 12
     val month1 = 14
-    val day = 32
-    val day1 = 12
+    val day    = 32
+    val day1   = 12
 
     "append the day in the existing key when day is incorrect or all(day, month and year) are incorrect" in new SetUp {
 
@@ -165,9 +165,9 @@ class LocalDateFormatterSpec extends SpecBase {
     "return key.month as updated key when month value is not numeric" in new SetUp {
 
       val formDataWithNonNumericMonth: Map[String, String] = Map(
-        s"$key.day" -> "10",
+        s"$key.day"   -> "10",
         s"$key.month" -> "test",
-        s"$key.year" -> "2021"
+        s"$key.year"  -> "2021"
       )
 
       localDateFormatter.formErrorKeysInCaseOfEmptyOrNonNumericValues(
@@ -188,13 +188,13 @@ class LocalDateFormatterSpec extends SpecBase {
   }
 
   trait SetUp {
-    val key = "start"
-    val invalidMsgKey = "cf.form.error.start.date-number-invalid"
-    val dayMsgKey = "cf.form.error.start.date.invalid.day"
-    val monthMsgKey = "cf.form.error.start.date.invalid.month"
-    val yearMsgKey = "cf.form.error.start.date.invalid.year"
-    val invalidDateMsgKey = "cf.form.error.start.date.invalid.real-date"
-    val bindDataValid: Map[String, String] =
+    val key                                    = "start"
+    val invalidMsgKey                          = "cf.form.error.start.date-number-invalid"
+    val dayMsgKey                              = "cf.form.error.start.date.invalid.day"
+    val monthMsgKey                            = "cf.form.error.start.date.invalid.month"
+    val yearMsgKey                             = "cf.form.error.start.date.invalid.year"
+    val invalidDateMsgKey                      = "cf.form.error.start.date.invalid.real-date"
+    val bindDataValid: Map[String, String]     =
       Map("start.day" -> "12", "start.month" -> "10", "start.year" -> "2022")
     val bindDataEmptyDate: Map[String, String] =
       Map("start.day" -> "", "start.month" -> "", "start.year" -> "")

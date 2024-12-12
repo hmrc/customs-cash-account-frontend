@@ -64,7 +64,9 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
       "cash transactions are not present" in new Setup {
         val cashAccountDailyStatementsViewModelWithNoTransactions: CashAccountDailyStatementsViewModel =
           CashAccountDailyStatementsViewModel(
-            cashTransactions.copy(pendingTransactions = Seq(), cashDailyStatements = Seq()), None)
+            cashTransactions.copy(pendingTransactions = Seq(), cashDailyStatements = Seq()),
+            None
+          )
 
         cashAccountDailyStatementsViewModelWithNoTransactions.dailyStatements mustBe empty
         cashAccountDailyStatementsViewModelWithNoTransactions.hasTransactions mustBe false
@@ -79,137 +81,103 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
 
     "sort the data in the correct order" in new Setup {
       val expectedListAfterSort: List[DailyStatementViewModel] =
-        List(DailyStatementViewModel(date = dateAug17, balance = None),
+        List(
+          DailyStatementViewModel(date = dateAug17, balance = None),
           DailyStatementViewModel(date = dateAug16, balance = None),
           DailyStatementViewModel(date = dateAug15, balance = None),
           DailyStatementViewModel(date = dateAug14, balance = None),
           DailyStatementViewModel(date = dateAug13, balance = None),
           DailyStatementViewModel(date = dateAug12, balance = None),
-          DailyStatementViewModel(date = dateAug11, balance = None))
+          DailyStatementViewModel(date = dateAug11, balance = None)
+        )
 
-      List(DailyStatementViewModel(date = dateAug14, balance = None),
+      List(
+        DailyStatementViewModel(date = dateAug14, balance = None),
         DailyStatementViewModel(date = dateAug12, balance = None),
         DailyStatementViewModel(date = dateAug11, balance = None),
         DailyStatementViewModel(date = dateAug17, balance = None),
         DailyStatementViewModel(date = dateAug16, balance = None),
         DailyStatementViewModel(date = dateAug15, balance = None),
-        DailyStatementViewModel(date = dateAug13, balance = None)).sorted mustBe expectedListAfterSort
+        DailyStatementViewModel(date = dateAug13, balance = None)
+      ).sorted mustBe expectedListAfterSort
     }
   }
 
-  private def shouldContainCorrectContentsForDailyStatements(actualStatements: Seq[DailyStatementViewModel])
-                                                            (implicit msgs: Messages): Assertion = {
+  private def shouldContainCorrectContentsForDailyStatements(
+    actualStatements: Seq[DailyStatementViewModel]
+  )(implicit msgs: Messages): Assertion = {
 
     val expectedDailyStatements: Seq[DailyStatementViewModel] = populateDailyStatViewModelFromDailyCashTransactions()
 
     actualStatements.size mustBe expectedDailyStatements.size
   }
 
-  private def shouldContainTransactionForLastSixMonthsHeading(dailyStatementsViewModel: CashAccountDailyStatementsViewModel)
-                                                             (implicit msgs: Messages): Assertion = {
+  private def shouldContainTransactionForLastSixMonthsHeading(
+    dailyStatementsViewModel: CashAccountDailyStatementsViewModel
+  )(implicit msgs: Messages): Assertion = {
     val headingComponent = h2Component(
       msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
-      id = Some("transactions-for-last-six-months-heading"))
+      id = Some("transactions-for-last-six-months-heading")
+    )
 
     dailyStatementsViewModel.transForLastSixMonthsHeading mustBe headingComponent
   }
 
-  private def shouldContainNoTransactionFromLastSixMonthsText(dailyStatementsViewModel: CashAccountDailyStatementsViewModel)
-                                                             (implicit msgs: Messages): Assertion = {
+  private def shouldContainNoTransactionFromLastSixMonthsText(
+    dailyStatementsViewModel: CashAccountDailyStatementsViewModel
+  )(implicit msgs: Messages): Assertion = {
     val paragraphComponent = pComponent(
       messageKey = "cf.cash-account.transactions.no-transactions-for-last-six-months",
-      id = Some("no-transactions-for-last-six-months-text"))
+      id = Some("no-transactions-for-last-six-months-text")
+    )
 
     dailyStatementsViewModel.noTransFromLastSixMonthsText.getOrElse(emptyPComponent) mustBe paragraphComponent
   }
 
-  private def populateDailyStatViewModelFromDailyCashTransactions()(implicit msgs: Messages) = {
-
-    val date1: LocalDate = LocalDate.parse("2020-07-18")
-    val date2: LocalDate = LocalDate.parse("2020-07-20")
-
-    val dailyStatementViewModel1: DailyStatementViewModel =
-      DailyStatementViewModel(date = date2, transactionType =
-        Some(PaymentType(mrnLink = Some(linkComponent(LinkComponentValues(
-          "cf-cash-account.tbd",
-          controllers.routes.DeclarationDetailController.displayDetails(SECURE_MOVEMENT_REF_NUMBER, None).url))))),
-        credit = None,
-        debit = Some(Formatters.formatCurrencyAmount(AMOUNT)),
-        balance = Some(Formatters.formatCurrencyAmount(AMOUNT)))
-
-    val dailyStatementViewModel2: DailyStatementViewModel =
-      DailyStatementViewModel(date = date2, transactionType =
-        Some(PaymentType(
-          mrnLink = Some(linkComponent(LinkComponentValues("cf-cash-account.tbd",
-            controllers.routes.DeclarationDetailController.displayDetails(SECURE_MOVEMENT_REF_NUMBER, None).url))))),
-        credit = None,
-        debit = Some(Formatters.formatCurrencyAmount(AMOUNT)),
-        balance = None)
-
-    val dailyStatementViewModel3: DailyStatementViewModel =
-      DailyStatementViewModel(date = date1, transactionType =
-        Some(PaymentType(
-          mrnLink = Some(linkComponent(LinkComponentValues("cf-cash-account.tbd",
-            controllers.routes.DeclarationDetailController.displayDetails(SECURE_MOVEMENT_REF_NUMBER, None).url))))),
-        credit = None,
-        debit = Some(Formatters.formatCurrencyAmount(AMOUNT)),
-        balance = None)
-
-    val dailyStatementViewModel4: DailyStatementViewModel =
-      DailyStatementViewModel(date = date1, transactionType =
-        Some(PaymentType(
-          mrnLink = Some(linkComponent(LinkComponentValues("cf-cash-account.tbd",
-            controllers.routes.DeclarationDetailController.displayDetails(SECURE_MOVEMENT_REF_NUMBER, None).url))))),
-        credit = None,
-        debit = Some(Formatters.formatCurrencyAmount(AMOUNT)),
-        balance = None)
-
-    val dailyStatementViewModel5: DailyStatementViewModel =
-      DailyStatementViewModel(date = date2, transactionType =
-        Some(PaymentType(textString = Some(msgs("cf.cash-account.detail.top-up.v2")))),
-        credit = Some(Formatters.formatCurrencyAmount(123.45)), debit = None, balance = None)
-
-    val dailyStatementViewModel6: DailyStatementViewModel =
-      DailyStatementViewModel(date = date2, transactionType =
-        Some(PaymentType(textString = Some(msgs("cf.cash-account.detail.transfer-out.v2", "77665544")))),
-        credit = None, debit = Some(Formatters.formatCurrencyAmount(-432.87)), balance = None)
-
-    val dailyStatementViewModel7: DailyStatementViewModel =
-      DailyStatementViewModel(date = date1, transactionType =
-        Some(PaymentType(textString = Some(msgs("cf.cash-account.detail.top-up.v2")))),
-        credit = Some(Formatters.formatCurrencyAmount(123.45)), debit = None, balance = None)
-
-    val dailyStatementViewModel9: DailyStatementViewModel =
-      DailyStatementViewModel(date = date1, balance = Some("123"))
-
-    val dailyStatementViewModel10: DailyStatementViewModel =
-      DailyStatementViewModel(date = date2, balance = Some("123456"))
-
-    val dailyStatementViewModel8: DailyStatementViewModel =
-      DailyStatementViewModel(date = date1, transactionType =
-        Some(PaymentType(textString = Some(msgs("cf.cash-account.detail.withdrawal")))),
-        credit = None, debit = Some(Formatters.formatCurrencyAmount(-432.87)), balance = None)
-
-    Seq(dailyStatementViewModel1, dailyStatementViewModel3, dailyStatementViewModel5, dailyStatementViewModel6,
-      dailyStatementViewModel2, dailyStatementViewModel4, dailyStatementViewModel7, dailyStatementViewModel8,
-      dailyStatementViewModel9, dailyStatementViewModel10)
-  }
+  private def populateDailyStatViewModelFromDailyCashTransactions()(implicit msgs: Messages) =
+    Seq(
+      dailyStatementViewModel1,
+      dailyStatementViewModel3,
+      dailyStatementViewModel5,
+      dailyStatementViewModel6,
+      dailyStatementViewModel2,
+      dailyStatementViewModel4,
+      dailyStatementViewModel7,
+      dailyStatementViewModel8,
+      dailyStatementViewModel9,
+      dailyStatementViewModel10
+    )
 
   trait Setup {
 
     val declaration1: Declaration =
-      Declaration(MOVEMENT_REF_NUMBER, Some(EORI_NUMBER), EORI_NUMBER, Some(DECLARANT_REF), DATE, AMOUNT,
-        Seq(TAX_GROUP), Some(SECURE_MOVEMENT_REF_NUMBER))
+      Declaration(
+        MOVEMENT_REF_NUMBER,
+        Some(EORI_NUMBER),
+        EORI_NUMBER,
+        Some(DECLARANT_REF),
+        DATE,
+        AMOUNT,
+        Seq(TAX_GROUP),
+        Some(SECURE_MOVEMENT_REF_NUMBER)
+      )
 
     val declaration2: Declaration =
-      Declaration(MOVEMENT_REF_NUMBER, Some(EORI_NUMBER), EORI_NUMBER, Some(DECLARANT_REF), DATE_1, AMOUNT,
-        Seq(TAX_GROUP), Some(SECURE_MOVEMENT_REF_NUMBER))
-
+      Declaration(
+        MOVEMENT_REF_NUMBER,
+        Some(EORI_NUMBER),
+        EORI_NUMBER,
+        Some(DECLARANT_REF),
+        DATE_1,
+        AMOUNT,
+        Seq(TAX_GROUP),
+        Some(SECURE_MOVEMENT_REF_NUMBER)
+      )
 
     val pendingTransactions: Seq[Declaration] = Seq(declaration1, declaration2)
 
-    val date1: LocalDate = LocalDate.parse("2020-07-18")
-    val date2: LocalDate = LocalDate.parse("2020-07-20")
+    val date1: LocalDate     = LocalDate.parse("2020-07-18")
+    val date2: LocalDate     = LocalDate.parse("2020-07-20")
     val dateAug11: LocalDate = LocalDate.of(YEAR_2021, MONTH_8, DAY_11)
     val dateAug12: LocalDate = LocalDate.of(YEAR_2021, MONTH_8, DAY_12)
     val dateAug13: LocalDate = LocalDate.of(YEAR_2021, MONTH_8, DAY_13)
@@ -240,4 +208,129 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
     val cashTransactions: CashTransactions = CashTransactions(pendingTransactions, dailyStatements)
   }
 
+  val date1: LocalDate = LocalDate.parse("2020-07-18")
+  val date2: LocalDate = LocalDate.parse("2020-07-20")
+
+  val dailyStatementViewModel1: DailyStatementViewModel =
+    DailyStatementViewModel(
+      date = date2,
+      transactionType = Some(
+        PaymentType(mrnLink =
+          Some(
+            linkComponent(
+              LinkComponentValues(
+                "cf-cash-account.tbd",
+                controllers.routes.DeclarationDetailController.displayDetails(SECURE_MOVEMENT_REF_NUMBER, None).url
+              )
+            )
+          )
+        )
+      ),
+      credit = None,
+      debit = Some(Formatters.formatCurrencyAmount(AMOUNT)),
+      balance = Some(Formatters.formatCurrencyAmount(AMOUNT))
+    )
+
+  val dailyStatementViewModel2: DailyStatementViewModel =
+    DailyStatementViewModel(
+      date = date2,
+      transactionType = Some(
+        PaymentType(
+          mrnLink = Some(
+            linkComponent(
+              LinkComponentValues(
+                "cf-cash-account.tbd",
+                controllers.routes.DeclarationDetailController.displayDetails(SECURE_MOVEMENT_REF_NUMBER, None).url
+              )
+            )
+          )
+        )
+      ),
+      credit = None,
+      debit = Some(Formatters.formatCurrencyAmount(AMOUNT)),
+      balance = None
+    )
+
+  val dailyStatementViewModel3: DailyStatementViewModel =
+    DailyStatementViewModel(
+      date = date1,
+      transactionType = Some(
+        PaymentType(
+          mrnLink = Some(
+            linkComponent(
+              LinkComponentValues(
+                "cf-cash-account.tbd",
+                controllers.routes.DeclarationDetailController.displayDetails(SECURE_MOVEMENT_REF_NUMBER, None).url
+              )
+            )
+          )
+        )
+      ),
+      credit = None,
+      debit = Some(Formatters.formatCurrencyAmount(AMOUNT)),
+      balance = None
+    )
+
+  val dailyStatementViewModel4: DailyStatementViewModel =
+    DailyStatementViewModel(
+      date = date1,
+      transactionType = Some(
+        PaymentType(
+          mrnLink = Some(
+            linkComponent(
+              LinkComponentValues(
+                "cf-cash-account.tbd",
+                controllers.routes.DeclarationDetailController.displayDetails(SECURE_MOVEMENT_REF_NUMBER, None).url
+              )
+            )
+          )
+        )
+      ),
+      credit = None,
+      debit = Some(Formatters.formatCurrencyAmount(AMOUNT)),
+      balance = None
+    )
+
+  def dailyStatementViewModel5(implicit msgs: Messages): DailyStatementViewModel =
+    DailyStatementViewModel(
+      date = date2,
+      transactionType = Some(PaymentType(textString = Some(msgs("cf.cash-account.detail.top-up.v2")))),
+      credit = Some(Formatters.formatCurrencyAmount(123.45)),
+      debit = None,
+      balance = None
+    )
+
+  def dailyStatementViewModel6(implicit msgs: Messages): DailyStatementViewModel =
+    DailyStatementViewModel(
+      date = date2,
+      transactionType =
+        Some(PaymentType(textString = Some(msgs("cf.cash-account.detail.transfer-out.v2", "77665544")))),
+      credit = None,
+      debit = Some(Formatters.formatCurrencyAmount(-432.87)),
+      balance = None
+    )
+
+  def dailyStatementViewModel7(implicit msgs: Messages): DailyStatementViewModel =
+    DailyStatementViewModel(
+      date = date1,
+      transactionType = Some(PaymentType(textString = Some(msgs("cf.cash-account.detail.top-up.v2")))),
+      credit = Some(Formatters.formatCurrencyAmount(123.45)),
+      debit = None,
+      balance = None
+    )
+
+  val dailyStatementViewModel9: DailyStatementViewModel =
+    DailyStatementViewModel(date = date1, balance = Some("123"))
+
+  val dailyStatementViewModel10: DailyStatementViewModel =
+    DailyStatementViewModel(date = date2, balance = Some("123456"))
+
+  def dailyStatementViewModel8(implicit msgs: Messages): DailyStatementViewModel =
+    DailyStatementViewModel(
+      date = date1,
+      transactionType = Some(PaymentType(textString = Some(msgs("cf.cash-account.detail.withdrawal")))),
+      credit = None,
+      debit = Some(Formatters.formatCurrencyAmount(-432.87)),
+      balance = None
+    )
 }

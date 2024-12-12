@@ -18,26 +18,14 @@ package controllers
 
 import config.AppConfig
 import connectors.{
-  CustomsDataStoreConnector,
-  CustomsFinancialsApiConnector,
-  NoTransactionsAvailable,
-  TooManyTransactionsRequested,
+  CustomsDataStoreConnector, CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested,
   UnknownException
 }
 import forms.SearchTransactionsFormProvider
 import models.email.{UndeliverableEmail, UnverifiedEmail}
 import models.{
-  AccountStatusOpen,
-  CDSCashBalance,
-  CashAccount,
-  CashAccountViewModel,
-  CashDailyStatement,
-  CashTransactions,
-  Declaration,
-  Payment,
-  Transaction,
-  Transfer,
-  Withdrawal
+  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement, CashTransactions,
+  Declaration, Payment, Transaction, Transfer, Withdrawal
 }
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
@@ -51,9 +39,7 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
 import views.html.{
-  cash_account_no_transactions_v2,
-  cash_account_no_transactions_with_balance,
-  cash_account_transactions_not_available,
+  cash_account_no_transactions_v2, cash_account_no_transactions_with_balance, cash_account_transactions_not_available,
   cash_account_v2
 }
 import java.time.LocalDate
@@ -81,7 +67,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustEqual OK
       }
@@ -101,7 +87,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
         status(result) mustEqual OK
       }
     }
@@ -122,16 +108,18 @@ class CashAccountV2ControllerSpec extends SpecBase {
         app.injector.instanceOf[cash_account_transactions_not_available]
 
       val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-      val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
+      val messages: Messages   = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustEqual OK
 
-        contentAsString(result) mustEqual view(CashAccountViewModel(
-          eori, cashAccount), appConfig.transactionsTimeoutFlag)(request, messages, appConfig).toString()
+        contentAsString(result) mustEqual view(
+          CashAccountViewModel(eori, cashAccount),
+          appConfig.transactionsTimeoutFlag
+        )(request, messages, appConfig).toString()
 
       }
     }
@@ -139,37 +127,40 @@ class CashAccountV2ControllerSpec extends SpecBase {
     "display no transactions if the call to ACC31 returns no transactions with balance " +
       "if balance is greater than 0" in new Setup {
 
-      private val availableAccountBalance: Int = 100
-      val newCashAccount: CashAccount = cashAccount.copy(balances = CDSCashBalance(Some(availableAccountBalance)))
+        private val availableAccountBalance: Int = 100
+        val newCashAccount: CashAccount          = cashAccount.copy(balances = CDSCashBalance(Some(availableAccountBalance)))
 
-      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-        .thenReturn(Future.successful(Some(newCashAccount)))
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(newCashAccount)))
 
-      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
-        .thenReturn(Future.successful(Left(NoTransactionsAvailable)))
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+          .thenReturn(Future.successful(Left(NoTransactionsAvailable)))
 
-      val app: Application = applicationBuilder
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
+        val app: Application = applicationBuilder
+          .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+          .build()
 
-      val view: cash_account_no_transactions_with_balance =
-        app.injector.instanceOf[cash_account_no_transactions_with_balance]
+        val view: cash_account_no_transactions_with_balance =
+          app.injector.instanceOf[cash_account_no_transactions_with_balance]
 
-      val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-      val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
+        val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+        val messages: Messages   = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
-      running(app) {
-        val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
-        val result = route(app, request).value
+        running(app) {
+          val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
+          val result  = route(app, request).value
 
-        status(result) mustEqual OK
+          status(result) mustEqual OK
 
-        contentAsString(result) mustEqual view(CashAccountViewModel(
-          eori, newCashAccount))(request, messages, appConfig).toString()
+          contentAsString(result) mustEqual view(CashAccountViewModel(eori, newCashAccount))(
+            request,
+            messages,
+            appConfig
+          ).toString()
 
-        contentAsString(result) must include regex "search and download any previous transactions as a CSV file"
+          contentAsString(result) must include regex "search and download any previous transactions as a CSV file"
+        }
       }
-    }
 
     "display no transactions if the call to ACC31 returns no cashDailyStatements and balance is empty" in new Setup {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
@@ -183,19 +174,18 @@ class CashAccountV2ControllerSpec extends SpecBase {
         .build()
 
       val view: cash_account_no_transactions_v2 = app.injector.instanceOf[cash_account_no_transactions_v2]
-      val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-      val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
+      val appConfig: AppConfig                  = app.injector.instanceOf[AppConfig]
+      val messages: Messages                    = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual view(
-          CashAccountViewModel(
-            eori,
-            cashAccount.copy(balances = CDSCashBalance(Some(0)))))(request, messages, appConfig).toString()
+          CashAccountViewModel(eori, cashAccount.copy(balances = CDSCashBalance(Some(0))))
+        )(request, messages, appConfig).toString()
 
         contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.pre")
         contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.link")
@@ -215,19 +205,18 @@ class CashAccountV2ControllerSpec extends SpecBase {
         .build()
 
       val view: cash_account_no_transactions_v2 = app.injector.instanceOf[cash_account_no_transactions_v2]
-      val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-      val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
+      val appConfig: AppConfig                  = app.injector.instanceOf[AppConfig]
+      val messages: Messages                    = app.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual view(
-          CashAccountViewModel(
-            eori,
-            cashAccount.copy(balances = CDSCashBalance(Some(0)))))(request, messages, appConfig).toString()
+          CashAccountViewModel(eori, cashAccount.copy(balances = CDSCashBalance(Some(0))))
+        )(request, messages, appConfig).toString()
 
         contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.pre")
         contentAsString(result) must include regex messages("cf.cash-account.top-up.guidance.text.link")
@@ -237,37 +226,38 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
     "display page with no transactions for the last six months message when ACC31 call succeed" +
       " but contains no dailyStatements" in new Setup {
-      val cashTransactionsWithNoStatements: CashTransactions = CashTransactions(Seq(), Seq())
+        val cashTransactionsWithNoStatements: CashTransactions = CashTransactions(Seq(), Seq())
 
-      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-        .thenReturn(Future.successful(Some(cashAccount)))
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
 
-      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(any, any, any)(any))
-        .thenReturn(Future.successful(Right(cashTransactionsWithNoStatements)))
+        when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(any, any, any)(any))
+          .thenReturn(Future.successful(Right(cashTransactionsWithNoStatements)))
 
-      val app: Application = applicationBuilder
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-        .build()
+        val app: Application = applicationBuilder
+          .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+          .build()
 
-      running(app) {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
-          FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
+        running(app) {
+          implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
 
-        val result: Future[Result] = route(app, request).value
+          val result: Future[Result] = route(app, request).value
 
-        status(result) mustEqual OK
+          status(result) mustEqual OK
 
-        contentAsString(result) must
-          include regex messages("cf.cash-account.transactions.no-transactions-for-last-six-months")
+          contentAsString(result) must
+            include regex messages("cf.cash-account.transactions.no-transactions-for-last-six-months")
+        }
       }
-    }
 
     "display cash account no transactions' page when user does not have Cash account and balance is zero" in new Setup {
 
       val app: Application = applicationBuilder
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
-        ).build()
+        )
+        .build()
 
       val cashAccountWithZeroBalance: CashAccount = cashAccount.copy(balances = CDSCashBalance(Some(0)))
 
@@ -307,7 +297,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.CashAccountV2Controller.tooManyTransactions().url
@@ -328,7 +318,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustEqual OK
       }
@@ -345,7 +335,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustEqual NOT_FOUND
       }
@@ -365,7 +355,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         contentAsString(result) must include regex "The CSV file will be available to download within 48 hours"
       }
@@ -383,7 +373,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
         running(app) {
           val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
-          val result = route(app, request).value
+          val result  = route(app, request).value
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual routes.CashAccountV2Controller.showAccountUnavailable.url
@@ -399,7 +389,8 @@ class CashAccountV2ControllerSpec extends SpecBase {
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
           bind[CustomsDataStoreConnector].toInstance(mockDataStoreConnector)
-        ).build()
+        )
+        .build()
 
       private val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
 
@@ -421,7 +412,8 @@ class CashAccountV2ControllerSpec extends SpecBase {
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
           bind[CustomsDataStoreConnector].toInstance(mockDataStoreConnector)
-        ).build()
+        )
+        .build()
 
       running(app) {
         val result = route(app, request).value
@@ -445,7 +437,8 @@ class CashAccountV2ControllerSpec extends SpecBase {
         .overrides(
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
           bind[CustomsDataStoreConnector].toInstance(mockDataStoreConnector)
-        ).build()
+        )
+        .build()
 
       private val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
 
@@ -465,7 +458,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountUnavailable.url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustEqual OK
       }
@@ -481,7 +474,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.DownloadCsvController.showUnableToDownloadCSV().url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustEqual OK
       }
@@ -500,7 +493,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountV2Controller.tooManyTransactions().url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustEqual OK
       }
@@ -517,7 +510,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountV2Controller.tooManyTransactions().url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustEqual NOT_FOUND
       }
@@ -548,7 +541,8 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
     "return same page when form submission is unsuccessful with error validation present" in new Setup {
       val app: Application = applicationBuilder
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)).build()
+        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+        .build()
 
       running(app) {
         val formWithErrors: Form[String] = new SearchTransactionsFormProvider()
@@ -569,7 +563,8 @@ class CashAccountV2ControllerSpec extends SpecBase {
           tooManyTransactionsSection = None,
           downloadCSVFileLinkUrl = HtmlFormat.empty,
           helpAndSupportGuidance = GuidanceRow(HtmlFormat.empty, None, None),
-          paginationModel = None)
+          paginationModel = None
+        )
 
         val request = FakeRequest(POST, routes.CashAccountV2Controller.onSubmit(page).url)
           .withFormUrlEncodedBody("value" -> emptyString)
@@ -587,45 +582,97 @@ class CashAccountV2ControllerSpec extends SpecBase {
   trait Setup {
 
     val cashAccountNumber = "1234567"
-    val eori = "exampleEori"
-    val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
+    val eori              = "exampleEori"
+    val sMRN              = "ic62zbad-75fa-445f-962b-cc92311686b8e"
     val page: Option[Int] = Some(1)
 
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
-    val mockDataStoreConnector: CustomsDataStoreConnector = mock[CustomsDataStoreConnector]
-    val mockDeclarationDetailController: DeclarationDetailController = mock[DeclarationDetailController]
+    val mockDataStoreConnector: CustomsDataStoreConnector                = mock[CustomsDataStoreConnector]
+    val mockDeclarationDetailController: DeclarationDetailController     = mock[DeclarationDetailController]
 
-    val cashAccount: CashAccount = CashAccount(cashAccountNumber, eori, AccountStatusOpen,
-      CDSCashBalance(Some(BigDecimal(123456.78))))
+    val cashAccount: CashAccount =
+      CashAccount(cashAccountNumber, eori, AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))
 
     val listOfPendingTransactions: Seq[Declaration] =
-      Seq(Declaration("pendingDeclarationID", Some("pendingImporterEORI"), "pendingDeclarantEORINumber",
-        Some("pendingDeclarantReference"), LocalDate.parse("2020-07-21"), -100.00, Nil, Some(sMRN)))
+      Seq(
+        Declaration(
+          "pendingDeclarationID",
+          Some("pendingImporterEORI"),
+          "pendingDeclarantEORINumber",
+          Some("pendingDeclarantReference"),
+          LocalDate.parse("2020-07-21"),
+          -100.00,
+          Nil,
+          Some(sMRN)
+        )
+      )
 
     val cashDailyStatements: Seq[CashDailyStatement] = Seq(
-      CashDailyStatement(LocalDate.parse("2020-07-18"), 0.0, 1000.00,
-        Seq(Declaration("mrn1", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
-          LocalDate.parse("2020-07-18"), -84.00, Nil, Some(sMRN)),
-          Declaration("mrn2", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
-            LocalDate.parse("2020-07-18"), -65.00, Nil, Some(sMRN))),
+      CashDailyStatement(
+        LocalDate.parse("2020-07-18"),
+        0.0,
+        1000.00,
+        Seq(
+          Declaration(
+            "mrn1",
+            Some("Importer EORI"),
+            "Declarant EORI",
+            Some("Declarant Reference"),
+            LocalDate.parse("2020-07-18"),
+            -84.00,
+            Nil,
+            Some(sMRN)
+          ),
+          Declaration(
+            "mrn2",
+            Some("Importer EORI"),
+            "Declarant EORI",
+            Some("Declarant Reference"),
+            LocalDate.parse("2020-07-18"),
+            -65.00,
+            Nil,
+            Some(sMRN)
+          )
+        ),
+        Seq(Transaction(45.67, Payment, None), Transaction(-76.34, Withdrawal, Some("77665544")))
+      ),
+      CashDailyStatement(
+        LocalDate.parse("2020-07-20"),
+        0.0,
+        1200.00,
+        Seq(
+          Declaration(
+            "mrn3",
+            Some("Importer EORI"),
+            "Declarant EORI",
+            Some("Declarant Reference"),
+            LocalDate.parse("2020-07-20"),
+            -90.00,
+            Nil,
+            Some(sMRN)
+          ),
+          Declaration(
+            "mrn4",
+            Some("Importer EORI"),
+            "Declarant EORI",
+            Some("Declarant Reference"),
+            LocalDate.parse("2020-07-20"),
+            -30.00,
+            Nil,
+            Some(sMRN)
+          )
+        ),
+        Seq(Transaction(67.89, Payment, None))
+      )
+    )
 
-        Seq(Transaction(45.67, Payment, None), Transaction(-76.34, Withdrawal, Some("77665544")))),
+    val nonFatalResponse: UpstreamErrorResponse =
+      UpstreamErrorResponse("ServiceUnavailable", Status.SERVICE_UNAVAILABLE, Status.SERVICE_UNAVAILABLE)
 
-      CashDailyStatement(LocalDate.parse("2020-07-20"), 0.0, 1200.00,
-        Seq(Declaration("mrn3", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
-          LocalDate.parse("2020-07-20"), -90.00, Nil, Some(sMRN)),
-          Declaration("mrn4", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
-            LocalDate.parse("2020-07-20"), -30.00, Nil, Some(sMRN))),
-        Seq(Transaction(67.89, Payment, None))))
+    val cashTransactionResponse: CashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements)
 
-    val nonFatalResponse: UpstreamErrorResponse = UpstreamErrorResponse(
-      "ServiceUnavailable", Status.SERVICE_UNAVAILABLE, Status.SERVICE_UNAVAILABLE)
-
-    val cashTransactionResponse: CashTransactions = CashTransactions(
-      listOfPendingTransactions, cashDailyStatements)
-
-    val cashTransactionResponse02: CashTransactions = CashTransactions(
-      listOfPendingTransactions, cashDailyStatements, Some(true))
+    val cashTransactionResponse02: CashTransactions =
+      CashTransactions(listOfPendingTransactions, cashDailyStatements, Some(true))
   }
 
   def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
@@ -649,25 +696,29 @@ class CashAccountV2ControllerSpec extends SpecBase {
   def randomDeclaration: Declaration = {
     val randomStringLength: Int = 10
 
-    Declaration(randomString(randomStringLength),
+    Declaration(
+      randomString(randomStringLength),
       Some(randomString(randomStringLength)),
       randomString(randomStringLength),
       Some(randomString(randomStringLength)),
       randomLocalDate,
       randomBigDecimal,
       Nil,
-      Some("ic62zbad-75fa-445f-962b-cc92311686b8e"))
+      Some("ic62zbad-75fa-445f-962b-cc92311686b8e")
+    )
   }
 
   def randomCashDailyStatement: CashDailyStatement = {
-    val declarations: Int = 5
+    val declarations: Int      = 5
     val otherTransactions: Int = 7
 
-    CashDailyStatement(randomLocalDate,
+    CashDailyStatement(
+      randomLocalDate,
       randomBigDecimal,
       randomBigDecimal,
       randomDeclarations(declarations),
-      randomTransactions(otherTransactions))
+      randomTransactions(otherTransactions)
+    )
   }
 
   val types: Seq[String] = Seq("Payment", "Withdrawal", "Transfer")

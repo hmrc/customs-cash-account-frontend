@@ -21,32 +21,29 @@ import config.AppConfig
 import java.time._
 import javax.inject.Inject
 
-class DateTimeService @Inject()(appConfig: AppConfig) {
+class DateTimeService @Inject() (appConfig: AppConfig) {
 
-  private val defaultTimeZone = "Europe/London"
+  private val defaultTimeZone      = "Europe/London"
   def getTimeStamp: OffsetDateTime = OffsetDateTime.ofInstant(Instant.now(), ZoneOffset.UTC)
 
   def systemDateTime(zoneId: ZoneId): LocalDateTime = {
 
-    val year = 2027
-    val month = 12
-    val day = 20
-    val hour = 12
+    val year   = 2027
+    val month  = 12
+    val day    = 20
+    val hour   = 12
     val minute = 30
 
     if (appConfig.fixedTimeTesting) {
       LocalDateTime.of(LocalDate.of(year, month, day), LocalTime.of(hour, minute))
-    }
-    else {
+    } else {
       LocalDateTime.now(zoneId)
     }
   }
 
-  def utcDateTime(): LocalDateTime = {
+  def utcDateTime(): LocalDateTime =
     systemDateTime(ZoneId.of("UTC"))
-  }
 
-  def localDateTime(): LocalDateTime = {
+  def localDateTime(): LocalDateTime =
     systemDateTime(ZoneId.of(defaultTimeZone))
-  }
 }

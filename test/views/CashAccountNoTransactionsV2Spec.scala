@@ -73,15 +73,13 @@ class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
       s"£0$singleSpace${msgs("cf.cash-account.detail.available")}"
   }
 
-  private def shouldDisplayPayImportDutyAndTaxesGuidance(viewDoc: Document)(implicit msgs: Messages) = {
+  private def shouldDisplayPayImportDutyAndTaxesGuidance(viewDoc: Document)(implicit msgs: Messages) =
     viewDoc.getElementById("cash-account-import-duties-guidance").text() mustBe
       msgs("cf.cash-account.detail.no-transactions.import-duties")
-  }
 
-  private def shouldDisplayAuthoriseAnAgentGuidance(viewDoc: Document)(implicit msgs: Messages) = {
+  private def shouldDisplayAuthoriseAnAgentGuidance(viewDoc: Document)(implicit msgs: Messages) =
     viewDoc.getElementById("cash-account-authorise-an-agent").text() mustBe
       msgs("cf.cash-account.detail.no-transactions.authorise-an-agent")
-  }
 
   private def shouldDisplayTopUpGuidance(viewDoc: Document)(implicit msgs: Messages) = {
     viewDoc.text().contains(msgs("cf.cash-account.top-up.guidance.text.pre")) mustBe true
@@ -99,10 +97,9 @@ class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
     viewDoc.text().contains(msgs("cf.cash-account.how-to-use.guidance.text.post")) mustBe true
   }
 
-  private def shouldDisplayHelpAndSupportGuidanceHeader(viewDoc: Document)(implicit msgs: Messages) = {
+  private def shouldDisplayHelpAndSupportGuidanceHeader(viewDoc: Document)(implicit msgs: Messages) =
     viewDoc.getElementById("cash-account-help-and-support-guidance-header").text() mustBe
       msgs("cf.cash-account.transactions.request.support.heading")
-  }
 
   private def shouldDisplayHelpAndSupportGuidance(viewDoc: Document)(implicit msgs: Messages, config: AppConfig) = {
 
@@ -115,14 +112,12 @@ class CashAccountNoTransactionsV2Spec extends ViewTestHelper {
   }
 
   trait Setup {
-    val eori = "test_eori"
+    val eori                     = "test_eori"
     val balances: CDSCashBalance = CDSCashBalance(None)
-    val accNumber = "12345678"
+    val accNumber                = "12345678"
 
-    val cashAccount: CashAccount = CashAccount(number = accNumber,
-      owner = eori,
-      status = AccountStatusOpen,
-      balances = balances)
+    val cashAccount: CashAccount =
+      CashAccount(number = accNumber, owner = eori, status = AccountStatusOpen, balances = balances)
 
     val model: CashAccountViewModel = CashAccountViewModel(eori, cashAccount)
 

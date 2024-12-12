@@ -26,9 +26,9 @@ import java.time.{Clock, LocalDate, LocalDateTime, Period}
 
 trait Constraints {
 
-  private val date = 1
-  private val month = 10
-  private val year = 2019
+  private val date            = 1
+  private val month           = 10
+  private val year            = 2019
   private val validYearLength = 4
 
   private lazy val etmpStatementsDate: LocalDate = LocalDate.of(year, month, date)
@@ -48,29 +48,29 @@ trait Constraints {
   }
 
   def beforeCurrentMonth(errorKey: String): Constraint[LocalDate] = Constraint {
-    case request if request.getYear > currentDate.getYear => Invalid(ValidationError(errorKey))
+    case request if request.getYear > currentDate.getYear             => Invalid(ValidationError(errorKey))
     case request if request.getMonthValue > currentDate.getMonthValue => Invalid(ValidationError(errorKey))
-    case _ => Valid
+    case _                                                            => Valid
   }
 
   private def minTaxYear()(implicit clock: Clock): TaxYear = {
     lazy val currentDate: LocalDate = LocalDateTime.now(clock).toLocalDate
-    val maximumNumberOfYears = 6
+    val maximumNumberOfYears        = 6
 
     taxYearFor(currentDate).back(maximumNumberOfYears)
   }
 
-  def checkDates(systemStartDateErrorKey: String,
-                 taxYearErrorKey: String,
-                 invalidLength: String)(implicit clock: Clock): Constraint[LocalDate] = Constraint {
+  def checkDates(systemStartDateErrorKey: String, taxYearErrorKey: String, invalidLength: String)(implicit
+    clock: Clock
+  ): Constraint[LocalDate] = Constraint {
 
     case request if request.getYear.toString.length() != validYearLength => Invalid(invalidLength)
 
     case request if Period.between(request, etmpStatementsDate).toTotalMonths > 0 =>
       Invalid(ValidationError(systemStartDateErrorKey))
 
-    case request if minTaxYear().starts.isAfter(request.withDayOfMonth(
-      dayOfMonthThatTaxYearStartsOn)) => Invalid(ValidationError(taxYearErrorKey))
+    case request if minTaxYear().starts.isAfter(request.withDayOfMonth(dayOfMonthThatTaxYearStartsOn)) =>
+      Invalid(ValidationError(taxYearErrorKey))
 
     case _ => Valid
   }

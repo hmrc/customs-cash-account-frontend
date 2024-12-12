@@ -33,54 +33,57 @@ import views.html.*
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelectTransactionsController @Inject()(identify: IdentifierAction,
-                                             formProvider: SelectTransactionsFormProvider,
-                                             view: select_transactions,
-                                             cache: RequestedTransactionsCache,
-                                             implicit val mcc: MessagesControllerComponents)
-                                            (implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends FrontendController(mcc) with I18nSupport {
+class SelectTransactionsController @Inject() (
+  identify: IdentifierAction,
+  formProvider: SelectTransactionsFormProvider,
+  view: select_transactions,
+  cache: RequestedTransactionsCache,
+  implicit val mcc: MessagesControllerComponents
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends FrontendController(mcc)
+    with I18nSupport {
 
   val log: Logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
 
   def form: Form[CashTransactionDates] = formProvider()
 
-  def onPageLoad: Action[AnyContent] = identify.async {
-    implicit request =>
-      for {
-        _ <- cache.clear(request.eori)
-      } yield Ok(view(form))
+  def onPageLoad: Action[AnyContent] = identify.async { implicit request =>
+    for {
+      _ <- cache.clear(request.eori)
+    } yield Ok(view(form))
   }
 
-  def onSubmit(): Action[AnyContent] = identify.async {
-    implicit request =>
-      form.bindFromRequest().fold(formWithErrors => {
-        Future.successful(BadRequest(view(formWithErrors)))
-      },
+  def onSubmit(): Action[AnyContent] = identify.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         value => processCustomValidation(value)
       )
   }
 
-  private def processCustomValidation(value: CashTransactionDates)
-                                     (implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
-
+  private def processCustomValidation(
+    value: CashTransactionDates
+  )(implicit request: IdentifierRequest[AnyContent]): Future[Result] =
     customValidation(value, form) match {
       case Some(formWithErrors) =>
         Future.successful(BadRequest(view(formWithErrors)))
-      case None =>
+      case None                 =>
         cache.set(request.eori, value).map { _ =>
           Redirect(routes.SelectedTransactionsController.onPageLoad())
         }
     }
-  }
 
-  private def customValidation(dates: CashTransactionDates,
-                               form: Form[CashTransactionDates]): Option[Form[CashTransactionDates]] = {
+  private def customValidation(
+    dates: CashTransactionDates,
+    form: Form[CashTransactionDates]
+  ): Option[Form[CashTransactionDates]] = {
 
-    def populateErrors(startMessage: String, endMessage: String): Form[CashTransactionDates] = {
-      form.withError("start", startMessage)
-        .withError("end", endMessage).fill(dates)
-    }
+    def populateErrors(startMessage: String, endMessage: String): Form[CashTransactionDates] =
+      form
+        .withError("start", startMessage)
+        .withError("end", endMessage)
+        .fill(dates)
 
     dates match {
       case CashTransactionDates(start, end) if start.isAfter(end) =>

@@ -39,7 +39,8 @@ class PaymentSearchResultsViewModelSpec extends SpecBase {
             searchValue = PAYMENT_SEARCH_VALUE,
             account = cashAccount,
             paymentsWithdrawalsAndTransfers = SEQ_OF_PAYMENT_DETAILS_01,
-            pageNo = Some(1))
+            pageNo = Some(1)
+          )
 
         shouldProduceCorrectTitle(viewModel.pageTitle)
         shouldProduceCorrectBackLink(viewModel.backLink)
@@ -60,7 +61,8 @@ class PaymentSearchResultsViewModelSpec extends SpecBase {
             searchValue = PAYMENT_SEARCH_VALUE,
             account = cashAccount,
             paymentsWithdrawalsAndTransfers = SEQ_OF_PAYMENT_DETAILS_02,
-            pageNo = Some(1))
+            pageNo = Some(1)
+          )
 
         shouldProduceCorrectTitle(viewModel.pageTitle)
         shouldProduceCorrectBackLink(viewModel.backLink)
@@ -73,24 +75,24 @@ class PaymentSearchResultsViewModelSpec extends SpecBase {
     }
   }
 
-  private def shouldProduceCorrectTitle(title: String)(implicit msgs: Messages): Assertion = {
+  private def shouldProduceCorrectTitle(title: String)(implicit msgs: Messages): Assertion =
     title mustBe msgs("cf.cash-account.detail.title")
-  }
 
-  private def shouldProduceCorrectBackLink(linkStr: String): Assertion = {
+  private def shouldProduceCorrectBackLink(linkStr: String): Assertion =
     linkStr mustBe controllers.routes.CashAccountV2Controller.showAccountDetails(None).url
-  }
 
-  private def shouldProduceCorrectSearchResultsHeader(searchResultsHeader: HtmlFormat.Appendable
-                                                     )(implicit msgs: Messages): Assertion = {
+  private def shouldProduceCorrectSearchResultsHeader(
+    searchResultsHeader: HtmlFormat.Appendable
+  )(implicit msgs: Messages): Assertion =
     searchResultsHeader.body.contains(
-      msgs("cf.cash-account.detail.declaration.search-title", PAYMENT_SEARCH_VALUE)) mustBe true
-  }
+      msgs("cf.cash-account.detail.declaration.search-title", PAYMENT_SEARCH_VALUE)
+    ) mustBe true
 
-  private def shouldProduceCorrectAccountBalance(accountDetails: HtmlFormat.Appendable,
-                                                 eori: String,
-                                                 account: CashAccount)
-                                                (implicit msgs: Messages): Assertion = {
+  private def shouldProduceCorrectAccountBalance(
+    accountDetails: HtmlFormat.Appendable,
+    eori: String,
+    account: CashAccount
+  )(implicit msgs: Messages): Assertion = {
     val htmlContent = accountDetails.body
     htmlContent.contains(msgs("cf.cash-account.detail.account", account.number)) mustBe true
     htmlContent.contains(eori) mustBe false
@@ -107,36 +109,43 @@ class PaymentSearchResultsViewModelSpec extends SpecBase {
     htmlContent.contains("title=\"Balance\"") mustBe false
   }
 
-  private def shouldOutputCorrectHelpAndSupportGuidance(guidanceRow: GuidanceRow)
-                                                       (implicit msgs: Messages, config: AppConfig) = {
-
-    guidanceRow mustBe GuidanceRow(h2Heading = h2Component(
-      id = Some("search-transactions-support-message-heading"),
-      msgKey = "site.support.heading"
-    ),
-      link = Some(hmrcNewTabLinkComponent(linkMessage = "cf.cash-account.help-and-support.link.text",
-        href = config.cashAccountForCdsDeclarationsUrl,
-        preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
-        postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")))
+  private def shouldOutputCorrectHelpAndSupportGuidance(
+    guidanceRow: GuidanceRow
+  )(implicit msgs: Messages, config: AppConfig) =
+    guidanceRow mustBe GuidanceRow(
+      h2Heading = h2Component(
+        id = Some("search-transactions-support-message-heading"),
+        msgKey = "site.support.heading"
+      ),
+      link = Some(
+        hmrcNewTabLinkComponent(
+          linkMessage = "cf.cash-account.help-and-support.link.text",
+          href = config.cashAccountForCdsDeclarationsUrl,
+          preLinkMessage = Some("cf.cash-account.help-and-support.link.text.pre.v2"),
+          postLinkMessage = Some("cf.cash-account.help-and-support.link.text.post")
+        )
+      )
     )
-  }
 
   private def shouldContainCorrectPaginationModel(paginationModel: ListPaginationViewModel): Assertion = {
     paginationModel.results mustBe MetaData(PAGE_1, PAGE_30, PAGE_40, PAGE_1, PAGE_2)
     paginationModel.pageNumber mustBe 1
   }
 
-  private def shouldNotContainPaginationModel(paginationModel: Option[ListPaginationViewModel]): Assertion = {
+  private def shouldNotContainPaginationModel(paginationModel: Option[ListPaginationViewModel]): Assertion =
     paginationModel mustBe empty
-  }
 
   trait Setup {
 
-    val eoriNumber: String = "test_eori"
-    val can: String = "12345678"
+    val eoriNumber: String  = "test_eori"
+    val can: String         = "12345678"
     val balance: BigDecimal = BigDecimal(8788.00)
 
-    val cashAccount: CashAccount = CashAccount(number = can, owner = eoriNumber,
-      status = AccountStatusOpen, balances = CDSCashBalance(Some(balance)))
+    val cashAccount: CashAccount = CashAccount(
+      number = can,
+      owner = eoriNumber,
+      status = AccountStatusOpen,
+      balances = CDSCashBalance(Some(balance))
+    )
   }
 }

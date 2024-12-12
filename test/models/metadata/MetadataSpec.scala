@@ -27,7 +27,7 @@ class MetadataSpec extends SpecBase {
 
     "convert items to map correctly" in {
       val metadataItems = Seq(MetadataItem("key1", "value1"), MetadataItem("key2", "value2"))
-      val metadata = Metadata(metadataItems)
+      val metadata      = Metadata(metadataItems)
 
       val expectedMap = Map("key1" -> "value1", "key2" -> "value2")
       metadata.asMap mustBe expectedMap
@@ -35,7 +35,7 @@ class MetadataSpec extends SpecBase {
 
     "write the JSON correctly" in {
       val metadataItems = Seq(MetadataItem("key1", "value1"), MetadataItem("key2", "value2"))
-      val metadata = Metadata(metadataItems)
+      val metadata      = Metadata(metadataItems)
 
       val expectedJson = Json.arr(
         Json.obj("metadata" -> "key1", "value" -> "value1"),

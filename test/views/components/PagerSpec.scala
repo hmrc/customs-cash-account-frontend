@@ -39,8 +39,8 @@ class PagerSpec extends ViewTestHelper {
           override val allItems: Seq[PaginatedTransactions] =
             Seq(paginatedTransactions, paginatedTransactions, paginatedTransactions)
 
-          override val itemsPerPage: Int = 2
-          override val requestedPage: Int = 1
+          override val itemsPerPage: Int         = 2
+          override val requestedPage: Int        = 1
           override val urlForPage: Int => String =
             e => controllers.routes.CashAccountController.showAccountDetails(Some(e)).url
         }
@@ -56,9 +56,9 @@ class PagerSpec extends ViewTestHelper {
 
       val model: Paginated = new Paginated {
         override val allItems: Seq[PaginatedTransactions] = Seq(paginatedTransactions)
-        override val itemsPerPage: Int = 1
-        override val requestedPage: Int = 1
-        override val urlForPage: Int => String =
+        override val itemsPerPage: Int                    = 1
+        override val requestedPage: Int                   = 1
+        override val urlForPage: Int => String            =
           e => controllers.routes.CashAccountController.showAccountDetails(Some(e)).url
       }
 
@@ -70,7 +70,7 @@ class PagerSpec extends ViewTestHelper {
 
   trait Setup {
     val date: LocalDate = LocalDate.parse("2020-08-05")
-    val amount = 100.0
+    val amount          = 100.0
 
     val cashDailyStatement: CashDailyStatement =
       CashDailyStatement(date, BigDecimal(amount), BigDecimal(amount), Nil, Nil)
@@ -85,13 +85,12 @@ class PagerSpec extends ViewTestHelper {
 
   private def shouldContainLinkToNextPageSection(implicit view: Document): Assertion = {
     val elements: Elements = view.getElementsByClass("govuk-pagination__next")
-    val linkElement = elements.get(0).html()
+    val linkElement        = elements.get(0).html()
 
     linkElement.contains(messages("cf.pager.next")) mustBe true
     linkElement.contains(messages("cf.pager.summary.accessibility")) mustBe true
 
-    Option(view.getElementsByClass(
-      "govuk-pagination__icon govuk-pagination__icon--next")) must not be empty
+    Option(view.getElementsByClass("govuk-pagination__icon govuk-pagination__icon--next")) must not be empty
   }
 
   private def shouldNotContainNavigationLinks(implicit view: Document): Assertion = {

@@ -19,8 +19,7 @@ package viewmodels
 import helpers.Formatters
 import models.*
 import models.response.{
-  DeclarationSearch, TaxGroupSearch, TaxGroupWrapper, TaxTypeWithSecurity,
-  TaxTypeWithSecurityContainer
+  DeclarationSearch, TaxGroupSearch, TaxGroupWrapper, TaxTypeWithSecurity, TaxTypeWithSecurityContainer
 }
 import uk.gov
 import uk.gov.hmrc
@@ -44,14 +43,15 @@ class DeclarationDetailSearchViewModelSpec extends SpecBase {
         DeclarationDetailSearchViewModel(searchInput, account, declaration)
 
       val extractedResultData: Seq[(String, String)] = extractSummaryData(viewModel.declarationSummaryList)
-      val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+      val dateFormatter: DateTimeFormatter           = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
       val expectedDeclarationSummaryData: Seq[(String, String)] = Seq(
-        messages("cf.cash-account.csv.date") ->
+        messages("cf.cash-account.csv.date")                       ->
           Formatters.dateAsDayMonthAndYear(LocalDate.parse(declaration.postingDate, dateFormatter)),
         messages("cf.cash-account.csv.uniqueConsignmentReference") -> declaration.declarantRef.getOrElse(emptyString),
-        messages("cf.cash-account.csv.declarantEori") -> declaration.declarantEORINumber,
-        messages("cf.cash-account.csv.importerEori") -> declaration.importersEORINumber)
+        messages("cf.cash-account.csv.declarantEori")              -> declaration.declarantEORINumber,
+        messages("cf.cash-account.csv.importerEori")               -> declaration.importersEORINumber
+      )
 
       extractedResultData must contain allElementsOf expectedDeclarationSummaryData
     }
@@ -89,24 +89,24 @@ class DeclarationDetailSearchViewModelSpec extends SpecBase {
 
       val extractedResultData: Seq[(String, String)] = extractSummaryData(viewModel.taxSummaryList)
 
-      val zeroValue: String = Formatters.formatCurrencyAmount(BigDecimal(0))
-      val hundredValue: String = Formatters.formatCurrencyAmount(hundred.toDouble)
+      val zeroValue: String         = Formatters.formatCurrencyAmount(BigDecimal(0))
+      val hundredValue: String      = Formatters.formatCurrencyAmount(hundred.toDouble)
       val threeHundredValue: String = Formatters.formatCurrencyAmount(threeHundred.toDouble)
 
       val expectedTaxData: Seq[(String, String)] = Seq(
-        messages("cf.cash-account.csv.duty") -> threeHundredValue,
-        messages("cf.cash-account.csv.vat") -> hundredValue,
-        messages("cf.cash-account.csv.excise") -> hundredValue,
-        messages("cf.cash-account.detail.total.paid") -> zeroValue)
+        messages("cf.cash-account.csv.duty")          -> threeHundredValue,
+        messages("cf.cash-account.csv.vat")           -> hundredValue,
+        messages("cf.cash-account.csv.excise")        -> hundredValue,
+        messages("cf.cash-account.detail.total.paid") -> zeroValue
+      )
 
       extractedResultData must contain allElementsOf expectedTaxData
     }
 
     "handle missing optional fields correctly in declarationSummaryList" in new Setup {
 
-      val declarationWithMissingFields: DeclarationSearch = declaration.copy(
-        importersEORINumber = emptyString,
-        declarantRef = None)
+      val declarationWithMissingFields: DeclarationSearch =
+        declaration.copy(importersEORINumber = emptyString, declarantRef = None)
 
       val viewModel: DeclarationDetailSearchViewModel =
         DeclarationDetailSearchViewModel(searchInput, account, declarationWithMissingFields)
@@ -114,8 +114,9 @@ class DeclarationDetailSearchViewModelSpec extends SpecBase {
       val extractedResultData: Seq[(String, String)] = extractSummaryData(viewModel.declarationSummaryList)
 
       val expectedDeclarationSummaryData: Seq[(String, String)] = Seq(
-        messages("cf.cash-account.csv.importerEori") -> emptyString,
-        messages("cf.cash-account.csv.uniqueConsignmentReference") -> emptyString)
+        messages("cf.cash-account.csv.importerEori")               -> emptyString,
+        messages("cf.cash-account.csv.uniqueConsignmentReference") -> emptyString
+      )
 
       extractedResultData must contain allElementsOf expectedDeclarationSummaryData
     }
@@ -157,17 +158,17 @@ class DeclarationDetailSearchViewModelSpec extends SpecBase {
 
   trait Setup {
 
-    val zero: BigDecimal = BigDecimal(0)
-    val hundred: BigDecimal = BigDecimal(100.00)
+    val zero: BigDecimal         = BigDecimal(0)
+    val hundred: BigDecimal      = BigDecimal(100.00)
     val threeHundred: BigDecimal = BigDecimal(300.00)
 
-    val movementReferenceNumber = "MRN1234567890"
-    val importerEori: Option[String] = Some("GB123456789000")
-    val declarantEori = "GB987654321000"
+    val movementReferenceNumber            = "MRN1234567890"
+    val importerEori: Option[String]       = Some("GB123456789000")
+    val declarantEori                      = "GB987654321000"
     val declarantReference: Option[String] = Some("UCR12345")
-    val eori = "GB123456789000"
-    val searchInput = "someInput"
-    val owner = "someOwner"
+    val eori                               = "GB123456789000"
+    val searchInput                        = "someInput"
+    val owner                              = "someOwner"
 
     val account: CashAccount = CashAccount("Account123", owner, AccountStatusOpen, CDSCashBalance(Some(threeHundred)))
 
@@ -199,13 +200,12 @@ class DeclarationDetailSearchViewModelSpec extends SpecBase {
       )
     )
 
-    def extractSummaryData(summaryList: SummaryList): Seq[(String, String)] = {
+    def extractSummaryData(summaryList: SummaryList): Seq[(String, String)] =
       summaryList.rows.map { row =>
         (
           row.key.content.asInstanceOf[HtmlContent].asHtml.toString,
           row.value.content.asInstanceOf[HtmlContent].asHtml.toString
         )
       }
-    }
   }
 }

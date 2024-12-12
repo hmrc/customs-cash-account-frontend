@@ -49,7 +49,6 @@ class CashStatementsByMonthSpec extends SpecBase {
       cashStatementsByMonth.compare(cashStatementsByMonth) mustBe 0
     }
 
-
     "handle equality correctly" in new Setup {
       val anotherCashStatementsByMonth: CashStatementsByMonth = cashStatementsByMonth.copy()
       cashStatementsByMonth mustBe anotherCashStatementsByMonth
@@ -58,18 +57,18 @@ class CashStatementsByMonthSpec extends SpecBase {
 
   trait Setup {
 
-    val year = 2024
+    val year  = 2024
     val month = 5
-    val day = 1
+    val day   = 1
 
-    val yearStart = 2024
+    val yearStart  = 2024
     val monthStart = 5
-    val dayStart = 1
-    val yearEnd = 2025
-    val monthEnd = 5
-    val dayEnd = 31
+    val dayStart   = 1
+    val yearEnd    = 2025
+    val monthEnd   = 5
+    val dayEnd     = 31
 
-    val size = 1024L
+    val size  = 1024L
     val size2 = 2048L
 
     val date: LocalDate = LocalDate.of(year, month, day)
@@ -83,7 +82,8 @@ class CashStatementsByMonthSpec extends SpecBase {
       periodEndDay = dayEnd,
       fileFormat = FileFormat.Pdf,
       fileRole = FileRole.CDSCashAccount,
-      statementRequestId = Some("pdf-1234"))
+      statementRequestId = Some("pdf-1234")
+    )
 
     val csvMetadata: CashStatementFileMetadata = CashStatementFileMetadata(
       periodStartYear = yearStart,
@@ -94,19 +94,22 @@ class CashStatementsByMonthSpec extends SpecBase {
       periodEndDay = dayEnd,
       fileFormat = FileFormat.Csv,
       fileRole = FileRole.CDSCashAccount,
-      statementRequestId = Some("csv-5678"))
+      statementRequestId = Some("csv-5678")
+    )
 
     val pdfFile: CashStatementFile = CashStatementFile(
       filename = "statement_may_2024.pdf",
       downloadURL = "statement_may_2024.pdf",
       size = size,
-      metadata = pdfMetadata)(messages)
+      metadata = pdfMetadata
+    )(messages)
 
     val csvFile: CashStatementFile = CashStatementFile(
       filename = "statement_may_2024.csv",
       downloadURL = "statement_may_2024.csv",
       size = size2,
-      metadata = csvMetadata)(messages)
+      metadata = csvMetadata
+    )(messages)
 
     val files: Seq[CashStatementFile] = Seq(pdfFile, csvFile)
 

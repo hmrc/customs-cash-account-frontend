@@ -39,101 +39,107 @@ import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelectedTransactionsController @Inject()(selectedTransactionsView: selected_transactions,
-                                               apiConnector: CustomsFinancialsApiConnector,
-                                               tooManyResults: cash_transactions_too_many_results,
-                                               duplicateDatesView: cash_transactions_duplicate_dates,
-                                               requestTooManyTransactionsView: cash_account_requested_too_many_transactions,
-                                               identify: IdentifierAction,
-                                               eh: ErrorHandler,
-                                               cache: RequestedTransactionsCache,
-                                               mcc: MessagesControllerComponents)
-                                              (implicit executionContext: ExecutionContext, appConfig: AppConfig)
-  extends FrontendController(mcc) with I18nSupport with Logging {
+class SelectedTransactionsController @Inject() (
+  selectedTransactionsView: selected_transactions,
+  apiConnector: CustomsFinancialsApiConnector,
+  tooManyResults: cash_transactions_too_many_results,
+  duplicateDatesView: cash_transactions_duplicate_dates,
+  requestTooManyTransactionsView: cash_account_requested_too_many_transactions,
+  identify: IdentifierAction,
+  eh: ErrorHandler,
+  cache: RequestedTransactionsCache,
+  mcc: MessagesControllerComponents
+)(implicit executionContext: ExecutionContext, appConfig: AppConfig)
+    extends FrontendController(mcc)
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
 
     val result: EitherT[Future, Result, Result] = for {
-      dates <- fromOptionF(cache.get(request.eori), Redirect(routes.SelectTransactionsController.onPageLoad()))
+      dates   <- fromOptionF(cache.get(request.eori), Redirect(routes.SelectTransactionsController.onPageLoad()))
       account <- fromOptionF(apiConnector.getCashAccount(request.eori), NotFound(eh.notFoundTemplate))
-      page <- EitherT.liftF(displayResultView(account, dates.start, dates.end))
+      page    <- EitherT.liftF(displayResultView(account, dates.start, dates.end))
     } yield page
 
-    result.merge.recover {
-      case e =>
-        logger.error(s"Unable to retrieve account details requested: ${e.getMessage}")
-        Redirect(routes.CashAccountController.showAccountUnavailable)
+    result.merge.recover { case e =>
+      logger.error(s"Unable to retrieve account details requested: ${e.getMessage}")
+      Redirect(routes.CashAccountController.showAccountUnavailable)
     }
   }
 
   def onSubmit(): Action[AnyContent] = identify.async { implicit request =>
 
     val result: Future[Future[Result]] = for {
-      optionalAccount: Option[CashAccount] <- apiConnector.getCashAccount(request.eori)
+      optionalAccount: Option[CashAccount]        <- apiConnector.getCashAccount(request.eori)
       optionalDates: Option[CashTransactionDates] <- cache.get(request.eori)
-    } yield {
-      checkAccountAndDatesThenRedirect(optionalAccount, optionalDates)
-    }
+    } yield checkAccountAndDatesThenRedirect(optionalAccount, optionalDates)
 
-    result.flatten.recover {
-      case _: Exception =>
-        logger.error("failed to submit data for SelectedTransactionsController")
-        Redirect(routes.CashAccountController.showAccountDetails(None))
+    result.flatten.recover { case _: Exception =>
+      logger.error("failed to submit data for SelectedTransactionsController")
+      Redirect(routes.CashAccountController.showAccountDetails(None))
     }
   }
 
   def requestedTooManyTransactions(): Action[AnyContent] = identify.async { implicit request =>
     val result: Future[Result] = cache.get(request.eori).map { optionalDates =>
-      optionalDates.map { dates =>
-        Ok(requestTooManyTransactionsView(
-          RequestedTooManyTransactionsViewModel(
-            dates.start,
-            dates.end,
-            routes.SelectTransactionsController.onPageLoad().url,
-            routes.SelectedTransactionsController.onPageLoad().url))
-        )
-      }.getOrElse {
-        Redirect(routes.CashAccountController.showAccountDetails(None))
-      }
+      optionalDates
+        .map { dates =>
+          Ok(
+            requestTooManyTransactionsView(
+              RequestedTooManyTransactionsViewModel(
+                dates.start,
+                dates.end,
+                routes.SelectTransactionsController.onPageLoad().url,
+                routes.SelectedTransactionsController.onPageLoad().url
+              )
+            )
+          )
+        }
+        .getOrElse {
+          Redirect(routes.CashAccountController.showAccountDetails(None))
+        }
     }
 
-    result.recover {
-      case _: Exception =>
-        logger.error("failed to get dates from cache for tooManyTransactionsRequested")
-        Redirect(routes.CashAccountController.showAccountDetails(None))
+    result.recover { case _: Exception =>
+      logger.error("failed to get dates from cache for tooManyTransactionsRequested")
+      Redirect(routes.CashAccountController.showAccountDetails(None))
     }
   }
 
   def duplicateDates(displayMsg: String, startDate: String, endDate: String): Action[AnyContent] =
-    identify.async {
-      implicit req =>
-        Future.successful(Ok(duplicateDatesView(displayMsg, startDate, endDate)))
+    identify.async { implicit req =>
+      Future.successful(Ok(duplicateDatesView(displayMsg, startDate, endDate)))
     }
 
   def tooManyTransactionsSelected(dateRange: RequestedDateRange): Action[AnyContent] =
-    identify {
-      implicit req =>
-        Ok(tooManyResults(
+    identify { implicit req =>
+      Ok(
+        tooManyResults(
           new ResultsPageSummary(dateRange.from, dateRange.to),
-          controllers.routes.SelectTransactionsController.onPageLoad().url)
+          controllers.routes.SelectTransactionsController.onPageLoad().url
         )
+      )
     }
 
-  private def checkAccountAndDatesThenRedirect(optionalAccount: Option[CashAccount],
-                                               optionalDates: Option[CashTransactionDates])
-                                              (implicit request: IdentifierRequest[AnyContent]) = {
+  private def checkAccountAndDatesThenRedirect(
+    optionalAccount: Option[CashAccount],
+    optionalDates: Option[CashTransactionDates]
+  )(implicit request: IdentifierRequest[AnyContent]) =
     (optionalAccount, optionalDates) match {
       case (Some(cashAcc), Some(dates)) =>
-
         apiConnector.postCashAccountStatementRequest(request.eori, cashAcc.number, dates.start, dates.end).map {
 
           case Right(_) => Redirect(routes.ConfirmationPageController.onPageLoad())
 
           case Left(EntryAlreadyExists) =>
-
             Redirect(
-              routes.SelectedTransactionsController.duplicateDates("cf.cash-account.duplicate.header",
-                dateAsMonthAndYear(dates.start), dateAsMonthAndYear(dates.end)))
+              routes.SelectedTransactionsController.duplicateDates(
+                "cf.cash-account.duplicate.header",
+                dateAsMonthAndYear(dates.start),
+                dateAsMonthAndYear(dates.end)
+              )
+            )
 
           case Left(ExceededMaximum) => Redirect(routes.SelectedTransactionsController.requestedTooManyTransactions())
 
@@ -144,18 +150,14 @@ class SelectedTransactionsController @Inject()(selectedTransactionsView: selecte
 
       case _ => Future.successful(Redirect(routes.CashAccountController.showAccountDetails(None)))
     }
-  }
 
-  private def displayResultView(account: CashAccount,
-                                from: LocalDate,
-                                to: LocalDate)
-                               (implicit req: IdentifierRequest[AnyContent], appConfig: AppConfig): Future[Result] = {
+  private def displayResultView(account: CashAccount, from: LocalDate, to: LocalDate)(implicit
+    req: IdentifierRequest[AnyContent],
+    appConfig: AppConfig
+  ): Future[Result] =
     Future.successful(
       Ok(
-        selectedTransactionsView(
-          new ResultsPageSummary(from = from, to = to, isDay = false),
-          account.number)
+        selectedTransactionsView(new ResultsPageSummary(from = from, to = to, isDay = false), account.number)
       )
     )
-  }
 }

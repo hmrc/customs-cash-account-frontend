@@ -18,18 +18,17 @@ package controllers
 
 import config.ErrorHandler
 import connectors.{
-  BadRequest, CustomsFinancialsApiConnector, DuplicateAckRef, InternalServerErrorErrorResponse,
-  InvalidCashAccount, InvalidDeclarationReference, InvalidEori, NoAssociatedDataFound,
-  ServiceUnavailableErrorResponse, UnknownException
+  BadRequest, CustomsFinancialsApiConnector, DuplicateAckRef, InternalServerErrorErrorResponse, InvalidCashAccount,
+  InvalidDeclarationReference, InvalidEori, NoAssociatedDataFound, ServiceUnavailableErrorResponse, UnknownException
 }
 import models.request.{CashAccountPaymentDetails, DeclarationDetailsSearch, SearchType}
 import models.response.{
-  CashAccountTransactionSearchResponseDetail, DeclarationSearch, DeclarationWrapper,
-  TaxGroupSearch, TaxGroupWrapper, TaxTypeWithSecurity, TaxTypeWithSecurityContainer
+  CashAccountTransactionSearchResponseDetail, DeclarationSearch, DeclarationWrapper, TaxGroupSearch, TaxGroupWrapper,
+  TaxTypeWithSecurity, TaxTypeWithSecurityContainer
 }
 import models.{
-  AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions,
-  Declaration, Payment, Transaction, Withdrawal
+  AccountStatusOpen, CDSCashBalance, CashAccount, CashDailyStatement, CashTransactions, Declaration, Payment,
+  Transaction, Withdrawal
 }
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito
@@ -125,16 +124,19 @@ class DeclarationDetailControllerSpec extends SpecBase {
           can = cashAccountNumber,
           eoriDetails = Seq.empty,
           declarations = Some(Seq(declarationWrapper)),
-          paymentsWithdrawalsAndTransfers = None)
+          paymentsWithdrawalsAndTransfers = None
+        )
 
-      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-        eqTo(cashAccountNumber),
-        eqTo(eori),
-        any[SearchType.Value],
-        any,
-        any[Option[DeclarationDetailsSearch]],
-        any[Option[CashAccountPaymentDetails]]
-      )(any[HeaderCarrier]))
+      when(
+        mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any,
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier])
+      )
         .thenReturn(Future.successful(Right(cashAccountTransactionSearchResponseDetail)))
 
       running(app) {
@@ -153,14 +155,16 @@ class DeclarationDetailControllerSpec extends SpecBase {
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
           .thenReturn(Future.successful(Some(cashAccount)))
 
-        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-          eqTo(cashAccountNumber),
-          eqTo(eori),
-          any[SearchType.Value],
-          any,
-          any[Option[DeclarationDetailsSearch]],
-          any[Option[CashAccountPaymentDetails]]
-        )(any[HeaderCarrier]))
+        when(
+          mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+            eqTo(cashAccountNumber),
+            eqTo(eori),
+            any[SearchType.Value],
+            any,
+            any[Option[DeclarationDetailsSearch]],
+            any[Option[CashAccountPaymentDetails]]
+          )(any[HeaderCarrier])
+        )
           .thenReturn(Future.successful(Left(UnknownException)))
 
         running(app) {
@@ -177,14 +181,16 @@ class DeclarationDetailControllerSpec extends SpecBase {
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
           .thenReturn(Future.successful(Some(cashAccount)))
 
-        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-          eqTo(cashAccountNumber),
-          eqTo(eori),
-          any[SearchType.Value],
-          any,
-          any[Option[DeclarationDetailsSearch]],
-          any[Option[CashAccountPaymentDetails]]
-        )(any[HeaderCarrier]))
+        when(
+          mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+            eqTo(cashAccountNumber),
+            eqTo(eori),
+            any[SearchType.Value],
+            any,
+            any[Option[DeclarationDetailsSearch]],
+            any[Option[CashAccountPaymentDetails]]
+          )(any[HeaderCarrier])
+        )
           .thenReturn(Future.successful(Left(BadRequest)))
 
         running(app) {
@@ -201,14 +207,16 @@ class DeclarationDetailControllerSpec extends SpecBase {
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
           .thenReturn(Future.successful(Some(cashAccount)))
 
-        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-          eqTo(cashAccountNumber),
-          eqTo(eori),
-          any[SearchType.Value],
-          any,
-          any[Option[DeclarationDetailsSearch]],
-          any[Option[CashAccountPaymentDetails]]
-        )(any[HeaderCarrier]))
+        when(
+          mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+            eqTo(cashAccountNumber),
+            eqTo(eori),
+            any[SearchType.Value],
+            any,
+            any[Option[DeclarationDetailsSearch]],
+            any[Option[CashAccountPaymentDetails]]
+          )(any[HeaderCarrier])
+        )
           .thenReturn(Future.successful(Left(InternalServerErrorErrorResponse)))
 
         running(app) {
@@ -225,14 +233,16 @@ class DeclarationDetailControllerSpec extends SpecBase {
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
           .thenReturn(Future.successful(Some(cashAccount)))
 
-        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-          eqTo(cashAccountNumber),
-          eqTo(eori),
-          any[SearchType.Value],
-          any,
-          any[Option[DeclarationDetailsSearch]],
-          any[Option[CashAccountPaymentDetails]]
-        )(any[HeaderCarrier]))
+        when(
+          mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+            eqTo(cashAccountNumber),
+            eqTo(eori),
+            any[SearchType.Value],
+            any,
+            any[Option[DeclarationDetailsSearch]],
+            any[Option[CashAccountPaymentDetails]]
+          )(any[HeaderCarrier])
+        )
           .thenReturn(Future.successful(Left(ServiceUnavailableErrorResponse)))
 
         running(app) {
@@ -266,28 +276,38 @@ class DeclarationDetailControllerSpec extends SpecBase {
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
-      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-        eqTo(cashAccountNumber),
-        eqTo(eori),
-        any[SearchType.Value],
-        any,
-        any[Option[DeclarationDetailsSearch]],
-        any[Option[CashAccountPaymentDetails]]
-      )(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right(CashAccountTransactionSearchResponseDetail(
-          can = cashAccountNumber,
-          eoriDetails = Seq.empty,
-          declarations = None,
-          paymentsWithdrawalsAndTransfers = None
-        ))))
+      when(
+        mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any,
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier])
+      )
+        .thenReturn(
+          Future.successful(
+            Right(
+              CashAccountTransactionSearchResponseDetail(
+                can = cashAccountNumber,
+                eoriDetails = Seq.empty,
+                declarations = None,
+                paymentsWithdrawalsAndTransfers = None
+              )
+            )
+          )
+        )
 
       running(app) {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
             .withSession("eori" -> eori)
 
-        val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
-          .apply(Some(1), cashAccountNumber, searchInput).body
+        val expectedView = app.injector
+          .instanceOf[cash_account_declaration_details_search_no_result]
+          .apply(Some(1), cashAccountNumber, searchInput)
+          .body
 
         val result = route(app, request).value
         status(result) mustEqual OK
@@ -302,14 +322,16 @@ class DeclarationDetailControllerSpec extends SpecBase {
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
           .thenReturn(Future.successful(Some(cashAccount)))
 
-        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-          eqTo(cashAccountNumber),
-          eqTo(eori),
-          any[SearchType.Value],
-          any,
-          any[Option[DeclarationDetailsSearch]],
-          any[Option[CashAccountPaymentDetails]]
-        )(any[HeaderCarrier]))
+        when(
+          mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+            eqTo(cashAccountNumber),
+            eqTo(eori),
+            any[SearchType.Value],
+            any,
+            any[Option[DeclarationDetailsSearch]],
+            any[Option[CashAccountPaymentDetails]]
+          )(any[HeaderCarrier])
+        )
           .thenReturn(Future.successful(Left(InvalidCashAccount)))
 
         running(app) {
@@ -317,8 +339,10 @@ class DeclarationDetailControllerSpec extends SpecBase {
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
 
-          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
-            .apply(Some(1), cashAccountNumber, searchInput).body
+          val expectedView = app.injector
+            .instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput)
+            .body
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -331,14 +355,16 @@ class DeclarationDetailControllerSpec extends SpecBase {
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
           .thenReturn(Future.successful(Some(cashAccount)))
 
-        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-          eqTo(cashAccountNumber),
-          eqTo(eori),
-          any[SearchType.Value],
-          any,
-          any[Option[DeclarationDetailsSearch]],
-          any[Option[CashAccountPaymentDetails]]
-        )(any[HeaderCarrier]))
+        when(
+          mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+            eqTo(cashAccountNumber),
+            eqTo(eori),
+            any[SearchType.Value],
+            any,
+            any[Option[DeclarationDetailsSearch]],
+            any[Option[CashAccountPaymentDetails]]
+          )(any[HeaderCarrier])
+        )
           .thenReturn(Future.successful(Left(InvalidDeclarationReference)))
 
         running(app) {
@@ -346,8 +372,10 @@ class DeclarationDetailControllerSpec extends SpecBase {
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
 
-          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
-            .apply(Some(1), cashAccountNumber, searchInput).body
+          val expectedView = app.injector
+            .instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput)
+            .body
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -360,14 +388,16 @@ class DeclarationDetailControllerSpec extends SpecBase {
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
           .thenReturn(Future.successful(Some(cashAccount)))
 
-        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-          eqTo(cashAccountNumber),
-          eqTo(eori),
-          any[SearchType.Value],
-          any,
-          any[Option[DeclarationDetailsSearch]],
-          any[Option[CashAccountPaymentDetails]]
-        )(any[HeaderCarrier]))
+        when(
+          mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+            eqTo(cashAccountNumber),
+            eqTo(eori),
+            any[SearchType.Value],
+            any,
+            any[Option[DeclarationDetailsSearch]],
+            any[Option[CashAccountPaymentDetails]]
+          )(any[HeaderCarrier])
+        )
           .thenReturn(Future.successful(Left(DuplicateAckRef)))
 
         running(app) {
@@ -375,8 +405,10 @@ class DeclarationDetailControllerSpec extends SpecBase {
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
 
-          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
-            .apply(Some(1), cashAccountNumber, searchInput).body
+          val expectedView = app.injector
+            .instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput)
+            .body
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -389,14 +421,16 @@ class DeclarationDetailControllerSpec extends SpecBase {
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
           .thenReturn(Future.successful(Some(cashAccount)))
 
-        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-          eqTo(cashAccountNumber),
-          eqTo(eori),
-          any[SearchType.Value],
-          any,
-          any[Option[DeclarationDetailsSearch]],
-          any[Option[CashAccountPaymentDetails]]
-        )(any[HeaderCarrier]))
+        when(
+          mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+            eqTo(cashAccountNumber),
+            eqTo(eori),
+            any[SearchType.Value],
+            any,
+            any[Option[DeclarationDetailsSearch]],
+            any[Option[CashAccountPaymentDetails]]
+          )(any[HeaderCarrier])
+        )
           .thenReturn(Future.successful(Left(NoAssociatedDataFound)))
 
         running(app) {
@@ -404,8 +438,10 @@ class DeclarationDetailControllerSpec extends SpecBase {
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
 
-          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
-            .apply(Some(1), cashAccountNumber, searchInput).body
+          val expectedView = app.injector
+            .instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput)
+            .body
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -418,14 +454,16 @@ class DeclarationDetailControllerSpec extends SpecBase {
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
           .thenReturn(Future.successful(Some(cashAccount)))
 
-        when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-          eqTo(cashAccountNumber),
-          eqTo(eori),
-          any[SearchType.Value],
-          any,
-          any[Option[DeclarationDetailsSearch]],
-          any[Option[CashAccountPaymentDetails]]
-        )(any[HeaderCarrier]))
+        when(
+          mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+            eqTo(cashAccountNumber),
+            eqTo(eori),
+            any[SearchType.Value],
+            any,
+            any[Option[DeclarationDetailsSearch]],
+            any[Option[CashAccountPaymentDetails]]
+          )(any[HeaderCarrier])
+        )
           .thenReturn(Future.successful(Left(InvalidEori)))
 
         running(app) {
@@ -433,8 +471,10 @@ class DeclarationDetailControllerSpec extends SpecBase {
             FakeRequest(GET, routes.DeclarationDetailController.displaySearchDetails(Some(1), searchInput).url)
               .withSession("eori" -> eori)
 
-          val expectedView = app.injector.instanceOf[cash_account_declaration_details_search_no_result]
-            .apply(Some(1), cashAccountNumber, searchInput).body
+          val expectedView = app.injector
+            .instanceOf[cash_account_declaration_details_search_no_result]
+            .apply(Some(1), cashAccountNumber, searchInput)
+            .body
 
           val result = route(app, request).value
           status(result) mustEqual OK
@@ -454,16 +494,19 @@ class DeclarationDetailControllerSpec extends SpecBase {
           can = cashAccountNumber,
           eoriDetails = Seq.empty,
           declarations = None,
-          paymentsWithdrawalsAndTransfers = Some(SEQ_PAYMENT_DETAILS_CONTAINER_01))
+          paymentsWithdrawalsAndTransfers = Some(SEQ_PAYMENT_DETAILS_CONTAINER_01)
+        )
 
-      when(mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
-        eqTo(cashAccountNumber),
-        eqTo(eori),
-        any[SearchType.Value],
-        any,
-        any[Option[DeclarationDetailsSearch]],
-        any[Option[CashAccountPaymentDetails]]
-      )(any[HeaderCarrier]))
+      when(
+        mockCustomsFinancialsApiConnector.retrieveCashTransactionsBySearch(
+          eqTo(cashAccountNumber),
+          eqTo(eori),
+          any[SearchType.Value],
+          any,
+          any[Option[DeclarationDetailsSearch]],
+          any[Option[CashAccountPaymentDetails]]
+        )(any[HeaderCarrier])
+      )
         .thenReturn(Future.successful(Right(cashAccountTransactionSearchResponseDetail)))
 
       running(app) {
@@ -479,38 +522,87 @@ class DeclarationDetailControllerSpec extends SpecBase {
 
   trait Setup {
     val cashAccountNumber = "1234567"
-    val eori = "exampleEori"
-    val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
-    val searchInput = "21GB399145852YAD23"
+    val eori              = "exampleEori"
+    val sMRN              = "ic62zbad-75fa-445f-962b-cc92311686b8e"
+    val searchInput       = "21GB399145852YAD23"
 
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
-    val mockErrorHandler: ErrorHandler = mock[ErrorHandler]
+    val mockErrorHandler: ErrorHandler                                   = mock[ErrorHandler]
 
-    val cashAccount: CashAccount = CashAccount(
-      cashAccountNumber,
-      eori,
-      AccountStatusOpen,
-      CDSCashBalance(Some(BigDecimal(123456.78))))
+    val cashAccount: CashAccount =
+      CashAccount(cashAccountNumber, eori, AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))
 
     val listOfPendingTransactions: Seq[Declaration] = Seq(
-      Declaration("pendingDeclarationID", Some("pendingImporterEORI"), "pendingDeclarantEORINumber",
-        Some("pendingDeclarantReference"), LocalDate.parse("2020-07-21"), -100.00, Nil, Some(sMRN)))
+      Declaration(
+        "pendingDeclarationID",
+        Some("pendingImporterEORI"),
+        "pendingDeclarantEORINumber",
+        Some("pendingDeclarantReference"),
+        LocalDate.parse("2020-07-21"),
+        -100.00,
+        Nil,
+        Some(sMRN)
+      )
+    )
 
     val cashDailyStatements: Seq[CashDailyStatement] = Seq(
-      CashDailyStatement(LocalDate.parse("2020-07-18"), 0.0, 1000.00,
-        Seq(Declaration("mrn1", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
-          LocalDate.parse("2020-07-18"), -84.00, Nil, Some(sMRN)),
-          Declaration("mrn2", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
-            LocalDate.parse("2020-07-18"), -65.00, Nil, Some(sMRN))),
-
-        Seq(Transaction(45.67, Payment, None), Transaction(-76.34, Withdrawal, Some("77665544")))),
-
-      CashDailyStatement(LocalDate.parse("2020-07-20"), 0.0, 1200.00,
-        Seq(Declaration("mrn3", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
-          LocalDate.parse("2020-07-20"), -90.00, Nil, Some(sMRN)),
-          Declaration("mrn4", Some("Importer EORI"), "Declarant EORI", Some("Declarant Reference"),
-            LocalDate.parse("2020-07-20"), -30.00, Nil, Some(sMRN))),
-        Seq(Transaction(67.89, Payment, None))))
+      CashDailyStatement(
+        LocalDate.parse("2020-07-18"),
+        0.0,
+        1000.00,
+        Seq(
+          Declaration(
+            "mrn1",
+            Some("Importer EORI"),
+            "Declarant EORI",
+            Some("Declarant Reference"),
+            LocalDate.parse("2020-07-18"),
+            -84.00,
+            Nil,
+            Some(sMRN)
+          ),
+          Declaration(
+            "mrn2",
+            Some("Importer EORI"),
+            "Declarant EORI",
+            Some("Declarant Reference"),
+            LocalDate.parse("2020-07-18"),
+            -65.00,
+            Nil,
+            Some(sMRN)
+          )
+        ),
+        Seq(Transaction(45.67, Payment, None), Transaction(-76.34, Withdrawal, Some("77665544")))
+      ),
+      CashDailyStatement(
+        LocalDate.parse("2020-07-20"),
+        0.0,
+        1200.00,
+        Seq(
+          Declaration(
+            "mrn3",
+            Some("Importer EORI"),
+            "Declarant EORI",
+            Some("Declarant Reference"),
+            LocalDate.parse("2020-07-20"),
+            -90.00,
+            Nil,
+            Some(sMRN)
+          ),
+          Declaration(
+            "mrn4",
+            Some("Importer EORI"),
+            "Declarant EORI",
+            Some("Declarant Reference"),
+            LocalDate.parse("2020-07-20"),
+            -30.00,
+            Nil,
+            Some(sMRN)
+          )
+        ),
+        Seq(Transaction(67.89, Payment, None))
+      )
+    )
 
     val cashTransactionResponse: CashTransactions = CashTransactions(listOfPendingTransactions, cashDailyStatements)
 
@@ -523,13 +615,20 @@ class DeclarationDetailControllerSpec extends SpecBase {
       postingDate = "2024-04-29",
       acceptanceDate = "2024-04-28",
       amount = 500.00,
-      taxGroups = Seq(TaxGroupWrapper(TaxGroupSearch(
-        taxGroupDescription = "Import VAT",
-        amount = 100.00,
-        taxTypes = Seq(TaxTypeWithSecurityContainer(TaxTypeWithSecurity(
-          reasonForSecurity = Some("Security Reason"),
-          taxTypeID = "50",
-          amount = 100.00)))))))
+      taxGroups = Seq(
+        TaxGroupWrapper(
+          TaxGroupSearch(
+            taxGroupDescription = "Import VAT",
+            amount = 100.00,
+            taxTypes = Seq(
+              TaxTypeWithSecurityContainer(
+                TaxTypeWithSecurity(reasonForSecurity = Some("Security Reason"), taxTypeID = "50", amount = 100.00)
+              )
+            )
+          )
+        )
+      )
+    )
 
     val declarationWrapper: DeclarationWrapper = DeclarationWrapper(declarationSearch)
 

@@ -25,8 +25,9 @@ import utils.Utils.*
 import java.time.LocalDate
 import java.time.chrono.ChronoLocalDate
 
-case class CashTransactionsViewModel(cashTransactions: CashTransactions, page: Option[Int])(
-  implicit appConfig: AppConfig) extends Paginated {
+case class CashTransactionsViewModel(cashTransactions: CashTransactions, page: Option[Int])(implicit
+  appConfig: AppConfig
+) extends Paginated {
 
   implicit val localDateOrdering: Ordering[LocalDate] = Ordering.by(identity[ChronoLocalDate])
 
@@ -38,16 +39,16 @@ case class CashTransactionsViewModel(cashTransactions: CashTransactions, page: O
 
     val sortedGroupedByDate: Seq[(LocalDate, Seq[Declaration])] = pendingGroupedByDate.sortBy(_._1).reverse
 
-    sortedGroupedByDate.map {
-      case (date, declarations) => PaginatedPendingDailyStatement(date, declarations)
+    sortedGroupedByDate.map { case (date, declarations) =>
+      PaginatedPendingDailyStatement(date, declarations)
     }
   }
 
   override val allItems: Seq[PaginatedTransactions] =
     pendingTransactionsGroupedByDate ++ cashTransactions.cashDailyStatements.sorted.map(PaginatedDailyStatement.apply)
 
-  override val itemsPerPage: Int = appConfig.numberOfDaysToShow
-  override val requestedPage: Int = page.getOrElse(1)
+  override val itemsPerPage: Int         = appConfig.numberOfDaysToShow
+  override val requestedPage: Int        = page.getOrElse(1)
   override val urlForPage: Int => String = e => controllers.routes.CashAccountController.showAccountDetails(Some(e)).url
 }
 

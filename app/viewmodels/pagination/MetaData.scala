@@ -16,20 +16,14 @@
 
 package viewmodels.pagination
 
-case class MetaData(from: Int,
-                    to: Int,
-                    count: Int,
-                    currentPage: Int,
-                    totalPages: Int)
+case class MetaData(from: Int, to: Int, count: Int, currentPage: Int, totalPages: Int)
 
 object MetaData {
 
-  def apply(totalNumberOfMovements: Int,
-            numberOfMovementsPerPage: Int,
-            currentPage: Int): MetaData = {
+  def apply(totalNumberOfMovements: Int, numberOfMovementsPerPage: Int, currentPage: Int): MetaData = {
 
     val totalNumberOfPages: Int = Math.ceil(totalNumberOfMovements.toDouble / numberOfMovementsPerPage).toInt
-    val from: Int = numberOfMovementsPerPage * (currentPage - 1) + 1
+    val from: Int               = numberOfMovementsPerPage * (currentPage - 1) + 1
 
     val noOfMovementsWhenCurrentPageIsOtherThanOne: Int = {
       val roundedNumberOfMovementsPerPage = numberOfMovementsPerPage * currentPage

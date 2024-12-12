@@ -27,25 +27,23 @@ object RequestedDateRange {
 }
 
 class RequestedDateRangeQueryStringBindable extends QueryStringBindable[RequestedDateRange] {
-  override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, RequestedDateRange]] = {
+  override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, RequestedDateRange]] =
     (getParam(params, "from"), getParam(params, "to")) match {
       case (Right(from), Right(to)) => Some(Right(RequestedDateRange(from, to)))
-      case (_, Left(msg)) => Some(Left(msg))
-      case (Left(msg), _) => Some(Left(msg))
+      case (_, Left(msg))           => Some(Left(msg))
+      case (Left(msg), _)           => Some(Left(msg))
     }
-  }
 
-  override def unbind(key: String, value: RequestedDateRange): String = {
+  override def unbind(key: String, value: RequestedDateRange): String =
     s"from=${value.from.toString}&to=${value.to.toString}"
-  }
 
-  private def getParam(params: Map[String, Seq[String]], paramName: String): Either[String, LocalDate] = {
+  private def getParam(params: Map[String, Seq[String]], paramName: String): Either[String, LocalDate] =
     params.get(paramName).flatMap(_.headOption) match {
-      case Some(value) => Try(LocalDate.parse(value)) match {
-        case Failure(_) => Left(s"$paramName invalid date format")
-        case Success(value) => Right(value)
-      }
-      case None => Left(s"$paramName is required")
+      case Some(value) =>
+        Try(LocalDate.parse(value)) match {
+          case Failure(_)     => Left(s"$paramName invalid date format")
+          case Success(value) => Right(value)
+        }
+      case None        => Left(s"$paramName is required")
     }
-  }
 }

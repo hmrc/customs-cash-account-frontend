@@ -49,10 +49,10 @@ class P1Spec extends SpecBase {
   }
 
   trait Setup {
-    val content: Html = Html("test_content")
-    val id: String = "test_id"
-    val classes: String = "govuk-!-margin-bottom-7"
-    val link: Option[Html] = Some(Html("test_Link"))
+    val content: Html         = Html("test_content")
+    val id: String            = "test_id"
+    val classes: String       = "govuk-!-margin-bottom-7"
+    val link: Option[Html]    = Some(Html("test_Link"))
     val tabLink: Option[Html] = Some(Html("tab_link"))
 
     val p1Component: Document =

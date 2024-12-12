@@ -28,7 +28,7 @@ class SelectYearMonthFormatterSpec extends SpecBase {
   "bind" must {
 
     "return the correct LocalDate when the supplied data is valid" in new SetUp {
-      val localYear = 2022
+      val localYear  = 2022
       val localMonth = 10
 
       yearMonthFormatter.bind(key, bindDataValid) shouldBe Right(YearMonth.of(localYear, localMonth))
@@ -63,8 +63,10 @@ class SelectYearMonthFormatterSpec extends SpecBase {
   "unbind" must {
 
     "return the correct plain data" in new SetUp {
-      yearMonthFormatter.unbind(
-        key, YearMonth.of(year, month)) mustBe Map(s"$key.month" -> month.toString, s"$key.year" -> year.toString)
+      yearMonthFormatter.unbind(key, YearMonth.of(year, month)) mustBe Map(
+        s"$key.month" -> month.toString,
+        s"$key.year"  -> year.toString
+      )
     }
   }
 
@@ -114,7 +116,7 @@ class SelectYearMonthFormatterSpec extends SpecBase {
 
       val formDataWithNonNumericMonth: Map[String, String] = Map(
         s"$key.month" -> "test",
-        s"$key.year" -> "2021"
+        s"$key.year"  -> "2021"
       )
 
       yearMonthFormatter.formErrorKeysInCaseOfEmptyOrNonNumericValues(
@@ -136,25 +138,24 @@ class SelectYearMonthFormatterSpec extends SpecBase {
 
   trait SetUp {
 
-    val year: Int = 2023
-    val year2: Int = -2022
-    val month: Int = 12
-    val month1: Int = 14
-    val day: Int = 1
+    val year: Int            = 2023
+    val year2: Int           = -2022
+    val month: Int           = 12
+    val month1: Int          = 14
+    val day: Int             = 1
     val yesterday: LocalDate = LocalDate.now.minusDays(1)
 
-    val key = "start"
+    val key                     = "start"
     val emptyMonthAndYearMsgKey = "cf.cash-account.transactions.request.start.date.empty.month.year"
-    val emptyMonthMsgKey = "cf.cash-account.transactions.request.start.date.empty.month"
-    val emptyYearMsgKey = "cf.cash-account.transactions.request.start.date.empty.year"
-    val invalidDateMsgKey = "cf.cash-account.transactions.request.start.date.invalid"
+    val emptyMonthMsgKey        = "cf.cash-account.transactions.request.start.date.empty.month"
+    val emptyYearMsgKey         = "cf.cash-account.transactions.request.start.date.empty.year"
+    val invalidDateMsgKey       = "cf.cash-account.transactions.request.start.date.invalid"
 
-    val bindDataValid: Map[String, String] = Map(
-      "start.month" -> "10", "start.year" -> "2022")
+    val bindDataValid: Map[String, String] = Map("start.month" -> "10", "start.year" -> "2022")
 
     val bindDataForCurrentMonth: Map[String, String] = Map(
       "start.month" -> s"${LocalDate.now.getMonthValue}",
-      "start.year" -> s"${LocalDate.now.getYear}"
+      "start.year"  -> s"${LocalDate.now.getYear}"
     )
 
     val yearMonthFormatter = new SelectYearMonthFormatter(
@@ -198,7 +199,7 @@ class SelectYearMonthFormatterSpec extends SpecBase {
 
     val bindDataValidForLastDay: Map[String, String] = Map(
       "start.month" -> month.toString,
-      "start.year" -> year.toString
+      "start.year"  -> year.toString
     )
   }
 }

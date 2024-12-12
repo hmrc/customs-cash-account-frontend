@@ -38,10 +38,10 @@ class CashStatementsForEoriSpec extends SpecBase {
     }
 
     "consider instance with validFrom as greater than without validFrom" in new Setup {
-      val eoriHistoryWithDate: EoriHistory = createEoriHistory("someEori", year, month, day, year + 1, month, day)
+      val eoriHistoryWithDate: EoriHistory    = createEoriHistory("someEori", year, month, day, year + 1, month, day)
       val eoriHistoryWithoutDate: EoriHistory = createEoriHistoryWithoutDates("someEori")
 
-      val cashStatementsWithDate: CashStatementsForEori = createCashStatementsForEori(eoriHistoryWithDate)
+      val cashStatementsWithDate: CashStatementsForEori    = createCashStatementsForEori(eoriHistoryWithDate)
       val cashStatementsWithoutDate: CashStatementsForEori = createCashStatementsForEori(eoriHistoryWithoutDate)
 
       cashStatementsWithDate.compare(cashStatementsWithoutDate) mustBe 1
@@ -73,22 +73,25 @@ class CashStatementsForEoriSpec extends SpecBase {
 
   trait Setup {
 
-    val year = 2024
+    val year  = 2024
     val month = 5
-    val day = 1
-    val size = 1024L
+    val day   = 1
+    val size  = 1024L
 
-    def createEoriHistory(eori: String,
-                          fromYear: Int,
-                          fromMonth: Int,
-                          fromDay: Int,
-                          untilYear: Int,
-                          untilMonth: Int,
-                          untilDay: Int): EoriHistory =
+    def createEoriHistory(
+      eori: String,
+      fromYear: Int,
+      fromMonth: Int,
+      fromDay: Int,
+      untilYear: Int,
+      untilMonth: Int,
+      untilDay: Int
+    ): EoriHistory =
       EoriHistory(
         eori = eori,
         validFrom = Some(LocalDate.of(fromYear, fromMonth, fromDay)),
-        validUntil = Some(LocalDate.of(untilYear, untilMonth, untilDay)))
+        validUntil = Some(LocalDate.of(untilYear, untilMonth, untilDay))
+      )
 
     def createEoriHistoryWithoutDates(eori: String): EoriHistory =
       EoriHistory(eori = eori, validFrom = None, validUntil = None)
@@ -105,7 +108,8 @@ class CashStatementsForEoriSpec extends SpecBase {
       periodEndDay = day,
       fileFormat = FileFormat.Pdf,
       fileRole = FileRole.CDSCashAccount,
-      statementRequestId = Some("pdf-1234"))
+      statementRequestId = Some("pdf-1234")
+    )
 
     val csvMetadata: CashStatementFileMetadata = CashStatementFileMetadata(
       periodStartYear = year,
@@ -116,25 +120,28 @@ class CashStatementsForEoriSpec extends SpecBase {
       periodEndDay = day,
       fileFormat = FileFormat.Csv,
       fileRole = FileRole.CDSCashAccount,
-      statementRequestId = Some("csv-5678"))
+      statementRequestId = Some("csv-5678")
+    )
 
     val pdfFile: CashStatementFile = CashStatementFile(
       filename = "statement_may_2024.pdf",
       downloadURL = "statement_may_2024.pdf",
       size = size,
-      metadata = pdfMetadata)
+      metadata = pdfMetadata
+    )
 
     val csvFile: CashStatementFile = CashStatementFile(
       filename = "statement_may_2024.csv",
       downloadURL = "statement_may_2024.csv",
       size = size + 1024,
-      metadata = csvMetadata)
+      metadata = csvMetadata
+    )
 
     val files: Seq[CashStatementFile] = Seq(pdfFile, csvFile)
 
     val cashStatementsByMonth: CashStatementsByMonth = CashStatementsByMonth(LocalDate.of(year, month, day), files)
 
-    val currentStatements: Seq[CashStatementsByMonth] = Seq(cashStatementsByMonth)
+    val currentStatements: Seq[CashStatementsByMonth]   = Seq(cashStatementsByMonth)
     val requestedStatements: Seq[CashStatementsByMonth] = Seq(cashStatementsByMonth)
   }
 }

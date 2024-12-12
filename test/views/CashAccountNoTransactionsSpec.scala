@@ -69,39 +69,37 @@ class CashAccountNoTransactionsSpec extends SpecBase {
     }
   }
 
-  private def shouldContainCorrectTitle(viewDoc: Document)(implicit msgs: Messages): Assertion = {
+  private def shouldContainCorrectTitle(viewDoc: Document)(implicit msgs: Messages): Assertion =
     viewDoc.title() mustBe s"${msgs("cf.cash-account.detail.title")} - ${msgs("service.name")} - GOV.UK"
-  }
 
-  private def shouldContainCorrectBackLink(viewDoc: Document)(implicit appConfig: AppConfig): Assertion = {
+  private def shouldContainCorrectBackLink(viewDoc: Document)(implicit appConfig: AppConfig): Assertion =
     viewDoc.html().contains(appConfig.customsFinancialsFrontendHomepage) mustBe true
-  }
 
-  private def shouldDisplayCorrectAccountNumber(viewDoc: Document,
-                                                accNumber: String)(implicit msgs: Messages): Assertion = {
+  private def shouldDisplayCorrectAccountNumber(viewDoc: Document, accNumber: String)(implicit
+    msgs: Messages
+  ): Assertion =
     viewDoc.getElementById("account-number").text() mustBe msgs("cf.cash-account.detail.account", accNumber)
-  }
 
-  private def shouldContainCorrectCashAccountHeading(viewDoc: Document)(implicit msgs: Messages): Assertion = {
+  private def shouldContainCorrectCashAccountHeading(viewDoc: Document)(implicit msgs: Messages): Assertion =
     viewDoc.getElementsByTag("h1").text() mustBe msgs("cf.cash-account.detail.heading")
-  }
 
-  private def shouldContainCorrectTextNoAmount(viewDoc: Document)(implicit msgs: Messages): Assertion = {
-    viewDoc.getElementById("balance-available")
+  private def shouldContainCorrectTextNoAmount(viewDoc: Document)(implicit msgs: Messages): Assertion =
+    viewDoc
+      .getElementById("balance-available")
       .text() mustBe s"£0$singleSpace${msgs("cf.cash-account.detail.available")}"
-  }
 
-  private def shouldContainAuthoriseAgentGuidance(viewDoc: Document)(implicit msgs: Messages): Assertion = {
-    viewDoc.getElementsByTag("p").text()
+  private def shouldContainAuthoriseAgentGuidance(viewDoc: Document)(implicit msgs: Messages): Assertion =
+    viewDoc
+      .getElementsByTag("p")
+      .text()
       .contains(msgs("cf.cash-account.detail.no-transactions.p1")) mustBe true
-  }
 
-  private def shouldContainTopUpGuidance(viewDoc: Document)(implicit msgs: Messages): Assertion = {
+  private def shouldContainTopUpGuidance(viewDoc: Document)(implicit msgs: Messages): Assertion =
     viewDoc.text().contains(msgs("cf.cash-account.top-up.guidance")) mustBe true
-  }
 
-  private def shouldContainHowToUseCashAccountGuidance(viewDoc: Document)(implicit msgs: Messages,
-                                                                          config: AppConfig): Assertion = {
+  private def shouldContainHowToUseCashAccountGuidance(
+    viewDoc: Document
+  )(implicit msgs: Messages, config: AppConfig): Assertion = {
     val linkElement = viewDoc.getElementById("cf.cash-account.how-to-use.guidance.link")
 
     linkElement.attribute("href").getValue mustBe config.cashAccountForCdsDeclarationsUrl
@@ -112,8 +110,9 @@ class CashAccountNoTransactionsSpec extends SpecBase {
     viewDoc.text().contains(msgs("cf.cash-account.how-to-use.guidance.link.text")) mustBe true
   }
 
-  private def shouldContainHelpAndSupportGuidance(viewDoc: Document)(implicit msgs: Messages,
-                                                                     config: AppConfig): Assertion = {
+  private def shouldContainHelpAndSupportGuidance(
+    viewDoc: Document
+  )(implicit msgs: Messages, config: AppConfig): Assertion = {
     viewDoc.getElementById("help-and-support-heading").text() mustBe
       msgs("cf.cash-account.transactions.request.support.heading")
 
@@ -122,23 +121,21 @@ class CashAccountNoTransactionsSpec extends SpecBase {
     linkElement.get(0).getElementsByTag("a").attr("href") mustBe
       config.cashAccountForCdsDeclarationsUrl
 
+    val pre  = msgs("cf.cash-account.help-and-support.link.text.pre")
+    val text = msgs("cf.cash-account.help-and-support.link.text")
+    val post = msgs("cf.cash-account.help-and-support.link.text.post")
+
     linkElement.text() mustBe
-      s"${
-        msgs("cf.cash-account.help-and-support.link.text.pre")
-      }$singleSpace${
-        msgs("cf.cash-account.help-and-support.link.text")
-      }$singleSpace${
-        msgs("cf.cash-account.help-and-support.link.text.post")
-      }$period"
+      s"$pre$singleSpace$text$singleSpace$post$period"
   }
 
   trait Setup {
-    val eori = "test_eori"
+    val eori                     = "test_eori"
     val balances: CDSCashBalance = CDSCashBalance(None)
-    val accNumber = "12345678"
+    val accNumber                = "12345678"
 
-    val cashAccount: CashAccount = CashAccount(
-      number = accNumber, owner = eori, status = AccountStatusOpen, balances = balances)
+    val cashAccount: CashAccount =
+      CashAccount(number = accNumber, owner = eori, status = AccountStatusOpen, balances = balances)
 
     val model: CashAccountViewModel = CashAccountViewModel(eori, cashAccount)
 

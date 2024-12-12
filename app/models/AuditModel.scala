@@ -23,12 +23,14 @@ import java.time.LocalDate
 
 case class AuditModel(auditType: String, transactionName: String, detail: JsValue)
 
-case class CashCsvAuditData(eori: EORI,
-                            cashAccountNumber: CAN,
-                            asOfDateTime: String,
-                            fileFormat: String,
-                            from: LocalDate,
-                            to:LocalDate)
+case class CashCsvAuditData(
+  eori: EORI,
+  cashAccountNumber: CAN,
+  asOfDateTime: String,
+  fileFormat: String,
+  from: LocalDate,
+  to: LocalDate
+)
 
 object CashCsvAuditData {
   implicit val cashCsvAuditDataWrites: Writes[CashCsvAuditData] = Json.writes[CashCsvAuditData]

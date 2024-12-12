@@ -25,6 +25,6 @@ case class Metadata(items: Seq[MetadataItem]) {
 object Metadata {
   implicit val metadataReads: Reads[Metadata] = __.read[List[MetadataItem]].map(Metadata.apply)
 
-  implicit val metadataWrites: Writes[Metadata] = (o: Metadata) => JsArray(o.items.map(
-    item => Json.obj(("metadata", item.key), ("value", item.value))))
+  implicit val metadataWrites: Writes[Metadata] = (o: Metadata) =>
+    JsArray(o.items.map(item => Json.obj(("metadata", item.key), ("value", item.value))))
 }

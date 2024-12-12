@@ -36,40 +36,40 @@ import org.mongodb.scala.SingleObservableFuture
 import org.mongodb.scala.ToSingleObservablePublisher
 
 @Singleton
-class DefaultCacheRepository @Inject()(mongo: MongoComponent,
-                                       config: Configuration,
-                                       encrypter: CashTransactionsEncrypter)
-                                      (implicit executionContext: ExecutionContext)
-  extends PlayMongoRepository[CashTransactionsMongo](
-    collectionName = "cash-account-cache",
-    mongoComponent = mongo,
-    domainFormat = CashTransactionsMongo.format,
-    indexes = Seq(
-      IndexModel(
-        ascending("lastUpdated"),
-        IndexOptions().name("cash-account-cache-last-updated-index")
-          .expireAfter(config.get[Long]("mongodb.timeToLiveInSeconds"), TimeUnit.SECONDS)
+class DefaultCacheRepository @Inject() (
+  mongo: MongoComponent,
+  config: Configuration,
+  encrypter: CashTransactionsEncrypter
+)(implicit executionContext: ExecutionContext)
+    extends PlayMongoRepository[CashTransactionsMongo](
+      collectionName = "cash-account-cache",
+      mongoComponent = mongo,
+      domainFormat = CashTransactionsMongo.format,
+      indexes = Seq(
+        IndexModel(
+          ascending("lastUpdated"),
+          IndexOptions()
+            .name("cash-account-cache-last-updated-index")
+            .expireAfter(config.get[Long]("mongodb.timeToLiveInSeconds"), TimeUnit.SECONDS)
+        )
       )
-    )) with CacheRepository {
+    )
+    with CacheRepository {
 
   private val encryptionKey = config.get[String]("mongodb.encryptionKey")
 
-  override def get(id: String): Future[Option[CashTransactions]] = {
+  override def get(id: String): Future[Option[CashTransactions]] =
     for {
       result <- collection.find(equal("_id", id)).toSingle().toFutureOption()
-      account = result.map(cashAccountMongo =>
-        encrypter.decryptCashTransactions(cashAccountMongo.transactions, encryptionKey))
+      account =
+        result.map(cashAccountMongo => encrypter.decryptCashTransactions(cashAccountMongo.transactions, encryptionKey))
     } yield account
-  }
 
   override def set(id: String, transactions: CashTransactions): Future[Boolean] = {
-    val record: CashTransactionsMongo = CashTransactionsMongo(
-      encrypter.encryptCashTransactions(transactions, encryptionKey), Instant.now())
+    val record: CashTransactionsMongo =
+      CashTransactionsMongo(encrypter.encryptCashTransactions(transactions, encryptionKey), Instant.now())
 
-    collection.replaceOne(equal("_id", id),
-      record,
-      ReplaceOptions().upsert(true)
-    ).toFuture().map(_.wasAcknowledged())
+    collection.replaceOne(equal("_id", id), record, ReplaceOptions().upsert(true)).toFuture().map(_.wasAcknowledged())
   }
 
   override def remove(id: String): Future[Boolean] =
@@ -88,6 +88,6 @@ trait CacheRepository {
 case class CashTransactionsMongo(transactions: EncryptedCashTransactions, lastUpdated: Instant)
 
 object CashTransactionsMongo {
-  implicit val jodaTimeFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
+  implicit val jodaTimeFormat: Format[Instant]        = MongoJavatimeFormats.instantFormat
   implicit val format: OFormat[CashTransactionsMongo] = Json.format[CashTransactionsMongo]
 }

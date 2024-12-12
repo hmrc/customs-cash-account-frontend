@@ -18,8 +18,8 @@ package viewmodels.pagination
 
 import utils.SpecBase
 import utils.TestData.{
-  PAGE_1, PAGE_2, PAGE_3, PAGE_10, PAGE_101, PAGE_11, PAGE_150, PAGE_20, PAGE_21, PAGE_30, PAGE_4,
-  PAGE_40, PAGE_100, PAGE_400, PAGE_5, PAGE_50, PAGE_6, PAGE_8
+  PAGE_1, PAGE_10, PAGE_100, PAGE_101, PAGE_11, PAGE_150, PAGE_2, PAGE_20, PAGE_21, PAGE_3, PAGE_30, PAGE_4, PAGE_40,
+  PAGE_400, PAGE_5, PAGE_50, PAGE_6, PAGE_8
 }
 
 class MetaDataSpec extends SpecBase {

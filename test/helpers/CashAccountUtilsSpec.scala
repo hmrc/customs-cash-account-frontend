@@ -32,7 +32,8 @@ class CashAccountUtilsSpec extends SpecBase {
   val app: Application = applicationBuilder
     .overrides(
       bind[DateTimeService].toInstance(mockDateTimeService)
-    ).build()
+    )
+    .build()
 
   val cashAccountUtils: CashAccountUtils = app.injector.instanceOf[CashAccountUtils]
 
@@ -49,7 +50,7 @@ class CashAccountUtilsSpec extends SpecBase {
 
     "return a correctly formatted filename for the given dates" in {
       val fromDate = LocalDate.parse("2020-11-06")
-      val toDate = LocalDate.parse("2020-12-12")
+      val toDate   = LocalDate.parse("2020-12-12")
 
       val result = cashAccountUtils.filenameRequestCashTransactions(fromDate, toDate)(messages)
       result must be("Cash_Account_Transactions_06112020-12122020.CSV")

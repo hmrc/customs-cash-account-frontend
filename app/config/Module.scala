@@ -18,7 +18,9 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
-import repositories.{CacheRepository, DefaultCacheRepository, DefaultRequestedTransactionsCache, RequestedTransactionsCache}
+import repositories.{
+  CacheRepository, DefaultCacheRepository, DefaultRequestedTransactionsCache, RequestedTransactionsCache
+}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.play.bootstrap.auth.DefaultAuthConnector
 

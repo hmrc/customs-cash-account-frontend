@@ -34,8 +34,9 @@ import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AuditingService @Inject()(appConfig: AppConfig, auditConnector: AuditConnector)(
-  implicit executionContext: ExecutionContext) {
+class AuditingService @Inject() (appConfig: AppConfig, auditConnector: AuditConnector)(implicit
+  executionContext: ExecutionContext
+) {
 
   val log: LoggerLike = Logger(this.getClass)
 
@@ -45,22 +46,32 @@ class AuditingService @Inject()(appConfig: AppConfig, auditConnector: AuditConne
   def audit(auditModel: AuditModel)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val dataEvent = toExtendedDataEvent(appConfig.appName, auditModel, referrer(hc))
 
-    auditConnector.sendExtendedEvent(dataEvent)
+    auditConnector
+      .sendExtendedEvent(dataEvent)
       .map { auditResult =>
         logAuditResult(auditResult)
         auditResult
       }
   }
 
-  def auditCsvDownload(eori: String, cashAccountNumber: String, dateTime: LocalDateTime,
-                       from: LocalDate, to: LocalDate)(implicit hc: HeaderCarrier): Future[Unit] = {
+  def auditCsvDownload(
+    eori: String,
+    cashAccountNumber: String,
+    dateTime: LocalDateTime,
+    from: LocalDate,
+    to: LocalDate
+  )(implicit hc: HeaderCarrier): Future[Unit] = {
     val eventualResult = audit(
-      AuditModel("DownloadCashStatement", "Download cash transactions",
-        Json.toJson(CashCsvAuditData(eori, cashAccountNumber, dateTimeAsIso8601(dateTime), "CSV", from, to))))
+      AuditModel(
+        "DownloadCashStatement",
+        "Download cash transactions",
+        Json.toJson(CashCsvAuditData(eori, cashAccountNumber, dateTimeAsIso8601(dateTime), "CSV", from, to))
+      )
+    )
 
     eventualResult.map {
       case _: AuditResult.Failure => log.error("Cash CSV download auditing failed")
-      case _ => ()
+      case _                      => ()
     }
   }
 
@@ -74,8 +85,9 @@ class AuditingService @Inject()(appConfig: AppConfig, auditConnector: AuditConne
     audit(auditModel)
   }
 
-  private def toExtendedDataEvent(appName: String, auditModel: AuditModel, path: String)(
-    implicit hc: HeaderCarrier): ExtendedDataEvent =
+  private def toExtendedDataEvent(appName: String, auditModel: AuditModel, path: String)(implicit
+    hc: HeaderCarrier
+  ): ExtendedDataEvent =
     ExtendedDataEvent(
       auditSource = appName,
       auditType = auditModel.auditType,
@@ -84,11 +96,11 @@ class AuditingService @Inject()(appConfig: AppConfig, auditConnector: AuditConne
     )
 
   private def logAuditResult(auditResult: AuditResult): Unit = auditResult match {
-    case Success =>
+    case Success         =>
       log.debug("Splunk Audit Successful")
     case Failure(err, _) =>
       log.debug(s"Splunk Audit Error, message: $err")
-    case Disabled =>
+    case Disabled        =>
       log.debug(s"Auditing Disabled")
   }
 }

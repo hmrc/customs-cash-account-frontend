@@ -26,11 +26,10 @@ import java.time.temporal.ChronoUnit
 import scala.util.Random
 
 case class AccountsAndBalancesResponseContainer(accountsAndBalancesResponse: AccountsAndBalancesResponse) {
-  def toCashAccounts: Seq[CashAccount] = {
+  def toCashAccounts: Seq[CashAccount] =
     List(
       accountsAndBalancesResponse.responseDetail.cdsCashAccount.map(_.map(_.toDomain))
     ).flatten.flatten
-  }
 }
 
 case class AccountsAndBalancesRequestContainer(accountsAndBalancesRequest: AccountsAndBalancesRequest)
@@ -41,9 +40,9 @@ object AccountsRequestCommon {
   private val MDG_ACK_REF_LENGTH = 32
 
   def generate: AccountsRequestCommon = {
-    val isoLocalDateTime = DateTimeFormatter.ISO_INSTANT.format(Instant.now().truncatedTo(ChronoUnit.SECONDS))
+    val isoLocalDateTime  = DateTimeFormatter.ISO_INSTANT.format(Instant.now().truncatedTo(ChronoUnit.SECONDS))
     val acknowledgmentRef = generateStringOfRandomDigits(MDG_ACK_REF_LENGTH)
-    val regime = "CDS"
+    val regime            = "CDS"
 
     AccountsRequestCommon(isoLocalDateTime, acknowledgmentRef, regime)
   }
@@ -55,26 +54,34 @@ object AccountsRequestCommon {
   }
 }
 
-case class AccountsRequestDetail(EORINo: String,
-                                 accountType: Option[String],
-                                 accountNumber: Option[String],
-                                 referenceDate: Option[String])
+case class AccountsRequestDetail(
+  EORINo: String,
+  accountType: Option[String],
+  accountNumber: Option[String],
+  referenceDate: Option[String]
+)
 
 case class AccountsAndBalancesRequest(requestCommon: AccountsRequestCommon, requestDetail: AccountsRequestDetail)
 
-case class AccountsAndBalancesResponse(responseCommon: Option[AccountResponseCommon],
-                                       responseDetail: AccountResponseDetail)
+case class AccountsAndBalancesResponse(
+  responseCommon: Option[AccountResponseCommon],
+  responseDetail: AccountResponseDetail
+)
 
-case class AccountResponseCommon(status: String,
-                                 statusText: Option[String],
-                                 processingDate: String,
-                                 returnParameters: Option[Seq[ReturnParameters]])
+case class AccountResponseCommon(
+  status: String,
+  statusText: Option[String],
+  processingDate: String,
+  returnParameters: Option[Seq[ReturnParameters]]
+)
 
 case class ReturnParameters(paramName: String, paramValue: String)
 
-case class AccountResponseDetail(EORINo: Option[String],
-                                 referenceDate: Option[String],
-                                 cdsCashAccount: Option[Seq[CdsCashAccount]])
+case class AccountResponseDetail(
+  EORINo: Option[String],
+  referenceDate: Option[String],
+  cdsCashAccount: Option[Seq[CdsCashAccount]]
+)
 
 case class CdsCashAccount(account: Account, availableAccountBalance: Option[String]) {
   def toDomain: CashAccount = {
@@ -95,22 +102,23 @@ object CDSAccountStatus {
 
   val logger: LoggerLike = Logger(this.getClass)
 
-  implicit val CDSAccountStatusReads: Reads[CDSAccountStatus] = (json: JsValue) => {
+  implicit val CDSAccountStatusReads: Reads[CDSAccountStatus] = (json: JsValue) =>
     json.as[String] match {
-      case status if status.equalsIgnoreCase("Open") => JsSuccess(AccountStatusOpen)
+      case status if status.equalsIgnoreCase("Open")      => JsSuccess(AccountStatusOpen)
       case status if status.equalsIgnoreCase("Suspended") => JsSuccess(AccountStatusSuspended)
-      case status if status.equalsIgnoreCase("Closed") => JsSuccess(AccountStatusClosed)
-      case unknown => logger.warn(s"Invalid account status: $unknown"); JsSuccess(AccountStatusOpen)
+      case status if status.equalsIgnoreCase("Closed")    => JsSuccess(AccountStatusClosed)
+      case unknown                                        => logger.warn(s"Invalid account status: $unknown"); JsSuccess(AccountStatusOpen)
     }
-  }
 }
 
-case class Account(number: String,
-                   `type`: String,
-                   owner: String,
-                   accountStatus: Option[CDSAccountStatus],
-                   viewBalanceIsGranted: Boolean,
-                   isleOfManFlag: Option[Boolean])
+case class Account(
+  number: String,
+  `type`: String,
+  owner: String,
+  accountStatus: Option[CDSAccountStatus],
+  viewBalanceIsGranted: Boolean,
+  isleOfManFlag: Option[Boolean]
+)
 
 case class Limits(periodGuaranteeLimit: String, periodAccountLimit: String)
 
@@ -120,8 +128,8 @@ object AccountsAndBalancesResponseContainer {
 
   implicit val returnParametersReads: Reads[ReturnParameters] = Json.reads[ReturnParameters]
 
-  implicit val accountReads: Reads[Account] = Json.reads[Account]
-  implicit val limitsReads: Reads[Limits] = Json.reads[Limits]
+  implicit val accountReads: Reads[Account]            = Json.reads[Account]
+  implicit val limitsReads: Reads[Limits]              = Json.reads[Limits]
   implicit val balancesReads: Reads[DefermentBalances] = Json.reads[DefermentBalances]
   implicit val cashAccountReads: Reads[CdsCashAccount] = Json.reads[CdsCashAccount]
 
@@ -148,7 +156,7 @@ object AccountsAndBalancesRequestContainer {
     Json.format[AccountsAndBalancesRequestContainer]
 
   implicit def jsonBodyWritable[T](implicit
-                                   writes: Writes[T],
-                                   jsValueBodyWritable: BodyWritable[JsValue]
-                                  ): BodyWritable[T] = jsValueBodyWritable.map(writes.writes)
+    writes: Writes[T],
+    jsValueBodyWritable: BodyWritable[JsValue]
+  ): BodyWritable[T] = jsValueBodyWritable.map(writes.writes)
 }

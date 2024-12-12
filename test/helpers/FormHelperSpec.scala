@@ -26,47 +26,58 @@ class FormHelperSpec extends SpecBase {
     "append .day in the FormError key when key is either start or end and error msg key is " +
       "among future date, ETMP or Tax year" in new SetUp {
 
-      FormHelper.updateFormErrorKeyForStartAndEndDate()(
-        startKey, "cf.form.error.start-future-date") shouldBe s"$startKey.day"
+        FormHelper.updateFormErrorKeyForStartAndEndDate()(
+          startKey,
+          "cf.form.error.start-future-date"
+        ) shouldBe s"$startKey.day"
 
-      FormHelper.updateFormErrorKeyForStartAndEndDate()(
-        startKey, "cf.form.error.startDate.date-earlier-than-system-start-date") shouldBe s"$startKey.day"
+        FormHelper.updateFormErrorKeyForStartAndEndDate()(
+          startKey,
+          "cf.form.error.startDate.date-earlier-than-system-start-date"
+        ) shouldBe s"$startKey.day"
 
-      FormHelper.updateFormErrorKeyForStartAndEndDate()(
-        startKey, "cf.form.error.start.date-too-far-in-past") shouldBe s"$startKey.day"
+        FormHelper.updateFormErrorKeyForStartAndEndDate()(
+          startKey,
+          "cf.form.error.start.date-too-far-in-past"
+        ) shouldBe s"$startKey.day"
 
-      FormHelper.updateFormErrorKeyForStartAndEndDate()(
-        endKey, "cf.form.error.end-future-date") shouldBe s"$endKey.day"
+        FormHelper.updateFormErrorKeyForStartAndEndDate()(
+          endKey,
+          "cf.form.error.end-future-date"
+        ) shouldBe s"$endKey.day"
 
-      FormHelper.updateFormErrorKeyForStartAndEndDate()(
-        endKey, "cf.form.error.endDate.date-earlier-than-system-start-date") shouldBe s"$endKey.day"
+        FormHelper.updateFormErrorKeyForStartAndEndDate()(
+          endKey,
+          "cf.form.error.endDate.date-earlier-than-system-start-date"
+        ) shouldBe s"$endKey.day"
 
-      FormHelper.updateFormErrorKeyForStartAndEndDate()(
-        endKey, "cf.form.error.end.date-too-far-in-past") shouldBe s"$endKey.day"
-    }
+        FormHelper.updateFormErrorKeyForStartAndEndDate()(
+          endKey,
+          "cf.form.error.end.date-too-far-in-past"
+        ) shouldBe s"$endKey.day"
+      }
 
     "append .year in the FormError key when key is either start or end and " +
       "error msg key is of invalid year length" in new SetUp {
 
-      FormHelper.updateFormErrorKeyForStartAndEndDate()(
-        startKey, "cf.form.error.year.length") shouldBe s"$startKey.year"
+        FormHelper.updateFormErrorKeyForStartAndEndDate()(
+          startKey,
+          "cf.form.error.year.length"
+        ) shouldBe s"$startKey.year"
 
-      FormHelper.updateFormErrorKeyForStartAndEndDate()(
-        endKey, "cf.form.error.year.length") shouldBe s"$endKey.year"
-    }
+        FormHelper.updateFormErrorKeyForStartAndEndDate()(endKey, "cf.form.error.year.length") shouldBe s"$endKey.year"
+      }
 
     "return the unchanged key when key in neither start or end" in new SetUp {
-      FormHelper.updateFormErrorKeyForStartAndEndDate()(
-        defaultKey, "cf.form.error.year.length") shouldBe defaultKey
+      FormHelper.updateFormErrorKeyForStartAndEndDate()(defaultKey, "cf.form.error.year.length") shouldBe defaultKey
 
-      FormHelper.updateFormErrorKeyForStartAndEndDate()(
-        defaultKey, "cf.form.error.year.length") shouldBe defaultKey
+      FormHelper.updateFormErrorKeyForStartAndEndDate()(defaultKey, "cf.form.error.year.length") shouldBe defaultKey
     }
   }
 }
 
 trait SetUp {
-  val startKey = "start"
-  val endKey = "end"
+  val startKey   = "start"
+  val endKey     = "end"
   val defaultKey = "default"
 }

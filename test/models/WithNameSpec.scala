@@ -24,8 +24,8 @@ class WithNameSpec extends SpecBase {
 
     "withName overrides strings" in {
       val compare: String = "test1"
-      val name: WithName = new WithName(compare)
-      val result = name.toString
+      val name: WithName  = new WithName(compare)
+      val result          = name.toString
 
       result mustBe compare
     }

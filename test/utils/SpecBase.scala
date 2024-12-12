@@ -38,31 +38,31 @@ class FakeMetrics extends Metrics {
   override val defaultRegistry: MetricRegistry = new MetricRegistry
 }
 
-trait SpecBase extends AnyWordSpecLike
-  with Matchers
-  with MockitoSugar
-  with OptionValues
-  with ScalaFutures
-  with IntegrationPatience {
+trait SpecBase
+    extends AnyWordSpecLike
+    with Matchers
+    with MockitoSugar
+    with OptionValues
+    with ScalaFutures
+    with IntegrationPatience {
 
-  val emptyString = ""
+  val emptyString          = ""
   val sessionId: SessionId = SessionId("session_1234")
 
-  lazy val applicationBuilder: GuiceApplicationBuilder = new GuiceApplicationBuilder().overrides(
-    bind[IdentifierAction].to[FakeIdentifierAction],
-    bind[Metrics].toInstance(new FakeMetrics)
-  ).configure(
-    "play.filters.csp.nonce.enabled" -> "false",
-    "auditing.enabled" -> "false")
+  lazy val applicationBuilder: GuiceApplicationBuilder = new GuiceApplicationBuilder()
+    .overrides(
+      bind[IdentifierAction].to[FakeIdentifierAction],
+      bind[Metrics].toInstance(new FakeMetrics)
+    )
+    .configure("play.filters.csp.nonce.enabled" -> "false", "auditing.enabled" -> "false")
 
   lazy val application: Application = applicationBuilder.build()
 
-  def fakeRequest(method: String = emptyString,
-                  path: String = emptyString): FakeRequest[AnyContentAsEmpty.type] =
+  def fakeRequest(method: String = emptyString, path: String = emptyString): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(method, path).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
-  implicit lazy val messages: Messages = application.injector.instanceOf[MessagesApi].preferred(
-    fakeRequest(emptyString, emptyString))
+  implicit lazy val messages: Messages =
+    application.injector.instanceOf[MessagesApi].preferred(fakeRequest(emptyString, emptyString))
 
   implicit lazy val appConfig: AppConfig = applicationBuilder.injector().instanceOf[AppConfig]
 

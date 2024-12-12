@@ -24,51 +24,49 @@ import play.api.i18n.Messages
 
 import java.time.LocalDate
 
-case class RequestedTooManyTransactionsViewModel(pageTitle: String,
-                                                 backLink: String,
-                                                 heading: HtmlFormat.Appendable,
-                                                 tryAgainLink: HtmlFormat.Appendable,
-                                                 infoSection: HtmlFormat.Appendable)
+case class RequestedTooManyTransactionsViewModel(
+  pageTitle: String,
+  backLink: String,
+  heading: HtmlFormat.Appendable,
+  tryAgainLink: HtmlFormat.Appendable,
+  infoSection: HtmlFormat.Appendable
+)
 
 object RequestedTooManyTransactionsViewModel {
 
-  def apply(from: LocalDate,
-            to: LocalDate,
-            tryAgainUrl: String,
-            backUrl: String)(implicit messages: Messages): RequestedTooManyTransactionsViewModel = {
-
+  def apply(from: LocalDate, to: LocalDate, tryAgainUrl: String, backUrl: String)(implicit
+    messages: Messages
+  ): RequestedTooManyTransactionsViewModel =
     RequestedTooManyTransactionsViewModel(
       pageTitle = messages("cf.cash-account.detail.title"),
       backLink = backUrl,
       heading = populateHeading(),
       infoSection = populateInfoSection(from, to),
-      tryAgainLink = populateLink(tryAgainUrl))
-  }
+      tryAgainLink = populateLink(tryAgainUrl)
+    )
 
-  private def populateHeading()(implicit msgs: Messages): HtmlFormat.Appendable = {
+  private def populateHeading()(implicit msgs: Messages): HtmlFormat.Appendable =
     new h1().apply(
       id = Some("requested-too-many-transactions-message-heading"),
-      msg = "cf.cash-account.transactions.requested.tooMany.transactions")
-  }
+      msg = "cf.cash-account.transactions.requested.tooMany.transactions"
+    )
 
-  private def populateInfoSection(from: LocalDate,
-                                  to: LocalDate)(implicit msgs: Messages): HtmlFormat.Appendable = {
+  private def populateInfoSection(from: LocalDate, to: LocalDate)(implicit msgs: Messages): HtmlFormat.Appendable =
     new p1().apply(
       id = Some("requested-too-many-transactions-message-statement"),
-      content = Html(s"${
-        msgs("cf.cash-account.transactions.requested.statement.msg",
-          dateAsMonthAndYear(from), dateAsMonthAndYear(to))
-      }"),
+      content = Html(
+        s"${msgs("cf.cash-account.transactions.requested.statement.msg", dateAsMonthAndYear(from), dateAsMonthAndYear(to))}"
+      ),
       classes = Some("govuk-body")
     )
-  }
 
-  private def populateLink(tryAgainUrl: String)(implicit msgs: Messages): HtmlFormat.Appendable = {
+  private def populateLink(tryAgainUrl: String)(implicit msgs: Messages): HtmlFormat.Appendable =
     linkComponent(
       LinkComponentValues(
         location = tryAgainUrl,
         linkMessageKey = "cf.cash-account.transactions.requested.tryAgain",
-        pClass = "govuk-body govuk-!-margin-bottom-9"))
-  }
+        pClass = "govuk-body govuk-!-margin-bottom-9"
+      )
+    )
 
 }

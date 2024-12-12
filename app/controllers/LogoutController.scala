@@ -21,9 +21,8 @@ import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-class LogoutController @Inject()(
-                                  appConfig: AppConfig,
-                                  mcc: MessagesControllerComponents) extends FrontendController(mcc) {
+class LogoutController @Inject() (appConfig: AppConfig, mcc: MessagesControllerComponents)
+    extends FrontendController(mcc) {
   def logout: Action[AnyContent] = Action {
     Redirect(appConfig.signOutUrl, Map("continue" -> Seq(appConfig.feedbackService)))
   }

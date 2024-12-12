@@ -26,14 +26,13 @@ import views.html.{ErrorTemplate, not_found}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ErrorHandler @Inject()(errorTemplate: ErrorTemplate,
-                             notFound: not_found,
-                             val messagesApi: MessagesApi)
-                            (implicit appConfig: AppConfig) extends LegacyFrontendErrorHandler {
+class ErrorHandler @Inject() (errorTemplate: ErrorTemplate, notFound: not_found, val messagesApi: MessagesApi)(implicit
+  appConfig: AppConfig
+) extends LegacyFrontendErrorHandler {
 
-  override def standardErrorTemplate(pageTitle: String,
-                                     heading: String,
-                                     message: String)(implicit request: Request[_]): Html =
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit
+    request: Request[_]
+  ): Html =
     errorTemplate(pageTitle, heading, message)
 
   override def notFoundTemplate(implicit request: Request[_]): Html =

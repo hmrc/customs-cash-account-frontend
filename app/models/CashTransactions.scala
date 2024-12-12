@@ -18,16 +18,20 @@ package models
 
 import play.api.libs.json._
 
-case class CashTransactions(pendingTransactions: Seq[Declaration],
-                            cashDailyStatements: Seq[CashDailyStatement],
-                            maxTransactionsExceeded: Option[Boolean] = None) {
+case class CashTransactions(
+  pendingTransactions: Seq[Declaration],
+  cashDailyStatements: Seq[CashDailyStatement],
+  maxTransactionsExceeded: Option[Boolean] = None
+) {
 
   def availableTransactions: Boolean = pendingTransactions.nonEmpty || cashDailyStatements.nonEmpty
 }
 
-case class EncryptedCashTransactions(pendingTransactions: Seq[EncryptedDeclaration],
-                                     cashDailyStatement: Seq[EncryptedDailyStatements],
-                                     maxTransactionsExceeded: Option[Boolean] = None)
+case class EncryptedCashTransactions(
+  pendingTransactions: Seq[EncryptedDeclaration],
+  cashDailyStatement: Seq[EncryptedDailyStatements],
+  maxTransactionsExceeded: Option[Boolean] = None
+)
 
 object EncryptedCashTransactions {
   implicit val format: OFormat[EncryptedCashTransactions] = Json.format[EncryptedCashTransactions]

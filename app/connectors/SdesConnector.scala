@@ -30,16 +30,19 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, StringContextOps}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SdesConnector @Inject()(httpClientV2: HttpClientV2,
-                              appConfig: AppConfig,
-                              metricsReporterService: MetricsReporterService,
-                              sdesGatekeeperService: SdesGatekeeperService,
-                              auditingService: AuditingService
-                             )(implicit executionContext: ExecutionContext) {
+class SdesConnector @Inject() (
+  httpClientV2: HttpClientV2,
+  appConfig: AppConfig,
+  metricsReporterService: MetricsReporterService,
+  sdesGatekeeperService: SdesGatekeeperService,
+  auditingService: AuditingService
+)(implicit executionContext: ExecutionContext) {
 
   import sdesGatekeeperService._
 
-  def getCashStatements(eori: String)(implicit hc: HeaderCarrier, messages: Messages): Future[Seq[CashStatementFile]] = {
+  def getCashStatements(
+    eori: String
+  )(implicit hc: HeaderCarrier, messages: Messages): Future[Seq[CashStatementFile]] = {
 
     val transform = convertTo[CashStatementFile] andThen filterFileFormats(SdesFileFormats)
     auditingService.auditCashStatements(eori)
@@ -55,11 +58,12 @@ class SdesConnector @Inject()(httpClientV2: HttpClientV2,
   private def addXHeaders(hc: HeaderCarrier, key: String): HeaderCarrier =
     hc.copy(extraHeaders = hc.extraHeaders ++ Seq("x-client-id" -> appConfig.xClientIdHeader, "X-SDES-Key" -> key))
 
-  private def getSdesFiles[A, B <: SdesFile](url: String,
-                                             key: String,
-                                             metricsName: String,
-                                             transform: Seq[A] => Seq[B]
-                                            )(implicit reads: Reads[Seq[A]], hc: HeaderCarrier): Future[Seq[B]] = {
+  private def getSdesFiles[A, B <: SdesFile](
+    url: String,
+    key: String,
+    metricsName: String,
+    transform: Seq[A] => Seq[B]
+  )(implicit reads: Reads[Seq[A]], hc: HeaderCarrier): Future[Seq[B]] =
     metricsReporterService.withResponseTimeLogging(metricsName) {
       httpClientV2
         .get(url"$url")
@@ -67,5 +71,4 @@ class SdesConnector @Inject()(httpClientV2: HttpClientV2,
         .execute[Seq[A]]
         .map(transform)
     }
-  }
 }
