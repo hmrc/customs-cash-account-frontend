@@ -17,11 +17,10 @@
 package config
 
 import models.FileRole
-
-import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import utils.Utils.emptyString
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig) {
@@ -35,12 +34,13 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
   lazy val customsFinancialsApi: String = servicesConfig.baseUrl("customs-financials-api") +
     config.getOptional[String]("customs-financials-api.context").getOrElse("/customs-financials-api")
 
-  private lazy val customsDataStoreBaseUrl    = servicesConfig.baseUrl("customs-data-store")
-  private lazy val customsDataStoreContextUrl =
+  private lazy val customsDataStoreBaseUrl       = servicesConfig.baseUrl("customs-data-store")
+  private lazy val customsDataStoreContextUrl    =
     config.getOptional[String]("microservice.services.customs-data-store.context").getOrElse("/customs-data-store")
+  private lazy val customsDataStoreVerifiedEmail = "/eori/verified-email"
 
-  lazy val customsDataStore: String =
-    s"$customsDataStoreBaseUrl$customsDataStoreContextUrl"
+  lazy val customsDataStore: String                 = s"$customsDataStoreBaseUrl$customsDataStoreContextUrl"
+  lazy val customsDataStoreGetVerifiedEmail: String = s"$customsDataStore$customsDataStoreVerifiedEmail"
 
   private lazy val emailFrontendBaseUrl    = servicesConfig.baseUrl("customs-email-frontend")
   private lazy val emailFrontendContextUrl =
