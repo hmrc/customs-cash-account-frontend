@@ -22,13 +22,13 @@ import play.api.Application
 import play.api.inject.bind
 import services.MetricsReporterService
 import uk.gov.hmrc.auth.core.retrieve.Email
-import uk.gov.hmrc.http.{HttpReads, InternalServerException}
+import uk.gov.hmrc.http.{HttpReads, InternalServerException, StringContextOps}
 import utils.SpecBase
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import models.email.{EmailUnverifiedResponse, EmailVerifiedResponse}
 
@@ -47,7 +47,8 @@ class DataStoreConnectorSpec extends SpecBase {
 
       when(requestBuilder.execute(any[HttpReads[EmailResponse]], any[ExecutionContext]))
         .thenReturn(Future.successful(emailResFromAPI))
-      when(mockHttpClient.get(any())(any())).thenReturn(requestBuilder)
+      when(mockHttpClient.get(meq(url"${appConfig.customsDataStoreGetVerifiedEmail}"))(any()))
+        .thenReturn(requestBuilder)
 
       connector.getEmail(eori).map { res =>
         res mustBe Right(Email(emailId))

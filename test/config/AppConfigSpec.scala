@@ -53,6 +53,7 @@ class AppConfigSpec extends SpecBase {
         "https://www.tax.service.gov.uk/customs-enrolment-services/cds/subscribe"
 
       appConfig.customsDataStore mustBe "http://localhost:9893/customs-data-store"
+      appConfig.customsDataStoreGetVerifiedEmail mustBe "http://localhost:9893/customs-data-store/eori/verified-email"
 
       appConfig.emailFrontendUrl mustBe "http://localhost:9898/manage-email-cds/service/customs-finance"
 

@@ -18,7 +18,7 @@ package connectors
 
 import config.AppConfig
 import models.domain.EORI
-import models.email.{EmailResponse, EmailResponses, UndeliverableEmail, UnverifiedEmail}
+import models.email.*
 import play.api.Logger
 import play.api.http.Status.NOT_FOUND
 import services.MetricsReporterService
@@ -26,9 +26,7 @@ import uk.gov.hmrc.auth.core.retrieve.Email
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, UpstreamErrorResponse}
-import models.email.{EmailUnverifiedResponse, EmailVerifiedResponse}
 
-import java.net.URL
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,13 +39,12 @@ class CustomsDataStoreConnector @Inject() (httpClient: HttpClientV2, metricsRepo
   private val log = Logger(this.getClass)
 
   def getEmail(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[EmailResponses, Email]] = {
-    val dataStoreEndpoint      = s"${appConfig.customsDataStore}/eori/$eori/verified-email"
     val resourceNameForMetrics = "customs-data-store.get.email"
 
     metricsReporter.withResponseTimeLogging(resourceNameForMetrics) {
 
       httpClient
-        .get(url"$dataStoreEndpoint")
+        .get(url"${appConfig.customsDataStoreGetVerifiedEmail}")
         .execute[EmailResponse]
         .map {
           case EmailResponse(Some(address), _, None)  => Right(Email(address))
