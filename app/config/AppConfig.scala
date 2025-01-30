@@ -17,11 +17,10 @@
 package config
 
 import models.FileRole
-
-import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import utils.Utils.emptyString
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig) {
