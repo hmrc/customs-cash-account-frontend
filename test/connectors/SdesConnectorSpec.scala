@@ -16,8 +16,7 @@
 
 package connectors
 
-import models.*
-import models.FileFormat.Csv
+import models._
 import models.FileRole.CDSCashAccount
 import models.metadata.{CashStatementFileMetadata, Metadata, MetadataItem}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}

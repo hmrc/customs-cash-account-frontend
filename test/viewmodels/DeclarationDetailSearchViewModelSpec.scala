@@ -17,7 +17,7 @@
 package viewmodels
 
 import helpers.Formatters
-import models.*
+import models._
 import models.response.{
   DeclarationSearch, TaxGroupSearch, TaxGroupWrapper, TaxTypeWithSecurity, TaxTypeWithSecurityContainer
 }
@@ -25,7 +25,6 @@ import uk.gov
 import uk.gov.hmrc
 import uk.gov.hmrc.govukfrontend
 import uk.gov.hmrc.govukfrontend.views
-import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryList
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import utils.SpecBase

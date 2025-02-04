@@ -16,10 +16,9 @@
 
 package models.metadata
 
-import play.api.libs.json.Json
 import utils.SpecBase
 
-import play.api.libs.json._
+import play.api.libs.json.Json
 
 class MetadataSpec extends SpecBase {
 
