@@ -55,16 +55,21 @@ class RequestedTransactionsController @Inject() (
     with Logging {
 
   def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
-    val result: EitherT[Future, Result, Result] = for {
-      dates   <- fromOptionF(cache.get(request.eori), Redirect(routes.RequestTransactionsController.onPageLoad()))
-      account <- fromOptionF(apiConnector.getCashAccount(request.eori), NotFound(eh.notFoundTemplate))
-      page    <- EitherT.liftF(showAccountWithTransactionDetails(account, dates.start, dates.end))
-    } yield page
-
-    result.merge.recover { case e =>
-      logger.error(s"Unable to retrieve account details requested: ${e.getMessage}")
-      Redirect(routes.CashAccountController.showAccountUnavailable)
-    }
+    cache
+      .get(request.eori)
+      .flatMap {
+        case Some(dates) =>
+          apiConnector.getCashAccount(request.eori).flatMap {
+            case Some(account) =>
+              showAccountWithTransactionDetails(account, dates.start, dates.end)
+            case None          => eh.notFoundTemplate.map(html => NotFound(html))
+          }
+        case None        => Future.successful(Redirect(routes.RequestTransactionsController.onPageLoad()))
+      }
+      .recover { case e =>
+        logger.error(s"Unable to retrieve account details requested: ${e.getMessage}")
+        Redirect(routes.CashAccountController.showAccountUnavailable)
+      }
   }
 
   private def showAccountWithTransactionDetails(account: CashAccount, from: LocalDate, to: LocalDate)(implicit

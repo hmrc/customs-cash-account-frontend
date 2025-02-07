@@ -24,7 +24,7 @@ import connectors.{
   CustomsFinancialsApiConnector, EntryAlreadyExists, ErrorResponse, ExceededMaximum, TooManyTransactionsRequested
 }
 import controllers.actions.IdentifierAction
-import helpers.Formatters.dateAsMonthAndYear
+import helpers.Formatters.{dateAsMonthAndYear, dateTimeAsIso8601}
 import models.*
 import models.request.IdentifierRequest
 import play.api.Logging
@@ -55,17 +55,21 @@ class SelectedTransactionsController @Inject() (
     with Logging {
 
   def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
-
-    val result: EitherT[Future, Result, Result] = for {
-      dates   <- fromOptionF(cache.get(request.eori), Redirect(routes.SelectTransactionsController.onPageLoad()))
-      account <- fromOptionF(apiConnector.getCashAccount(request.eori), NotFound(eh.notFoundTemplate))
-      page    <- EitherT.liftF(displayResultView(account, dates.start, dates.end))
-    } yield page
-
-    result.merge.recover { case e =>
-      logger.error(s"Unable to retrieve account details requested: ${e.getMessage}")
-      Redirect(routes.CashAccountController.showAccountUnavailable)
-    }
+    cache
+      .get(request.eori)
+      .flatMap {
+        case Some(dates) =>
+          apiConnector.getCashAccount(request.eori).flatMap {
+            case Some(account) =>
+              displayResultView(account, dates.start, dates.end)
+            case None          => eh.notFoundTemplate.map(html => NotFound(html))
+          }
+        case None        => Future.successful(Redirect(routes.SelectTransactionsController.onPageLoad()))
+      }
+      .recover { case e =>
+        logger.error(s"Unable to retrieve account details requested: ${e.getMessage}")
+        Redirect(routes.CashAccountController.showAccountUnavailable)
+      }
   }
 
   def onSubmit(): Action[AnyContent] = identify.async { implicit request =>

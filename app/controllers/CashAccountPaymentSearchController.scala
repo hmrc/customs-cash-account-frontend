@@ -38,7 +38,7 @@ class CashAccountPaymentSearchController @Inject() (
   authenticate: IdentifierAction,
   verifyEmail: EmailAction,
   apiConnector: CustomsFinancialsApiConnector,
-  errorHandler: ErrorHandler,
+  eh: ErrorHandler,
   mcc: MessagesControllerComponents,
   paymentSearchView: cash_account_payment_search,
   searchRepository: CashAccountSearchRepository,
@@ -52,7 +52,7 @@ class CashAccountPaymentSearchController @Inject() (
     implicit request =>
       apiConnector.getCashAccount(request.eori).flatMap {
         case Some(account) => processCashAccountDetails(searchValue, account, page)
-        case None          => Future.successful(NotFound(errorHandler.notFoundTemplate))
+        case None          => eh.notFoundTemplate.map(html => NotFound(html))
       }
   }
 

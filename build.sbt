@@ -15,6 +15,7 @@ Global / lintUnusedKeysOnLoad := false
 
 ThisBuild / majorVersion := 0
 ThisBuild / scalaVersion := scala3_3_4
+scalacOptions += "-feature"
 
 lazy val scalastyleSettings = Seq(
   scalastyleConfig := baseDirectory.value / scalaStyleConfigFile,
@@ -55,7 +56,7 @@ lazy val microservice = Project(appName, file("."))
       "-Wunused:params",
       "-Wunused:implicits",
       "-Wunused:explicits",
-      "-Wunused:privates",
+      "-Wunused:privates"
     ),
     libraryDependencies ++= Seq(
       compilerPlugin(

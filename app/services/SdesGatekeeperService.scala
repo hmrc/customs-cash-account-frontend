@@ -16,9 +16,10 @@
 
 package services
 
-import models.*
+import models._
 import models.metadata.CashStatementFileMetadata
 import play.api.i18n.Messages
+import scala.language.implicitConversions
 import utils.Utils.emptyString
 
 import javax.inject.Singleton

@@ -25,7 +25,7 @@ import helpers.CashAccountUtils
 import models.*
 import models.request.IdentifierRequest
 import org.slf4j.LoggerFactory
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.CashTransactionsViewModel
@@ -59,17 +59,18 @@ class CashAccountController @Inject() (
       } else {
         val eventualMaybeCashAccount = apiConnector.getCashAccount(request.eori)
 
-        val result = for {
-          cashAccount <-
-            fromOptionF[Future, Result, CashAccount](eventualMaybeCashAccount, NotFound(eh.notFoundTemplate))
-          (from, to)   = cashAccountUtils.transactionDateRange()
-          page        <- liftF[Future, Result, Result](showAccountWithTransactionDetails(cashAccount, from, to, page))
-        } yield page
-
-        result.merge.recover { case e =>
-          logger.error(s"Unable to retrieve account details: ${e.getMessage}")
-          Redirect(routes.CashAccountController.showAccountUnavailable)
-        }
+        eventualMaybeCashAccount
+          .flatMap {
+            case Some(cashAccount) =>
+              val (from, to) = cashAccountUtils.transactionDateRange()
+              showAccountWithTransactionDetails(cashAccount, from, to, page)
+            case None              =>
+              eh.notFoundTemplate.map(html => NotFound(html))
+          }
+          .recover { case e =>
+            logger.error(s"Unable to retrieve account details: ${e.getMessage}")
+            Redirect(routes.CashAccountController.showAccountUnavailable)
+          }
       }
   }
 
@@ -107,7 +108,7 @@ class CashAccountController @Inject() (
 
   def tooManyTransactions(): Action[AnyContent] = authenticate.async { implicit request =>
     apiConnector.getCashAccount(request.eori) flatMap {
-      case None          => Future.successful(NotFound(eh.notFoundTemplate))
+      case None          => eh.notFoundTemplate.map(html => NotFound(html))
       case Some(account) =>
         Future.successful(
           Ok(

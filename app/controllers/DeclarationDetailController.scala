@@ -46,7 +46,7 @@ class DeclarationDetailController @Inject() (
   authenticate: IdentifierAction,
   verifyEmail: EmailAction,
   apiConnector: CustomsFinancialsApiConnector,
-  errorHandler: ErrorHandler,
+  eh: ErrorHandler,
   mcc: MessagesControllerComponents,
   view: cash_account_declaration_details,
   searchView: cash_account_declaration_details_search,
@@ -63,7 +63,7 @@ class DeclarationDetailController @Inject() (
     (authenticate andThen verifyEmail).async { implicit request =>
       apiConnector.getCashAccount(request.eori).flatMap {
         case Some(account) => prepareTransactionSearch(account, page, searchInput)
-        case None          => Future.successful(NotFound(errorHandler.notFoundTemplate))
+        case None          => Future.successful(NotFound)
       }
     }
 
@@ -75,7 +75,7 @@ class DeclarationDetailController @Inject() (
                         case Some(account) =>
                           val (from, to) = cashAccountUtils.transactionDateRange()
                           retrieveCashAccountTransactionAndDisplay(account, from, to, ref, page)
-                        case None          => Future.successful(NotFound(errorHandler.notFoundTemplate))
+                        case None          => eh.notFoundTemplate.map(html => NotFound(html))
                       }
       } yield result
   }
@@ -165,17 +165,17 @@ class DeclarationDetailController @Inject() (
     ref: String,
     page: Option[Int]
   )(implicit request: IdentifierRequest[_]): Future[Result] =
-    apiConnector.retrieveCashTransactions(account.number, from, to).map {
+    apiConnector.retrieveCashTransactions(account.number, from, to).flatMap {
       case Right(transactions) =>
         transactions.cashDailyStatements
           .flatMap(_.declarations)
           .find(_.secureMovementReferenceNumber.contains(ref))
           .map { declaration =>
             val viewModel = DeclarationDetailViewModel(account, request.eori, declaration)
-            Ok(view(viewModel, page))
+            Future.successful(Ok(view(viewModel, page)))
           }
-          .getOrElse(NotFound(errorHandler.notFoundTemplate))
+          .getOrElse(eh.notFoundTemplate.map(html => NotFound(html)))
 
-      case Left(_) => Ok(noTransactionsView(ResultsPageSummary(from, to)))
+      case Left(_) => Future.successful(Ok(noTransactionsView(ResultsPageSummary(from, to))))
     }
 }
