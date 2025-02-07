@@ -15,7 +15,6 @@ Global / lintUnusedKeysOnLoad := false
 
 ThisBuild / majorVersion := 0
 ThisBuild / scalaVersion := scala3_3_4
-scalacOptions += "-feature"
 
 lazy val scalastyleSettings = Seq(
   scalastyleConfig := baseDirectory.value / scalaStyleConfigFile,
