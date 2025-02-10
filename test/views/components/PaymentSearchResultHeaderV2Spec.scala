@@ -17,7 +17,6 @@
 package views.components
 
 import org.scalatest.matchers.should.Matchers.should
-import uk.gov.hmrc.govukfrontend.views.Aliases
 import uk.gov.hmrc.govukfrontend.views.Aliases.HeadCell
 import utils.SpecBase
 

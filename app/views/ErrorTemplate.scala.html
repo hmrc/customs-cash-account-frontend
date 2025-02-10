@@ -14,9 +14,13 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
+@import views.html.Layout
+
 @this(layout: Layout)
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
+@(pageTitle: String, heading: String, message: String)(
+        implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(pageTitle), backLink = None, fullWidth = false, help=false) {
     <h1 class="govuk-heading-xl">@{Text(heading).asHtml}</h1>

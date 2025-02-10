@@ -17,14 +17,11 @@
 package connectors
 
 import config.AppConfig
-import models.*
+import models._
 import models.request.{CashAccountStatementRequestDetail, CashDailyStatementRequest, IdentifierRequest, SearchType}
 import models.response.{CashAccountTransactionSearchResponseDetail, EoriData, EoriDataContainer}
 import org.mockito.ArgumentMatchers.{any, anyString, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
-import play.api.http.Status.{
-  BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_ENTITY_TOO_LARGE, SERVICE_UNAVAILABLE
-}
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.Helpers.*

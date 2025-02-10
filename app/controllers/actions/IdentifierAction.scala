@@ -46,13 +46,12 @@ class AuthenticatedIdentifierAction @Inject() (
 
     authorised().retrieve(
       Retrievals.credentials
-        and Retrievals.name
         and Retrievals.email
         and Retrievals.affinityGroup
         and Retrievals.internalId
         and Retrievals.allEnrolments
     ) {
-      case Some(_) ~ _ ~ _ ~ Some(_) ~ Some(_) ~ allEnrolments =>
+      case Some(_) ~ _ ~ Some(_) ~ Some(_) ~ allEnrolments =>
         allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber")) match {
           case Some(eori) => block(IdentifierRequest(request, eori.value))
           case None       => Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))

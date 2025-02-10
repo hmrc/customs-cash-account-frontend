@@ -17,7 +17,6 @@
 package helpers
 
 import utils.SpecBase
-import helpers.Constants._
 
 class ConstantsSpec extends SpecBase {
 

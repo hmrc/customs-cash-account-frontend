@@ -16,7 +16,7 @@
 
 package services
 
-import models.*
+import models._
 import models.metadata.CashStatementFileMetadata
 import play.api.i18n.Messages
 import utils.Utils.emptyString

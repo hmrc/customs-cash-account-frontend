@@ -16,8 +16,6 @@
 
 package controllers
 
-import cats.data.EitherT
-import cats.data.EitherT.fromOptionF
 import config.{AppConfig, ErrorHandler}
 import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested}
 import controllers.actions.IdentifierAction
@@ -32,7 +30,6 @@ import views.html.{
   cash_account_transactions_not_available, cash_transactions_no_result, cash_transactions_result_page,
   cash_transactions_too_many_results
 }
-import cats.implicits._
 import play.api.Logging
 
 import java.time.LocalDate
@@ -55,17 +52,25 @@ class RequestedTransactionsController @Inject() (
     with Logging {
 
   def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
-    val result: EitherT[Future, Result, Result] = for {
-      dates   <- fromOptionF(cache.get(request.eori), Redirect(routes.RequestTransactionsController.onPageLoad()))
-      account <- fromOptionF(apiConnector.getCashAccount(request.eori), NotFound(eh.notFoundTemplate))
-      page    <- EitherT.liftF(showAccountWithTransactionDetails(account, dates.start, dates.end))
-    } yield page
-
-    result.merge.recover { case e =>
-      logger.error(s"Unable to retrieve account details requested: ${e.getMessage}")
-      Redirect(routes.CashAccountController.showAccountUnavailable)
-    }
+    getCachedDatesAndDisplayRequestedTransactions(request.eori)
+      .recover { case e =>
+        logger.error(s"Unable to retrieve account details requested: ${e.getMessage}")
+        Redirect(routes.CashAccountController.showAccountUnavailable)
+      }
   }
+
+  private def getCachedDatesAndDisplayRequestedTransactions(
+    eori: String
+  )(implicit request: IdentifierRequest[AnyContent]): Future[Result] =
+    cache.get(request.eori).flatMap {
+      case Some(dates) =>
+        apiConnector.getCashAccount(request.eori).flatMap {
+          case Some(account) =>
+            showAccountWithTransactionDetails(account, dates.start, dates.end)
+          case None          => eh.notFoundTemplate.map(NotFound(_))
+        }
+      case None        => Future.successful(Redirect(routes.RequestTransactionsController.onPageLoad()))
+    }
 
   private def showAccountWithTransactionDetails(account: CashAccount, from: LocalDate, to: LocalDate)(implicit
     req: IdentifierRequest[AnyContent],

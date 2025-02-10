@@ -17,7 +17,7 @@
 package utils
 
 import helpers.Formatters.yyyyMMddDateFormatter
-import models.*
+import models._
 import models.response.{PaymentsWithdrawalsAndTransfer, PaymentsWithdrawalsAndTransferContainer}
 import java.time.LocalDate
 import models.{ImportVat, TaxGroup, TaxType}
@@ -49,6 +49,10 @@ object TestData {
 
   val TEST_HREF = "testHref"
   val HREF      = "href"
+
+  val testTitle   = "test title"
+  val testHeading = "test heading"
+  val testMessage = "test message"
 
   val PAGE_1    = 1
   val PAGE_2    = 2

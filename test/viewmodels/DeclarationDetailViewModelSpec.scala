@@ -19,7 +19,6 @@ package viewmodels
 import helpers.Formatters
 import models.domain.EORI
 import models.{CustomsDuty, Declaration, ExciseDuty, ImportVat, TaxGroup, TaxType}
-import org.mockito.Mockito.*
 import uk.gov.hmrc.govukfrontend
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views
@@ -29,7 +28,6 @@ import utils.Utils.singleSpace
 import java.time.LocalDate
 import uk.gov
 import uk.gov.hmrc
-import uk.gov.hmrc.govukfrontend.views.Aliases
 
 class DeclarationDetailViewModelSpec extends SpecBase {
 

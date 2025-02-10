@@ -16,9 +16,6 @@
 
 package controllers
 
-import cats.data.EitherT
-import cats.data.EitherT.fromOptionF
-import cats.implicits.*
 import config.{AppConfig, ErrorHandler}
 import connectors.{
   CustomsFinancialsApiConnector, EntryAlreadyExists, ErrorResponse, ExceededMaximum, TooManyTransactionsRequested
@@ -55,18 +52,25 @@ class SelectedTransactionsController @Inject() (
     with Logging {
 
   def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
-
-    val result: EitherT[Future, Result, Result] = for {
-      dates   <- fromOptionF(cache.get(request.eori), Redirect(routes.SelectTransactionsController.onPageLoad()))
-      account <- fromOptionF(apiConnector.getCashAccount(request.eori), NotFound(eh.notFoundTemplate))
-      page    <- EitherT.liftF(displayResultView(account, dates.start, dates.end))
-    } yield page
-
-    result.merge.recover { case e =>
-      logger.error(s"Unable to retrieve account details requested: ${e.getMessage}")
-      Redirect(routes.CashAccountController.showAccountUnavailable)
-    }
+    getCachedDatesAndDisplaySelectedTransactions(request.eori)
+      .recover { case e =>
+        logger.error(s"Unable to retrieve account details requested: ${e.getMessage}")
+        Redirect(routes.CashAccountController.showAccountUnavailable)
+      }
   }
+
+  private def getCachedDatesAndDisplaySelectedTransactions(
+    eori: String
+  )(implicit request: IdentifierRequest[AnyContent]): Future[Result] =
+    cache.get(request.eori).flatMap {
+      case Some(dates) =>
+        apiConnector.getCashAccount(request.eori).flatMap {
+          case Some(account) =>
+            displayResultView(account, dates.start, dates.end)
+          case None          => eh.notFoundTemplate.map(NotFound(_))
+        }
+      case None        => Future.successful(Redirect(routes.SelectTransactionsController.onPageLoad()))
+    }
 
   def onSubmit(): Action[AnyContent] = identify.async { implicit request =>
 
