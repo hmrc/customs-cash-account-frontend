@@ -16,15 +16,12 @@
 
 package controllers
 
-import cats.data.EitherT
-import cats.data.EitherT.fromOptionF
-import cats.implicits.*
 import config.{AppConfig, ErrorHandler}
 import connectors.{
   CustomsFinancialsApiConnector, EntryAlreadyExists, ErrorResponse, ExceededMaximum, TooManyTransactionsRequested
 }
 import controllers.actions.IdentifierAction
-import helpers.Formatters.{dateAsMonthAndYear, dateTimeAsIso8601}
+import helpers.Formatters.dateAsMonthAndYear
 import models.*
 import models.request.IdentifierRequest
 import play.api.Logging
@@ -62,7 +59,7 @@ class SelectedTransactionsController @Inject() (
           apiConnector.getCashAccount(request.eori).flatMap {
             case Some(account) =>
               displayResultView(account, dates.start, dates.end)
-            case None          => eh.notFoundTemplate.map(html => NotFound(html))
+            case None          => eh.notFoundTemplate.map(NotFound(_))
           }
         case None        => Future.successful(Redirect(routes.SelectTransactionsController.onPageLoad()))
       }

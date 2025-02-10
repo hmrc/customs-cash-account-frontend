@@ -52,7 +52,7 @@ class CashAccountPaymentSearchController @Inject() (
     implicit request =>
       apiConnector.getCashAccount(request.eori).flatMap {
         case Some(account) => processCashAccountDetails(searchValue, account, page)
-        case None          => eh.notFoundTemplate.map(html => NotFound(html))
+        case None          => eh.notFoundTemplate.map(NotFound(_))
       }
   }
 

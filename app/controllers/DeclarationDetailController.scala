@@ -63,7 +63,7 @@ class DeclarationDetailController @Inject() (
     (authenticate andThen verifyEmail).async { implicit request =>
       apiConnector.getCashAccount(request.eori).flatMap {
         case Some(account) => prepareTransactionSearch(account, page, searchInput)
-        case None          => Future.successful(NotFound)
+        case None          => eh.notFoundTemplate.map(NotFound(_))
       }
     }
 
@@ -75,7 +75,7 @@ class DeclarationDetailController @Inject() (
                         case Some(account) =>
                           val (from, to) = cashAccountUtils.transactionDateRange()
                           retrieveCashAccountTransactionAndDisplay(account, from, to, ref, page)
-                        case None          => eh.notFoundTemplate.map(html => NotFound(html))
+                        case None          => eh.notFoundTemplate.map(NotFound(_))
                       }
       } yield result
   }
@@ -174,7 +174,7 @@ class DeclarationDetailController @Inject() (
             val viewModel = DeclarationDetailViewModel(account, request.eori, declaration)
             Future.successful(Ok(view(viewModel, page)))
           }
-          .getOrElse(eh.notFoundTemplate.map(html => NotFound(html)))
+          .getOrElse(eh.notFoundTemplate.map(NotFound(_)))
 
       case Left(_) => Future.successful(Ok(noTransactionsView(ResultsPageSummary(from, to))))
     }

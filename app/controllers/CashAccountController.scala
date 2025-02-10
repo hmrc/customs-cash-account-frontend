@@ -16,7 +16,6 @@
 
 package controllers
 
-import cats.data.EitherT.*
 import cats.instances.future.*
 import config.{AppConfig, ErrorHandler}
 import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested}
@@ -25,7 +24,7 @@ import helpers.CashAccountUtils
 import models.*
 import models.request.IdentifierRequest
 import org.slf4j.LoggerFactory
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.CashTransactionsViewModel
@@ -65,7 +64,7 @@ class CashAccountController @Inject() (
               val (from, to) = cashAccountUtils.transactionDateRange()
               showAccountWithTransactionDetails(cashAccount, from, to, page)
             case None              =>
-              eh.notFoundTemplate.map(html => NotFound(html))
+              eh.notFoundTemplate.map(NotFound(_))
           }
           .recover { case e =>
             logger.error(s"Unable to retrieve account details: ${e.getMessage}")
@@ -108,7 +107,7 @@ class CashAccountController @Inject() (
 
   def tooManyTransactions(): Action[AnyContent] = authenticate.async { implicit request =>
     apiConnector.getCashAccount(request.eori) flatMap {
-      case None          => eh.notFoundTemplate.map(html => NotFound(html))
+      case None          => eh.notFoundTemplate.map(NotFound(_))
       case Some(account) =>
         Future.successful(
           Ok(

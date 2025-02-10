@@ -16,8 +16,6 @@
 
 package controllers
 
-import cats.data.EitherT
-import cats.data.EitherT.fromOptionF
 import config.{AppConfig, ErrorHandler}
 import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested}
 import controllers.actions.IdentifierAction
@@ -32,7 +30,6 @@ import views.html.{
   cash_account_transactions_not_available, cash_transactions_no_result, cash_transactions_result_page,
   cash_transactions_too_many_results
 }
-import cats.implicits._
 import play.api.Logging
 
 import java.time.LocalDate
@@ -62,7 +59,7 @@ class RequestedTransactionsController @Inject() (
           apiConnector.getCashAccount(request.eori).flatMap {
             case Some(account) =>
               showAccountWithTransactionDetails(account, dates.start, dates.end)
-            case None          => eh.notFoundTemplate.map(html => NotFound(html))
+            case None          => eh.notFoundTemplate.map(NotFound(_))
           }
         case None        => Future.successful(Redirect(routes.RequestTransactionsController.onPageLoad()))
       }

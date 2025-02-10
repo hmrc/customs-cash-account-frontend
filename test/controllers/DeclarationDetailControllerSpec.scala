@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.ErrorHandlerSpec
+import config.ErrorHandler
 import connectors.{
   BadRequest, CustomsFinancialsApiConnector, DuplicateAckRef, InternalServerErrorErrorResponse, InvalidCashAccount,
   InvalidDeclarationReference, InvalidEori, NoAssociatedDataFound, ServiceUnavailableErrorResponse, UnknownException
@@ -527,7 +527,7 @@ class DeclarationDetailControllerSpec extends SpecBase {
     val searchInput       = "21GB399145852YAD23"
 
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
-    val mockErrorHandler: ErrorHandlerSpec                               = mock[ErrorHandlerSpec]
+    val mockErrorHandler: ErrorHandler                                   = mock[ErrorHandler]
 
     val cashAccount: CashAccount =
       CashAccount(cashAccountNumber, eori, AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))

@@ -16,8 +16,6 @@
 
 package controllers
 
-import cats.data.{EitherT, NonEmptyMap}
-import cats.data.EitherT.*
 import cats.instances.future.*
 import config.{AppConfig, ErrorHandler}
 import connectors.{
@@ -94,7 +92,7 @@ class CashAccountV2Controller @Inject() (
             showAccountWithTransactionDetails(cashAccount, from, to, page, statements, form)
           }
         case None              =>
-          eh.notFoundTemplate.map(html => NotFound(html))
+          eh.notFoundTemplate.map(NotFound(_))
       }
       .recover { case e =>
         logger.error(s"Unable to retrieve account details: ${e.getMessage}")
@@ -144,7 +142,7 @@ class CashAccountV2Controller @Inject() (
 
   def tooManyTransactions(): Action[AnyContent] = authenticate.async { implicit request =>
     apiConnector.getCashAccount(request.eori) flatMap {
-      case None          => eh.notFoundTemplate.map(html => NotFound(html))
+      case None          => eh.notFoundTemplate.map(NotFound(_))
       case Some(account) =>
         Future.successful(
           Ok(
