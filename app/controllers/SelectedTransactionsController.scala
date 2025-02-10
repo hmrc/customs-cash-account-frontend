@@ -52,22 +52,25 @@ class SelectedTransactionsController @Inject() (
     with Logging {
 
   def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
-    cache
-      .get(request.eori)
-      .flatMap {
-        case Some(dates) =>
-          apiConnector.getCashAccount(request.eori).flatMap {
-            case Some(account) =>
-              displayResultView(account, dates.start, dates.end)
-            case None          => eh.notFoundTemplate.map(NotFound(_))
-          }
-        case None        => Future.successful(Redirect(routes.SelectTransactionsController.onPageLoad()))
-      }
+    getCachedDatesAndDisplaySelectedTransactions(request.eori)
       .recover { case e =>
         logger.error(s"Unable to retrieve account details requested: ${e.getMessage}")
         Redirect(routes.CashAccountController.showAccountUnavailable)
       }
   }
+
+  private def getCachedDatesAndDisplaySelectedTransactions(
+    eori: String
+  )(implicit request: IdentifierRequest[AnyContent]): Future[Result] =
+    cache.get(request.eori).flatMap {
+      case Some(dates) =>
+        apiConnector.getCashAccount(request.eori).flatMap {
+          case Some(account) =>
+            displayResultView(account, dates.start, dates.end)
+          case None          => eh.notFoundTemplate.map(NotFound(_))
+        }
+      case None        => Future.successful(Redirect(routes.SelectTransactionsController.onPageLoad()))
+    }
 
   def onSubmit(): Action[AnyContent] = identify.async { implicit request =>
 
