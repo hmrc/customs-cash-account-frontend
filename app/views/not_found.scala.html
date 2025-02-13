@@ -14,6 +14,9 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
+@import views.html.Layout
+
 @this(
         layout: Layout,
         h1: components.h1,
@@ -21,7 +24,7 @@
         link: components.link
 )
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
     @layout(pageTitle = Some(messages("cf.error.not-found.title")), fullWidth = false, backLink = None, help = false) {
 

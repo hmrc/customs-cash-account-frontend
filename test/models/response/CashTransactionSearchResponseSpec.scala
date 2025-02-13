@@ -18,7 +18,6 @@ package models.response
 
 import play.api.libs.json.{JsSuccess, Json}
 import utils.SpecBase
-import play.api.libs.json._
 
 class CashTransactionSearchResponseSpec extends SpecBase {
 
