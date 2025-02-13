@@ -17,10 +17,10 @@
 package models
 
 import utils.SpecBase
+import play.api.libs.json.*
+import uk.gov.hmrc.crypto.EncryptedValue
 
-import play.api.libs.json._
 import java.time.LocalDate
-import crypto.EncryptedValue
 
 class DeclarationSpec extends SpecBase {
 

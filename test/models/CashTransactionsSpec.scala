@@ -16,8 +16,8 @@
 
 package models
 
-import crypto.EncryptedValue
 import play.api.libs.json.{JsUndefined, JsValue, Json}
+import uk.gov.hmrc.crypto.EncryptedValue
 import utils.SpecBase
 
 import java.time.LocalDate

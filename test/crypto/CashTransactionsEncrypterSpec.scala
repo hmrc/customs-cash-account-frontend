@@ -16,15 +16,14 @@
 
 package crypto
 
-import models._
+import crypto.CashTransactionsEncrypter.{decryptCashTransactions, encryptCashTransactions}
+import models.*
 import utils.SpecBase
 
 import java.time.LocalDate
 
 class CashTransactionsEncrypterSpec extends SpecBase {
 
-  private val cipher    = new AesGCMCrypto
-  private val encrypter = new CashTransactionsEncrypter(cipher)
   private val secretKey = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
   private val sMRN      = "ic62zbad-75fa-445f-962b-cc92311686b8e"
 
@@ -112,19 +111,19 @@ class CashTransactionsEncrypterSpec extends SpecBase {
 
     "encrypt cashTransactions" in new Setup {
       val encryptedCashTransactions: EncryptedCashTransactions =
-        encrypter.encryptCashTransactions(cashTransactions, secretKey)
+        encryptCashTransactions(cashTransactions, secretKey)
 
       val decryptedCashTransactions: CashTransactions =
-        encrypter.decryptCashTransactions(encryptedCashTransactions, secretKey)
+        decryptCashTransactions(encryptedCashTransactions, secretKey)
       decryptedCashTransactions mustEqual cashTransactions
     }
 
     "encrypt cashTransactions with maxTransactionsExceeded is set to true" in new Setup {
       val encryptedCashTransactions: EncryptedCashTransactions =
-        encrypter.encryptCashTransactions(cashTransactions02, secretKey)
+        encryptCashTransactions(cashTransactions02, secretKey)
 
       val decryptedCashTransactions: CashTransactions =
-        encrypter.decryptCashTransactions(encryptedCashTransactions, secretKey)
+        decryptCashTransactions(encryptedCashTransactions, secretKey)
 
       decryptedCashTransactions mustEqual cashTransactions02
       decryptedCashTransactions.maxTransactionsExceeded mustBe Some(true)
@@ -132,10 +131,10 @@ class CashTransactionsEncrypterSpec extends SpecBase {
 
     "decrypt cashTransactions" in new Setup {
       val encryptedCashTransactions: EncryptedCashTransactions =
-        encrypter.encryptCashTransactions(cashTransactions, secretKey)
+        encryptCashTransactions(cashTransactions, secretKey)
 
       val decryptedCashTransactions: CashTransactions =
-        encrypter.decryptCashTransactions(encryptedCashTransactions, secretKey)
+        decryptCashTransactions(encryptedCashTransactions, secretKey)
       decryptedCashTransactions mustEqual cashTransactions
     }
   }

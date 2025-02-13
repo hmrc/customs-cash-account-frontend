@@ -16,18 +16,16 @@
 
 package crypto
 
-import models.*
-import models.response.{
-  CashAccountTransactionSearchResponseDetail, DeclarationSearch, DeclarationWrapper, EoriData, EoriDataContainer,
-  PaymentType, PaymentsWithdrawalsAndTransfer, PaymentsWithdrawalsAndTransferContainer, TaxGroupSearch, TaxGroupWrapper,
-  TaxTypeWithSecurity, TaxTypeWithSecurityContainer
+import crypto.CashAccountTransactionSearchResponseDetailEncrypter.{
+  decryptSearchResponseDetail, encryptSearchResponseDetail
 }
+import models.*
+import models.response.*
+import uk.gov.hmrc.crypto.EncryptedValue
 import utils.SpecBase
 
 class CashAccountTransactionSearchResponseDetailEncrypterSpec extends SpecBase {
 
-  private val cipher    = new AesGCMCrypto
-  private val encrypter = new CashAccountTransactionSearchResponseDetailEncrypter(cipher)
   private val secretKey = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
 
   "encrypter" must {
@@ -35,20 +33,20 @@ class CashAccountTransactionSearchResponseDetailEncrypterSpec extends SpecBase {
     "encrypt and decrypt declaration search response detail correctly" in new Setup {
 
       val encryptedValue: EncryptedValue =
-        encrypter.encryptSearchResponseDetail(declarationsSearchResponseDetail, secretKey)
+        encryptSearchResponseDetail(declarationsSearchResponseDetail, secretKey)
 
       val decryptedObject: CashAccountTransactionSearchResponseDetail =
-        encrypter.decryptSearchResponseDetail(encryptedValue, secretKey)
+        decryptSearchResponseDetail(encryptedValue, secretKey)
 
       decryptedObject mustEqual declarationsSearchResponseDetail
     }
 
     "encrypt and decrypt payment search response detail correctly" in new Setup {
 
-      val encryptedValue: EncryptedValue = encrypter.encryptSearchResponseDetail(paymentSearchResponseDetail, secretKey)
+      val encryptedValue: EncryptedValue = encryptSearchResponseDetail(paymentSearchResponseDetail, secretKey)
 
       val decryptedObject: CashAccountTransactionSearchResponseDetail =
-        encrypter.decryptSearchResponseDetail(encryptedValue, secretKey)
+        decryptSearchResponseDetail(encryptedValue, secretKey)
 
       decryptedObject mustEqual paymentSearchResponseDetail
     }

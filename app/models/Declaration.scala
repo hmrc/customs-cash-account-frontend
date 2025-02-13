@@ -16,9 +16,9 @@
 
 package models
 
-import crypto.EncryptedValue
 import models.domain.{EORI, MRN, UCR}
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Format, Json, OFormat}
+import uk.gov.hmrc.crypto.EncryptedValue
 
 import java.time.LocalDate
 
@@ -51,5 +51,7 @@ case class EncryptedDeclaration(
 )
 
 object EncryptedDeclaration {
+  import uk.gov.hmrc.crypto.json.CryptoFormats._
+  implicit val encValFormat: Format[EncryptedValue]  = encryptedValueFormat
   implicit val format: OFormat[EncryptedDeclaration] = Json.format[EncryptedDeclaration]
 }

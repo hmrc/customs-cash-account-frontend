@@ -17,12 +17,12 @@
 package crypto
 
 import models.*
+import uk.gov.hmrc.crypto.{AesGcmAdCrypto, EncryptedValue}
 import utils.Utils.emptyString
 
 import java.util.UUID
-import javax.inject.Inject
 
-class CashTransactionsEncrypter @Inject() (crypto: AesGCMCrypto) {
+object CashTransactionsEncrypter {
 
   def encryptCashTransactions(cashTransactions: CashTransactions, key: String): EncryptedCashTransactions =
     EncryptedCashTransactions(
@@ -57,6 +57,7 @@ class CashTransactionsEncrypter @Inject() (crypto: AesGCMCrypto) {
     )
 
   private def encryptDeclaration(declaration: Declaration, key: String): EncryptedDeclaration = {
+    val crypto                                 = new AesGcmAdCrypto(key)
     def encrypt(field: String): EncryptedValue = crypto.encrypt(field, key)
 
     def encryptSome(field: Option[String]): EncryptedValue = crypto.encrypt(field.getOrElse(emptyString), key)
@@ -74,6 +75,7 @@ class CashTransactionsEncrypter @Inject() (crypto: AesGCMCrypto) {
   }
 
   private def decryptDeclaration(encryptedDeclaration: EncryptedDeclaration, key: String): Declaration = {
+    val crypto                                 = new AesGcmAdCrypto(key)
     def decrypt(field: EncryptedValue): String = crypto.decrypt(field, key)
 
     def decryptSome(field: EncryptedValue): Option[String] = Some(crypto.decrypt(field, key))

@@ -16,28 +16,31 @@
 
 package repositories
 
-import crypto.{CashAccountTransactionSearchResponseDetailEncrypter, EncryptedValue}
+import crypto.CashAccountTransactionSearchResponseDetailEncrypter
+import crypto.CashAccountTransactionSearchResponseDetailEncrypter.{
+  decryptSearchResponseDetail, encryptSearchResponseDetail
+}
 import models.response.CashAccountTransactionSearchResponseDetail
+import org.mongodb.scala.{SingleObservableFuture, ToSingleObservablePublisher}
 import org.mongodb.scala.model.Filters.equal
 import org.mongodb.scala.model.Indexes.ascending
 import org.mongodb.scala.model.{IndexModel, IndexOptions, ReplaceOptions}
 import play.api.Configuration
 import play.api.libs.json.*
+import uk.gov.hmrc.crypto.EncryptedValue
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import org.mongodb.scala.SingleObservableFuture
-import org.mongodb.scala.ToSingleObservablePublisher
 
 @Singleton
 class CashAccountSearchRepository @Inject() (
   mongo: MongoComponent,
-  config: Configuration,
-  encrypter: CashAccountTransactionSearchResponseDetailEncrypter
+  config: Configuration
 )(implicit executionContext: ExecutionContext)
     extends PlayMongoRepository[CashAccountTransactionSearchResponseDetailMongo](
       collectionName = "cash-account-search-cache",
@@ -60,13 +63,13 @@ class CashAccountSearchRepository @Inject() (
     for {
       result <- collection.find(equal("_id", id)).toSingle().toFutureOption()
       account = result.map(responseDetailMongo =>
-                  encrypter.decryptSearchResponseDetail(responseDetailMongo.responseDetail, encryptionKey)
+                  decryptSearchResponseDetail(responseDetailMongo.responseDetail, encryptionKey)
                 )
     } yield account
 
   override def set(id: String, transactions: CashAccountTransactionSearchResponseDetail): Future[Boolean] = {
     val record: CashAccountTransactionSearchResponseDetailMongo = CashAccountTransactionSearchResponseDetailMongo(
-      encrypter.encryptSearchResponseDetail(transactions, encryptionKey),
+      encryptSearchResponseDetail(transactions, encryptionKey),
       Instant.now()
     )
 
@@ -89,9 +92,10 @@ trait CashAccountSearchRepositoryTrait {
 case class CashAccountTransactionSearchResponseDetailMongo(responseDetail: EncryptedValue, lastUpdated: Instant)
 
 object CashAccountTransactionSearchResponseDetailMongo {
+  import uk.gov.hmrc.crypto.json.CryptoFormats.*
 
-  implicit val jodaTimeFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
-
+  implicit val jodaTimeFormat: Format[Instant]                                  = MongoJavatimeFormats.instantFormat
+  implicit val encValFormat: Format[EncryptedValue]                             = encryptedValueFormat
   implicit val format: OFormat[CashAccountTransactionSearchResponseDetailMongo] =
     Json.format[CashAccountTransactionSearchResponseDetailMongo]
 }

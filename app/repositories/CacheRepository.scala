@@ -17,12 +17,13 @@
 package repositories
 
 import crypto.CashTransactionsEncrypter
+import crypto.CashTransactionsEncrypter.{decryptCashTransactions, encryptCashTransactions}
 import models.{CashTransactions, EncryptedCashTransactions}
 import org.mongodb.scala.model.Filters.equal
 import org.mongodb.scala.model.Indexes.ascending
 import org.mongodb.scala.model.{IndexModel, IndexOptions, ReplaceOptions}
 import play.api.Configuration
-import play.api.libs.json._
+import play.api.libs.json.*
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -31,15 +32,13 @@ import java.time.Instant
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-
 import org.mongodb.scala.SingleObservableFuture
 import org.mongodb.scala.ToSingleObservablePublisher
 
 @Singleton
 class DefaultCacheRepository @Inject() (
   mongo: MongoComponent,
-  config: Configuration,
-  encrypter: CashTransactionsEncrypter
+  config: Configuration
 )(implicit executionContext: ExecutionContext)
     extends PlayMongoRepository[CashTransactionsMongo](
       collectionName = "cash-account-cache",
@@ -62,12 +61,12 @@ class DefaultCacheRepository @Inject() (
     for {
       result <- collection.find(equal("_id", id)).toSingle().toFutureOption()
       account =
-        result.map(cashAccountMongo => encrypter.decryptCashTransactions(cashAccountMongo.transactions, encryptionKey))
+        result.map(cashAccountMongo => decryptCashTransactions(cashAccountMongo.transactions, encryptionKey))
     } yield account
 
   override def set(id: String, transactions: CashTransactions): Future[Boolean] = {
     val record: CashTransactionsMongo =
-      CashTransactionsMongo(encrypter.encryptCashTransactions(transactions, encryptionKey), Instant.now())
+      CashTransactionsMongo(encryptCashTransactions(transactions, encryptionKey), Instant.now())
 
     collection.replaceOne(equal("_id", id), record, ReplaceOptions().upsert(true)).toFuture().map(_.wasAcknowledged())
   }
