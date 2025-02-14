@@ -16,7 +16,6 @@
 
 package models
 
-import crypto.EncryptedValue
 import models.domain.{EORI, MRN, UCR}
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.crypto.Crypted
@@ -41,10 +40,10 @@ object Declaration {
 }
 
 case class EncryptedDeclaration(
-  movementReferenceNumber: Either[EncryptedValue, Crypted],
-  importerEori: Either[EncryptedValue, Crypted],
-  declarantEori: Either[EncryptedValue, Crypted],
-  declarantReference: Option[Either[EncryptedValue, Crypted]],
+  movementReferenceNumber: Crypted,
+  importerEori: Crypted,
+  declarantEori: Crypted,
+  declarantReference: Option[Crypted],
   date: LocalDate,
   amount: BigDecimal,
   taxGroups: Seq[TaxGroup],
@@ -52,7 +51,7 @@ case class EncryptedDeclaration(
 )
 
 object EncryptedDeclaration {
-  import crypto.CryptoAdapterFormats.eitherFormat
+  import crypto.Crypted.format
 
   implicit val format: OFormat[EncryptedDeclaration] = Json.format[EncryptedDeclaration]
 }
