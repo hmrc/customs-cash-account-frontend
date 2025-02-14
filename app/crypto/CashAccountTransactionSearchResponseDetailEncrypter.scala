@@ -23,17 +23,17 @@ import uk.gov.hmrc.crypto.Crypted
 
 import javax.inject.Inject
 
-class CashAccountTransactionSearchResponseDetailEncrypter @Inject() (crypto: CryptoAdapter) {
+class CashAccountTransactionSearchResponseDetailEncrypter @Inject() (crypto: Crypto) {
 
   def encryptSearchResponseDetail(
     cashTransactions: CashAccountTransactionSearchResponseDetail
-  ): Either[EncryptedValue, Crypted] = {
+  ): Crypted = {
     val json = Json.toJson(cashTransactions).toString()
     crypto.encrypt(json)
   }
 
   def decryptSearchResponseDetail(
-    encryptedData: Either[EncryptedValue, Crypted]
+    encryptedData: Crypted
   ): CashAccountTransactionSearchResponseDetail = {
     val decryptedJson = crypto.decrypt(encryptedData)
     Json.parse(decryptedJson).as[CashAccountTransactionSearchResponseDetail]
