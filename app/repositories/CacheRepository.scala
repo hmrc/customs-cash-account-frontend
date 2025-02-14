@@ -56,18 +56,16 @@ class DefaultCacheRepository @Inject() (
     )
     with CacheRepository {
 
-  private val encryptionKey = config.get[String]("mongodb.encryptionKey")
-
   override def get(id: String): Future[Option[CashTransactions]] =
     for {
       result <- collection.find(equal("_id", id)).toSingle().toFutureOption()
       account =
-        result.map(cashAccountMongo => encrypter.decryptCashTransactions(cashAccountMongo.transactions, encryptionKey))
+        result.map(cashAccountMongo => encrypter.decryptCashTransactions(cashAccountMongo.transactions))
     } yield account
 
   override def set(id: String, transactions: CashTransactions): Future[Boolean] = {
     val record: CashTransactionsMongo =
-      CashTransactionsMongo(encrypter.encryptCashTransactions(transactions, encryptionKey), Instant.now())
+      CashTransactionsMongo(encrypter.encryptCashTransactions(transactions), Instant.now())
 
     collection.replaceOne(equal("_id", id), record, ReplaceOptions().upsert(true)).toFuture().map(_.wasAcknowledged())
   }
