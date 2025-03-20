@@ -16,7 +16,7 @@
 
 package repositories
 
-import crypto.{CashAccountTransactionSearchResponseDetailEncrypter, EncryptedValue}
+import crypto.CashAccountTransactionSearchResponseDetailEncrypter
 import models.response.CashAccountTransactionSearchResponseDetail
 import org.mongodb.scala.model.Filters.equal
 import org.mongodb.scala.model.Indexes.ascending
@@ -86,14 +86,14 @@ trait CashAccountSearchRepositoryTrait {
 }
 
 case class CashAccountTransactionSearchResponseDetailMongo(
-  responseDetail: Either[EncryptedValue, Crypted],
+  responseDetail: Crypted,
   lastUpdated: Instant
 )
 
 object CashAccountTransactionSearchResponseDetailMongo {
-  import crypto.CryptoAdapterFormats.eitherFormat
-
   implicit val jodaTimeFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
+
+  import crypto.Crypted.format
 
   implicit val format: OFormat[CashAccountTransactionSearchResponseDetailMongo] =
     Json.format[CashAccountTransactionSearchResponseDetailMongo]

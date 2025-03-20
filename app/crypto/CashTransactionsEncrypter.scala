@@ -23,7 +23,7 @@ import utils.Utils.emptyString
 import java.util.UUID
 import javax.inject.Inject
 
-class CashTransactionsEncrypter @Inject() (crypto: CryptoAdapter) {
+class CashTransactionsEncrypter @Inject() (crypto: Crypto) {
 
   def encryptCashTransactions(cashTransactions: CashTransactions): EncryptedCashTransactions =
     EncryptedCashTransactions(
@@ -58,9 +58,9 @@ class CashTransactionsEncrypter @Inject() (crypto: CryptoAdapter) {
     )
 
   private def encryptDeclaration(declaration: Declaration): EncryptedDeclaration = {
-    def encrypt(field: String): Either[EncryptedValue, Crypted] = crypto.encrypt(field)
+    def encrypt(field: String): Crypted = crypto.encrypt(field)
 
-    def encryptSome(field: Option[String]): Either[EncryptedValue, Crypted] =
+    def encryptSome(field: Option[String]): Crypted =
       crypto.encrypt(field.getOrElse(emptyString))
 
     EncryptedDeclaration(
@@ -76,9 +76,9 @@ class CashTransactionsEncrypter @Inject() (crypto: CryptoAdapter) {
   }
 
   private def decryptDeclaration(encryptedDeclaration: EncryptedDeclaration): Declaration = {
-    def decrypt(field: Either[EncryptedValue, Crypted]): String = crypto.decrypt(field)
+    def decrypt(field: Crypted): String = crypto.decrypt(field)
 
-    def decryptSome(field: Either[EncryptedValue, Crypted]): Option[String] = Some(crypto.decrypt(field))
+    def decryptSome(field: Crypted): Option[String] = Some(crypto.decrypt(field))
 
     Declaration(
       decrypt(encryptedDeclaration.movementReferenceNumber),
