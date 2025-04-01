@@ -16,7 +16,7 @@
 
 package models
 
-import crypto.{AesGCMCrypto, CryptoAdapter, EncryptedValue}
+import crypto.{AesGCMCrypto, CryptoAdapter}
 import play.api.Configuration
 import play.api.libs.json.{JsUndefined, JsValue, Json}
 import utils.SpecBase

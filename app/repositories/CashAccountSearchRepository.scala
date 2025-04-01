@@ -16,7 +16,7 @@
 
 package repositories
 
-import crypto.{CashAccountTransactionSearchResponseDetailEncrypter, EncryptedValue, CryptoAdapter}
+import crypto.{CashAccountTransactionSearchResponseDetailEncrypter, CryptoAdapter, EncryptedValue}
 import models.response.CashAccountTransactionSearchResponseDetail
 import org.mongodb.scala.model.Filters.equal
 import org.mongodb.scala.model.Indexes.ascending

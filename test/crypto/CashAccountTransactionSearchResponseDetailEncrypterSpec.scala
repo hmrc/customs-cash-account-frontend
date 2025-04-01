@@ -28,8 +28,8 @@ import utils.SpecBase
 
 class CashAccountTransactionSearchResponseDetailEncrypterSpec extends SpecBase {
 
-  private val cipher    = new AesGCMCrypto
-  private val secretKey = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
+  private val cipher        = new AesGCMCrypto
+  private val secretKey     = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
   private val config        = Configuration("mongodb.encryptionKey" -> secretKey)
   private val cryptoAdapter = new CryptoAdapter(config, cipher)
   private val encrypter     = new CashAccountTransactionSearchResponseDetailEncrypter(cryptoAdapter)
