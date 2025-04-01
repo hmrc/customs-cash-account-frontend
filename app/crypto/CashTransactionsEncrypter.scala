@@ -18,48 +18,50 @@ package crypto
 
 import models.*
 import utils.Utils.emptyString
+import uk.gov.hmrc.crypto.Crypted
 
 import java.util.UUID
 import javax.inject.Inject
 
-class CashTransactionsEncrypter @Inject() (crypto: AesGCMCrypto) {
+class CashTransactionsEncrypter @Inject() (crypto: CryptoAdapter) {
 
-  def encryptCashTransactions(cashTransactions: CashTransactions, key: String): EncryptedCashTransactions =
+  def encryptCashTransactions(cashTransactions: CashTransactions): EncryptedCashTransactions =
     EncryptedCashTransactions(
-      cashTransactions.pendingTransactions.map(declaration => encryptDeclaration(declaration, key)),
+      cashTransactions.pendingTransactions.map(declaration => encryptDeclaration(declaration)),
       cashTransactions.cashDailyStatements.map(dailyStatement =>
         EncryptedDailyStatements(
           dailyStatement.date,
           dailyStatement.openingBalance,
           dailyStatement.closingBalance,
-          dailyStatement.declarations.map(encryptDeclaration(_, key)),
+          dailyStatement.declarations.map(encryptDeclaration),
           dailyStatement.otherTransactions
         )
       ),
       cashTransactions.maxTransactionsExceeded
     )
 
-  def decryptCashTransactions(encryptedCashTransactions: EncryptedCashTransactions, key: String): CashTransactions =
+  def decryptCashTransactions(encryptedCashTransactions: EncryptedCashTransactions): CashTransactions =
     CashTransactions(
       encryptedCashTransactions.pendingTransactions.map(encryptedDeclaration =>
-        decryptDeclaration(encryptedDeclaration, key)
+        decryptDeclaration(encryptedDeclaration)
       ),
       encryptedCashTransactions.cashDailyStatement.map(encryptedDailyStatement =>
         CashDailyStatement(
           encryptedDailyStatement.date,
           encryptedDailyStatement.openingBalance,
           encryptedDailyStatement.closingBalance,
-          encryptedDailyStatement.declarations.map(decryptDeclaration(_, key)),
+          encryptedDailyStatement.declarations.map(decryptDeclaration),
           encryptedDailyStatement.otherTransactions
         )
       ),
       encryptedCashTransactions.maxTransactionsExceeded
     )
 
-  private def encryptDeclaration(declaration: Declaration, key: String): EncryptedDeclaration = {
-    def encrypt(field: String): EncryptedValue = crypto.encrypt(field, key)
+  private def encryptDeclaration(declaration: Declaration): EncryptedDeclaration = {
+    def encrypt(field: String): Either[EncryptedValue, Crypted] = crypto.encrypt(field)
 
-    def encryptSome(field: Option[String]): EncryptedValue = crypto.encrypt(field.getOrElse(emptyString), key)
+    def encryptSome(field: Option[String]): Either[EncryptedValue, Crypted] =
+      crypto.encrypt(field.getOrElse(emptyString))
 
     EncryptedDeclaration(
       encrypt(declaration.movementReferenceNumber),
@@ -73,10 +75,10 @@ class CashTransactionsEncrypter @Inject() (crypto: AesGCMCrypto) {
     )
   }
 
-  private def decryptDeclaration(encryptedDeclaration: EncryptedDeclaration, key: String): Declaration = {
-    def decrypt(field: EncryptedValue): String = crypto.decrypt(field, key)
+  private def decryptDeclaration(encryptedDeclaration: EncryptedDeclaration): Declaration = {
+    def decrypt(field: Either[EncryptedValue, Crypted]): String = crypto.decrypt(field)
 
-    def decryptSome(field: EncryptedValue): Option[String] = Some(crypto.decrypt(field, key))
+    def decryptSome(field: Either[EncryptedValue, Crypted]): Option[String] = Some(crypto.decrypt(field))
 
     Declaration(
       decrypt(encryptedDeclaration.movementReferenceNumber),

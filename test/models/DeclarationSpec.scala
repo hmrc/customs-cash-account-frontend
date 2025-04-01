@@ -17,12 +17,17 @@
 package models
 
 import utils.SpecBase
+import play.api.libs.json.*
+import play.api.Configuration
 
-import play.api.libs.json._
 import java.time.LocalDate
-import crypto.EncryptedValue
 
 class DeclarationSpec extends SpecBase {
+
+  private val cipher        = new AesGCMCrypto
+  private val secretKey     = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
+  private val config        = Configuration("mongodb.encryptionKey" -> secretKey)
+  private val cryptoAdapter = new CryptoAdapter(config, cipher)
 
   "Declaration format" should {
 
@@ -89,10 +94,10 @@ class DeclarationSpec extends SpecBase {
     )
 
     val encryptedDeclaration: EncryptedDeclaration = EncryptedDeclaration(
-      movementReferenceNumber = EncryptedValue(movementReferenceNumber, nonce),
-      importerEori = EncryptedValue(importerEori, nonce),
-      declarantEori = EncryptedValue(declarantEori, nonce),
-      declarantReference = Some(EncryptedValue(declarantReference, nonce)),
+      movementReferenceNumber = Right(cryptoAdapter.encrypt(movementReferenceNumber).toOption.get),
+      importerEori = Right(cryptoAdapter.encrypt(importerEori).toOption.get),
+      declarantEori = Right(cryptoAdapter.encrypt(declarantEori).toOption.get),
+      declarantReference = Some(Right(cryptoAdapter.encrypt(declarantReference).toOption.get)),
       date = date,
       amount = thousand,
       taxGroups = Seq(

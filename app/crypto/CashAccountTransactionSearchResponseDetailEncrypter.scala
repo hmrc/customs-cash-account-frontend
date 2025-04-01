@@ -20,23 +20,21 @@ import models.*
 import models.response.CashAccountTransactionSearchResponseDetail
 import play.api.libs.json.Json
 import javax.inject.Inject
+import uk.gov.hmrc.crypto.Crypted
 
-class CashAccountTransactionSearchResponseDetailEncrypter @Inject() (crypto: AesGCMCrypto) {
+class CashAccountTransactionSearchResponseDetailEncrypter @Inject() (crypto: CryptoAdapter) {
 
   def encryptSearchResponseDetail(
-    cashTransactions: CashAccountTransactionSearchResponseDetail,
-    key: String
-  ): EncryptedValue = {
+    cashTransactions: CashAccountTransactionSearchResponseDetail
+  ): Either[EncryptedValue, Crypted] = {
     val json = Json.toJson(cashTransactions).toString()
-    crypto.encrypt(json, key)
+    crypto.encrypt(json)
   }
 
   def decryptSearchResponseDetail(
-    encryptedData: EncryptedValue,
-    key: String
+    encryptedData: Either[EncryptedValue, Crypted]
   ): CashAccountTransactionSearchResponseDetail = {
-    val decryptedJson = crypto.decrypt(encryptedData, key)
+    val decryptedJson = crypto.decrypt(encryptedData)
     Json.parse(decryptedJson).as[CashAccountTransactionSearchResponseDetail]
   }
-
 }

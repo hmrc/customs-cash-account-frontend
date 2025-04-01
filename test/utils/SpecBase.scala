@@ -20,6 +20,7 @@ import com.codahale.metrics.MetricRegistry
 import config.AppConfig
 import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import controllers.actions.{FakeIdentifierAction, IdentifierAction}
+import crypto.AesGCMCrypto
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}

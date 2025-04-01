@@ -16,7 +16,7 @@
 
 package repositories
 
-import crypto.CashTransactionsEncrypter
+import crypto.{CashTransactionsEncrypter, CryptoAdapter}
 import models.{CashTransactions, EncryptedCashTransactions}
 import org.mongodb.scala.model.Filters.equal
 import org.mongodb.scala.model.Indexes.ascending
@@ -26,6 +26,7 @@ import play.api.libs.json._
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import uk.gov.hmrc.crypto.Crypted
 
 import java.time.Instant
 import java.util.concurrent.TimeUnit
@@ -56,18 +57,16 @@ class DefaultCacheRepository @Inject() (
     )
     with CacheRepository {
 
-  private val encryptionKey = config.get[String]("mongodb.encryptionKey")
-
   override def get(id: String): Future[Option[CashTransactions]] =
     for {
       result <- collection.find(equal("_id", id)).toSingle().toFutureOption()
       account =
-        result.map(cashAccountMongo => encrypter.decryptCashTransactions(cashAccountMongo.transactions, encryptionKey))
+        result.map(cashAccountMongo => encrypter.decryptCashTransactions(cashAccountMongo.transactions))
     } yield account
 
   override def set(id: String, transactions: CashTransactions): Future[Boolean] = {
     val record: CashTransactionsMongo =
-      CashTransactionsMongo(encrypter.encryptCashTransactions(transactions, encryptionKey), Instant.now())
+      CashTransactionsMongo(encrypter.encryptCashTransactions(transactions), Instant.now())
 
     collection.replaceOne(equal("_id", id), record, ReplaceOptions().upsert(true)).toFuture().map(_.wasAcknowledged())
   }
