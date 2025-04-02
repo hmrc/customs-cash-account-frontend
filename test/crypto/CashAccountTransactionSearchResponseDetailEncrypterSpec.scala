@@ -22,37 +22,53 @@ import models.response.{
   PaymentType, PaymentsWithdrawalsAndTransfer, PaymentsWithdrawalsAndTransferContainer, TaxGroupSearch, TaxGroupWrapper,
   TaxTypeWithSecurity, TaxTypeWithSecurityContainer
 }
+import play.api.Configuration
+import play.api.libs.json.*
 import utils.SpecBase
 
 class CashAccountTransactionSearchResponseDetailEncrypterSpec extends SpecBase {
 
-  private val cipher    = new AesGCMCrypto
-  private val encrypter = new CashAccountTransactionSearchResponseDetailEncrypter(cipher)
-  private val secretKey = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
+  private val cipher        = new AesGCMCrypto
+  private val secretKey     = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
+  private val config        = Configuration("mongodb.encryptionKey" -> secretKey)
+  private val cryptoAdapter = new CryptoAdapter(config, cipher)
+  private val encrypter     = new CashAccountTransactionSearchResponseDetailEncrypter(cryptoAdapter)
 
   "encrypter" must {
 
-    "encrypt and decrypt declaration search response detail correctly" in new Setup {
+    "encrypt and decrypt declaration search response detail correctly using modern format (Right)" in new Setup {
+      val encryptedEither = encrypter.encryptSearchResponseDetail(declarationsSearchResponseDetail)
 
-      val encryptedValue: EncryptedValue =
-        encrypter.encryptSearchResponseDetail(declarationsSearchResponseDetail, secretKey)
+      encryptedEither mustBe a[Right[_, _]]
 
-      val decryptedObject: CashAccountTransactionSearchResponseDetail =
-        encrypter.decryptSearchResponseDetail(encryptedValue, secretKey)
-
-      decryptedObject mustEqual declarationsSearchResponseDetail
+      val decrypted = encrypter.decryptSearchResponseDetail(encryptedEither)
+      decrypted mustEqual declarationsSearchResponseDetail
     }
 
-    "encrypt and decrypt payment search response detail correctly" in new Setup {
+    "decrypt declaration search response detail correctly using legacy format (Left)" in new Setup {
+      val plainJson       = Json.toJson(declarationsSearchResponseDetail).toString()
+      val legacyEncrypted = cipher.encrypt(plainJson, secretKey)
 
-      val encryptedValue: EncryptedValue = encrypter.encryptSearchResponseDetail(paymentSearchResponseDetail, secretKey)
-
-      val decryptedObject: CashAccountTransactionSearchResponseDetail =
-        encrypter.decryptSearchResponseDetail(encryptedValue, secretKey)
-
-      decryptedObject mustEqual paymentSearchResponseDetail
+      val decrypted = encrypter.decryptSearchResponseDetail(Left(legacyEncrypted))
+      decrypted mustEqual declarationsSearchResponseDetail
     }
 
+    "encrypt and decrypt payment search response detail correctly using modern format (Right)" in new Setup {
+      val encryptedEither = encrypter.encryptSearchResponseDetail(paymentSearchResponseDetail)
+
+      encryptedEither mustBe a[Right[_, _]]
+
+      val decrypted = encrypter.decryptSearchResponseDetail(encryptedEither)
+      decrypted mustEqual paymentSearchResponseDetail
+    }
+
+    "decrypt payment search response detail correctly using legacy format (Left)" in new Setup {
+      val plainJson       = Json.toJson(paymentSearchResponseDetail).toString()
+      val legacyEncrypted = cipher.encrypt(plainJson, secretKey)
+
+      val decrypted = encrypter.decryptSearchResponseDetail(Left(legacyEncrypted))
+      decrypted mustEqual paymentSearchResponseDetail
+    }
   }
 
   trait Setup {
