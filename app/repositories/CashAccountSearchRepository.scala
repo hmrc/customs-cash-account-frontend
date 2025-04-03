@@ -16,7 +16,7 @@
 
 package repositories
 
-import crypto.{CashAccountTransactionSearchResponseDetailEncrypter, CryptoAdapter, EncryptedValue}
+import crypto.CashAccountTransactionSearchResponseDetailEncrypter
 import models.response.CashAccountTransactionSearchResponseDetail
 import org.mongodb.scala.model.Filters.equal
 import org.mongodb.scala.model.Indexes.ascending
@@ -26,13 +26,14 @@ import play.api.libs.json.*
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
-import uk.gov.hmrc.crypto.Crypted
+
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import org.mongodb.scala.SingleObservableFuture
 import org.mongodb.scala.ToSingleObservablePublisher
+import uk.gov.hmrc.crypto.Crypted
 
 @Singleton
 class CashAccountSearchRepository @Inject() (
@@ -85,13 +86,14 @@ trait CashAccountSearchRepositoryTrait {
 }
 
 case class CashAccountTransactionSearchResponseDetailMongo(
-  responseDetail: Either[EncryptedValue, Crypted],
+  responseDetail: Crypted,
   lastUpdated: Instant
 )
 
 object CashAccountTransactionSearchResponseDetailMongo {
-  import crypto.CryptoAdapterFormats.eitherFormat
   implicit val jodaTimeFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
+
+  import crypto.Crypted.format
 
   implicit val format: OFormat[CashAccountTransactionSearchResponseDetailMongo] =
     Json.format[CashAccountTransactionSearchResponseDetailMongo]

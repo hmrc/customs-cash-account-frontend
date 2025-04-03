@@ -16,7 +16,7 @@
 
 package repositories
 
-import crypto.{CashTransactionsEncrypter, CryptoAdapter}
+import crypto.CashTransactionsEncrypter
 import models.{CashTransactions, EncryptedCashTransactions}
 import org.mongodb.scala.model.Filters.equal
 import org.mongodb.scala.model.Indexes.ascending
