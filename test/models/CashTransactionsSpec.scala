@@ -16,7 +16,7 @@
 
 package models
 
-import crypto.{AesGCMCrypto, CryptoAdapter}
+import crypto.Crypto
 import play.api.Configuration
 import play.api.libs.json.{JsUndefined, JsValue, Json}
 import utils.SpecBase
@@ -25,10 +25,9 @@ import java.time.LocalDate
 
 class CashTransactionsSpec extends SpecBase {
 
-  private val cipher        = new AesGCMCrypto
-  private val secretKey     = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
-  private val config        = Configuration("mongodb.encryptionKey" -> secretKey)
-  private val cryptoAdapter = new CryptoAdapter(config, cipher)
+  private val secretKey = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
+  private val config    = Configuration("mongodb.encryptionKey" -> secretKey)
+  private val crypto    = new Crypto(config)
 
   "cashTransactionTypeWrites" must {
 
@@ -121,10 +120,10 @@ class CashTransactionsSpec extends SpecBase {
     val cashTxn02: CashTransactions = CashTransactions(Seq(declarations), Seq(cashDailyStatement), Some(true))
 
     val encryptedDeclaration: EncryptedDeclaration = EncryptedDeclaration(
-      movementReferenceNumber = Right(cryptoAdapter.encrypt(movementReferenceNumber).toOption.get),
-      importerEori = Right(cryptoAdapter.encrypt(importerEori).toOption.get),
-      declarantEori = Right(cryptoAdapter.encrypt(declarantEori).toOption.get),
-      declarantReference = Some(Right(cryptoAdapter.encrypt(declarantReference).toOption.get)),
+      movementReferenceNumber = crypto.encrypt(movementReferenceNumber),
+      importerEori = crypto.encrypt(importerEori),
+      declarantEori = crypto.encrypt(declarantEori),
+      declarantReference = Some(crypto.encrypt(declarantReference)),
       date = date,
       amount = thousand,
       taxGroups = Seq(

@@ -24,13 +24,12 @@ import java.time.LocalDate
 
 class CashTransactionsEncrypterSpec extends SpecBase {
 
-  private val cipher    = new AesGCMCrypto
   private val secretKey = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
   private val sMRN      = "ic62zbad-75fa-445f-962b-cc92311686b8e"
 
-  private val config        = Configuration("mongodb.encryptionKey" -> secretKey)
-  private val cryptoAdapter = new CryptoAdapter(config, cipher)
-  private val encrypter     = new CashTransactionsEncrypter(cryptoAdapter)
+  private val config    = Configuration("mongodb.encryptionKey" -> secretKey)
+  private val crypto    = new Crypto(config)
+  private val encrypter = new CashTransactionsEncrypter(crypto)
 
   "encrypt / decrypt cashTransactions" must {
 

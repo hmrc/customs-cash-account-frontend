@@ -16,7 +16,7 @@
 
 package models
 
-import crypto.{AesGCMCrypto, CryptoAdapter}
+import crypto.Crypto
 import utils.SpecBase
 import play.api.libs.json.*
 import play.api.Configuration
@@ -25,10 +25,9 @@ import java.time.LocalDate
 
 class DeclarationSpec extends SpecBase {
 
-  private val cipher        = new AesGCMCrypto
-  private val secretKey     = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
-  private val config        = Configuration("mongodb.encryptionKey" -> secretKey)
-  private val cryptoAdapter = new CryptoAdapter(config, cipher)
+  private val secretKey = "VqmXp7yigDFxbCUdDdNZVIvbW6RgPNJsliv6swQNCL8="
+  private val config    = Configuration("mongodb.encryptionKey" -> secretKey)
+  private val crypto    = new Crypto(config)
 
   "Declaration format" should {
 
@@ -95,10 +94,10 @@ class DeclarationSpec extends SpecBase {
     )
 
     val encryptedDeclaration: EncryptedDeclaration = EncryptedDeclaration(
-      movementReferenceNumber = Right(cryptoAdapter.encrypt(movementReferenceNumber).toOption.get),
-      importerEori = Right(cryptoAdapter.encrypt(importerEori).toOption.get),
-      declarantEori = Right(cryptoAdapter.encrypt(declarantEori).toOption.get),
-      declarantReference = Some(Right(cryptoAdapter.encrypt(declarantReference).toOption.get)),
+      movementReferenceNumber = crypto.encrypt(movementReferenceNumber),
+      importerEori = crypto.encrypt(importerEori),
+      declarantEori = crypto.encrypt(declarantEori),
+      declarantReference = Some(crypto.encrypt(declarantReference)),
       date = date,
       amount = thousand,
       taxGroups = Seq(
