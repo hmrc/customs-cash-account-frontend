@@ -320,7 +320,7 @@ cf.cash-account.transactions.confirmation.statements=Mae’ch cais am drafodion 
 cf.cash-account.transactions.confirmation.next=Yr hyn sy’n digwydd nesaf
 cf.cash-account.transactions.confirmation.email=Byddwn yn anfon e-bost at <strong>{0}</strong> cyn pen 48 awr pan fydd eich cais wedi’i brosesu.
 cf.cash-account.transactions.confirmation.download=Byddwch yn gallu lawrlwytho’ch trafodion o’r dudalen trafodion cyfrifon arian parod.
-cf.cash-account.transactions.confirmation.back=Yn ôl i ‘cyfrif arian parod’
+cf.cash-account.transactions.confirmation.back=Yn ôl i hafan ‘Rheoli tollau mewnforio a chyfrifon TAW’
 
 cf.cash-account.detail.transactions= Trafodion
 cf.cash-account.detail.payments-caption=Eich taliadau ar gyfer {0}

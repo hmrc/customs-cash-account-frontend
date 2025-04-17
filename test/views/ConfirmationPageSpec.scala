@@ -63,8 +63,10 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
         )
       }
 
-      "link text is correct" in new Setup {
-        view.getElementById("link-text").text() mustBe messages("cf.cash-account.transactions.confirmation.back")
+      "link text is correct and points to the right URL" in new Setup {
+        val linkElement = view.getElementById("link-text").selectFirst("a")
+        linkElement.text() mustBe messages("cf.cash-account.transactions.confirmation.back")
+        linkElement.attr("href") mustBe appConfig.customsFinancialsFrontendHomepage
       }
     }
   }

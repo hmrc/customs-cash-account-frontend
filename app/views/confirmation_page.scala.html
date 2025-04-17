@@ -67,7 +67,7 @@
 
   @link(
     linkMessage = Some(messages(s"cf.cash-account.transactions.confirmation.back")),
-    location = controllers.routes.CashAccountController.showAccountDetails(None).url,
+    location = appConfig.customsFinancialsFrontendHomepage,
     pId = Some("link-text"),
     pClass = "govuk-body govuk-!-margin-bottom-9")
 }
