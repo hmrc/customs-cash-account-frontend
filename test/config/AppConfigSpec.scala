@@ -46,8 +46,7 @@ class AppConfigSpec extends SpecBase {
       appConfig.transactionsTimeoutFlag mustBe false
 
       appConfig.helpMakeGovUkBetterUrl mustBe
-        "https://signup.take-part-in-research.service.gov.uk?" +
-        "utm_campaign=CDSfinancials&utm_source=Other&utm_medium=other&t=HMRC&id=249"
+        "https://survey.take-part-in-research.service.gov.uk/jfe/form/SV_74GjifgnGv6GsMC?Source=BannerList_HMRC_CDS_MIDVA"
 
       appConfig.subscribeCdsUrl mustBe
         "https://www.tax.service.gov.uk/customs-enrolment-services/cds/subscribe"
