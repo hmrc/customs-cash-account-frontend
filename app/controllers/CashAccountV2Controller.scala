@@ -30,6 +30,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, RequestHeader, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.CashAccountV2ViewModel
+import repositories.RequestedTransactionsCache
 import views.html.*
 
 import java.time.LocalDate
@@ -51,6 +52,7 @@ class CashAccountV2Controller @Inject() (
   showAccountsExceededThreshold: cash_account_exceeded_threshold,
   noTransactionsWithBalance: cash_account_no_transactions_with_balance,
   cashAccountUtils: CashAccountUtils,
+  cache: RequestedTransactionsCache,
   formProvider: SearchTransactionsFormProvider
 )(implicit mcc: MessagesControllerComponents, ec: ExecutionContext, eh: ErrorHandler, appConfig: AppConfig)
     extends FrontendController(mcc)
@@ -62,8 +64,11 @@ class CashAccountV2Controller @Inject() (
 
   def showAccountDetails(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async {
     implicit request =>
-      processAccountDetails(page = page)
-  }
+      cache.get(request.eori).flatMap {
+        case Some(_) => cache.clear(request.eori).flatMap(_ => processAccountDetails(page = page))
+        case None => processAccountDetails(page = page)
+      }
+    }
 
   def onSubmit(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     form

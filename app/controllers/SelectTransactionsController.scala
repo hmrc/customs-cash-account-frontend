@@ -48,9 +48,10 @@ class SelectTransactionsController @Inject() (
   def form: Form[CashTransactionDates] = formProvider()
 
   def onPageLoad: Action[AnyContent] = identify.async { implicit request =>
-    for {
-      _ <- cache.clear(request.eori)
-    } yield Ok(view(form))
+    cache.get(request.eori).map {
+      case Some(cachedDates) => Ok(view(form.fill(cachedDates)))
+      case None => Ok(view(form))
+    }
   }
 
   def onSubmit(): Action[AnyContent] = identify.async { implicit request =>
