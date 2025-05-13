@@ -57,6 +57,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
   "show account details" must {
     "Clear cached transaction dates if present and return OK" in new Setup {
+
       when(mockRequestedTransactionCache.get(eqTo(eori)))
         .thenReturn(Future.successful(Some(cachedDates)))
 
@@ -83,6 +84,32 @@ class CashAccountV2ControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         verify(mockRequestedTransactionCache).clear(eqTo(eori))
+      }
+    }
+
+    "If no cached data is present return OK" in new Setup {
+
+      when(mockRequestedTransactionCache.get(eqTo(eori)))
+        .thenReturn(Future.successful(None))
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(Right(cashTransactionResponse)))
+
+      val app: Application = applicationBuilder
+        .overrides(
+          bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionCache),
+          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
+        )
+        .build()
+
+      running(app) {
+        val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
+        val result = route(app, request).value
+
+        status(result) mustEqual OK
       }
     }
 
@@ -176,6 +203,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
 
     "display no transactions if the call to ACC31 returns no cashDailyStatements and balance is empty" in new Setup {
+
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount.copy(balances = CDSCashBalance(None)))))
 
@@ -207,6 +235,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
     }
 
     "display no transactions if the call to ACC31 returns no cashDailyStatements and balance is 0" in new Setup {
+
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount.copy(balances = CDSCashBalance(Some(0))))))
 
@@ -239,7 +268,8 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
     "display page with no transactions for the last six months message when ACC31 call succeed" +
       " but contains no dailyStatements" in new Setup {
-        val cashTransactionsWithNoStatements: CashTransactions = CashTransactions(Seq(), Seq())
+
+      val cashTransactionsWithNoStatements: CashTransactions = CashTransactions(Seq(), Seq())
 
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
           .thenReturn(Future.successful(Some(cashAccount)))
@@ -298,6 +328,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
     }
 
     "display too many results page if the call to ACC31 returns 091-the query has exceeded threshold error" in new Setup {
+
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
