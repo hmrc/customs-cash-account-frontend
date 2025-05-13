@@ -107,7 +107,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
-        val result = route(app, request).value
+        val result  = route(app, request).value
 
         status(result) mustEqual OK
       }
@@ -269,7 +269,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
     "display page with no transactions for the last six months message when ACC31 call succeed" +
       " but contains no dailyStatements" in new Setup {
 
-      val cashTransactionsWithNoStatements: CashTransactions = CashTransactions(Seq(), Seq())
+        val cashTransactionsWithNoStatements: CashTransactions = CashTransactions(Seq(), Seq())
 
         when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
           .thenReturn(Future.successful(Some(cashAccount)))
