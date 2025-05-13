@@ -66,9 +66,9 @@ class CashAccountV2Controller @Inject() (
     implicit request =>
       cache.get(request.eori).flatMap {
         case Some(_) => cache.clear(request.eori).flatMap(_ => processAccountDetails(page = page))
-        case None => processAccountDetails(page = page)
+        case None    => processAccountDetails(page = page)
       }
-    }
+  }
 
   def onSubmit(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     form

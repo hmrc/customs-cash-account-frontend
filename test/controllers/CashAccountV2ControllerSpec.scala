@@ -28,7 +28,7 @@ import models.{
   Declaration, Payment, Transaction, Transfer, Withdrawal
 }
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import play.api.Application
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
@@ -42,6 +42,7 @@ import views.html.{
   cash_account_no_transactions_v2, cash_account_no_transactions_with_balance, cash_account_transactions_not_available,
   cash_account_v2
 }
+
 import java.time.LocalDate
 import scala.concurrent.Future
 import scala.util.Random
@@ -49,11 +50,18 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.Utils.poundSymbol
 import viewmodels.{CashAccountV2ViewModel, GuidanceRow}
+import repositories.RequestedTransactionsCache
+import utils.TestData.{cachedDates, eori}
 
 class CashAccountV2ControllerSpec extends SpecBase {
 
   "show account details" must {
-    "return OK" in new Setup {
+    "Clear cached transaction dates if present and return OK" in new Setup {
+      when(mockRequestedTransactionCache.get(eqTo(eori)))
+        .thenReturn(Future.successful(Some(cachedDates)))
+
+      when(mockRequestedTransactionCache.clear(eqTo(eori)))
+        .thenReturn(Future.successful(true))
 
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
@@ -62,7 +70,10 @@ class CashAccountV2ControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
       val app: Application = applicationBuilder
-        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+        .overrides(
+          bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionCache),
+          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
+        )
         .build()
 
       running(app) {
@@ -70,6 +81,8 @@ class CashAccountV2ControllerSpec extends SpecBase {
         val result  = route(app, request).value
 
         status(result) mustEqual OK
+
+        verify(mockRequestedTransactionCache).clear(eqTo(eori))
       }
     }
 
@@ -582,13 +595,13 @@ class CashAccountV2ControllerSpec extends SpecBase {
   trait Setup {
 
     val cashAccountNumber = "1234567"
-    val eori              = "exampleEori"
     val sMRN              = "ic62zbad-75fa-445f-962b-cc92311686b8e"
     val page: Option[Int] = Some(1)
 
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
     val mockDataStoreConnector: CustomsDataStoreConnector                = mock[CustomsDataStoreConnector]
     val mockDeclarationDetailController: DeclarationDetailController     = mock[DeclarationDetailController]
+    val mockRequestedTransactionCache: RequestedTransactionsCache        = mock[RequestedTransactionsCache]
 
     val cashAccount: CashAccount =
       CashAccount(cashAccountNumber, eori, AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))

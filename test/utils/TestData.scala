@@ -28,6 +28,7 @@ object TestData {
   val DECLARANT_REF              = "GB1234567890 5569-4213-889 936T"
   val SECURE_MOVEMENT_REF_NUMBER = "5569-4213-889 936T"
   val AMOUNT: BigDecimal         = BigDecimal(400.00)
+  val eori                       = "exampleEori"
 
   val DATE: LocalDate   = LocalDate.parse("2020-07-21")
   val DATE_1: LocalDate = LocalDate.parse("2020-08-21")
@@ -42,7 +43,10 @@ object TestData {
   val DAY_17 = 17
 
   val MONTH_8   = 8
+  val MONTH_10  = 10
   val YEAR_2021 = 2021
+  val YEAR_2022 = 2022
+  val YEAR_2023 = 2023
 
   val TAX_TYPE: TaxType   = TaxType(Some("a"), "a", AMOUNT)
   val TAX_GROUP: TaxGroup = TaxGroup(ImportVat, AMOUNT, Seq(TAX_TYPE))
@@ -104,6 +108,11 @@ object TestData {
   val DATE_AUG_15: LocalDate = LocalDate.of(YEAR_2021, MONTH_8, DAY_15)
   val DATE_AUG_16: LocalDate = LocalDate.of(YEAR_2021, MONTH_8, DAY_16)
   val DATE_AUG_17: LocalDate = LocalDate.of(YEAR_2021, MONTH_8, DAY_17)
+
+  val cachedDates: CashTransactionDates = CashTransactionDates(
+    start = LocalDate.of(YEAR_2022, MONTH_8, DAY_15),
+    end = LocalDate.of(YEAR_2023, MONTH_10, DAY_11)
+  )
 
   val PAYMENT_DETAILS_01: PaymentsWithdrawalsAndTransfer = PaymentsWithdrawalsAndTransfer.apply(
     valueDate = DATE_AUG_15.format(yyyyMMddDateFormatter),
