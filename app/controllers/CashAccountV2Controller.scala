@@ -67,7 +67,7 @@ class CashAccountV2Controller @Inject() (
       cache
         .clear(request.eori)
         .recover { case e =>
-          logger.error(s"Cache clear failed for ${request.eori}: ${e.getMessage}")
+          logger.error(s"Cache clear failed: ${e.getMessage}")
         }
         .flatMap { _ =>
           processAccountDetails(page = page)

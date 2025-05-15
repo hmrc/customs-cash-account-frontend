@@ -54,7 +54,7 @@ class RequestTransactionsController @Inject() (
         case None              => Ok(view(form))
       }
       .recover { case e =>
-        log.error(s"Unable to retrieve cached data ${request.eori}: ${e.getMessage}")
+        log.error(s"Unable to retrieve cached data: ${e.getMessage}")
         Ok(view(form))
       }
   }
