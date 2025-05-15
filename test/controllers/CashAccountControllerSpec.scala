@@ -17,17 +17,18 @@
 package controllers
 
 import config.AppConfig
-import connectors._
-import models._
+import connectors.*
+import models.*
 import models.email.{UndeliverableEmail, UnverifiedEmail}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import play.api.Application
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import repositories.RequestedTransactionsCache
 import services.AuditingService
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
@@ -42,7 +43,11 @@ import scala.util.Random
 class CashAccountControllerSpec extends SpecBase {
 
   "show account details" must {
-    "return OK" in new Setup {
+    "clear cache if present and return OK" in new Setup {
+
+      when(mockRequestedTransactionsCache.clear(eqTo(eori)))
+        .thenReturn(Future.successful(true))
+
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
         .thenReturn(Future.successful(Some(cashAccount)))
 
@@ -50,6 +55,7 @@ class CashAccountControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Right(cashTransactionResponse)))
 
       val app: Application = applicationBuilder
+        .overrides(bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache))
         .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
         .build()
 
@@ -58,6 +64,57 @@ class CashAccountControllerSpec extends SpecBase {
         val result  = route(app, request).value
 
         status(result) mustEqual OK
+        verify(mockRequestedTransactionsCache).clear(eqTo(eori))
+      }
+    }
+
+    "If no cached data is present return OK" in new Setup {
+
+      when(mockRequestedTransactionsCache.clear(eqTo(eori)))
+        .thenReturn(Future.successful(None))
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(Right(cashTransactionResponse)))
+
+      val app: Application = applicationBuilder
+        .overrides(bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache))
+        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+        .build()
+
+      running(app) {
+        val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
+        val result  = route(app, request).value
+
+        status(result) mustEqual OK
+        verify(mockRequestedTransactionsCache).clear(eqTo(eori))
+      }
+    }
+
+    "return OK if DB throws an exception and return OK" in new Setup {
+
+      when(mockRequestedTransactionsCache.clear(eqTo(eori)))
+        .thenReturn(Future.failed(new Exception()))
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(Right(cashTransactionResponse)))
+
+      val app: Application = applicationBuilder
+        .overrides(bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache))
+        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+        .build()
+
+      running(app) {
+        val request = FakeRequest(GET, routes.CashAccountController.showAccountDetails(Some(1)).url)
+        val result  = route(app, request).value
+
+        status(result) mustEqual OK
+        verify(mockRequestedTransactionsCache).clear(eqTo(eori))
       }
     }
 

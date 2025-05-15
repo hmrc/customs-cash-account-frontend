@@ -51,17 +51,14 @@ import play.twirl.api.HtmlFormat
 import utils.Utils.poundSymbol
 import viewmodels.{CashAccountV2ViewModel, GuidanceRow}
 import repositories.RequestedTransactionsCache
-import utils.TestData.{cachedDates, eori}
+import utils.TestData.eori
 
 class CashAccountV2ControllerSpec extends SpecBase {
 
   "show account details" must {
     "Clear cached transaction dates if present and return OK" in new Setup {
 
-      when(mockRequestedTransactionCache.get(eqTo(eori)))
-        .thenReturn(Future.successful(Some(cachedDates)))
-
-      when(mockRequestedTransactionCache.clear(eqTo(eori)))
+      when(mockRequestedTransactionsCache.clear(eqTo(eori)))
         .thenReturn(Future.successful(true))
 
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
@@ -72,7 +69,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
       val app: Application = applicationBuilder
         .overrides(
-          bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionCache),
+          bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache),
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
         )
         .build()
@@ -82,14 +79,13 @@ class CashAccountV2ControllerSpec extends SpecBase {
         val result  = route(app, request).value
 
         status(result) mustEqual OK
-
-        verify(mockRequestedTransactionCache).clear(eqTo(eori))
+        verify(mockRequestedTransactionsCache).clear(eqTo(eori))
       }
     }
 
     "If no cached data is present return OK" in new Setup {
 
-      when(mockRequestedTransactionCache.get(eqTo(eori)))
+      when(mockRequestedTransactionsCache.clear(eqTo(eori)))
         .thenReturn(Future.successful(None))
 
       when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
@@ -100,7 +96,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
 
       val app: Application = applicationBuilder
         .overrides(
-          bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionCache),
+          bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache),
           bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
         )
         .build()
@@ -110,6 +106,34 @@ class CashAccountV2ControllerSpec extends SpecBase {
         val result  = route(app, request).value
 
         status(result) mustEqual OK
+        verify(mockRequestedTransactionsCache).clear(eqTo(eori))
+      }
+    }
+
+    "If DB throws an exception return OK" in new Setup {
+
+      when(mockRequestedTransactionsCache.clear(eqTo(eori)))
+        .thenReturn(Future.failed(new Exception()))
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(Right(cashTransactionResponse)))
+
+      val app: Application = applicationBuilder
+        .overrides(
+          bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache),
+          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector)
+        )
+        .build()
+
+      running(app) {
+        val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
+        val result  = route(app, request).value
+
+        status(result) mustEqual OK
+        verify(mockRequestedTransactionsCache).clear(eqTo(eori))
       }
     }
 
@@ -632,7 +656,6 @@ class CashAccountV2ControllerSpec extends SpecBase {
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
     val mockDataStoreConnector: CustomsDataStoreConnector                = mock[CustomsDataStoreConnector]
     val mockDeclarationDetailController: DeclarationDetailController     = mock[DeclarationDetailController]
-    val mockRequestedTransactionCache: RequestedTransactionsCache        = mock[RequestedTransactionsCache]
 
     val cashAccount: CashAccount =
       CashAccount(cashAccountNumber, eori, AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))

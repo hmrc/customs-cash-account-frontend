@@ -26,6 +26,7 @@ import models.request.IdentifierRequest
 import org.slf4j.LoggerFactory
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import repositories.RequestedTransactionsCache
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import viewmodels.CashTransactionsViewModel
 import views.html.*
@@ -44,7 +45,8 @@ class CashAccountController @Inject() (
   noTransactions: cash_account_no_transactions,
   showAccountsExceededThreshold: cash_account_exceeded_threshold,
   noTransactionsWithBalance: cash_account_no_transactions_with_balance,
-  cashAccountUtils: CashAccountUtils
+  cashAccountUtils: CashAccountUtils,
+  cache: RequestedTransactionsCache
 )(implicit mcc: MessagesControllerComponents, ec: ExecutionContext, eh: ErrorHandler, appConfig: AppConfig)
     extends FrontendController(mcc)
     with I18nSupport {
@@ -56,6 +58,11 @@ class CashAccountController @Inject() (
       if (appConfig.isCashAccountV2FeatureFlagEnabled) {
         Future.successful(Redirect(routes.CashAccountV2Controller.showAccountDetails(page)))
       } else {
+
+        cache.clear(request.eori).recover { case e =>
+          logger.error(s"Cache clear failed for ${request.eori}: ${e.getMessage}")
+        }
+
         val eventualMaybeCashAccount = apiConnector.getCashAccount(request.eori)
 
         eventualMaybeCashAccount

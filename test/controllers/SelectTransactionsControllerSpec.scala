@@ -36,7 +36,6 @@ class SelectTransactionsControllerSpec extends SpecBase {
 
   "onPageLoad" should {
     "return OK when cached data present and populated dates" in new Setup {
-
       when(mockRequestedTransactionsCache.get(eqTo(eori)))
         .thenReturn(Future.successful(Some(cachedDates)))
 
@@ -58,7 +57,8 @@ class SelectTransactionsControllerSpec extends SpecBase {
     }
 
     "return OK when no cached data present" in new Setup {
-      when(mockRequestedTransactionsCache.get(any)).thenReturn(Future.successful(None))
+      when(mockRequestedTransactionsCache.get(eqTo(eori)))
+        .thenReturn(Future.successful(None))
 
       val request: FakeRequest[AnyContentAsEmpty.type] =
         fakeRequest(GET, routes.SelectTransactionsController.onPageLoad().url)
@@ -68,6 +68,20 @@ class SelectTransactionsControllerSpec extends SpecBase {
         status(result) mustBe OK
       }
     }
+
+    "return OK when DB throws an exception" in new Setup {
+      when(mockRequestedTransactionsCache.get(eqTo(eori)))
+        .thenReturn(Future.failed(new Exception()))
+
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.SelectTransactionsController.onPageLoad().url)
+
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe OK
+      }
+    }
+
   }
 
   "onSubmit" should {
@@ -241,7 +255,6 @@ class SelectTransactionsControllerSpec extends SpecBase {
 
   trait Setup {
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
-    val mockRequestedTransactionsCache: RequestedTransactionsCache       = mock[RequestedTransactionsCache]
 
     val day: String = "1"
 

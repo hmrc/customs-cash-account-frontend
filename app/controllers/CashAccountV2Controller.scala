@@ -64,10 +64,14 @@ class CashAccountV2Controller @Inject() (
 
   def showAccountDetails(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async {
     implicit request =>
-      cache.get(request.eori).flatMap {
-        case Some(_) => cache.clear(request.eori).flatMap(_ => processAccountDetails(page = page))
-        case None    => processAccountDetails(page = page)
-      }
+      cache
+        .clear(request.eori)
+        .recover { case e =>
+          logger.error(s"Cache clear failed for ${request.eori}: ${e.getMessage}")
+        }
+        .flatMap { _ =>
+          processAccountDetails(page = page)
+        }
   }
 
   def onSubmit(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>

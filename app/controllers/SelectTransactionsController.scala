@@ -47,10 +47,16 @@ class SelectTransactionsController @Inject() (
   def form: Form[CashTransactionDates] = formProvider()
 
   def onPageLoad: Action[AnyContent] = identify.async { implicit request =>
-    cache.get(request.eori).map {
-      case Some(cachedDates) => Ok(view(form.fill(cachedDates)))
-      case None              => Ok(view(form))
-    }
+    cache
+      .get(request.eori)
+      .map {
+        case Some(cachedDates) => Ok(view(form.fill(cachedDates)))
+        case None              => Ok(view(form))
+      }
+      .recover { case e =>
+        log.error(s"Unable to retrieve cached data ${request.eori}: ${e.getMessage}")
+        Ok(view(form))
+      }
   }
 
   def onSubmit(): Action[AnyContent] = identify.async { implicit request =>

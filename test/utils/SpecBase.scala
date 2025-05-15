@@ -21,10 +21,11 @@ import config.AppConfig
 import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import controllers.actions.{FakeIdentifierAction, IdentifierAction}
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatest.OptionValues
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+import org.mockito.Mockito.reset
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
@@ -32,6 +33,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.CSRFTokenHelper.CSRFRequest
 import play.api.test.FakeRequest
+import repositories.RequestedTransactionsCache
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
 class FakeMetrics extends Metrics {
@@ -44,7 +46,12 @@ trait SpecBase
     with MockitoSugar
     with OptionValues
     with ScalaFutures
-    with IntegrationPatience {
+    with IntegrationPatience
+    with BeforeAndAfterEach {
+
+  override def beforeEach(): Unit = reset(mockRequestedTransactionsCache)
+
+  val mockRequestedTransactionsCache: RequestedTransactionsCache = mock[RequestedTransactionsCache]
 
   val emptyString          = ""
   val sessionId: SessionId = SessionId("session_1234")
