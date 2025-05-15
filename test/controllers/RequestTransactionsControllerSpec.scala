@@ -17,27 +17,28 @@
 package controllers
 
 import connectors.CustomsFinancialsApiConnector
+import org.jsoup.Jsoup
 import play.api.Application
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.RequestedTransactionsCache
 import utils.SpecBase
+import utils.TestData.{cachedDates, eori}
 
 import java.time.LocalDate
 import scala.concurrent.Future
-
 import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 
 class RequestTransactionsControllerSpec extends SpecBase {
 
   "onPageLoad" should {
 
-    "return OK when cached data present" in new Setup {
-
-      when(mockRequestedTransactionsCache.clear(any)).thenReturn(Future.successful(true))
+    "return OK when cached data present and populate form" in new Setup {
+      when(mockRequestedTransactionsCache.get(eqTo(eori)))
+        .thenReturn(Future.successful(Some(cachedDates)))
 
       val request: FakeRequest[AnyContentAsEmpty.type] =
         fakeRequest(GET, routes.RequestTransactionsController.onPageLoad().url)
@@ -45,11 +46,22 @@ class RequestTransactionsControllerSpec extends SpecBase {
       running(app) {
         val result = route(app, request).value
         status(result) mustBe OK
+
+        val body = contentAsString(result)
+        val doc  = Jsoup.parse(body)
+
+        doc.select("""input[name="start.day"]""").attr("value") mustBe "15"
+        doc.select("""input[name="start.month"]""").attr("value") mustBe "8"
+        doc.select("""input[name="start.year"]""").attr("value") mustBe "2022"
+        doc.select("""input[name="end.day"]""").attr("value") mustBe "11"
+        doc.select("""input[name="end.month"]""").attr("value") mustBe "10"
+        doc.select("""input[name="end.year"]""").attr("value") mustBe "2023"
       }
     }
 
     "return OK when no cached data present" in new Setup {
-      when(mockRequestedTransactionsCache.clear(any)).thenReturn(Future.successful(true))
+      when(mockRequestedTransactionsCache.get(eqTo(eori)))
+        .thenReturn(Future.successful(None))
 
       val request: FakeRequest[AnyContentAsEmpty.type] =
         fakeRequest(GET, routes.RequestTransactionsController.onPageLoad().url)
@@ -60,20 +72,16 @@ class RequestTransactionsControllerSpec extends SpecBase {
       }
     }
 
-    "return OK when clearing cache" in new Setup {
-      when(mockRequestedTransactionsCache.clear(any)).thenReturn(Future.successful(true))
+    "return OK when when DB throws an exception" in new Setup {
+      when(mockRequestedTransactionsCache.get(eqTo(eori)))
+        .thenReturn(Future.failed(new Exception()))
 
-      val store: FakeRequest[AnyContentAsEmpty.type] =
-        fakeRequest(GET, routes.RequestTransactionsController.onSubmit().url)
-
-      val clear: FakeRequest[AnyContentAsEmpty.type] =
+      val request: FakeRequest[AnyContentAsEmpty.type] =
         fakeRequest(GET, routes.RequestTransactionsController.onPageLoad().url)
 
       running(app) {
-        val result = route(app, store).value
-        val test   = route(app, clear).value
+        val result = route(app, request).value
         status(result) mustBe OK
-        status(test) mustBe OK
       }
     }
   }
@@ -250,7 +258,6 @@ class RequestTransactionsControllerSpec extends SpecBase {
 
   trait Setup {
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
-    val mockRequestedTransactionsCache: RequestedTransactionsCache       = mock[RequestedTransactionsCache]
 
     val app: Application = applicationBuilder
       .overrides(

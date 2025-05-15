@@ -18,16 +18,15 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.*
-import forms.{CashTransactionsRequestPageFormProvider, SelectTransactionsFormProvider}
+import forms.SelectTransactionsFormProvider
 import models.*
 import models.request.IdentifierRequest
 import org.slf4j.{Logger, LoggerFactory}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.RequestedTransactionsCache
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.Utils.{comma, hyphen, singleSpace}
 import views.html.*
 
 import javax.inject.Inject
@@ -48,9 +47,16 @@ class SelectTransactionsController @Inject() (
   def form: Form[CashTransactionDates] = formProvider()
 
   def onPageLoad: Action[AnyContent] = identify.async { implicit request =>
-    for {
-      _ <- cache.clear(request.eori)
-    } yield Ok(view(form))
+    cache
+      .get(request.eori)
+      .map {
+        case Some(cachedDates) => Ok(view(form.fill(cachedDates)))
+        case None              => Ok(view(form))
+      }
+      .recover { case e =>
+        log.error(s"Unable to retrieve cached data: ${e.getMessage}")
+        Ok(view(form))
+      }
   }
 
   def onSubmit(): Action[AnyContent] = identify.async { implicit request =>
