@@ -31,8 +31,6 @@ The application has the following runtime dependencies:
 * `CUSTOMS_FINANCIALS_SDES_STUB`
 * `CONTACT_FRONTEND`
 
-Once these services are running, run`sbt "run 9394"` to start in `DEV` mode or `sbt "start -Dhttp.port=9394"` to run in `PROD` mode.
-
 Default service port on local - 9394
 
 The easiest way to get started with these is via the service manager CLI - you can find the installation guide [here](https://docs.tax.service.gov.uk/mdtp-handbook/documentation/developer-set-up/set-up-service-manager.html)
@@ -43,6 +41,7 @@ The easiest way to get started with these is via the service manager CLI - you c
 | `sm2 -s`                                   | Shows running services                           |
 | `sm2 --stop CUSTOMS_CASH_ACCOUNT_FRONTEND` | Stop the micro service                           |
 | `sbt run` or `sbt "run 9394"`              | (from root dir) starts the service on port  9394 |
+ | `sbt "start -Dhttp.port=9394"`             | Run service in 'PROD mode'                       |
 
 ### Login enrolments
 
@@ -114,18 +113,18 @@ This is a sbt command alias specific to this project. It will run a scala style 
 
 ## Helpful commands
 
-| Command                                       | Description                                                                                                |
-| --------                                      |------------------------------------------------------------------------------------------------------------|
-| `sbt runAllChecks`                            | Runs all standard code checks                                                                              |
-| `sbt clean`                                   | Cleans code                                                                                                |
-| `sbt compile`                                 | Better Compiles the code                                                                                   |
-| `sbt coverage`                                | Prints code coverage                                                                                       |
-| `sbt test`                                    | Runs unit tests                                                                                            |
-| `sbt it/test`                                 | Runs integration tests                                                                                     |
-| `sbt scalafmtCheckAll`                        | Runs code formatting checks based on .scalafmt.conf                                                        |
-| `sbt scalastyle`                              | Runs scala style checks based on scalastyle-config.xml                                                     |
-| `sbt Test/scalastyle`                         | Runs scala style checks for unit tests based on test-scalastyle-config.xml                                 |
-| `sbt coverageReport`                          | Produces a code coverage report                                                                            |
-| `sbt "test:testOnly *TEST_FILE_NAME*"`        | Runs tests for a single file                                                                               |
+| Command                                       | Description                                                                                            |
+| --------                                      |--------------------------------------------------------------------------------------------------------|
+| `sbt runAllChecks`                            | Runs all standard code checks                                                                          |
+| `sbt clean`                                   | Cleans code                                                                                            |
+| `sbt compile`                                 | Compiles the code                                                                                      |
+| `sbt coverage`                                | Prints code coverage                                                                                   |
+| `sbt test`                                    | Runs unit tests                                                                                        |
+| `sbt it/test`                                 | Runs integration tests                                                                                 |
+| `sbt scalafmtCheckAll`                        | Runs code formatting checks based on .scalafmt.conf                                                    |
+| `sbt scalastyle`                              | Runs scala style checks based on scalastyle-config.xml                                                 |
+| `sbt Test/scalastyle`                         | Runs scala style checks for unit tests based on test-scalastyle-config.xml                             |
+| `sbt coverageReport`                          | Produces a code coverage report                                                                        |
+| `sbt "test:testOnly *TEST_FILE_NAME*"`        | Runs tests for a single file                                                                           |
 | `sbt clean coverage test coverageReport`      | Generates a unit test coverage report that you can find here target/scala-2.11/scoverage-report/index.html |
-| `sbt "run -Dfeatures.some-feature-name=true"` | Enables a feature locally without risking exposure                                                         |
+| `sbt "run -Dfeatures.some-feature-name=true"` | Enables a feature locally without risking exposure                                                     |
