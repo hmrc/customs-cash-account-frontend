@@ -9,7 +9,7 @@ This service is built following GDS standards to [WCAG 2.2 AA](https://www.gov.u
 
 We use the [GOV.UK design system](https://design-system.service.gov.uk/) to ensure consistency and compliance through the project
 
-This applications lives in the "public" zone. It integrates with:
+This application lives in the "public" zone. It integrates with:
 
 Secure Document Exchange Service (SDES) bulk data API via the [SDES proxy](https://github.com/hmrc/secure-data-exchange-proxy)
 
@@ -80,6 +80,8 @@ Application entrypoint:  `/customs/cash-account`
 > There's a risk of WIP features being exposed in production!
 > **Don't** enable features in `application.conf`, as this will apply globally by default
 
+Feature flags are used appropriately on different envs and could be updated in customs-cash-account-frontend.yaml on pertinent env
+
 ### Enable features
 | Command    | Description |
 | -------- | ------- |
@@ -113,18 +115,17 @@ This is a sbt command alias specific to this project. It will run a scala style 
 
 ## Helpful commands
 
-| Command                                       | Description                                                                                            |
-| --------                                      |--------------------------------------------------------------------------------------------------------|
-| `sbt runAllChecks`                            | Runs all standard code checks                                                                          |
-| `sbt clean`                                   | Cleans code                                                                                            |
-| `sbt compile`                                 | Compiles the code                                                                                      |
-| `sbt coverage`                                | Prints code coverage                                                                                   |
-| `sbt test`                                    | Runs unit tests                                                                                        |
-| `sbt it/test`                                 | Runs integration tests                                                                                 |
-| `sbt scalafmtCheckAll`                        | Runs code formatting checks based on .scalafmt.conf                                                    |
-| `sbt scalastyle`                              | Runs scala style checks based on scalastyle-config.xml                                                 |
-| `sbt Test/scalastyle`                         | Runs scala style checks for unit tests based on test-scalastyle-config.xml                             |
-| `sbt coverageReport`                          | Produces a code coverage report                                                                        |
-| `sbt "test:testOnly *TEST_FILE_NAME*"`        | Runs tests for a single file                                                                           |
-| `sbt clean coverage test coverageReport`      | Generates a unit test coverage report that you can find here target/scala-2.11/scoverage-report/index.html |
-| `sbt "run -Dfeatures.some-feature-name=true"` | Enables a feature locally without risking exposure                                                     |
+| Command                                       | Description                                                                                                                                |
+|-----------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| `sbt runAllChecks`                            | Runs all standard code checks                                                                                                              |
+| `sbt clean`                                   | Cleans code                                                                                                                                |
+| `sbt compile`                                 | Compiles the code                                                                                                                          |
+| `sbt test`                                    | Runs unit tests                                                                                                                            |
+| `sbt it/test`                                 | Runs integration tests                                                                                                                     |
+| `sbt scalafmtCheckAll`                        | Runs code formatting checks based on .scalafmt.conf                                                                                        |
+| `sbt scalastyle`                              | Runs scala style checks based on scalastyle-config.xml                                                                                     |
+| `sbt Test/scalastyle`                         | Runs scala style checks for unit tests based on test-scalastyle-config.xml                                                                 |
+| `sbt coverageReport`                          | Produces a code coverage report                                                                                                            |
+| `sbt "test:testOnly *TEST_FILE_NAME*"`        | Runs tests for a single file                                                                                                               |
+| `sbt clean coverage test coverageReport`      | Runs the unit test with enabled coverage and generates coverage report that you can find in target/scala-3.x.x/scoverage-report/index.html |
+| `sbt "run -Dfeatures.some-feature-name=true"` | Enables a feature locally without risking exposure                                                                                         |
