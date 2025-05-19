@@ -45,12 +45,17 @@ The easiest way to get started with these is via the service manager CLI - you c
 
 ### Login enrolments
 
-The service can be accessed via MIDVA home page (CUSTOMS FINANCIALS FRONTEND microservice) using below enrolments and with below sample EORI numbers
+The service can be accessed via MIDVA home page (CUSTOMS FINANCIALS FRONTEND microservice) using 'View cash account' link under 'Cash account'
 
-| Enrolment Key	| Identifier Name | Identifier Value |
-| -------- | ------- | ------- |
-| `HMRC-CUS-ORG` | `EORINumber`| `GB744638982000` |
-| `HMRC-CUS-ORG` | `EORINumber`| `GB744638982001` |
+Access CUSTOMS FINANCIALS FRONTEND using below enrolments and with below sample EORI numbers
+via http://localhost:9949/auth-login-stub/gg-sign-in (on local) or https://<host:port>/auth-login-stub/gg-sign-in on DEV/QA/STAGING
+
+Redirect URL - `/customs/payment-records`
+
+| Enrolment Key	 | Identifier Name | Identifier Value |
+|----------------|-----------------|------------------|
+| `HMRC-CUS-ORG` | `EORINumber`    | `GB744638982000` |
+| `HMRC-CUS-ORG` | `EORINumber`    | `GB744638982001` |
 
 ## Running tests and test coverage
 
@@ -67,12 +72,12 @@ You can find a list of microservice specific routes here - `/conf/app.routes`
 
 Application entrypoint:  `/customs/cash-account`
 
-| Path                                                                   | Description                                                                                       |
-| ---------------------------------------------------------------------  | ------------------------------------------------------------------------------------------------- |
-| GET  /customs-cash-account-frontend/                                   | Retrieves 6 months cash transactions on the specified CAN                                         |                
-| POST /customs-cash-account-frontend/request-cash-transactions          | Retrieves historic cash transactions for a specified date range on the specified CAN              |
-| GET  /customs-cash-account-frontend/download-requested-csv             | Download the requested historic cash transactions for a specified date range on the specified CAN |
-| GET  /customs-cash-account-frontend/download-csv                       | Download CSV having 6 months cash transactions on the specified CAN                               |
+| Path                                                          | Description                                                                                       |
+|---------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| GET  /customs-cash-account-frontend/                          | Retrieves 6 months cash transactions on the specified CAN                                         |                
+| POST /customs-cash-account-frontend/request-cash-transactions | Retrieves historic cash transactions for a specified date range on the specified CAN              |
+| GET  /customs-cash-account-frontend/download-requested-csv    | Download the requested historic cash transactions for a specified date range on the specified CAN |
+| GET  /customs-cash-account-frontend/download-csv              | Download CSV having 6 months cash transactions on the specified CAN                               |
 
 ## Feature Switches
 
@@ -83,15 +88,15 @@ Application entrypoint:  `/customs/cash-account`
 Feature flags are used appropriately on different envs and could be updated in customs-cash-account-frontend.yaml on pertinent env
 
 ### Enable features
-| Command    | Description |
-| -------- | ------- |
+| Command                                       | Description                                        |
+|-----------------------------------------------|----------------------------------------------------|
 | `sbt "run -Dfeatures.some-feature-name=true"` | enables a feature locally without risking exposure |
 
 ### Available feature flags
-| Flag    | Description                                                                                                                                         |
-| -------- |-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| `fixed-system-time` | Enable the fixed datetime for DateTimeService by enabling the stub data for current and requested statements. It is only enabled in Development env |
-| `transactions-timeout` | Enable the transaction timeout                                                                                                                      |
+| Flag                      | Description                                                                                                                                         |
+|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `fixed-system-time`       | Enable the fixed datetime for DateTimeService by enabling the stub data for current and requested statements. It is only enabled in Development env |
+| `transactions-timeout`    | Enable the transaction timeout                                                                                                                      |
 | `cash-account-v2-enabled` | Enable the new cash account design                                                                                                                  |
 
 ## Scalastyle, scala formatting and run all checks
