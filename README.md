@@ -62,7 +62,7 @@ Redirect URL - `/customs/payment-records`
 There is just one test source tree in the `test` folder. Use `sbt test` to run them.
 
 To get a unit test coverage report, you can run `sbt clean coverage test coverageReport`,
-then open the resulting coverage report `target/scala-3.3.4/scoverage-report/index.html` in a web browser.
+then open the resulting coverage report `target/scala-3.x.x/scoverage-report/index.html` in a web browser.
 
 The minimum requirement for test coverage is 90%. Builds will fail when the project drops below this threshold.
 
