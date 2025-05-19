@@ -322,9 +322,9 @@ cf.cash-account.transactions.confirmation.email=Byddwn yn anfon e-bost at <stron
 cf.cash-account.transactions.confirmation.download=Byddwch yn gallu lawrlwytho’ch trafodion o’r dudalen trafodion cyfrifon arian parod.
 cf.cash-account.transactions.confirmation.back=Yn ôl i hafan ‘Rheoli tollau mewnforio a chyfrifon TAW’
 
-cf.cash-account.transactions.confirmation.help.subheader-text=Help us improve the service
-cf.cash-account.transactions.confirmation.help.body-text=Do you have an EU EORI number? We''re carrying out user research to help improve our services.
-cf.cash-account.transactions.confirmation.help.link=Sign up to take part in user research (opens in new tab)
+cf.cash-account.transactions.confirmation.help.subheader-text=Helpu ni i wella’r gwasanaeth hwn
+cf.cash-account.transactions.confirmation.help.body-text=A oes gennych rif EORI yn yr UE? Rydym yn cynnal ymchwil defnyddwyr i helpu i wella ein gwasanaethau.
+cf.cash-account.transactions.confirmation.help.link=Cofrestrwch i gymryd rhan mewn ymchwil defnyddwyr (yn agor tab newydd)
 
 cf.cash-account.detail.transactions= Trafodion
 cf.cash-account.detail.payments-caption=Eich taliadau ar gyfer {0}
