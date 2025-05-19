@@ -68,6 +68,24 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
         linkElement.text() mustBe messages("cf.cash-account.transactions.confirmation.back")
         linkElement.attr("href") mustBe appConfig.customsFinancialsFrontendHomepage
       }
+
+      "Page must contain correct research header text" in new Setup {
+        view.getElementById("improve-the-service-subheader-text").text() mustBe messages(
+          "cf.cash-account.transactions.confirmation.help.subheader-text"
+        )
+      }
+
+      "Page must contain correct research description text" in new Setup {
+        view.getElementById("improve-the-service-body").text() mustBe messages(
+          "cf.cash-account.transactions.confirmation.help.body-text"
+        )
+      }
+
+      "Page must contain correct research header link" in new Setup {
+        view.getElementsByClass("improve-the-service-link").text() mustBe messages(
+          "cf.cash-account.transactions.confirmation.help.link"
+        )
+      }
     }
   }
 
