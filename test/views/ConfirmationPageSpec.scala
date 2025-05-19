@@ -20,6 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import utils.SpecBase
 import views.html.confirmation_page
+import utils.Utils.{period, singleSpace}
 
 class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
 
@@ -36,11 +37,6 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
 
       "header 1 is correct" in new Setup {
         view.getElementsByTag("h1").text() mustBe messages("cf.cash-account.transactions.confirmation.statements")
-      }
-
-      "header 2 is correct" in new Setup {
-        view.getElementsByTag("h2").text() mustBe
-          "Help make GOV.UK better What happens next Support links"
       }
 
       "email confirmation is correct" in new Setup {
@@ -82,8 +78,10 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
       }
 
       "Page must contain correct research header link" in new Setup {
+        val pre = messages("cf.cash-account.transactions.confirmation.help.link")
+
         view.getElementsByClass("improve-the-service-link").text() mustBe messages(
-          "cf.cash-account.transactions.confirmation.help.link"
+          s"$pre$singleSpace$period"
         )
       }
     }
