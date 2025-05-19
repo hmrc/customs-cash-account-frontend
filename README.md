@@ -117,7 +117,7 @@ Feature switches can be enabled per-environment via the `app-config-<env>` proje
 | `sbt scalafmtOnly`     | Formats specified files listed              |
 
 ### Run all checks
-This is a sbt command alias specific to this project. It will run a scala style check, run unit tests, run integration tests and produce a coverage report:
+This is an sbt command alias specific to this project. It will run a scala style check, run unit tests, run integration tests and produce a coverage report:
 > `sbt runAllChecks`
 
 ## Helpful commands
