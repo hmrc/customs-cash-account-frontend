@@ -21,6 +21,7 @@
 @this(
   layout: Layout,
   link: components.link,
+  newTabLink: components.newTabLink,
   p: components.p,
   h2: components.h2,
   govukPanel: GovukPanel
@@ -70,4 +71,21 @@
     location = appConfig.customsFinancialsFrontendHomepage,
     pId = Some("link-text"),
     pClass = "govuk-body govuk-!-margin-bottom-9")
+
+  @h2(
+    msg = messages("cf.cash-account.transactions.confirmation.help.subheader-text"),
+    classes = "govuk-heading-s",
+    id=Some("improve-the-service-subheader-text")
+  )
+
+  @p(
+    message = s"${messages("cf.cash-account.transactions.confirmation.help.body-text")}",
+    id=Some("improve-the-service-body")
+  )
+
+  @newTabLink(
+    linkMessage = messages("cf.cash-account.transactions.confirmation.help.link"),
+    href = appConfig.helpMakeGovUkBetterUrl,
+    classes = "govuk-body improve-the-service-link"
+  )
 }

@@ -320,6 +320,10 @@ cf.cash-account.transactions.confirmation.email=We’ll send an email within 48 
 cf.cash-account.transactions.confirmation.download=You’ll be able to download your transactions from the cash account transactions page.
 cf.cash-account.transactions.confirmation.back=Back to Manage import duties and VAT accounts homepage
 
+cf.cash-account.transactions.confirmation.help.subheader-text=Help us improve the service
+cf.cash-account.transactions.confirmation.help.body-text=Do you have an EU EORI number? We''re carrying out user research to help improve our services.
+cf.cash-account.transactions.confirmation.help.link=Sign up to take part in user research (opens in new tab)
+
 site.continue=Confirm and send
 
 cf.cash-account.detail.transactions= Transactions
