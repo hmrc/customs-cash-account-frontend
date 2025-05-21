@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import helpers.Formatters
 @import viewmodels.CashAccountDailyStatementsViewModel
 @import helpers.Formatters.dateAsDayMonthAndYear
 @import views.components.PaymentHeaderV2
@@ -86,7 +87,9 @@
                 head = Some(PaymentHeaderV2()),
                 captionClasses = "govuk-visually-hidden",
                 classes = "hmrc-responsive-table govuk-!-margin-bottom-6",
-                firstCellIsHeader = true
+                firstCellIsHeader = true,
+                caption = Some(messages("cf.cash-account.transactions.transactions-for-last-six-months.heading")),
+
             ))
         </div>
     } else {
