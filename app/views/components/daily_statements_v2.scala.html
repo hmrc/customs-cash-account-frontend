@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import helpers.Formatters
 @import viewmodels.CashAccountDailyStatementsViewModel
 @import helpers.Formatters.dateAsDayMonthAndYear
 @import views.components.PaymentHeaderV2
@@ -26,68 +27,73 @@
     @model.transForLastSixMonthsHeading
 
     @if(model.hasTransactions) {
-
-        @govukTable(Table(
-            rows = model.dailyStatements.map { statement =>
-                Seq(
-                    TableRow(
-                        classes = "govuk-!-font-weight-regular",
-                        content = HtmlContent(
-                             s"""
-                                <span class="hmrc-responsive-table__heading" aria-hidden="true">
-                                    ${messages("cf.cash-account.detail.date")}
-                                </span>
-                                ${dateAsDayMonthAndYear(statement.date)}
-                             """
-                        )
-                    ),
-                    TableRow(
-                        content = HtmlContent(
-                            s"""
-                               <span class="hmrc-responsive-table__heading" aria-hidden="true">
-                                   ${messages("cf.cash-account.detail.transaction-type")}
-                               </span>
-                               ${statement.transactionType.flatMap(_.mrnLink).getOrElse(
-                                   statement.transactionType.flatMap(_.textString).getOrElse(emptyString))}
-                            """
-                       )
-                    ),
-                    TableRow(
-                        content = HtmlContent(
-                            s"""
-                                <span class="hmrc-responsive-table__heading" aria-hidden="true">
-                                     ${messages("cf.cash-account.detail.credit")}
-                                </span>
-                            ${statement.credit.getOrElse(emptyString)}"""
-                        )
-                    ),
-                    TableRow(
-                        content = HtmlContent(
-                            s"""
-                                <span class="hmrc-responsive-table__heading" aria-hidden="true">
-                                     ${messages("cf.cash-account.detail.debit")}
-                                </span>
-                            ${statement.debit.getOrElse(emptyString)}"""
-                        )
-                    ),
-                    TableRow(
-                           classes = "govuk-table__cell--numeric amount",
+        <div class="hmrc-responsive-table__container">
+            @govukTable(Table(
+                rows = model.dailyStatements.map { statement =>
+                    Seq(
+                        TableRow(
+                            classes = "govuk-!-font-weight-regular",
                             content = HtmlContent(
-                              s"""
+                                s"""
                                     <span class="hmrc-responsive-table__heading" aria-hidden="true">
-                                        ${messages("cf.cash-account.detail.balance")}
+                                        ${messages("cf.cash-account.detail.date")}
                                     </span>
-                              ${statement.balance.getOrElse(emptyString)}"""
+                                    ${dateAsDayMonthAndYear(statement.date)}
+                                """
+                            )
+                        ),
+                        TableRow(
+                            content = HtmlContent(
+                                s"""
+                                <span class="hmrc-responsive-table__heading" aria-hidden="true">
+                                    ${messages("cf.cash-account.detail.transaction-type")}
+                                </span>
+                                ${statement.transactionType.flatMap(_.mrnLink).getOrElse(
+                                    statement.transactionType.flatMap(_.textString).getOrElse(emptyString))}
+                                """
+                        )
+                        ),
+                        TableRow(
+                            classes = "govuk-table__cell--numeric amount",
+                            content = HtmlContent(
+                                s"""
+                                    <span class="hmrc-responsive-table__heading" aria-hidden="true">
+                                        ${messages("cf.cash-account.detail.credit")}
+                                    </span>
+                                ${statement.credit.getOrElse(emptyString)}"""
+                            )
+                        ),
+                        TableRow(
+                            classes = "govuk-table__cell--numeric amount",
+                            content = HtmlContent(
+                                s"""
+                                    <span class="hmrc-responsive-table__heading" aria-hidden="true">
+                                        ${messages("cf.cash-account.detail.debit")}
+                                    </span>
+                                ${statement.debit.getOrElse(emptyString)}"""
+                            )
+                        ),
+                        TableRow(
+                            classes = "govuk-table__cell--numeric amount",
+                                content = HtmlContent(
+                                s"""
+                                        <span class="hmrc-responsive-table__heading" aria-hidden="true">
+                                            ${messages("cf.cash-account.detail.balance")}
+                                        </span>
+                                ${statement.balance.getOrElse(emptyString)}"""
+                            )
                         )
                     )
-                )
-            }
-            ,
-            head = Some(PaymentHeaderV2()),
-            captionClasses = "govuk-visually-hidden",
-            classes = "hmrc-responsive-table govuk-!-margin-bottom-6",
-            firstCellIsHeader = true
-        ))
+                }
+                ,
+                head = Some(PaymentHeaderV2()),
+                captionClasses = "govuk-visually-hidden",
+                classes = "hmrc-responsive-table govuk-!-margin-bottom-6",
+                firstCellIsHeader = true,
+                caption = Some(messages("cf.cash-account.transactions.transactions-for-last-six-months.heading")),
+
+            ))
+        </div>
     } else {
         @model.noTransFromLastSixMonthsText.map(identity)
     }
