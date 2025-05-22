@@ -40,6 +40,7 @@ object PaymentHeaderV2 {
           """)
       ),
       HeadCell(
+        format = Some("numeric"),
         content = HtmlContent(s"""
              <abbr title="${messages("cf.cash-account.detail.credit")}">
                 ${messages("cf.cash-account.detail.credit")}

@@ -23,9 +23,9 @@ $color_hmrc-grey-4: #b1b4b6;
 
       th {
         justify-content: space-between;
-        min-width: 1px;
         text-align: left;
         display: table-cell;
+        white-space: nowrap;
 
         @media (max-width: $mobile) {
           font-size: 16px;
@@ -38,7 +38,7 @@ $color_hmrc-grey-4: #b1b4b6;
         display: table-cell;
         text-align: left;
         white-space: nowrap;
-
+        
         @media (max-width: $mobile) {
           font-size: 16px;
         }
