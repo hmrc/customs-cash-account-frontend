@@ -33,14 +33,14 @@
 <p class="@classes">
     @preLinkMessage.map(messages(_))
 
-    // @hmrcNewTabLink(
-    //     NewTabLink(
-    //         language = Some(messages.lang.toString),
-    //         classList = Some("govuk-link"),
-    //         href=Some(href),
-    //         text=messages(linkMessage)
-    //     )
-    // )
+  <!-- @hmrcNewTabLink(
+        NewTabLink(
+            language = Some(messages.lang.toString),
+            classList = Some("govuk-link"),
+            href=Some(href),
+            text=messages(linkMessage)
+        )
+    ) -->
 
     @if(messages(linkMessage).nonEmpty) {
     <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="@href">@messages(linkMessage)@Some(messages.lang.toString) match {
