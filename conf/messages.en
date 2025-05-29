@@ -212,7 +212,7 @@ cf.cash-account.detail.no-transactions-with-balance.p1=There are no transactions
 cf.cash-account.transactions.request.link.heading=Previous transactions
 cf.cash-account.transactions.request.support.heading=Help and Support
 cf.cash-account.transactions.request.support.pre=If you need help
-cf.cash-account.transactions.request.support.link=contact the HMRC accounting centre (opens in new tab)
+cf.cash-account.transactions.request.support.link=contact the HMRC accounting centre
 cf.cash-account.transactions.request.link.pre=You can
 cf.cash-account.transactions.request.link.post=by searching from a shorter date range.
 cf.cash-account.transactions.request.link=search and download your transactions as a CSV file
@@ -322,7 +322,7 @@ cf.cash-account.transactions.confirmation.back=Back to Manage import duties and 
 
 cf.cash-account.transactions.confirmation.help.subheader-text=Help us improve the service
 cf.cash-account.transactions.confirmation.help.body-text=Do you have an EU EORI number? We''re carrying out user research to help improve our services.
-cf.cash-account.transactions.confirmation.help.link=Sign up to take part in user research (opens in new tab)
+cf.cash-account.transactions.confirmation.help.link=Sign up to take part in user research
 
 site.continue=Confirm and send
 
