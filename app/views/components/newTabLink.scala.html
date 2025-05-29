@@ -15,9 +15,10 @@
  *@
 
 @import utils.Utils.period
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
-@this(hmrcNewTabLink: HmrcNewTabLink)
-
+@this(hmrcNewTabLink: HmrcNewTabLink, hmrcNewTabLinkHelper: HmrcNewTabLinkHelper)
 
 @(
     linkMessage: String, 
@@ -33,19 +34,9 @@
 <p class="@classes">
     @preLinkMessage.map(messages(_))
 
-  <!-- @hmrcNewTabLink(
-        NewTabLink(
-            language = Some(messages.lang.toString),
-            classList = Some("govuk-link"),
-            href=Some(href),
-            text=messages(linkMessage)
-        )
-    ) -->
-
     @if(messages(linkMessage).nonEmpty) {
-    <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="@href">@messages(linkMessage)@Some(messages.lang.toString) match {
-        case Some("en") => {(opens in new tab)}
-        case Some("cy") => {(yn agor tab newydd)}
-        case _ => {}
-    }</a>}@postLinkMessage.map(messages(_))@period
+       @hmrcNewTabLinkHelper(NewTabLinkHelper(
+            text = messages(linkMessage),
+            href = Some(href),
+    ))}@postLinkMessage.map(messages(_))@period
 </p>
