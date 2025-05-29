@@ -33,11 +33,19 @@
 <p class="@classes">
     @preLinkMessage.map(messages(_))
 
+    // @hmrcNewTabLink(
+    //     NewTabLink(
+    //         language = Some(messages.lang.toString),
+    //         classList = Some("govuk-link"),
+    //         href=Some(href),
+    //         text=messages(linkMessage)
+    //     )
+    // )
+
     @if(messages(linkMessage).nonEmpty) {
-    <a class="govuk-link" target="_blank" rel="noopener noreferrer" href=Some(href)>@messages(linkMessage)@Some(messages.lang.toString) match {
+    <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="@href">@messages(linkMessage)@Some(messages.lang.toString) match {
         case Some("en") => {(opens in new tab)}
         case Some("cy") => {(yn agor tab newydd)}
         case _ => {}
     }</a>}@postLinkMessage.map(messages(_))@period
-    
 </p>
