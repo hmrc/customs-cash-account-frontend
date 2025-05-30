@@ -158,7 +158,7 @@ class UtilsSpec extends SpecBase {
       val result: HtmlFormat.Appendable =
         hmrcNewTabLinkComponent(linkMessage, href, Some(preLinkMessage), Some(postLinkMessage), classes)
 
-      result mustBe new newTabLink(emptyHmrcNewTabLink)
+      result mustBe new newTabLink(emptyHmrcNewTabLink, emptyHmrcNewTabLinkHelper)
         .apply(linkMessage, href, Some(preLinkMessage), Some(postLinkMessage), classes = classes)
     }
   }

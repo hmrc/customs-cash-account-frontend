@@ -38,5 +38,5 @@
        @hmrcNewTabLinkHelper(NewTabLinkHelper(
             text = messages(linkMessage),
             href = Some(href),
-    ))}@postLinkMessage.map(messages(_))@period
+    ))}@if(postLinkMessage.nonEmpty) { @postLinkMessage.map(messages(_))}@period
 </p>
