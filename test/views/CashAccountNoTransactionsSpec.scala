@@ -121,9 +121,10 @@ class CashAccountNoTransactionsSpec extends SpecBase {
     linkElement.get(0).getElementsByTag("a").attr("href") mustBe
       config.cashAccountForCdsDeclarationsUrl
 
-    val pre  = msgs("cf.cash-account.help-and-support.link.text.pre")
-    val text = msgs("cf.cash-account.help-and-support.link.text")
-    val post = msgs("cf.cash-account.help-and-support.link.text.post")
+    val linkText = msgs("cf.cash-account.help-and-support.link.text")
+    val pre      = msgs("cf.cash-account.help-and-support.link.text.pre")
+    val text     = s"$linkText (opens in new tab)"
+    val post     = msgs("cf.cash-account.help-and-support.link.text.post")
 
     linkElement.text() mustBe
       s"$pre$singleSpace$text$singleSpace$post$period"
