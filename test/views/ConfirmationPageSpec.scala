@@ -81,7 +81,7 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
         val pre = messages("cf.cash-account.transactions.confirmation.help.link")
 
         view.getElementsByClass("improve-the-service-link").text() mustBe messages(
-          s"$pre$singleSpace$period"
+          s"$pre$singleSpace(opens in new tab)$period"
         )
       }
     }
