@@ -33,15 +33,15 @@ object Utils {
   val negativeSign        = "-"
   val poundSymbol         = "£"
 
-  val emptyH1Component: h1                = new h1()
-  val emptyH2Component: h2                = new h2()
-  val emptyPComponent: p                  = new p()
-  val emptyLinkComponent: link            = new link()
-  val emptyHmrcNewTabLink: HmrcNewTabLink = new HmrcNewTabLink()
+  val emptyH1Component: h1                            = new h1()
+  val emptyH2Component: h2                            = new h2()
+  val emptyPComponent: p                              = new p()
+  val emptyLinkComponent: link                        = new link()
+  val emptyHmrcNewTabLink: HmrcNewTabLink             = new HmrcNewTabLink()
   val emptyHmrcNewTabLinkHelper: HmrcNewTabLinkHelper = new HmrcNewTabLinkHelper(emptyHmrcNewTabLink)
-  val emptyGovUkTableComponent            = new GovukTable()
-  val emptyH2InnerComponent               = new h2Inner()
-  val emptyH1InnerComponent               = new h1Inner()
+  val emptyGovUkTableComponent                        = new GovukTable()
+  val emptyH2InnerComponent                           = new h2Inner()
+  val emptyH1InnerComponent                           = new h1Inner()
 
   def h2Component(
     msgKey: String,
