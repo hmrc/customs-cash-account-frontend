@@ -167,7 +167,8 @@ object CashAccountV2ViewModel {
           linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
           location = controllers.routes.SelectTransactionsController.onPageLoad().url,
           postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
-          enableLineBreakBeforePostMessage = true
+          enableLineBreakBeforePostMessage = true,
+          linkSentence = true
         )
       )
     }
