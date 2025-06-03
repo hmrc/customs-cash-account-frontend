@@ -69,7 +69,6 @@ lazy val microservice = Project(appName, file("."))
     scalafmtFailOnErrors := true
   )
   .settings(PlayKeys.playDefaultPort := 9394)
-  .settings(resolvers += Resolver.jcenterRepo)
 
 addCommandAlias(
   "runAllChecks",
