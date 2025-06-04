@@ -81,17 +81,18 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
         val pre = messages("cf.cash-account.transactions.confirmation.help.link")
 
         view.getElementsByClass("improve-the-service-link").text() mustBe messages(
-          s"$pre$singleSpace$period"
+          s"$pre$singleSpace$newTabNotice$period"
         )
       }
     }
   }
 
   trait Setup {
-    val startDate = "March 2022"
-    val endDate   = "April 2022"
-    val dates     = s"$startDate ${messages("month.to")} $endDate"
-    val email     = "jackiechan@mail.com"
+    val startDate    = "March 2022"
+    val endDate      = "April 2022"
+    val dates        = s"$startDate ${messages("month.to")} $endDate"
+    val email        = "jackiechan@mail.com"
+    val newTabNotice = messages("cf.common.newTab.notice")
 
     val view: Document             = Jsoup.parse(app.injector.instanceOf[confirmation_page].apply(dates, Some(email)).body)
     val viewWithoutEmail: Document = Jsoup.parse(app.injector.instanceOf[confirmation_page].apply(dates, None).body)

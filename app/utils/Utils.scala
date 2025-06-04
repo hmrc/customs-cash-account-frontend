@@ -22,6 +22,7 @@ import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
 import views.html.components.{h1, h1Inner, h2, h2Inner, link, newTabLink, notification_panel, p}
 import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
+import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 
 object Utils {
   val comma: String       = ","
@@ -32,14 +33,15 @@ object Utils {
   val negativeSign        = "-"
   val poundSymbol         = "£"
 
-  val emptyH1Component: h1                = new h1()
-  val emptyH2Component: h2                = new h2()
-  val emptyPComponent: p                  = new p()
-  val emptyLinkComponent: link            = new link()
-  val emptyHmrcNewTabLink: HmrcNewTabLink = new HmrcNewTabLink()
-  val emptyGovUkTableComponent            = new GovukTable()
-  val emptyH2InnerComponent               = new h2Inner()
-  val emptyH1InnerComponent               = new h1Inner()
+  val emptyH1Component: h1                            = new h1()
+  val emptyH2Component: h2                            = new h2()
+  val emptyPComponent: p                              = new p()
+  val emptyLinkComponent: link                        = new link()
+  val emptyHmrcNewTabLink: HmrcNewTabLink             = new HmrcNewTabLink()
+  val emptyHmrcNewTabLinkHelper: HmrcNewTabLinkHelper = new HmrcNewTabLinkHelper(emptyHmrcNewTabLink)
+  val emptyGovUkTableComponent                        = new GovukTable()
+  val emptyH2InnerComponent                           = new h2Inner()
+  val emptyH1InnerComponent                           = new h1Inner()
 
   def h2Component(
     msgKey: String,
@@ -106,7 +108,7 @@ object Utils {
     postLinkMessage: Option[String] = None,
     classes: String = "govuk-body"
   )(implicit messages: Messages, config: AppConfig): HtmlFormat.Appendable =
-    new newTabLink(emptyHmrcNewTabLink).apply(
+    new newTabLink(emptyHmrcNewTabLink, emptyHmrcNewTabLinkHelper).apply(
       linkMessage = linkMessage,
       href = href,
       preLinkMessage = preLinkMessage,

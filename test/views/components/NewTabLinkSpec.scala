@@ -35,10 +35,10 @@ class NewTabLinkSpec extends SpecBase {
           newTabLinkComponent(linkMessage, href, Some(preLinkMessage), Some(postLinkMessage), classes)
 
         elementByParagraph(component).text() mustBe
-          s"$preLinkMessage$singleSpace$linkMessage$singleSpace$postLinkMessage$period"
+          s"$preLinkMessage$singleSpace$linkMessage$singleSpace$newTabNotice$singleSpace$postLinkMessage$period"
 
         elementByClasses(component, classes).get(0).text() mustBe
-          s"$preLinkMessage$singleSpace$linkMessage$singleSpace$postLinkMessage$period"
+          s"$preLinkMessage$singleSpace$linkMessage$singleSpace$newTabNotice$singleSpace$postLinkMessage$period"
 
         shouldContainTheMessage(component, preLinkMessage)
         shouldContainTheMessage(component, postLinkMessage)
@@ -48,10 +48,11 @@ class NewTabLinkSpec extends SpecBase {
         val component: Document =
           newTabLinkComponent(linkMessage = linkMessage, href = href, postLinkMessage = Some(postLinkMessage))
 
-        elementByParagraph(component).text() mustBe s"$linkMessage$singleSpace$postLinkMessage$period"
+        elementByParagraph(component).text() mustBe
+          s"$linkMessage$singleSpace$newTabNotice$singleSpace$postLinkMessage$period"
 
         elementByClasses(component, defaultClasses).get(0).text() mustBe
-          s"$linkMessage$singleSpace$postLinkMessage$period"
+          s"$linkMessage$singleSpace$newTabNotice$singleSpace$postLinkMessage$period"
 
         shouldNotContainTheMessage(component, preLinkMessage)
         shouldContainTheMessage(component, postLinkMessage)
@@ -61,10 +62,11 @@ class NewTabLinkSpec extends SpecBase {
         val component: Document =
           newTabLinkComponent(linkMessage = linkMessage, href = href, preLinkMessage = Some(preLinkMessage))
 
-        elementByParagraph(component).text() mustBe s"$preLinkMessage$singleSpace$linkMessage$singleSpace$period"
+        elementByParagraph(component).text() mustBe
+          s"$preLinkMessage$singleSpace$linkMessage$singleSpace$newTabNotice$period"
 
         elementByClasses(component, defaultClasses).get(0).text() mustBe
-          s"$preLinkMessage$singleSpace$linkMessage$singleSpace$period"
+          s"$preLinkMessage$singleSpace$linkMessage$singleSpace$newTabNotice$period"
 
         shouldContainTheMessage(component, preLinkMessage)
         shouldNotContainTheMessage(component, postLinkMessage)
@@ -91,6 +93,7 @@ class NewTabLinkSpec extends SpecBase {
     val postLinkMessage        = "test_post_link_message"
     val classes                = "govuk-!-margin-bottom-7"
     val defaultClasses: String = "govuk-body"
+    val newTabNotice           = messages("cf.common.newTab.notice")
 
     def newTabLinkComponent(
       linkMessage: String,

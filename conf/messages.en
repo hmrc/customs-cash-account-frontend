@@ -16,6 +16,8 @@ feedback.before = This is a new service - your
 feedback.link = feedback
 feedback.after = will help us to improve it.
 
+# Common messages
+cf.common.newTab.notice = (opens in new tab)
 
 # Cash CSV
 cf.cash-account.csv.date=Transaction date
@@ -197,7 +199,7 @@ cf.cash-account.detail.link.post = on GOV.UK
 cf.cash-account.help-and-support.link.text.pre = You can
 cf.cash-account.help-and-support.link.text.pre.v2 = You can
 cf.cash-account.help-and-support.link.text.post = if you need help
-cf.cash-account.help-and-support.link.text = contact the HMRC accounting centre (opens in a new tab)
+cf.cash-account.help-and-support.link.text = contact the HMRC accounting centre
 cf.cash-account.how-to-use.guidance.text.pre = Find out how to
 cf.cash-account.how-to-use.guidance.text.post = on GOV.UK.
 cf.cash-account.how-to-use.guidance.link.text = use a cash account for CDS declarations
@@ -212,7 +214,7 @@ cf.cash-account.detail.no-transactions-with-balance.p1=There are no transactions
 cf.cash-account.transactions.request.link.heading=Previous transactions
 cf.cash-account.transactions.request.support.heading=Help and Support
 cf.cash-account.transactions.request.support.pre=If you need help
-cf.cash-account.transactions.request.support.link=contact the HMRC accounting centre (opens in new tab)
+cf.cash-account.transactions.request.support.link=contact the HMRC accounting centre
 cf.cash-account.transactions.request.link.pre=You can
 cf.cash-account.transactions.request.link.post=by searching from a shorter date range.
 cf.cash-account.transactions.request.link=search and download your transactions as a CSV file
@@ -304,7 +306,7 @@ cf.cash-account.transactions.no-transactions.message = There are no transactions
 cf.cash-account.transactions.request-transactions.heading = Request transactions
 cf.cash-account.transactions.transactions-for-last-six-months.heading = Your transactions for the last 6 months
 cf.cash-account.transactions.no-transactions-for-last-six-months = There are no transactions from the last 6 months to display.
-cf.cash-account.transactions.request-transactions.download-csv.url = Request by date and download your transactions as a CSV file.
+cf.cash-account.transactions.request-transactions.download-csv.url = Request by date and download your transactions as a CSV file
 cf.cash-account.transactions.request-transactions.download-csv.post-message = The CSV file will be available to download within 48 hours.
 cf.cash-account.transactions.search-for-transactions.heading = Search for transactions
 cf.cash-account.transactions.search-for-transactions.hint = You can search by <abbr title="Movement Reference Number">MRN</abbr>, <abbr title="Unique Consignment Reference">UCR</abbr> or exact payment amount that includes ‘£’
@@ -322,7 +324,7 @@ cf.cash-account.transactions.confirmation.back=Back to Manage import duties and 
 
 cf.cash-account.transactions.confirmation.help.subheader-text=Help us improve the service
 cf.cash-account.transactions.confirmation.help.body-text=Do you have an EU EORI number? We''re carrying out user research to help improve our services.
-cf.cash-account.transactions.confirmation.help.link=Sign up to take part in user research (opens in new tab)
+cf.cash-account.transactions.confirmation.help.link=Sign up to take part in user research
 
 site.continue=Confirm and send
 
