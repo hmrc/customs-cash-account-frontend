@@ -33,6 +33,8 @@ object Utils {
   val negativeSign        = "-"
   val poundSymbol         = "£"
 
+  val newTabNotice = "(opens in new tab)"
+
   val emptyH1Component: h1                            = new h1()
   val emptyH2Component: h2                            = new h2()
   val emptyPComponent: p                              = new p()

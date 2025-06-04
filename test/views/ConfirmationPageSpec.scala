@@ -20,7 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import utils.SpecBase
 import views.html.confirmation_page
-import utils.Utils.{period, singleSpace}
+import utils.Utils.{newTabNotice, period, singleSpace}
 
 class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
 
@@ -81,7 +81,7 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
         val pre = messages("cf.cash-account.transactions.confirmation.help.link")
 
         view.getElementsByClass("improve-the-service-link").text() mustBe messages(
-          s"$pre$singleSpace(opens in new tab)$period"
+          s"$pre$singleSpace$newTabNotice$period"
         )
       }
     }
