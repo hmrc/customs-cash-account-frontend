@@ -16,6 +16,8 @@ feedback.before=Gwasanaeth newydd yw hwn – bydd eich
 feedback.link=adborth
 feedback.after=yn ein helpu i’w wella.
 
+# Common messages
+cf.common.newTab.notice = (yn agor mewn tab newydd)
 
 # Cash CSV
 cf.cash-account.csv.date=Dyddiad y trafodyn

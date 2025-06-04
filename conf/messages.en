@@ -16,6 +16,8 @@ feedback.before = This is a new service - your
 feedback.link = feedback
 feedback.after = will help us to improve it.
 
+# Common messages
+cf.common.newTab.notice = (opens in new tab)
 
 # Cash CSV
 cf.cash-account.csv.date=Transaction date

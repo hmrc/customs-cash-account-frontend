@@ -20,7 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import utils.SpecBase
 import views.html.confirmation_page
-import utils.Utils.{newTabNotice, period, singleSpace}
+import utils.Utils.{period, singleSpace}
 
 class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
 
@@ -88,10 +88,11 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
   }
 
   trait Setup {
-    val startDate = "March 2022"
-    val endDate   = "April 2022"
-    val dates     = s"$startDate ${messages("month.to")} $endDate"
-    val email     = "jackiechan@mail.com"
+    val startDate    = "March 2022"
+    val endDate      = "April 2022"
+    val dates        = s"$startDate ${messages("month.to")} $endDate"
+    val email        = "jackiechan@mail.com"
+    val newTabNotice = messages("cf.common.newTab.notice")
 
     val view: Document             = Jsoup.parse(app.injector.instanceOf[confirmation_page].apply(dates, Some(email)).body)
     val viewWithoutEmail: Document = Jsoup.parse(app.injector.instanceOf[confirmation_page].apply(dates, None).body)

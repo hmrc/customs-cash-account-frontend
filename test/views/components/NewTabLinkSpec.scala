@@ -21,7 +21,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalatest.Assertion
 import utils.SpecBase
-import utils.Utils.{newTabNotice, period, singleSpace}
+import utils.Utils.{period, singleSpace}
 import views.html.components.newTabLink
 
 class NewTabLinkSpec extends SpecBase {
@@ -93,6 +93,7 @@ class NewTabLinkSpec extends SpecBase {
     val postLinkMessage        = "test_post_link_message"
     val classes                = "govuk-!-margin-bottom-7"
     val defaultClasses: String = "govuk-body"
+    val newTabNotice           = messages("cf.common.newTab.notice")
 
     def newTabLinkComponent(
       linkMessage: String,
