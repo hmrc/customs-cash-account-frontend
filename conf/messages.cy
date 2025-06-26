@@ -254,39 +254,26 @@ cf.cash-account.requested.statements.available.text.pre=Mae’r
 cf.cash-account.requested.statements.available.link.text=trafodion y gwnaethoch gais amdanynt
 cf.cash-account.requested.statements.available.text.post=bellach ar gael
 
-# Request cash Transactions
-cf.cash-account.transactions.request.start.date.empty.month = Yn eich cais am drafodion, nodwch o ba fis yr hoffech eu cael
-cf.cash-account.transactions.request.start.date.empty.year = Yn eich cais am drafodion, nodwch o ba flwyddyn yr hoffech eu cael
-cf.cash-account.transactions.request.start.date.empty.month.year = Yn eich cais am drafodion, nodwch o ba fis a blwyddyn yr hoffech eu cael
-cf.cash-account.transactions.request.start.date.invalid = Mae’n rhaid i’r dyddiad dechrau fod yn ddyddiad go iawn
-
-cf.cash-account.transactions.request.end.date.empty.month = Yn eich cais am drafodion, nodwch hyd at ba fis yr hoffech eu cael
-cf.cash-account.transactions.request.end.date.empty.year = Yn eich cais am drafodion, nodwch hyd at ba flwyddyn yr hoffech eu cael
-cf.cash-account.transactions.request.end.date.empty.month.year = Yn eich cais am drafodion, nodwch hyd at ba fis a blwyddyn yr hoffech eu cael
-cf.cash-account.transactions.request.end.date.invalid = Mae’n rhaid i’r dyddiad dod i ben fod yn ddyddiad go iawn
-
 # Date form error
 cf.form.error.start.date-too-far-in-past=Ni all y dyddiad ‘o’ fod yn fwy na 6 o flynyddoedd ers nawr.
 cf.form.error.end.date-too-far-in-past=Ni all y dyddiad ‘i’ fod yn fwy na 6 o flynyddoedd ers nawr.
 cf.form.error.startDate.date-earlier-than-system-start-date=Mae’n rhaid i’r dyddiad ‘o’ fod ar neu ar ôl mis Hydref 2019
 cf.form.error.endDate.date-earlier-than-system-start-date=Mae’n rhaid i’r dyddiad ‘i’ fod ar neu ar ôl mis Hydref 2019
-cf.form.error.start.date-number-missing=Nodwch y dyddiad y mae angen trafodion arnoch o
-cf.form.error.end.date-number-missing=Nodwch y dyddiad y mae angen trafodion arnoch i
+cf.form.error.start.date-number-missing=Yn eich cais am drafodion, nodwch o ba fis a blwyddyn yr hoffech eu cael
+cf.form.error.end.date-number-missing=Yn eich cais am drafodion, nodwch hyd at ba fis a blwyddyn yr hoffech eu cael
 cf.form.error.start-future-date=Ni all y dyddiad ‘o’ fod yn y dyfodol
 cf.form.error.end-future-date=Ni all y dyddiad ‘i’ fod yn y dyfodol
 cf.form.error.start-after-end=Ni all y dyddiad ‘o’ fod ar ôl y dyddiad ‘i’
 cf.form.error.end-before-start=Ni all y dyddiad ‘i’ fod cyn y dyddiad ‘o’
 
-cf.form.error.start.date.invalid.day=Mae’n rhaid i’r dyddiad o gynnwys diwrnod
-cf.form.error.start.date.missing.month=Mae’n rhaid i’r dyddiad i gynnwys mis
-cf.form.error.start.date.missing.year=Mae’n rhaid i’r dyddiad o gynnwys blwyddyn
+cf.form.error.start.date.missing.month=Yn eich cais am drafodion, nodwch o ba fis yr hoffech eu cael
+cf.form.error.start.date.missing.year=Yn eich cais am drafodion, nodwch o ba flwyddyn yr hoffech eu cael
 cf.form.error.start.date.invalid.month=Nodwch fis rhwng 1 a 12 ar gyfer y dyddiad dechrau
 cf.form.error.start.date.invalid.year=Nodwch flwyddyn go iawn ar gyfer y dyddiad dechrau
 cf.form.error.start.date.invalid.real-date=Nodwch ddyddiad go iawn ar gyfer y dyddiad dechrau
 
-cf.form.error.end.date.invalid.day=Mae’n rhaid i’r dyddiad dod i ben gynnwys diwrnod
-cf.form.error.end.date.missing.month=Mae’n rhaid i’r dyddiad dod i ben gynnwys mis
-cf.form.error.end.date.missing.year=Mae’n rhaid i’r dyddiad dod i ben gynnwys blwyddyn
+cf.form.error.end.date.missing.month=Yn eich cais am drafodion, nodwch hyd at ba fis yr hoffech eu cael
+cf.form.error.end.date.missing.year=Yn eich cais am drafodion, nodwch hyd at ba flwyddyn yr hoffech eu cael
 cf.form.error.end.date.invalid.month=Nodwch fis rhwng 1 a 12 ar gyfer y dyddiad dod i ben
 cf.form.error.end.date.invalid.year=Nodwch flwyddyn go iawn ar gyfer y dyddiad dod i ben
 cf.form.error.end.date.invalid.real-date=Nodwch ddyddiad go iawn ar gyfer y dyddiad dod i ben

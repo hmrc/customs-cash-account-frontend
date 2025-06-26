@@ -35,7 +35,18 @@ class MappingsSpec extends SpecBase with Mappings with Formatters {
 
     "localDate" in {
       val map  = FieldMapping[LocalDate](emptyString, List.empty)
-      val test = localDate(emptyString, emptyString, "error.month", "error.year", emptyString, emptyString, emptyString, emptyString, emptyString, Nil)
+      val test = localDate(
+        emptyString,
+        emptyString,
+        "error.month",
+        "error.year",
+        emptyString,
+        emptyString,
+        emptyString,
+        emptyString,
+        emptyString,
+        Nil
+      )
 
       test mustBe map
     }

@@ -51,6 +51,7 @@ private[mappings] class LocalDateFormatter(
     toDate(key, month, year)
   }
 
+  // scalastyle:off
   override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
     val fields = fieldKeys.map { field =>
@@ -92,6 +93,7 @@ private[mappings] class LocalDateFormatter(
         }
     }
   }
+  // scalastyle:on
 
   override def unbind(key: String, value: LocalDate): Map[String, String] =
     Map(

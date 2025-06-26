@@ -51,7 +51,7 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
         val startDate: Map[String, String]    = populateFormValueMap(startKey, emptyString, emptyString)
         val validEndDate: Map[String, String] = populateFormValueMap(endKey, month10AsString, year2021AsString)
         val formData: Map[String, String]     = startDate ++ validEndDate
-        val expectedErrors: Seq[FormError]    = error("start.month", emptyMonthAndYearStartDateErrorKey)
+        val expectedErrors: Seq[FormError]    = error("start", emptyMonthAndYearStartDateErrorKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -60,7 +60,7 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
         val startDate: Map[String, String]    = populateFormValueMap(startKey, month14AsString, year2021AsString)
         val validEndDate: Map[String, String] = populateFormValueMap(endKey, month10AsString, year2021AsString)
         val formData: Map[String, String]     = startDate ++ validEndDate
-        val expectedErrors: Seq[FormError]    = error("start.month", invalidStartDateKey)
+        val expectedErrors: Seq[FormError]    = error("start.month", invalidStartMonthKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -69,7 +69,7 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
         val startDate: Map[String, String]    = populateFormValueMap(startKey, month10AsString, invalidYearValue)
         val validEndDate: Map[String, String] = populateFormValueMap(endKey, month10AsString, year2021AsString)
         val formData: Map[String, String]     = startDate ++ validEndDate
-        val expectedErrors: Seq[FormError]    = error("start.year", invalidStartDateKey)
+        val expectedErrors: Seq[FormError]    = error("start.year", invalidStartYearKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -79,7 +79,7 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
         val startDate: Map[String, String]    = populateFormValueMap(startKey, month10AsString, yearWithInvalidLength)
         val validEndDate: Map[String, String] = populateFormValueMap(endKey, month10AsString, year2021AsString)
         val formData: Map[String, String]     = startDate ++ validEndDate
-        val expectedErrors: Seq[FormError]    = error(startKey, invalidYearLengthKey)
+        val expectedErrors: Seq[FormError]    = error("start.year", invalidStartYearKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -89,7 +89,7 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
         val startDate: Map[String, String]    = populateFormValueMap(startKey, month10AsString, yearWithInvalidLength)
         val validEndDate: Map[String, String] = populateFormValueMap(endKey, month10AsString, year2021AsString)
         val formData: Map[String, String]     = startDate ++ validEndDate
-        val expectedErrors: Seq[FormError]    = error(startKey, invalidYearLengthKey)
+        val expectedErrors: Seq[FormError]    = error("start.year", invalidStartYearKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -144,7 +144,7 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
         val startDate: Map[String, String]    = populateFormValueMap(startKey, month10AsString, year2021AsString)
         val validEndDate: Map[String, String] = populateFormValueMap(endKey, emptyString, emptyString)
         val formData: Map[String, String]     = startDate ++ validEndDate
-        val expectedErrors: Seq[FormError]    = error("end.month", emptyMonthAndYearEndDateErrorKey)
+        val expectedErrors: Seq[FormError]    = error(endKey, emptyMonthAndYearEndDateErrorKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -156,16 +156,16 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
           Map(s"$endKey.month" -> month14AsString, s"$endKey.year" -> year2021AsString)
 
         val formData: Map[String, String]  = validStartDate ++ endDate
-        val expectedErrors: Seq[FormError] = Seq(FormError("end.month", invalidEndDateKey))
+        val expectedErrors: Seq[FormError] = Seq(FormError("end.month", invalidEndMonthKey))
 
         checkForError(form, formData, expectedErrors)
       }
 
       "the year value is invalid for the end date" in new SetUp {
         val validStartDate: Map[String, String] = populateFormValueMap(startKey, month10AsString, year2021AsString)
-        val endDate: Map[String, String]        = populateFormValueMap(endKey, month14AsString, invalidYearValue)
+        val endDate: Map[String, String]        = populateFormValueMap(endKey, month10AsString, invalidYearValue)
         val formData: Map[String, String]       = validStartDate ++ endDate
-        val expectedErrors: Seq[FormError]      = error("end.year", invalidEndDateKey)
+        val expectedErrors: Seq[FormError]      = error("end.year", invalidEndYearKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -184,7 +184,7 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
         val validStartDate: Map[String, String] = populateFormValueMap(startKey, month10AsString, year2021AsString)
         val endDate: Map[String, String]        = populateFormValueMap(endKey, month10AsString, yearWithInvalidLength)
         val formData: Map[String, String]       = validStartDate ++ endDate
-        val expectedErrors: Seq[FormError]      = error(endKey, invalidYearLengthKey)
+        val expectedErrors: Seq[FormError]      = error("end.year", invalidEndYearKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -197,7 +197,7 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
           populateFormValueMap(endKey, month10AsString, yearWithInvalidLength)
 
         val formData: Map[String, String]  = startDate ++ endDate
-        val expectedErrors: Seq[FormError] = error(endKey, invalidYearLengthKey)
+        val expectedErrors: Seq[FormError] = error("end.year", invalidEndYearKey)
 
         checkForError(form, formData, expectedErrors)
       }
@@ -258,17 +258,19 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
       val endKey           = "end"
       val invalidYearValue = "-"
 
-      val emptyMonthStartDateErrorKey        = "cf.cash-account.transactions.request.start.date.empty.month"
-      val emptyYearStartDateErrorKey         = "cf.cash-account.transactions.request.start.date.empty.year"
-      val emptyMonthAndYearStartDateErrorKey = "cf.cash-account.transactions.request.start.date.empty.month.year"
-      val invalidStartDateKey                = "cf.cash-account.transactions.request.start.date.invalid"
+      val emptyMonthStartDateErrorKey        = "cf.form.error.start.date.missing.month"
+      val emptyYearStartDateErrorKey         = "cf.form.error.start.date.missing.year"
+      val emptyMonthAndYearStartDateErrorKey = "cf.form.error.start.date-number-missing"
+      val invalidStartMonthKey               = "cf.form.error.start.date.invalid.month"
+      val invalidStartYearKey                = "cf.form.error.start.date.invalid.year"
+      val invalidStartDateKey                = "cf.form.error.start.date.invalid.real-date"
 
-      val emptyMonthEndDateErrorKey        = "cf.cash-account.transactions.request.end.date.empty.month"
-      val emptyYearEndDateErrorKey         = "cf.cash-account.transactions.request.end.date.empty.year"
-      val emptyMonthAndYearEndDateErrorKey = "cf.cash-account.transactions.request.end.date.empty.month.year"
-      val invalidEndDateKey                = "cf.cash-account.transactions.request.end.date.invalid"
-
-      val invalidYearLengthKey = "date.year.length.invalid"
+      val emptyMonthEndDateErrorKey        = "cf.form.error.end.date.missing.month"
+      val emptyYearEndDateErrorKey         = "cf.form.error.end.date.missing.year"
+      val emptyMonthAndYearEndDateErrorKey = "cf.form.error.end.date-number-missing"
+      val invalidEndMonthKey               = "cf.form.error.end.date.invalid.month"
+      val invalidEndYearKey                = "cf.form.error.end.date.invalid.year"
+      val invalidEndDateKey                = "cf.form.error.end.date.invalid.real-date"
 
       lazy val completeValidDates: Map[String, String] =
         populateFormValueMap(startKey, month10AsString, year2021AsString) ++
@@ -279,7 +281,7 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
           Map(s"$endKey.month" -> currentMonth, s"$endKey.year" -> currentYear)
 
       def populateFormValueMap(key: String, month: String, year: String): Map[String, String] =
-        Map(s"$key.day" -> day1.toString, s"$key.month" -> month, s"$key.year" -> year)
+        Map(s"$key.month" -> month, s"$key.year" -> year)
     }
   }
 }

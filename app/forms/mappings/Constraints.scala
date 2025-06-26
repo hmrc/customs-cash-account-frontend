@@ -26,9 +26,9 @@ import java.time.{Clock, LocalDate, LocalDateTime, Period}
 
 trait Constraints {
 
-  private val date            = 1
-  private val month           = 10
-  private val year            = 2019
+  private val date  = 1
+  private val month = 10
+  private val year  = 2019
 
   private lazy val etmpStatementsDate: LocalDate = LocalDate.of(year, month, date)
   private lazy val dayOfMonthThatTaxYearStartsOn = 6

@@ -30,6 +30,7 @@ trait Mappings extends Formatters with Constraints {
   ): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey))
 
+  // scalastyle:off
   protected def localDate(
     emptyStartMonth: String,
     emptyStartYear: String,
@@ -56,6 +57,7 @@ trait Mappings extends Formatters with Constraints {
         args
       )
     )
+  // scalastyle:on
 
   protected def text(errorKey: String = "error.required"): FieldMapping[String] =
     of(stringFormatter(errorKey))
