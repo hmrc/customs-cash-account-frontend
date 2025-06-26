@@ -16,11 +16,11 @@
 
 package utils
 
-import java.time.LocalDate
-
-import forms.mappings._
+import forms.mappings.*
 import play.api.data.FieldMapping
-import play.api.data.format.Formats.{booleanFormat, localDateFormat, stringFormat}
+import play.api.data.format.Formats.{booleanFormat, localDateFormat}
+
+import java.time.LocalDate
 
 class MappingsSpec extends SpecBase with Mappings with Formatters {
 
@@ -33,23 +33,9 @@ class MappingsSpec extends SpecBase with Mappings with Formatters {
       test mustBe map
     }
 
-    "localDate - end of month is true" in {
+    "localDate" in {
       val map  = FieldMapping[LocalDate](emptyString, List.empty)
-      val test = localDate(emptyString, "error.day", "error.month", "error.year", emptyString)
-
-      test mustBe map
-    }
-
-    "localDate - end of month is false" in {
-      val map  = FieldMapping[LocalDate](emptyString, List.empty)
-      val test = localDate(emptyString, "error.day", "error.month", "error.year", emptyString)
-
-      test mustBe map
-    }
-
-    "decimal" in {
-      val map  = FieldMapping[String](emptyString, List.empty)
-      val test = decimal()
+      val test = localDate(emptyString, emptyString, "error.month", "error.year", emptyString, emptyString, emptyString, emptyString, emptyString, Nil)
 
       test mustBe map
     }

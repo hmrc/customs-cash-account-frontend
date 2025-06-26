@@ -31,19 +31,31 @@ trait Mappings extends Formatters with Constraints {
     of(booleanFormatter(requiredKey, invalidKey))
 
   protected def localDate(
-    invalidKey: String,
-    dayKey: String = emptyString,
-    monthKey: String,
-    yearKey: String,
-    invalidDateKey: String
+    emptyStartMonth: String,
+    emptyStartYear: String,
+    emptyEndMonth: String,
+    emptyEndYear: String,
+    emptyStartDate: String,
+    emptyEndDate: String,
+    invalidMonth: String,
+    invalidYear: String,
+    invalidDate: String,
+    args: Seq[String] = Seq.empty
   ): FieldMapping[LocalDate] =
-    of(new LocalDateFormatter(invalidKey, dayKey, monthKey, yearKey, invalidDateKey, Seq.empty))
-
-  protected def decimal(
-    requiredKey: String = "error.required",
-    nonNumericKey: String = "error.nonNumeric"
-  ): FieldMapping[String] =
-    of(decimalFormatter(requiredKey, nonNumericKey))
+    of(
+      new LocalDateFormatter(
+        emptyStartMonth,
+        emptyStartYear,
+        emptyEndMonth,
+        emptyEndYear,
+        emptyStartDate,
+        emptyEndDate,
+        invalidMonth,
+        invalidYear,
+        invalidDate,
+        args
+      )
+    )
 
   protected def text(errorKey: String = "error.required"): FieldMapping[String] =
     of(stringFormatter(errorKey))

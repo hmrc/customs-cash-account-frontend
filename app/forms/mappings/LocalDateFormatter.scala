@@ -18,138 +18,107 @@ package forms.mappings
 
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import play.api.{Logger, LoggerLike}
 
-import java.time.{LocalDate, LocalDateTime}
-import scala.util.{Failure, Success, Try}
+import java.time.LocalDate
+import scala.util.{Success, Try}
 
 private[mappings] class LocalDateFormatter(
-  invalidKey: String,
-  dayKey: String,
-  monthKey: String,
-  yearKey: String,
-  invalidDateKey: String,
-  args: Seq[String]
-) extends Formatter[LocalDate]
-    with Formatters {
+  emptyStartMonth: String,
+  emptyStartYear: String,
+  emptyEndMonth: String,
+  emptyEndYear: String,
+  emptyStartDate: String,
+  emptyEndDate: String,
+  invalidMonth: String,
+  invalidYear: String,
+  invalidDate: String,
+  args: Seq[String] = Seq.empty
+) extends Formatter[LocalDate] {
 
-  private val fieldKeys: List[String] = List("day", "month", "year")
-  val log: LoggerLike                 = Logger(this.getClass)
-  val currentDate: LocalDate          = LocalDateTime.now().toLocalDate
+  private val fieldKeys: List[String] = List("month", "year")
 
-  private def toDate(key: String, day: Int, month: Int, year: Int): Either[Seq[FormError], LocalDate] =
-    Try(LocalDate.of(year, month, day)) match {
-      case Success(_) => Right(LocalDate.of(year, month, day))
-      case Failure(_) =>
-        Left(
-          Seq(
-            FormError(
-              updateFormErrorKeys(key, day, month, year),
-              invalidDateKey,
-              args
-            )
-          )
-        )
+  private def toDate(key: String, month: Option[String], year: Option[String]): Either[Seq[FormError], LocalDate] =
+    (validMonth(month), validYear(year)) match {
+      case (Some(_), None)                     => Left(Seq(FormError(s"$key.year", invalidYear, args)))
+      case (None, Some(_))                     => Left(Seq(FormError(s"$key.month", invalidMonth, args)))
+      case (None, None)                        => Left(Seq(FormError(s"$key", invalidDate, args)))
+      case (Some(validMonth), Some(validYear)) => Right(LocalDate.of(validYear, validMonth, 1))
     }
 
   private def formatDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
-
-    val int = intFormatter(
-      requiredKey = invalidKey,
-      wholeNumberKey = invalidKey,
-      nonNumericKey = invalidKey,
-      args
-    )
-
-    for {
-      day   <- int.bind(s"$key.day", data)
-      month <- int.bind(s"$key.month", data)
-      year  <- int.bind(s"$key.year", data)
-      date  <- toDate(key, day, month, year)
-    } yield date
+    val month = data.get(s"$key.month")
+    val year  = data.get(s"$key.year")
+    toDate(key, month, year)
   }
 
   override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
-    val fields: Map[String, Option[String]] = fieldKeys.map { field =>
+    val fields = fieldKeys.map { field =>
       field -> data.get(s"$key.$field").filter(_.nonEmpty)
     }.toMap
 
+    lazy val missingFields = fields
+      .withFilter(_._2.isEmpty)
+      .map(_._1)
+      .toList
+
     fields.count(_._2.isDefined) match {
-      case 2 | 3 => checkForFieldValues(key, data)
-      case _     =>
-        Left(
-          List(
-            FormError(
-              formErrorKeysInCaseOfEmptyOrNonNumericValues(key, data),
-              invalidKey,
-              args
-            )
-          )
-        )
+      case 2 => formatDate(key, data)
+      case 1 =>
+        (key, missingFields.head) match {
+          case ("start", "month") =>
+            Left(List(FormError(formErrorKeysInCaseOfEmptyOrNonNumericValues(key, data), emptyStartMonth, args)))
+
+          case ("start", "year") =>
+            Left(List(FormError(formErrorKeysInCaseOfEmptyOrNonNumericValues(key, data), emptyStartYear, args)))
+
+          case ("end", "month") =>
+            Left(List(FormError(formErrorKeysInCaseOfEmptyOrNonNumericValues(key, data), emptyEndMonth, args)))
+
+          case ("end", "year") =>
+            Left(List(FormError(formErrorKeysInCaseOfEmptyOrNonNumericValues(key, data), emptyEndYear, args)))
+
+          case _ => Left(List(FormError(formErrorKeysInCaseOfEmptyOrNonNumericValues(key, data), "Unknown", args)))
+        }
+      case _ =>
+        (key, missingFields) match {
+          case ("start", List("month", "year")) =>
+            Left(List(FormError(key, emptyStartDate, args)))
+
+          case ("end", List("month", "year")) =>
+            Left(List(FormError(key, emptyEndDate, args)))
+
+          case _ => Left(List(FormError(formErrorKeysInCaseOfEmptyOrNonNumericValues(key, data), "Unknown", args)))
+        }
     }
   }
 
   override def unbind(key: String, value: LocalDate): Map[String, String] =
     Map(
-      s"$key.day"   -> value.getDayOfMonth.toString,
       s"$key.month" -> value.getMonthValue.toString,
       s"$key.year"  -> value.getYear.toString
     )
 
-  private[mappings] def updateFormErrorKeys(key: String, day: Int, month: Int, year: Int): String =
-    (day, month, year) match {
-      case (d, _, _) if d < 1 || d > 31       => s"$key.day"
-      case (_, m, _) if m < 1 || m > 12       => s"$key.month"
-      case (_, _, y) if y < 1000 || y > 99999 => s"$key.year"
-      case _                                  => s"$key.day"
-    }
-
-  private def checkForFieldValues(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] =
-    data match {
-      case value if value.contains(s"$key.day") && value(s"$key.day").isEmpty =>
-        populateErrorMsg(key, data, dayKey)
-
-      case value if value.contains(s"$key.month") && value(s"$key.month").isEmpty =>
-        populateErrorMsg(key, data, monthKey)
-
-      case value if value.contains(s"$key.year") && data(s"$key.year").isEmpty =>
-        populateErrorMsg(key, data, yearKey)
-
-      case _ =>
-        formatDate(key, data).left.map {
-          _.map(fe => fe.copy(key = fe.key, args = args))
-        }
-    }
-
-  private def populateErrorMsg(
-    key: String,
-    data: Map[String, String],
-    errorMsg: String
-  ): Left[List[FormError], Nothing] =
-    Left(
-      List(
-        FormError(
-          formErrorKeysInCaseOfEmptyOrNonNumericValues(key, data),
-          errorMsg,
-          args
-        )
-      )
-    )
-
   private[mappings] def formErrorKeysInCaseOfEmptyOrNonNumericValues(key: String, data: Map[String, String]): String = {
-    val dayValue   = data.get(s"$key.day")
     val monthValue = data.get(s"$key.month")
     val yearValue  = data.get(s"$key.year")
 
-    (dayValue, monthValue, yearValue) match {
-      case (Some(d), _, _) if d.trim.isEmpty || Try(d.trim.toInt).isFailure =>
-        s"$key.day"
-      case (_, Some(m), _) if m.trim.isEmpty || Try(m.trim.toInt).isFailure =>
-        s"$key.month"
-      case (_, _, Some(y)) if y.trim.isEmpty || Try(y.trim.toInt).isFailure =>
-        s"$key.year"
-      case _                                                                => s"$key.day"
+    (monthValue, yearValue) match {
+      case (Some(m), _) if m.trim.isEmpty || Try(m.trim.toInt).isFailure => s"$key.month"
+      case (_, Some(y)) if y.trim.isEmpty || Try(y.trim.toInt).isFailure => s"$key.year"
+      case _                                                             => s"$key.month"
     }
   }
+
+  private def validMonth(month: Option[String]): Option[Int] =
+    Try(month.get.trim.toInt) match {
+      case Success(value) if value > 0 && value < 13 => Some(value)
+      case _                                         => None
+    }
+
+  private def validYear(year: Option[String]): Option[Int] =
+    Try(year.get.trim.toInt) match {
+      case Success(value) if value.toString.matches("^\\d{4}$") => Some(value)
+      case _                                                    => None
+    }
 }

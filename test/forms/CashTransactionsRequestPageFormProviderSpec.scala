@@ -327,16 +327,16 @@ class CashTransactionsRequestPageFormProviderSpec extends SpecBase {
     val startKey = "start"
     val endKey   = "end"
 
-    val invalidMsgStartKey     = "cf.form.error.start.date-number-invalid"
+    val invalidMsgStartKey     = "cf.form.error.start.date-number-missing"
     val dayMsgStartKey         = "cf.form.error.start.date.invalid.day"
-    val monthMsgStartKey       = "cf.form.error.start.date.invalid.month"
-    val yearMsgStartKey        = "cf.form.error.start.date.invalid.year"
+    val monthMsgStartKey       = "cf.form.error.start.date.missing.month"
+    val yearMsgStartKey        = "cf.form.error.start.date.missing.year"
     val invalidDateMsgStartKey = "cf.form.error.start.date.invalid.real-date"
 
-    val invalidMsgEndKey     = "cf.form.error.end.date-number-invalid"
+    val invalidMsgEndKey     = "cf.form.error.end.date-number-missing"
     val dayMsgEndKey         = "cf.form.error.end.date.invalid.day"
-    val monthMsgEndKey       = "cf.form.error.end.date.invalid.month"
-    val yearMsgEndKey        = "cf.form.error.end.date.invalid.year"
+    val monthMsgEndKey       = "cf.form.error.end.date.missing.month"
+    val yearMsgEndKey        = "cf.form.error.end.date.missing.year"
     val invalidDateMsgEndKey = "cf.form.error.end.date.invalid.real-date"
 
     lazy val completeValidDates: Map[String, String] =
