@@ -24,24 +24,24 @@ import java.time.LocalDate
 trait SelectMappings extends Formatters with ConstraintsV2 {
 
   protected def boolean(
-                         requiredKey: String = "error.required",
-                         invalidKey: String = "error.boolean"
-                       ): FieldMapping[Boolean] =
+    requiredKey: String = "error.required",
+    invalidKey: String = "error.boolean"
+  ): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey))
 
   // scalastyle:off
   protected def localDate(
-                           emptyStartMonth: String,
-                           emptyStartYear: String,
-                           emptyEndMonth: String,
-                           emptyEndYear: String,
-                           emptyStartDate: String,
-                           emptyEndDate: String,
-                           invalidMonth: String,
-                           invalidYear: String,
-                           invalidDate: String,
-                           args: Seq[String] = Seq.empty
-                         ): FieldMapping[LocalDate] =
+    emptyStartMonth: String,
+    emptyStartYear: String,
+    emptyEndMonth: String,
+    emptyEndYear: String,
+    emptyStartDate: String,
+    emptyEndDate: String,
+    invalidMonth: String,
+    invalidYear: String,
+    invalidDate: String,
+    args: Seq[String] = Seq.empty
+  ): FieldMapping[LocalDate] =
     of(
       new LocalDateFormatterV2(
         emptyStartMonth,
