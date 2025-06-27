@@ -38,7 +38,7 @@ class ErrorSummarySpec extends SpecBase {
 
     "show correct error with unchanged key when isErrorKeyUpdateEnabled is false" in new SetUp {
       val errorSum: ErrorSummary = ErrorSummary(
-        errorList = Seq(ErrorLink(Some("#start"), content = Text(msgs("cf.form.error.start.date-number-invalid")))),
+        errorList = Seq(ErrorLink(Some("#start"), content = Text(msgs("cf.form.error.start.date-number-missing")))),
         title = Text(msgs("error.summary.title"))
       )
 
@@ -53,11 +53,11 @@ class ErrorSummarySpec extends SpecBase {
         .build()
 
       val view: errorSummary         = app.injector.instanceOf[errorSummary]
-      val formErrors: Seq[FormError] = Seq(FormError("start", "cf.form.error.start.date-number-invalid"))
+      val formErrors: Seq[FormError] = Seq(FormError("start", "cf.form.error.start.date-number-missing"))
 
       val result: HtmlFormat.Appendable = view(formErrors, None)
 
-      result.toString().contains("<a href=\"#start\">cf.form.error.start.date-number-invalid</a>") shouldBe true
+      result.toString().contains("<a href=\"#start\">cf.form.error.start.date-number-missing</a>") shouldBe true
       result.toString().contains("error.summary.title")                                            shouldBe true
     }
 

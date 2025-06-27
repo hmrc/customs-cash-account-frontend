@@ -29,47 +29,55 @@ class SelectTransactionsFormProvider @Inject() (implicit clock: Clock) extends S
   def apply(): Form[CashTransactionDates] =
     Form(
       mapping(
-        "start" -> yearMonth(
-          emptyMonthAndYearKey = "cf.cash-account.transactions.request.start.date.empty.month.year",
-          emptyMonthKey = "cf.cash-account.transactions.request.start.date.empty.month",
-          emptyYearKey = "cf.cash-account.transactions.request.start.date.empty.year",
-          invalidDateKey = "cf.cash-account.transactions.request.start.date.invalid"
-        ).transform(_.atDay(1), date => YearMonth.from(date))
+        "start" -> localDate(
+          emptyStartMonth = "cf.form.error.start.date.missing.month",
+          emptyStartYear = "cf.form.error.start.date.missing.year",
+          emptyEndMonth = "cf.form.error.end.date.missing.month",
+          emptyEndYear = "cf.form.error.end.date.missing.year",
+          emptyStartDate = "cf.form.error.start.date-number-missing",
+          emptyEndDate = "cf.form.error.end.date-number-missing",
+          invalidMonth = "cf.form.error.start.date.invalid.month",
+          invalidYear = "cf.form.error.start.date.invalid.year",
+          invalidDate = "cf.form.error.start.date.invalid.real-date"
+        ).transform(_.withDayOfMonth(1), date => LocalDate.from(date))
           .verifying(
             beforeCurrentDate(errorKey = "cf.form.error.start-future-date")
           )
           .verifying(
             checkDates(
               systemStartDateErrorKey = "cf.form.error.startDate.date-earlier-than-system-start-date",
-              taxYearErrorKey = "cf.form.error.start.date-too-far-in-past",
-              invalidLength = "date.year.length.invalid"
+              taxYearErrorKey = "cf.form.error.start.date-too-far-in-past"
             )
           ),
-        "end"   -> yearMonth(
-          emptyMonthAndYearKey = "cf.cash-account.transactions.request.end.date.empty.month.year",
-          emptyMonthKey = "cf.cash-account.transactions.request.end.date.empty.month",
-          emptyYearKey = "cf.cash-account.transactions.request.end.date.empty.year",
-          invalidDateKey = "cf.cash-account.transactions.request.end.date.invalid"
-        ).transform(transformToEndDate, date => YearMonth.from(date))
+        "end"   -> localDate(
+          emptyStartMonth = "cf.form.error.start.date.missing.month",
+          emptyStartYear = "cf.form.error.start.date.missing.year",
+          emptyEndMonth = "cf.form.error.end.date.missing.month",
+          emptyEndYear = "cf.form.error.end.date.missing.year",
+          emptyStartDate = "cf.form.error.start.date-number-missing",
+          emptyEndDate = "cf.form.error.end.date-number-missing",
+          invalidMonth = "cf.form.error.end.date.invalid.month",
+          invalidYear = "cf.form.error.end.date.invalid.year",
+          invalidDate = "cf.form.error.end.date.invalid.real-date"
+        ).transform(transformToEndDate, date => LocalDate.from(date))
           .verifying(
             beforeCurrentDate(errorKey = "cf.form.error.end-future-date")
           )
           .verifying(
             checkDates(
               systemStartDateErrorKey = "cf.form.error.endDate.date-earlier-than-system-start-date",
-              taxYearErrorKey = "cf.form.error.end.date-too-far-in-past",
-              invalidLength = "date.year.length.invalid"
+              taxYearErrorKey = "cf.form.error.end.date-too-far-in-past"
             )
           )
       )(CashTransactionDates.apply)(ctd => Some(Tuple.fromProductTyped(ctd)))
     )
 
-  private def transformToEndDate(yearMonth: YearMonth) = {
+  private def transformToEndDate(date: LocalDate) = {
     val today      = LocalDate.now
     val todayMonth = today.getMonthValue
     val todayYear  = today.getYear
 
-    if ((todayYear == yearMonth.getYear) && (todayMonth == yearMonth.getMonthValue)) { today.minusDays(1) }
-    else { yearMonth.atEndOfMonth }
+    if ((todayYear == date.getYear) && (todayMonth == date.getMonthValue)) { today.minusDays(1) }
+    else { YearMonth.of(date.getYear, date.getMonthValue).atEndOfMonth() }
   }
 }

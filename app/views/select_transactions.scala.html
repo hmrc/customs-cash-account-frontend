@@ -19,7 +19,7 @@
 @this(
     main_template: Layout,
     formHelper: FormWithCSRF,
-    inputDate: components.inputMonthAndYear,
+    inputMonthAndYear: components.inputMonthAndYear,
     button: components.button,
     errorSummary: components.errorSummary,
     h1: components.h1,
@@ -36,13 +36,11 @@
 ) {
 
     @formHelper(action = controllers.routes.SelectTransactionsController.onSubmit(), Symbol("autoComplete") -> "off") {
-        @errorSummary(form.errors,errorFieldName = None,
-            isErrorKeyUpdateEnabled = true,
-            Some(updateFormErrorKeyForStartAndEndDate()))
+        @errorSummary(form.errors, errorFieldName = None)
 
         @h1("cf.cash-account.transactions.heading")
 
-        @inputDate(
+        @inputMonthAndYear(
             form,
             messages("cf.cash-account.transactions.request.from"),
             legendClasses ="govuk-fieldset__legend--s",
@@ -52,7 +50,7 @@
             legendHiddenContent = Some(s"cf.cash-account.transactions.request.legend.hidden.start")
         )
 
-        @inputDate(
+        @inputMonthAndYear(
             form,
             messages("cf.cash-account.transactions.request.to"),
             legendClasses ="govuk-fieldset__legend--s",

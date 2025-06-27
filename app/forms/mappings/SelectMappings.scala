@@ -19,9 +19,9 @@ package forms.mappings
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
 
-import java.time.{LocalDate, YearMonth}
+import java.time.LocalDate
 
-trait SelectMappings extends Formatters with Constraints {
+trait SelectMappings extends Formatters with ConstraintsV2 {
 
   protected def boolean(
     requiredKey: String = "error.required",
@@ -29,19 +29,35 @@ trait SelectMappings extends Formatters with Constraints {
   ): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey))
 
-  protected def yearMonth(
-    emptyMonthAndYearKey: String,
-    emptyMonthKey: String,
-    emptyYearKey: String,
-    invalidDateKey: String
-  ): FieldMapping[YearMonth] =
+  // scalastyle:off
+  protected def localDate(
+    emptyStartMonth: String,
+    emptyStartYear: String,
+    emptyEndMonth: String,
+    emptyEndYear: String,
+    emptyStartDate: String,
+    emptyEndDate: String,
+    invalidMonth: String,
+    invalidYear: String,
+    invalidDate: String,
+    args: Seq[String] = Seq.empty
+  ): FieldMapping[LocalDate] =
     of(
-      new SelectYearMonthFormatter(emptyMonthAndYearKey, emptyMonthKey, emptyYearKey, invalidDateKey, Seq.empty)
+      new LocalDateFormatterV2(
+        emptyStartMonth,
+        emptyStartYear,
+        emptyEndMonth,
+        emptyEndYear,
+        emptyStartDate,
+        emptyEndDate,
+        invalidMonth,
+        invalidYear,
+        invalidDate,
+        args
+      )
     )
+  // scalastyle:on
 
-  protected def decimal(
-    requiredKey: String = "error.required",
-    nonNumericKey: String = "error.nonNumeric"
-  ): FieldMapping[String] =
-    of(decimalFormatter(requiredKey, nonNumericKey))
+  protected def text(errorKey: String = "error.required"): FieldMapping[String] =
+    of(stringFormatter(errorKey))
 }

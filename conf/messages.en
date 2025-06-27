@@ -254,39 +254,36 @@ cf.cash-account.requested.statements.available.text.pre=Your
 cf.cash-account.requested.statements.available.link.text=requested transactions
 cf.cash-account.requested.statements.available.text.post=are now available
 
-# Request cash Transactions
-cf.cash-account.transactions.request.start.date.empty.month = Enter the month you want to request transactions from
-cf.cash-account.transactions.request.start.date.empty.year = Enter the year you want to request transactions from
-cf.cash-account.transactions.request.start.date.empty.month.year = Enter the month and year you want to request transactions from
-cf.cash-account.transactions.request.start.date.invalid = Start date must be a real date
-
-cf.cash-account.transactions.request.end.date.empty.month = Enter the month you want to request transactions to
-cf.cash-account.transactions.request.end.date.empty.year = Enter the year you want to request transactions to
-cf.cash-account.transactions.request.end.date.empty.month.year = Enter the month and year you want to request transactions to
-cf.cash-account.transactions.request.end.date.invalid = End date must be a real date
+# V1 Date Form Errors (will be removed)
+cf.form.error.year.length = Year must include 4 numbers
+cf.form.error.start.date-number-invalid = Enter a real date date for the start date
+cf.form.error.start.date.invalid.day = Enter a day between 1 and 31
+cf.form.error.end.date-number-invalid = Enter a real date for the end date
+cf.form.error.end.date.invalid.day = Enter a day between 1 and 31
 
 # Date form error
 cf.form.error.start.date-too-far-in-past=The from date cannot be older than 6 years from now.
 cf.form.error.end.date-too-far-in-past=The to date cannot be older than 6 years from now.
-cf.form.error.year.length = Year must include 4 numbers
 cf.form.error.startDate.date-earlier-than-system-start-date=The from date must be on or after October 2019
 cf.form.error.endDate.date-earlier-than-system-start-date=The to date must be on or after October 2019
-cf.form.error.start.date-number-invalid=Enter the date you need transactions from
-cf.form.error.end.date-number-invalid=Enter the date you need transactions to
+cf.form.error.start.date-number-missing=Enter the month and year you want to request transactions from
+cf.form.error.end.date-number-missing=Enter the month and year you want to request transactions to
 cf.form.error.start-future-date=The from date cannot be in the future
 cf.form.error.end-future-date=The to date cannot be in the future
 cf.form.error.start-after-end=The from date cannot be after the to date
 cf.form.error.end-before-start=The to date cannot be before the from date
 
-cf.form.error.start.date.invalid.day=The from date must include a day
-cf.form.error.start.date.invalid.month=The from date must include a month
-cf.form.error.start.date.invalid.year=The from date must include a year
-cf.form.error.start.date.invalid.real-date=The from date must be a real date
+cf.form.error.start.date.missing.month=Enter the month you want to request transactions from
+cf.form.error.start.date.missing.year=Enter the year you want to request transactions from
+cf.form.error.start.date.invalid.month=Enter a month between 1 and 12 for the start date
+cf.form.error.start.date.invalid.year=Enter a real year for the start date
+cf.form.error.start.date.invalid.real-date=Enter a real date for the start date
 
-cf.form.error.end.date.invalid.day=The end date must include a day
-cf.form.error.end.date.invalid.month=The end date must include a month
-cf.form.error.end.date.invalid.year=The end date must include a year
-cf.form.error.end.date.invalid.real-date=The to date must be a real date
+cf.form.error.end.date.missing.month=Enter the month you want to request transactions to
+cf.form.error.end.date.missing.year=Enter the year you want to request transactions to
+cf.form.error.end.date.invalid.month=Enter a month between 1 and 12 for the end date
+cf.form.error.end.date.invalid.year=Enter a real year for the end date
+cf.form.error.end.date.invalid.real-date=Enter a real date for the end date
 
 cf.searchTransactions.form.error.required = Please enter a value
 
