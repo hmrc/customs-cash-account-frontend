@@ -30,39 +30,33 @@ class CashTransactionsRequestPageFormProvider @Inject() (implicit clock: Clock) 
     Form(
       mapping(
         "start" -> localDate(
-          emptyStartMonth = "cf.form.error.start.date.missing.month",
-          emptyStartYear = "cf.form.error.start.date.missing.year",
-          emptyEndMonth = "cf.form.error.end.date.missing.month",
-          emptyEndYear = "cf.form.error.end.date.missing.year",
-          emptyStartDate = "cf.form.error.start.date-number-missing",
-          emptyEndDate = "cf.form.error.end.date-number-missing",
-          invalidMonth = "cf.form.error.start.date.invalid.month",
-          invalidYear = "cf.form.error.start.date.invalid.year",
-          invalidDate = "cf.form.error.start.date.invalid.real-date"
+          invalidKey = "cf.form.error.start.date-number-invalid",
+          dayKey = "cf.form.error.start.date.invalid.day",
+          monthKey = "cf.form.error.start.date.invalid.month",
+          yearKey = "cf.form.error.start.date.invalid.year",
+          invalidDateKey = "cf.form.error.start.date.invalid.real-date"
         ).verifying(
           beforeCurrentDate(errorKey = "cf.form.error.start-future-date")
         ).verifying(
           checkDates(
             systemStartDateErrorKey = "cf.form.error.startDate.date-earlier-than-system-start-date",
-            taxYearErrorKey = "cf.form.error.start.date-too-far-in-past"
+            taxYearErrorKey = "cf.form.error.start.date-too-far-in-past",
+            invalidLength = "cf.form.error.year.length"
           )
         ),
         "end"   -> localDate(
-          emptyStartMonth = "cf.form.error.start.date.missing.month",
-          emptyStartYear = "cf.form.error.start.date.missing.year",
-          emptyEndMonth = "cf.form.error.end.date.missing.month",
-          emptyEndYear = "cf.form.error.end.date.missing.year",
-          emptyStartDate = "cf.form.error.start.date-number-missing",
-          emptyEndDate = "cf.form.error.end.date-number-missing",
-          invalidMonth = "cf.form.error.end.date.invalid.month",
-          invalidYear = "cf.form.error.end.date.invalid.year",
-          invalidDate = "cf.form.error.end.date.invalid.real-date"
+          invalidKey = "cf.form.error.end.date-number-invalid",
+          dayKey = "cf.form.error.end.date.invalid.day",
+          monthKey = "cf.form.error.end.date.invalid.month",
+          yearKey = "cf.form.error.end.date.invalid.year",
+          invalidDateKey = "cf.form.error.end.date.invalid.real-date"
         ).verifying(
           beforeCurrentDate(errorKey = "cf.form.error.end-future-date")
         ).verifying(
           checkDates(
             systemStartDateErrorKey = "cf.form.error.endDate.date-earlier-than-system-start-date",
-            taxYearErrorKey = "cf.form.error.end.date-too-far-in-past"
+            taxYearErrorKey = "cf.form.error.end.date-too-far-in-past",
+            invalidLength = "cf.form.error.year.length"
           )
         )
       )(CashTransactionDates.apply)(ctd => Some(Tuple.fromProductTyped(ctd)))

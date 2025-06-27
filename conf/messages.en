@@ -254,6 +254,13 @@ cf.cash-account.requested.statements.available.text.pre=Your
 cf.cash-account.requested.statements.available.link.text=requested transactions
 cf.cash-account.requested.statements.available.text.post=are now available
 
+# V1 Date Form Errors (will be removed)
+cf.form.error.year.length = Year must include 4 numbers
+cf.form.error.start.date-number-invalid = Enter a real date date for the start date
+cf.form.error.start.date.invalid.day = Enter a day between 1 and 31
+cf.form.error.end.date-number-invalid = Enter a real date for the end date
+cf.form.error.end.date.invalid.day = Enter a day between 1 and 31
+
 # Date form error
 cf.form.error.start.date-too-far-in-past=The from date cannot be older than 6 years from now.
 cf.form.error.end.date-too-far-in-past=The to date cannot be older than 6 years from now.

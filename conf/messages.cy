@@ -254,6 +254,13 @@ cf.cash-account.requested.statements.available.text.pre=Mae’r
 cf.cash-account.requested.statements.available.link.text=trafodion y gwnaethoch gais amdanynt
 cf.cash-account.requested.statements.available.text.post=bellach ar gael
 
+# V1 Date Form Errors (will be removed)
+cf.form.error.year.length = Mae’n rhaid i’r flwyddyn gynnwys pedwar rhif
+cf.form.error.start.date-number-invalid = Nodwch ddyddiad go iawn ar gyfer y dyddiad dechrau
+cf.form.error.start.date.invalid.day = Nodwch ddiwrnod rhwng 1 a 31
+cf.form.error.end.date-number-invalid = Nodwch ddyddiad go iawn ar gyfer y dyddiad dod i ben
+cf.form.error.end.date.invalid.day = Nodwch ddiwrnod rhwng 1 a 31
+
 # Date form error
 cf.form.error.start.date-too-far-in-past=Ni all y dyddiad ‘o’ fod yn fwy na 6 o flynyddoedd ers nawr.
 cf.form.error.end.date-too-far-in-past=Ni all y dyddiad ‘i’ fod yn fwy na 6 o flynyddoedd ers nawr.

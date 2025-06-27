@@ -16,7 +16,7 @@
 
 package forms
 
-import forms.mappings.Mappings
+import forms.mappings.SelectMappings
 import models.CashTransactionDates
 import play.api.data.Form
 import play.api.data.Forms.mapping
@@ -24,7 +24,7 @@ import play.api.data.Forms.mapping
 import java.time.{Clock, LocalDate, YearMonth}
 import javax.inject.Inject
 
-class SelectTransactionsFormProvider @Inject() (implicit clock: Clock) extends Mappings {
+class SelectTransactionsFormProvider @Inject() (implicit clock: Clock) extends SelectMappings {
 
   def apply(): Form[CashTransactionDates] =
     Form(

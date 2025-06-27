@@ -24,12 +24,11 @@ import utils.RegexPatterns.{mrnRegex, paymentRegex, ucrRegex}
 
 import java.time.{Clock, LocalDate, LocalDateTime, Period}
 
-trait Constraints {
+trait ConstraintsV2 {
 
-  private val date            = 1
-  private val month           = 10
-  private val year            = 2019
-  private val validYearLength = 4
+  private val date  = 1
+  private val month = 10
+  private val year  = 2019
 
   private lazy val etmpStatementsDate: LocalDate = LocalDate.of(year, month, date)
   private lazy val dayOfMonthThatTaxYearStartsOn = 6
@@ -39,7 +38,7 @@ trait Constraints {
   def currentDate: LocalDate = LocalDateTime.now().toLocalDate
 
   def beforeCurrentDate(errorKey: String): Constraint[LocalDate] = Constraint {
-    case request if request.isAfter(currentDate) && request.getYear.toString.length() == validYearLength =>
+    case request if request.isAfter(currentDate) =>
       log.info("entered date in constraints: " + request)
       log.info("current date in constraints: " + currentDate)
       Invalid(ValidationError(errorKey))
@@ -60,11 +59,9 @@ trait Constraints {
     taxYearFor(currentDate).back(maximumNumberOfYears)
   }
 
-  def checkDates(systemStartDateErrorKey: String, taxYearErrorKey: String, invalidLength: String)(implicit
+  def checkDates(systemStartDateErrorKey: String, taxYearErrorKey: String)(implicit
     clock: Clock
   ): Constraint[LocalDate] = Constraint {
-
-    case request if request.getYear.toString.length() != validYearLength => Invalid(invalidLength)
 
     case request if Period.between(request, etmpStatementsDate).toTotalMonths > 0 =>
       Invalid(ValidationError(systemStartDateErrorKey))
