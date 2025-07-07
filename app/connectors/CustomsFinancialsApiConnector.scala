@@ -308,6 +308,10 @@ class CustomsFinancialsApiConnector @Inject() (
         logger.error("Internal Server error while calling ETMP")
         Left(InternalServerErrorErrorResponse)
 
+      case NOT_FOUND =>
+        logger.warn("Data not found for the search")
+        Left(NoAssociatedDataFound)
+
       case _ =>
         logger.error("Service Unavailable error while calling ETMP")
         Left(ServiceUnavailableErrorResponse)

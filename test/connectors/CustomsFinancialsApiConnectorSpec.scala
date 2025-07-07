@@ -398,9 +398,12 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
 
       when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
+      when(mockCashAccountSearchRepository.get(any[String])).thenReturn(Future.successful(None))
+
       val appWithMocks: Application = applicationBuilder
         .overrides(
-          bind[HttpClientV2].toInstance(mockHttpClient)
+          bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[CashAccountSearchRepository].toInstance(mockCashAccountSearchRepository)
         )
         .build()
 
