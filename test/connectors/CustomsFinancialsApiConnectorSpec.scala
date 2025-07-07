@@ -390,6 +390,30 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       }
     }
 
+    "return NoAssociatedDataFound when backend responds with NOT_FOUND" in new Setup {
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[CashAccountTransactionSearchResponseDetail]], any[ExecutionContext]))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Service unavailable", NOT_FOUND)))
+
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = applicationBuilder
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient)
+        )
+        .build()
+
+      running(appWithMocks) {
+        val result = await(
+          connector(appWithMocks)
+            .retrieveCashTransactionsBySearch("testCAN", "GB123456789012", SearchType.D, searchValue, None, None)
+        )
+
+        result mustBe Left(NoAssociatedDataFound)
+      }
+    }
+
     "return UnknownException when an unexpected error occurs" in new Setup {
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 

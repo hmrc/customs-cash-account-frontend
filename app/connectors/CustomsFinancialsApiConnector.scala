@@ -193,6 +193,10 @@ class CustomsFinancialsApiConnector @Inject() (
       logger.error("SERVICE_UNAVAILABLE for retrieveCashTransactionsBySearch")
       Left(ServiceUnavailableErrorResponse)
 
+    case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
+      logger.warn("Data not found for retrieveCashTransactionsBySearch")
+      Left(NoAssociatedDataFound)
+
     case e =>
       logger.error(s"Unknown error for retrieveCashTransactionsBySearch :${e.getMessage}")
       Left(UnknownException)
