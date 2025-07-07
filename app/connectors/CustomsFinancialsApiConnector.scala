@@ -252,6 +252,10 @@ class CustomsFinancialsApiConnector @Inject() (
       logger.error("SERVICE_UNAVAILABLE for postCashAccountStatements")
       Left(ServiceUnavailableErrorResponse)
 
+    case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
+      logger.warn("Data not found for postCashAccountStatements")
+      Left(NoAssociatedDataFound)
+
     case e =>
       logger.error(s"Unknown error for postCashAccountStatements :${e.getMessage}")
       Left(UnknownException)

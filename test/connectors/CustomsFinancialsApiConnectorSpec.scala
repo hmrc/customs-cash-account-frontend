@@ -394,7 +394,7 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
 
       when(requestBuilder.execute(any[HttpReads[CashAccountTransactionSearchResponseDetail]], any[ExecutionContext]))
-        .thenReturn(Future.failed(UpstreamErrorResponse("Service unavailable", NOT_FOUND)))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
 
       when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
 
@@ -878,6 +878,31 @@ class CustomsFinancialsApiConnectorSpec extends SpecBase {
       running(appWithMocks) {
         connector(appWithMocks).retrieveCashTransactionsDetail("can", fromDate, toDate).map {
           _ mustBe Left(ServiceUnavailableErrorResponse)
+        }
+      }
+    }
+
+    "return ErrorResponse when the backend POST fails with NOT_FOUND" in new Setup {
+      val requestCouldNotBeProcessed: AccountResponseCommon =
+        AccountResponseCommon(emptyString, Some("123"), emptyString, None)
+
+      when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
+      when(requestBuilder.execute(any[HttpReads[CashTransactions]], any[ExecutionContext]))
+        .thenReturn(Future.failed(UpstreamErrorResponse("Error occurred", NOT_FOUND)))
+
+      when(mockHttpClient.post(any[URL]())(any())).thenReturn(requestBuilder)
+
+      val appWithMocks: Application = applicationBuilder
+        .overrides(
+          bind[HttpClientV2].toInstance(mockHttpClient),
+          bind[RequestBuilder].toInstance(requestBuilder)
+        )
+        .build()
+
+      running(appWithMocks) {
+        connector(appWithMocks).postCashAccountStatementRequest("eori", "can", fromDate, toDate).map {
+          _ mustBe Left(NoAssociatedDataFound)
         }
       }
     }
