@@ -18,8 +18,7 @@ package controllers
 
 import config.{AppConfig, ErrorHandler}
 import connectors.{
-  CustomsFinancialsApiConnector, EntryAlreadyExists, ErrorResponse, ExceededMaximum, NoAssociatedDataFound,
-  TooManyTransactionsRequested
+  CustomsFinancialsApiConnector, EntryAlreadyExists, ErrorResponse, ExceededMaximum, NoAssociatedDataFound
 }
 import controllers.actions.IdentifierAction
 import helpers.Formatters.dateAsMonthAndYear
