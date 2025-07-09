@@ -18,7 +18,7 @@ package controllers
 
 import config.{AppConfig, ErrorHandler}
 import connectors.{
-  CustomsFinancialsApiConnector, EntryAlreadyExists, ErrorResponse, ExceededMaximum, TooManyTransactionsRequested
+  CustomsFinancialsApiConnector, EntryAlreadyExists, ErrorResponse, ExceededMaximum, NoAssociatedDataFound
 }
 import controllers.actions.IdentifierAction
 import helpers.Formatters.dateAsMonthAndYear
@@ -147,12 +147,19 @@ class SelectedTransactionsController @Inject() (
 
           case Left(ExceededMaximum) => Redirect(routes.SelectedTransactionsController.requestedTooManyTransactions())
 
-          case _ =>
-            logger.error(s"Error posting cash account statements")
+          case Left(errorResponse: ErrorResponse) =>
+            logErrorMessage(errorResponse)
             Redirect(routes.CashAccountController.showAccountDetails(None))
         }
 
       case _ => Future.successful(Redirect(routes.CashAccountController.showAccountDetails(None)))
+    }
+
+  private def logErrorMessage(errorResponse: ErrorResponse): Unit =
+    if (errorResponse == NoAssociatedDataFound) {
+      logger.warn("Data not found for the request")
+    } else {
+      logger.error("Error posting cash account statements")
     }
 
   private def displayResultView(account: CashAccount, from: LocalDate, to: LocalDate)(implicit

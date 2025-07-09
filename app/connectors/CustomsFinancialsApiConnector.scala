@@ -193,6 +193,10 @@ class CustomsFinancialsApiConnector @Inject() (
       logger.error("SERVICE_UNAVAILABLE for retrieveCashTransactionsBySearch")
       Left(ServiceUnavailableErrorResponse)
 
+    case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
+      logger.warn("Data not found for retrieveCashTransactionsBySearch")
+      Left(NoAssociatedDataFound)
+
     case e =>
       logger.error(s"Unknown error for retrieveCashTransactionsBySearch :${e.getMessage}")
       Left(UnknownException)
@@ -247,6 +251,10 @@ class CustomsFinancialsApiConnector @Inject() (
     case UpstreamErrorResponse(_, SERVICE_UNAVAILABLE, _, _) =>
       logger.error("SERVICE_UNAVAILABLE for postCashAccountStatements")
       Left(ServiceUnavailableErrorResponse)
+
+    case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
+      logger.warn("Data not found for postCashAccountStatements")
+      Left(NoAssociatedDataFound)
 
     case e =>
       logger.error(s"Unknown error for postCashAccountStatements :${e.getMessage}")
@@ -303,6 +311,10 @@ class CustomsFinancialsApiConnector @Inject() (
       case INTERNAL_SERVER_ERROR =>
         logger.error("Internal Server error while calling ETMP")
         Left(InternalServerErrorErrorResponse)
+
+      case NOT_FOUND =>
+        logger.warn("Data not found for the search")
+        Left(NoAssociatedDataFound)
 
       case _ =>
         logger.error("Service Unavailable error while calling ETMP")

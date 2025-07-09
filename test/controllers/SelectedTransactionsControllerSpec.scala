@@ -118,6 +118,31 @@ class SelectedTransactionsControllerSpec extends SpecBase {
         }
       }
     }
+
+    "redirect to showAccountDetails page " when {
+
+      "cash account statement post request responds with Left(NoAssociatedDataFound)" in new Setup {
+
+        when(mockRequestedTransactionsCache.get(any))
+          .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
+
+        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+          .thenReturn(Future.successful(Some(cashAccount)))
+
+        when(mockCustomsFinancialsApiConnector.postCashAccountStatementRequest(any, any, any, any)(any))
+          .thenReturn(Future.successful(Left(NoAssociatedDataFound)))
+
+        val request: FakeRequest[AnyContentAsEmpty.type] =
+          fakeRequest(POST, routes.SelectedTransactionsController.onSubmit().url)
+
+        running(app) {
+          val result = route(app, request).value
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.CashAccountController.showAccountDetails(None).url)
+        }
+      }
+    }
   }
 
   "requestedTooManyTransactions" must {
