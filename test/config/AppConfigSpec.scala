@@ -37,7 +37,7 @@ class AppConfigSpec extends SpecBase {
       appConfig.cashAccountForCdsDeclarationsUrl mustBe
         "https://www.gov.uk/guidance/use-a-cash-account-for-cds-declarations"
 
-      appConfig.feedbackService mustBe "https://www.development.tax.service.gov.uk/feedback/CDS-FIN"
+      appConfig.feedbackService mustBe "http://localhost:9514/feedback/CDS-FIN"
       appConfig.timeout mustBe 900
       appConfig.countdown mustBe 120
       appConfig.numberOfMonthsOfCashTransactionsToShow mustBe 6
