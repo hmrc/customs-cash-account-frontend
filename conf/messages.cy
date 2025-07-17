@@ -322,7 +322,7 @@ cf.cash-account.transactions.confirmation.download=Byddwch yn gallu lawrlwytho�
 cf.cash-account.transactions.confirmation.back=Yn ôl i hafan ‘Rheoli tollau mewnforio a chyfrifon TAW’
 
 cf.cash-account.transactions.confirmation.help.subheader-text=Helpu ni i wella’r gwasanaeth hwn
-cf.cash-account.transactions.confirmation.help.body-text=A oes gennych rif EORI yn yr UE? Rydym yn cynnal ymchwil defnyddwyr i helpu i wella ein gwasanaethau.
+cf.cash-account.transactions.confirmation.help.body-text=Mae eich adborth yn werthfawr i ni. 
 cf.cash-account.transactions.confirmation.help.link=Cofrestrwch i gymryd rhan mewn ymchwil defnyddwyr (yn agor tab newydd)
 
 cf.cash-account.detail.transactions= Trafodion
