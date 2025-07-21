@@ -45,18 +45,13 @@ class AccountsAndBalancesSpec extends SpecBase {
     }
 
     "serialize and deserialize AccountsAndBalancesRequestContainer correctly" in new Setup {
-      // Arrange: create the object to test serialization for
       val accountsAndBalancesRequest = AccountsAndBalancesRequest(
         AccountsRequestCommon.generate, // assuming this returns a AccountsRequestCommon instance
         requestDetail
       )
 
       val container = AccountsAndBalancesRequestContainer(accountsAndBalancesRequest)
-
-      // Act: serialize to JSON
-      val json = Json.toJson(container)
-
-      // Assert: deserialize JSON back to AccountsAndBalancesRequestContainer
+      val json      = Json.toJson(container)
       val validated = json.validate[AccountsAndBalancesRequestContainer]
 
       validated mustBe JsSuccess(container)
