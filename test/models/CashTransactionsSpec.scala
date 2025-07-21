@@ -57,6 +57,40 @@ class CashTransactionsSpec extends SpecBase {
       (json \ "cashDailyStatements").as[Seq[CashDailyStatement]] mustBe Seq(cashDailyStatement)
       (json \ "maxTransactionsExceeded").as[Boolean] mustBe true
     }
+
+    "deserialize from JSON correctly" in new Setup {
+      val json = Json.obj(
+        "pendingTransactions"     -> Json.arr(Json.toJson(declarations)),
+        "cashDailyStatements"     -> Json.arr(Json.toJson(cashDailyStatement)),
+        "maxTransactionsExceeded" -> true
+      )
+
+      val result = json.as[CashTransactions]
+      result mustBe CashTransactions(Seq(declarations), Seq(cashDailyStatement), Some(true))
+    }
+
+    "serialize correctly when maxTransactionsExceeded is None" in new Setup {
+      val model = CashTransactions(
+        pendingTransactions = Seq(declarations),
+        cashDailyStatements = Seq(cashDailyStatement),
+        maxTransactionsExceeded = None
+      )
+
+      val json = Json.toJson(model)
+      (json \ "maxTransactionsExceeded").toOption mustBe empty
+    }
+
+    "availableTransactions returns true when pendingTransactions is non-empty" in new Setup {
+      CashTransactions(Seq(declarations), Seq.empty).availableTransactions mustBe true
+    }
+
+    "availableTransactions returns true when cashDailyStatements is non-empty" in new Setup {
+      CashTransactions(Seq.empty, Seq(cashDailyStatement)).availableTransactions mustBe true
+    }
+
+    "availableTransactions returns false when both pendingTransactions and cashDailyStatements are empty" in new Setup {
+      CashTransactions(Seq.empty, Seq.empty).availableTransactions mustBe false
+    }
   }
 
   "EncryptedCashTransactions" must {
@@ -86,6 +120,28 @@ class CashTransactionsSpec extends SpecBase {
       (json \ "pendingTransactions").as[Seq[EncryptedDeclaration]] mustBe Seq(encryptedDeclaration)
       (json \ "cashDailyStatement").as[Seq[EncryptedDailyStatements]] mustBe Seq(encryptedDailyStatements)
       (json \ "maxTransactionsExceeded").as[Boolean] mustBe false
+    }
+
+    "deserialize EncryptedCashTransactions from JSON correctly" in new Setup {
+      val json = Json.obj(
+        "pendingTransactions"     -> Json.arr(Json.toJson(encryptedDeclaration)),
+        "cashDailyStatement"      -> Json.arr(Json.toJson(encryptedDailyStatements)),
+        "maxTransactionsExceeded" -> false
+      )
+
+      val result = json.as[EncryptedCashTransactions]
+      result mustBe EncryptedCashTransactions(Seq(encryptedDeclaration), Seq(encryptedDailyStatements), Some(false))
+    }
+
+    "serialize EncryptedCashTransactions correctly when maxTransactionsExceeded is None" in new Setup {
+      val model = EncryptedCashTransactions(
+        pendingTransactions = Seq(encryptedDeclaration),
+        cashDailyStatement = Seq(encryptedDailyStatements),
+        maxTransactionsExceeded = None
+      )
+
+      val json = Json.toJson(model)
+      (json \ "maxTransactionsExceeded").toOption mustBe empty
     }
 
   }
