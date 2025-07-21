@@ -17,7 +17,8 @@
 package models
 
 import utils.SpecBase
-import play.api.libs.json.{JsResult, JsString, JsSuccess}
+import play.api.libs.json.{JsResult, JsString, JsSuccess, OWrites, Writes}
+import play.api.libs.json.Json
 
 class AccountsAndBalancesSpec extends SpecBase {
 
@@ -42,12 +43,54 @@ class AccountsAndBalancesSpec extends SpecBase {
       val res: JsResult[CDSAccountStatus] = CDSAccountStatus.CDSAccountStatusReads.reads(jsFailure)
       res mustBe JsSuccess(AccountStatusOpen)
     }
+
+    "serialize and deserialize AccountsAndBalancesRequestContainer correctly" in new Setup {
+      // Arrange: create the object to test serialization for
+      val accountsAndBalancesRequest = AccountsAndBalancesRequest(
+        AccountsRequestCommon.generate, // assuming this returns a AccountsRequestCommon instance
+        requestDetail
+      )
+
+      val container = AccountsAndBalancesRequestContainer(accountsAndBalancesRequest)
+
+      // Act: serialize to JSON
+      val json = Json.toJson(container)
+
+      // Assert: deserialize JSON back to AccountsAndBalancesRequestContainer
+      val validated = json.validate[AccountsAndBalancesRequestContainer]
+
+      validated mustBe JsSuccess(container)
+    }
   }
 
   trait Setup {
-    val jsOpen: JsString      = JsString("Open")
-    val jsSuspended: JsString = JsString("Suspended")
-    val jsClosed: JsString    = JsString("Closed")
-    val jsFailure: JsString   = JsString("123")
+    val jsOpen: JsString          = JsString("Open")
+    val jsSuspended: JsString     = JsString("Suspended")
+    val jsClosed: JsString        = JsString("Closed")
+    val jsFailure: JsString       = JsString("123")
+    private val cashAccountNumber = "987654"
+    private val traderEori        = "12345678"
+
+    val cdsCashAccount: CdsCashAccount = CdsCashAccount(
+      Account(cashAccountNumber, emptyString, traderEori, Some(AccountStatusOpen), false, Some(false)),
+      Some("999.99")
+    )
+
+    val requestDetail: AccountsRequestDetail = AccountsRequestDetail(
+      EORINo = "GB123456789",
+      accountType = Some("123456789"),
+      accountNumber = Some("July 2022"),
+      referenceDate = Some("August 2022")
+    )
+
+    val responseDetail: AccountResponseDetail = AccountResponseDetail(
+      EORINo = Some("GB123456789"),
+      referenceDate = Some("August 2022"),
+      cdsCashAccount = Some(Seq(cdsCashAccount))
+    )
+
+    val accountResCommon: AccountResponseCommon =
+      AccountResponseCommon("OK", Some("602-Exceeded maximum threshold of transactions"), "2021-12-17T09:30:47Z", None)
+
   }
 }
