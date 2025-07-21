@@ -17,7 +17,7 @@
 package models
 
 import utils.SpecBase
-import play.api.libs.json.{JsResult, JsString, JsSuccess, OWrites, Writes}
+import play.api.libs.json.{JsResult, JsString, JsSuccess}
 import play.api.libs.json.Json
 
 class AccountsAndBalancesSpec extends SpecBase {

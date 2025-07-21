@@ -44,6 +44,19 @@ class CashTransactionsSpec extends SpecBase {
       (res \ "cashDailyStatements").as[Seq[CashDailyStatement]] mustBe Seq(cashDailyStatement)
       (res \ "maxTransactionsExceeded").as[Boolean] mustBe true
     }
+
+    "serialize to JSON correctly" in new Setup {
+      val model = CashTransactions(
+        pendingTransactions = Seq(declarations),
+        cashDailyStatements = Seq(cashDailyStatement),
+        maxTransactionsExceeded = Some(true)
+      )
+
+      val json = Json.toJson(model)
+      (json \ "pendingTransactions").as[Seq[Declaration]] mustBe Seq(declarations)
+      (json \ "cashDailyStatements").as[Seq[CashDailyStatement]] mustBe Seq(cashDailyStatement)
+      (json \ "maxTransactionsExceeded").as[Boolean] mustBe true
+    }
   }
 
   "EncryptedCashTransactions" must {
@@ -61,6 +74,20 @@ class CashTransactionsSpec extends SpecBase {
       (res \ "cashDailyStatements") mustBe a[JsUndefined]
       (res \ "maxTransactionsExceeded").as[Boolean] mustBe false
     }
+
+    "serialize to JSON correctly" in new Setup {
+      val model = EncryptedCashTransactions(
+        pendingTransactions = Seq(encryptedDeclaration),
+        cashDailyStatement = Seq(encryptedDailyStatements),
+        maxTransactionsExceeded = Some(false)
+      )
+
+      val json = Json.toJson(model)
+      (json \ "pendingTransactions").as[Seq[EncryptedDeclaration]] mustBe Seq(encryptedDeclaration)
+      (json \ "cashDailyStatement").as[Seq[EncryptedDailyStatements]] mustBe Seq(encryptedDailyStatements)
+      (json \ "maxTransactionsExceeded").as[Boolean] mustBe false
+    }
+
   }
 
   trait Setup {
@@ -68,6 +95,8 @@ class CashTransactionsSpec extends SpecBase {
     val year  = 2024
     val month = 5
     val day   = 5
+
+    val sMRN = "ic62zbad-75fa-445f-962b-cc92311686b8e"
 
     val nonce = "someNone"
 
@@ -132,6 +161,16 @@ class CashTransactionsSpec extends SpecBase {
         TaxGroup(ExciseDuty, twoThousand, taxTypes)
       ),
       secureMovementReferenceNumber = secureMovementReferenceNumber
+    )
+
+    val encryptedDailyStatements: EncryptedDailyStatements = EncryptedDailyStatements(
+      LocalDate.parse("2020-07-18"),
+      0.0,
+      1000.00,
+      Seq(
+        encryptedDeclaration
+      ),
+      Seq(Transaction(45.67, Payment, None), Transaction(-76.34, Withdrawal, Some("77665544")))
     )
 
     val encryptedCashTxn01: EncryptedCashTransactions = EncryptedCashTransactions(Seq(encryptedDeclaration), Nil, None)
