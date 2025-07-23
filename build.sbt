@@ -47,7 +47,7 @@ lazy val microservice = Project(appName, file("."))
         ".*views.html.components.daily_statement.*;" +
         ".*views.html.cash_account.*",
     ScoverageKeys.coverageMinimumStmtTotal := 90,
-    ScoverageKeys.coverageFailOnMinimum := false,
+    ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
     TwirlKeys.templateImports ++= Seq(
       "config.AppConfig",
