@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json.{JsSuccess, Json}
+import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import utils.SpecBase
 
 class ErrorDetailSpec extends SpecBase {
@@ -34,6 +34,37 @@ class ErrorDetailSpec extends SpecBase {
       Json.toJson(errorDetailObject) mustBe Json.parse(errorDetailsJsonString)
     }
 
+    "fail to read invalid ErrorDetail JSON (missing required fields)" in new Setup {
+      val invalidJson: JsValue = Json.parse(
+        """{
+          | "timestamp": "2019-08-1618:15:41"
+          |}""".stripMargin
+      )
+
+      import ErrorDetail.format
+
+      Json.fromJson(invalidJson) mustBe a[JsError]
+    }
+
+    "fail to read ErrorDetail with wrong types" in new Setup {
+      val invalidJson: JsValue = Json.parse(
+        """{
+          | "timestamp": 12345,
+          | "correlationId": false,
+          | "errorCode": 400,
+          | "errorMessage": ["Bad request"],
+          | "source": {},
+          | "sourceFaultDetail": {
+          |   "detail": "should-be-an-array"
+          | }
+          |}""".stripMargin
+      )
+
+      import ErrorDetail.format
+
+      Json.fromJson(invalidJson) mustBe a[JsError]
+    }
+
   }
 
   "SourceFaultDetail.format" should {
@@ -48,6 +79,31 @@ class ErrorDetailSpec extends SpecBase {
     "write correctly for Json Writes" in new Setup {
       Json.toJson(sourceFaultDetail) mustBe Json.parse(sourceFaultDetailJsonString)
     }
+
+    "fail to read invalid SourceFaultDetail JSON (wrong type for detail)" in new Setup {
+      val invalidJson: JsValue = Json.parse(
+        """{
+          | "detail": "This should be an array"
+          |}""".stripMargin
+      )
+
+      import SourceFaultDetail.format
+
+      Json.fromJson(invalidJson) mustBe a[JsError]
+    }
+
+    "fail to read SourceFaultDetail with missing detail field" in new Setup {
+      val invalidJson: JsValue = Json.parse(
+        """{
+          |  "someOtherField": []
+          |}""".stripMargin
+      )
+
+      import SourceFaultDetail.format
+
+      Json.fromJson(invalidJson) mustBe a[JsError]
+    }
+
   }
 
   trait Setup {

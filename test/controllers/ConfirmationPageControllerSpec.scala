@@ -97,6 +97,20 @@ class ConfirmationPageControllerSpec extends SpecBase {
     }
   }
 
+  "calling page load with failing cache throws and logs error" in new Setup {
+    when(mockRequestedTransactionsCache.get(any)).thenReturn(Future.failed(new RuntimeException("error")))
+    when(mockCustomsDataStoreConnector.getEmail(any)(any)).thenReturn(Future.successful(Right(Email(email))))
+
+    val request: FakeRequest[AnyContentAsEmpty.type] =
+      fakeRequest(GET, routes.ConfirmationPageController.onPageLoad().url)
+
+    running(app) {
+      val result = route(app, request).value
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).value mustBe routes.CashAccountController.showAccountUnavailable.url
+    }
+  }
+
   trait Setup {
     val emailParagraphId = "body-text-email"
     val email            = "jackiechan@mail.com"

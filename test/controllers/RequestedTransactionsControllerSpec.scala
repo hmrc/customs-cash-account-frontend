@@ -16,27 +16,36 @@
 
 package controllers
 
-import config.AppConfig
+import config.{AppConfig, ErrorHandler}
 import connectors.{
   CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested, UnknownException
 }
-import models._
+import controllers.actions.FakeIdentifierAction
+import models.*
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.{Materializer, SystemMaterializer}
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
-import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents, Request, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.RequestedTransactionsCache
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
 
 import java.time.LocalDate
-import scala.concurrent.Future
-
+import scala.concurrent.{ExecutionContext, Future}
 import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.{eq => eqTo}
+import play.api.i18n.{Messages, MessagesApi}
+import play.twirl.api.Html
+import viewmodels.ResultsPageSummary
+import views.html.{
+  cash_account_transactions_not_available, cash_transactions_no_result, cash_transactions_result_page,
+  cash_transactions_too_many_results
+}
 
 class RequestedTransactionsControllerSpec extends SpecBase {
 
@@ -177,6 +186,27 @@ class RequestedTransactionsControllerSpec extends SpecBase {
     }
   }
 
+  "tooManyTransactionsSelected" must {
+
+    "return OK when called with a valid date range" in new Setup {
+
+      val dateRange: RequestedDateRange = RequestedDateRange(fromDate, toDate)
+
+      val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest(GET, "/some-path")
+
+      implicit val messages: Messages =
+        app.injector.instanceOf[MessagesApi].preferred(request)
+
+      when(mockTooManyResultsView.apply(any[ResultsPageSummary], any[String])(any[Request[_]], any[Messages], any))
+        .thenReturn(Html("Too many transactions"))
+
+      val result: Future[Result] = controller.tooManyTransactionsRequested(dateRange)(request)
+
+      status(result) mustBe OK
+      contentAsString(result) must include("Too many transactions")
+    }
+  }
+
   trait Setup {
     val cashAccountNumber = "1234567"
     val eori              = "exampleEori"
@@ -184,6 +214,28 @@ class RequestedTransactionsControllerSpec extends SpecBase {
 
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
     val mockRequestedTransactionsCache: RequestedTransactionsCache       = mock[RequestedTransactionsCache]
+    val mockTooManyResultsView: cash_transactions_too_many_results       = mock[cash_transactions_too_many_results]
+
+    val mockErrorHandler: ErrorHandler    = mock[ErrorHandler]
+    val mcc: MessagesControllerComponents = stubMessagesControllerComponents()
+
+    implicit val actorSystem: ActorSystem   = ActorSystem("test")
+    implicit val materializer: Materializer = SystemMaterializer(actorSystem).materializer
+    val fakeIdentify                        = new FakeIdentifierAction(stubPlayBodyParsers())
+
+    implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
+
+    val controller = new RequestedTransactionsController(
+      resultView = mock[cash_transactions_result_page],
+      apiConnector = mockCustomsFinancialsApiConnector,
+      transactionsUnavailable = mock[cash_account_transactions_not_available],
+      tooManyResults = mockTooManyResultsView,
+      noResults = mock[cash_transactions_no_result],
+      identify = fakeIdentify,
+      eh = mockErrorHandler,
+      cache = mockRequestedTransactionsCache,
+      mcc = mcc
+    )
 
     val cashAccount: CashAccount =
       CashAccount(cashAccountNumber, eori, AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))

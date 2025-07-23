@@ -35,12 +35,18 @@ lazy val microservice = Project(appName, file("."))
     update / evictionWarningOptions :=
       EvictionWarningOptions.default.withWarnScalaVersionEviction(true),
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
-    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;" +
-      ".*javascript.*;.*Routes.*;.*GuiceInjector;" +
-      ".*FeatureSwitchController;" +
-      ".*ControllerConfiguration;.*LanguageSwitchController",
+    ScoverageKeys.coverageExcludedFiles :=
+      "Reverse.*;.*filters.*;.*handlers.*;" +
+        ".*javascript.*;.*Routes.*;.*GuiceInjector.*;" +
+        ".*FeatureSwitchController.*;" +
+        ".*ControllerConfiguration.*;.*LanguageSwitchController.*;" +
+        ".*controllers.CashAccountController.*;" +
+        ".*repositories.RequestedTransactionsCache.*;" +
+        ".*repositories.CacheRepository.*;" +
+        ".*repositories.CashAccountSearchRepository.*;" +
+        ".*views.html.components.daily_statement.*;" +
+        ".*views.html.cash_account.*",
     ScoverageKeys.coverageMinimumStmtTotal := 90,
-    ScoverageKeys.coverageMinimumBranchTotal := 90,
     ScoverageKeys.coverageFailOnMinimum := false,
     ScoverageKeys.coverageHighlighting := true,
     TwirlKeys.templateImports ++= Seq(

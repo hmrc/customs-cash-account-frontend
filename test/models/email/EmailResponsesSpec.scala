@@ -16,7 +16,7 @@
 
 package models.email
 
-import play.api.libs.json.{JsSuccess, Json}
+import play.api.libs.json.{JsError, JsSuccess, Json}
 import utils.SpecBase
 
 class EmailResponsesSpec extends SpecBase {
@@ -35,6 +35,14 @@ class EmailResponsesSpec extends SpecBase {
       "performing Writes" in new Setup {
         Json.toJson(undelInfoEventOb) mustBe Json.parse(sampleResponseForUndeliverableEvent)
       }
+
+      "return JsError for invalid JSON" in new Setup {
+        val invalidJson = """{ "id": 123 }"""
+        import UndeliverableInformationEvent.format
+
+        Json.fromJson(Json.parse(invalidJson)) mustBe a[JsError]
+      }
+
     }
   }
 
@@ -53,6 +61,13 @@ class EmailResponsesSpec extends SpecBase {
         Json.toJson(undelInfoOb) mustBe Json.parse(sampleResponseForUndeliverableInfo)
       }
     }
+    "return JsError for invalid JSON" in new Setup {
+      val invalidJson = """{ "subject": 123 }"""
+      import UndeliverableInformation.format
+
+      Json.fromJson(Json.parse(invalidJson)) mustBe a[JsError]
+    }
+
   }
 
   "EmailResponse" must {
@@ -70,6 +85,13 @@ class EmailResponsesSpec extends SpecBase {
         Json.toJson(emailResponseOb) mustBe Json.parse(sampleEmailResponse)
       }
     }
+
+    "return JsError for invalid JSON" in new Setup {
+      val invalidJson = """{ "address": 456 }"""
+      import EmailResponse.format
+
+      Json.fromJson(Json.parse(invalidJson)) mustBe a[JsError]
+    }
   }
 
   "EmailVerifiedResponse.Reads" must {
@@ -79,6 +101,13 @@ class EmailResponsesSpec extends SpecBase {
       import EmailVerifiedResponse.format
 
       Json.fromJson(Json.parse(emailVerifiedResponse)) mustBe JsSuccess(emailVerifiedResponseOb)
+    }
+
+    "return JsError for invalid JSON" in new Setup {
+      val invalidJson = """{ "verifiedEmail": 999 }"""
+      import EmailVerifiedResponse.format
+
+      Json.fromJson(Json.parse(invalidJson)) mustBe a[JsError]
     }
   }
 
@@ -96,6 +125,13 @@ class EmailResponsesSpec extends SpecBase {
       import EmailUnverifiedResponse.format
 
       Json.fromJson(Json.parse(emailUnverifiedResponse)) mustBe JsSuccess(emailUnverifiedResponseOb)
+    }
+
+    "return JsError for invalid JSON" in new Setup {
+      val invalidJson = """{ "unVerifiedEmail": false }"""
+      import EmailUnverifiedResponse.format
+
+      Json.fromJson(Json.parse(invalidJson)) mustBe a[JsError]
     }
   }
 

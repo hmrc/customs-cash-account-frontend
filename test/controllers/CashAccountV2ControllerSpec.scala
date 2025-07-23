@@ -18,8 +18,8 @@ package controllers
 
 import config.AppConfig
 import connectors.{
-  CustomsDataStoreConnector, CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested,
-  UnknownException
+  CustomsDataStoreConnector, CustomsFinancialsApiConnector, NoTransactionsAvailable, SdesConnector,
+  TooManyTransactionsRequested, UnknownException
 }
 import forms.SearchTransactionsFormProvider
 import models.email.{UndeliverableEmail, UnverifiedEmail}
@@ -33,7 +33,7 @@ import play.api.Application
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
-import play.api.mvc.{AnyContentAsEmpty, Result}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.http.UpstreamErrorResponse
@@ -516,6 +516,37 @@ class CashAccountV2ControllerSpec extends SpecBase {
         status(result) mustBe OK
       }
     }
+
+    "return OK when getStatementsForEori throws an exception" in new Setup {
+
+      when(mockRequestedTransactionsCache.clear(eqTo(eori)))
+        .thenReturn(Future.successful(true))
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(Right(cashTransactionResponse)))
+
+      when(mockSdesConnector.getCashStatements(eqTo(eori))(any, any))
+        .thenReturn(Future.failed(new RuntimeException("SDES error")))
+
+      val app: Application = applicationBuilder
+        .overrides(
+          bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache),
+          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
+          bind[SdesConnector].toInstance(mockSdesConnector)
+        )
+        .build()
+
+      running(app) {
+        val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
+        val result  = route(app, request).value
+
+        status(result) mustEqual OK
+        contentAsString(result) must include("Request transactions")
+      }
+    }
   }
 
   "showAccountUnavailable" must {
@@ -645,6 +676,72 @@ class CashAccountV2ControllerSpec extends SpecBase {
         renderedView must include(s"Enter an MRN, UCR or exact payment amount that includes &#x27;$poundSymbol&#x27;")
       }
     }
+
+    "return BadRequest when form has validation errors" in new Setup {
+      val invalidForm: Form[String] = new SearchTransactionsFormProvider()
+        .apply()
+        .bind(Map("value" -> ""))
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(Right(cashTransactionResponse)))
+
+      val app: Application = applicationBuilder
+        .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
+        .build()
+
+      val view: cash_account_v2                            = app.injector.instanceOf[cash_account_v2]
+      val request: FakeRequest[AnyContentAsFormUrlEncoded] =
+        FakeRequest(POST, routes.CashAccountV2Controller.onSubmit(Some(1)).url)
+          .withFormUrlEncodedBody("value" -> "")
+
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe BAD_REQUEST
+
+        val pageContent = contentAsString(result)
+        pageContent must include("There is a problem")
+      }
+    }
+    "return BadRequest and cover statement retrieval failure during onSubmit with form errors" in new Setup {
+
+      val formWithErrors: Form[String] = new SearchTransactionsFormProvider()
+        .apply()
+        .bind(Map("value" -> ""))
+
+      when(mockRequestedTransactionsCache.clear(eqTo(eori)))
+        .thenReturn(Future.successful(true))
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(Right(cashTransactionResponse)))
+
+      when(mockSdesConnector.getCashStatements(eqTo(eori))(any, any))
+        .thenReturn(Future.failed(new RuntimeException("SDES fetch error")))
+
+      val app: Application = applicationBuilder
+        .overrides(
+          bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache),
+          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
+          bind[SdesConnector].toInstance(mockSdesConnector)
+        )
+        .build()
+
+      running(app) {
+        val request = FakeRequest(POST, routes.CashAccountV2Controller.onSubmit(Some(1)).url)
+          .withFormUrlEncodedBody("value" -> "")
+
+        val result = route(app, request).value
+
+        status(result) mustBe BAD_REQUEST
+        contentAsString(result) must include("There is a problem")
+      }
+    }
+
   }
 
   trait Setup {
@@ -656,6 +753,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
     val mockDataStoreConnector: CustomsDataStoreConnector                = mock[CustomsDataStoreConnector]
     val mockDeclarationDetailController: DeclarationDetailController     = mock[DeclarationDetailController]
+    val mockSdesConnector: SdesConnector                                 = mock[SdesConnector]
 
     val cashAccount: CashAccount =
       CashAccount(cashAccountNumber, eori, AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))

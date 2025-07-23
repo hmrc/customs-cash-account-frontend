@@ -16,8 +16,9 @@
 
 package models
 
-import play.api.libs.json.{JsResultException, JsSuccess, Json}
+import play.api.libs.json.{JsObject, JsResultException, JsSuccess, Json}
 import utils.SpecBase
+import utils.TestData.{DAY_1, MONTH_10, MONTH_8, YEAR_2023}
 
 import java.time.LocalDate
 
@@ -46,14 +47,14 @@ class CashTransactionDatesSpec extends SpecBase {
   }
 
   trait Setup {
-    val model = CashTransactionDates(
-      LocalDate.of(2023, 1, 1),
-      LocalDate.of(2023, 12, 31)
+    val model: CashTransactionDates = CashTransactionDates(
+      LocalDate.of(YEAR_2023, MONTH_8, DAY_1),
+      LocalDate.of(YEAR_2023, MONTH_10, DAY_1)
     )
 
-    val expectedJson = Json.obj(
-      "start" -> "2023-01-01",
-      "end"   -> "2023-12-31"
+    val expectedJson: JsObject = Json.obj(
+      "start" -> "2023-08-01",
+      "end"   -> "2023-10-01"
     )
 
     val validJson: String = Json.stringify(expectedJson)

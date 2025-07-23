@@ -24,6 +24,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.when
 import play.api.Application
 import play.api.inject.bind
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import repositories.CashAccountSearchRepository
@@ -109,6 +110,21 @@ class CashAccountPaymentSearchControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
         htmlContent.contains(noResultsReturnedMessage) mustBe true
+      }
+    }
+
+    "return NotFound when cash account is not found" in new Setup {
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(None))
+
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        FakeRequest(GET, routes.CashAccountPaymentSearchController.search(PAYMENT_SEARCH_VALUE, Some(1)).url)
+          .withSession("eori" -> eori)
+
+      running(app) {
+        val result = route(app, request).value
+
+        status(result) mustEqual NOT_FOUND
       }
     }
   }

@@ -48,6 +48,35 @@ class DeclarationSpec extends SpecBase {
       val result: Declaration = Declaration.format.reads(json).get
       result mustBe declarationWithFieldsMissing
     }
+
+    "fail to deserialize invalid Declaration JSON (e.g., missing required field)" in new Setup {
+      val invalidJson: JsValue = Json.parse(
+        s"""{
+           |  "importerEori": "$importerEori",
+           |  "declarantReference": "$declarantReference",
+           |  "date": "$date",
+           |  "amount": $twoThousand
+           |}""".stripMargin
+      )
+
+      Declaration.format.reads(invalidJson) mustBe a[JsError]
+    }
+
+    "fail to deserialize Declaration with wrong data type" in new Setup {
+      val invalidJson: JsValue = Json.parse(
+        s"""{
+           |  "movementReferenceNumber": 123,
+           |  "importerEori": "$importerEori",
+           |  "declarantEori": "$declarantEori",
+           |  "date": "$date",
+           |  "amount": "$twoThousand",
+           |  "taxGroups": []
+           |}""".stripMargin
+      )
+
+      Declaration.format.reads(invalidJson) mustBe a[JsError]
+    }
+
   }
 
   "EncryptedDeclaration format" should {
@@ -57,6 +86,35 @@ class DeclarationSpec extends SpecBase {
       val result: EncryptedDeclaration = EncryptedDeclaration.format.reads(json).get
       result mustBe encryptedDeclaration
     }
+
+    "fail to deserialize invalid EncryptedDeclaration JSON" in new Setup {
+      val invalidJson: JsValue = Json.parse(
+        s"""{
+           |  "importerEori": "${crypto.encrypt(importerEori)}",
+           |  "declarantEori": "${crypto.encrypt(declarantEori)}",
+           |  "amount": $thousand,
+           |  "taxGroups": []
+           |}""".stripMargin
+      )
+
+      EncryptedDeclaration.format.reads(invalidJson) mustBe a[JsError]
+    }
+
+    "fail to deserialize EncryptedDeclaration with wrong data type" in new Setup {
+      val invalidJson: JsValue = Json.parse(
+        s"""{
+           |  "movementReferenceNumber": 123,
+           |  "importerEori": true,
+           |  "declarantEori": {},
+           |  "date": "not-a-date",
+           |  "amount": "1000",
+           |  "taxGroups": "not-an-array"
+           |}""".stripMargin
+      )
+
+      EncryptedDeclaration.format.reads(invalidJson) mustBe a[JsError]
+    }
+
   }
 
   trait Setup {
