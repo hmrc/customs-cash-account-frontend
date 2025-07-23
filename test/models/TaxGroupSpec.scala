@@ -89,7 +89,7 @@ class TaxGroupSpec extends SpecBase {
     }
 
     "fail to deserialize TaxGroup with incorrect types" in new Setup {
-      val invalidJson: JsValue = Json.obj("type" -> 123)
+      val invalidJson: JsValue      = Json.obj("type" -> 123)
       val result: JsResult[TaxType] = Json.fromJson[TaxType](invalidJson)
       result mustBe a[JsError]
     }
