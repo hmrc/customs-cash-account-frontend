@@ -42,8 +42,10 @@ object TestData {
   val DAY_16 = 16
   val DAY_17 = 17
 
+  val MONTH_2   = 2
   val MONTH_8   = 8
   val MONTH_10  = 10
+  val YEAR_2020 = 2020
   val YEAR_2021 = 2021
   val YEAR_2022 = 2022
   val YEAR_2023 = 2023

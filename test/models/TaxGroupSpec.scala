@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json.{JsResultException, JsValue, Json}
+import play.api.libs.json.{JsError, JsObject, JsResult, JsResultException, JsValue, Json}
 import utils.SpecBase
 
 class TaxGroupSpec extends SpecBase {
@@ -40,6 +40,13 @@ class TaxGroupSpec extends SpecBase {
         invalidJson.as[TaxType]
       }
     }
+
+    "fail to deserialize TaxType with incorrect field types" in new Setup {
+      val invalidJson: JsObject     = Json.obj("reason" -> 123, "type" -> true, "amount" -> "not-a-number")
+      val result: JsResult[TaxType] = Json.fromJson[TaxType](invalidJson)
+      result mustBe a[JsError]
+    }
+
   }
 
   "TaxGroup" must {
@@ -79,6 +86,12 @@ class TaxGroupSpec extends SpecBase {
       intercept[RuntimeException] {
         invalidJson.as[TaxGroup]
       }
+    }
+
+    "fail to deserialize TaxGroup with incorrect types" in new Setup {
+      val invalidJson: JsValue      = Json.obj("type" -> 123)
+      val result: JsResult[TaxType] = Json.fromJson[TaxType](invalidJson)
+      result mustBe a[JsError]
     }
   }
 

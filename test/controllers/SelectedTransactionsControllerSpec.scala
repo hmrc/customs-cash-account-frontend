@@ -16,23 +16,34 @@
 
 package controllers
 
-import config.AppConfig
+import config.{AppConfig, ErrorHandler}
 import connectors.*
+import controllers.actions.FakeIdentifierAction
 import models.*
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.{Materializer, SystemMaterializer}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import play.api.Application
 import play.api.http.Status
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
-import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents, Request, RequestHeader, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
+import play.twirl.api.Html
 import repositories.RequestedTransactionsCache
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
+import play.api.test.Helpers.stubPlayBodyParsers
+import viewmodels.ResultsPageSummary
+import views.html.{
+  cash_account_requested_too_many_transactions, cash_transactions_duplicate_dates, cash_transactions_too_many_results,
+  selected_transactions
+}
 
 import java.time.LocalDate
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class SelectedTransactionsControllerSpec extends SpecBase {
 
@@ -50,6 +61,40 @@ class SelectedTransactionsControllerSpec extends SpecBase {
         val result = route(app, request).value
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.SelectTransactionsController.onPageLoad().url
+      }
+    }
+
+    "redirect to unavailable page if getCachedDatesAndDisplaySelectedTransactions fails" in new Setup {
+      when(mockRequestedTransactionsCache.get(any))
+        .thenReturn(Future.failed(new RuntimeException("failure")))
+
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
+
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.CashAccountController.showAccountUnavailable.url
+      }
+    }
+
+    "return NotFound when no account is returned from CustomsFinancialsApiConnector" in new Setup {
+      when(mockRequestedTransactionsCache.get(any))
+        .thenReturn(Future.successful(Some(CashTransactionDates(LocalDate.now(), LocalDate.now()))))
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(None))
+
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.SelectedTransactionsController.onPageLoad().url)
+      implicit val rh: RequestHeader                   = request
+
+      when(mockErrorHandler.notFoundTemplate).thenReturn(Future.successful(Html("not found")))
+
+      running(app) {
+        val result = route(app, request).value
+        status(result) mustBe NOT_FOUND
+        contentAsString(result) must include("not found")
       }
     }
 
@@ -143,6 +188,22 @@ class SelectedTransactionsControllerSpec extends SpecBase {
         }
       }
     }
+
+    "redirect to showAccountDetails if onSubmit fails" in new Setup {
+
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.failed(new RuntimeException("API failure")))
+
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(POST, routes.SelectedTransactionsController.onSubmit().url)
+
+      running(app) {
+        val result = route(app, request).value
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.CashAccountController.showAccountDetails(None).url)
+      }
+    }
   }
 
   "requestedTooManyTransactions" must {
@@ -174,6 +235,22 @@ class SelectedTransactionsControllerSpec extends SpecBase {
         redirectLocation(result) mustBe Some(routes.CashAccountController.showAccountDetails(None).url)
       }
     }
+
+    "redirect to showAccountDetails if an exception is thrown in requestedTooManyTransactions" in new Setup {
+
+      when(mockRequestedTransactionsCache.get(any))
+        .thenReturn(Future.failed(new RuntimeException("cache failure")))
+
+      val request: FakeRequest[AnyContentAsEmpty.type] =
+        fakeRequest(GET, routes.SelectedTransactionsController.requestedTooManyTransactions().url)
+
+      running(app) {
+        val result = route(app, request).value
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.CashAccountController.showAccountDetails(None).url)
+      }
+    }
   }
 
   "duplicateDates" must {
@@ -193,13 +270,55 @@ class SelectedTransactionsControllerSpec extends SpecBase {
     }
   }
 
+  "tooManyTransactionsSelected" must {
+
+    "return OK when called with a valid date range" in new Setup {
+
+      val dateRange: RequestedDateRange = RequestedDateRange(fromDate, toDate)
+
+      val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest(GET, "/some-path")
+
+      implicit val messages: Messages =
+        app.injector.instanceOf[MessagesApi].preferred(request)
+
+      when(mockTooManyResultsView.apply(any[ResultsPageSummary], any[String])(any[Request[_]], any[Messages], any))
+        .thenReturn(Html("Too many transactions"))
+
+      val result: Future[Result] = controller.tooManyTransactionsSelected(dateRange)(request)
+
+      status(result) mustBe OK
+      contentAsString(result) must include("Too many transactions")
+    }
+  }
+
   trait Setup {
     val testDate: String                                                 = "someDate"
     val sMRN: Option[String]                                             = Some("ic62zbad-75fa-445f-962b-cc92311686b8e")
     val cashAccountNumber                                                = "1234567"
     val eori                                                             = "exampleEori"
+    val mockTooManyResultsView: cash_transactions_too_many_results       = mock[cash_transactions_too_many_results]
     val mockCustomsFinancialsApiConnector: CustomsFinancialsApiConnector = mock[CustomsFinancialsApiConnector]
     val mockRequestedTransactionsCache: RequestedTransactionsCache       = mock[RequestedTransactionsCache]
+    val mockErrorHandler: ErrorHandler                                   = mock[ErrorHandler]
+    val mcc: MessagesControllerComponents                                = stubMessagesControllerComponents()
+
+    implicit val actorSystem: ActorSystem   = ActorSystem("test")
+    implicit val materializer: Materializer = SystemMaterializer(actorSystem).materializer
+    val fakeIdentify                        = new FakeIdentifierAction(stubPlayBodyParsers())
+
+    implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
+
+    val controller = new SelectedTransactionsController(
+      selectedTransactionsView = mock[selected_transactions],
+      apiConnector = mockCustomsFinancialsApiConnector,
+      tooManyResults = mockTooManyResultsView,
+      duplicateDatesView = mock[cash_transactions_duplicate_dates],
+      requestTooManyTransactionsView = mock[cash_account_requested_too_many_transactions],
+      identify = fakeIdentify,
+      eh = mockErrorHandler,
+      cache = mockRequestedTransactionsCache,
+      mcc = mcc
+    )
 
     val cashAccount: CashAccount =
       CashAccount(cashAccountNumber, eori, AccountStatusOpen, CDSCashBalance(Some(BigDecimal(123456.78))))

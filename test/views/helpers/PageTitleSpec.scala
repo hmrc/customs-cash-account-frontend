@@ -33,6 +33,12 @@ class PageTitleSpec extends SpecBase {
 
       res mustBe Some(" - Manage import duties and VAT accounts - GOV.UK")
     }
+
+    "return correct string for None title" in {
+      val res: Option[String] = PageTitle.fullPageTitle(None)
+
+      res mustBe Some("Manage import duties and VAT accounts - GOV.UK")
+    }
   }
 
 }
