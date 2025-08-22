@@ -70,7 +70,7 @@ class SdesConnector @Inject() (
   )(implicit reads: Reads[Seq[A]], hc: HeaderCarrier): Future[Seq[B]] =
     metricsReporterService.withResponseTimeLogging(metricsName) {
       println("X-SDES-Key: " + key)
-      println("Xtra Headers: " +addXHeaders(hc, key).extraHeaders)
+      println("Xtra Headers: " + addXHeaders(hc, key).extraHeaders)
       httpClientV2
         .get(url"$url")
         .setHeader(addXHeaders(hc, key).extraHeaders: _*)
