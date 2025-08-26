@@ -47,10 +47,6 @@ class SdesConnector @Inject() (
     val transform = convertTo[CashStatementFile] andThen filterFileFormats(SdesFileFormats)
     auditingService.auditCashStatements(eori)
 
-    println("URL: " + appConfig.sdesApiEndPoint)
-    println("EORI: " + eori)
-    println("x-client-id: " + appConfig.xClientIdHeader)
-
     getSdesFiles[FileInformation, CashStatementFile](
       url = appConfig.sdesApiEndPoint,
       key = eori,
@@ -69,8 +65,6 @@ class SdesConnector @Inject() (
     transform: Seq[A] => Seq[B]
   )(implicit reads: Reads[Seq[A]], hc: HeaderCarrier): Future[Seq[B]] =
     metricsReporterService.withResponseTimeLogging(metricsName) {
-      println("X-SDES-Key: " + key)
-      println("Xtra Headers: " + addXHeaders(hc, key).extraHeaders)
       httpClientV2
         .get(url"$url")
         .setHeader(addXHeaders(hc, key).extraHeaders: _*)
