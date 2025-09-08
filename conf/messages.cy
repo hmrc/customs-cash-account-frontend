@@ -199,7 +199,7 @@ cf.cash-account.detail.link.post = ar GOV.UK
 cf.cash-account.help-and-support.link.text.pre = Gallw ch
 cf.cash-account.help-and-support.link.text.pre.v2 = Gallwch
 cf.cash-account.help-and-support.link.text.post = os oes angen help arnoch
-cf.cash-account.help-and-support.link.text = gysylltu â chanolfan cyfrifyddu CThEF (yn agor tab newydd)
+cf.cash-account.help-and-support.link.text = gysylltu â chanolfan cyfrifyddu CThEF
 cf.cash-account.how-to-use.guidance.text.pre = Dysgwch sut i
 cf.cash-account.how-to-use.guidance.text.post = ar GOV.UK.
 cf.cash-account.how-to-use.guidance.link.text = ddefnyddio cyfrif arian parod ar gyfer datganiadau’r Gwasanaeth Datgan Tollau (CDS)
@@ -323,7 +323,7 @@ cf.cash-account.transactions.confirmation.back=Yn ôl i hafan ‘Rheoli tollau m
 
 cf.cash-account.transactions.confirmation.help.subheader-text=Helpu ni i wella’r gwasanaeth hwn
 cf.cash-account.transactions.confirmation.help.body-text=Mae eich adborth yn werthfawr i ni. 
-cf.cash-account.transactions.confirmation.help.link=Cofrestrwch i gymryd rhan mewn ymchwil defnyddwyr (yn agor tab newydd)
+cf.cash-account.transactions.confirmation.help.link=Cofrestrwch i gymryd rhan mewn ymchwil defnyddwyr
 
 cf.cash-account.detail.transactions= Trafodion
 cf.cash-account.detail.payments-caption=Eich taliadau ar gyfer {0}
