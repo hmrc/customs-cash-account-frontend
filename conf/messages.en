@@ -211,6 +211,9 @@ cf.cash-account.detail.no-transactions-with-balance.p1=There are no transactions
 
 # Cash Transactions Request
 # --------------------------------------------------------------
+cf.cash-account.no.transactions.request.link.pre=Alternatively,
+cf.cash-account.no.transactions.request.link.previous=request by date and download your transactions as a CSV file
+cf.cash-account.no.transactions.request-transactions.download-csv.post-message =The CSV file will be available to download within 48 hours.
 cf.cash-account.transactions.request.link.heading=Previous transactions
 cf.cash-account.transactions.request.support.heading=Help and Support
 cf.cash-account.transactions.request.support.pre=If you need help

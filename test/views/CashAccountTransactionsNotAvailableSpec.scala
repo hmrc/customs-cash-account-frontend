@@ -40,8 +40,6 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
 
         shouldContainNoTransactionAvailableSection
 
-        shouldContainH2Element
-
         shouldContainLinkElement
 
         checkUnavailabilityOfPaymentSection
@@ -110,25 +108,27 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
   private def shouldContainNoTransactionAvailableSection(implicit view: Document): Assertion = {
     val noTransactionAvailableSection: String = view.getElementById("no-transactions-available").text()
 
-    noTransactionAvailableSection.contains(
-      messages("cf.cash-account.detail.transactions-not-available.first")
-    ) mustBe true
+    println("-----------------" + noTransactionAvailableSection)
+    println(
+      "-----------------" + messages("cf.cash-account.detail.transactions-not-available")
+        .replaceAll("<br\\s*/?>", "")
+        .trim
+    )
 
     noTransactionAvailableSection.contains(
-      messages("cf.cash-account.detail.transactions-not-available.second")
+      messages("cf.cash-account.detail.transactions-not-available").replaceAll("<br\\s*/?>", "").trim
     ) mustBe true
+
   }
-
-  private def shouldContainH2Element(implicit view: Document): Assertion =
-    view.getElementById("missing-documents-guidance-heading").text() mustBe
-      messages("cf.cash-account.transactions.request.link.heading")
 
   private def shouldContainLinkElement(implicit view: Document): Assertion = {
     val linkElement: String = view.getElementsByClass("govuk-!-margin-bottom-9").html()
 
-    linkElement.contains(messages("cf.cash-account.transactions.request.link.previous")) mustBe true
-
-    linkElement.contains(messages("cf.cash-account.transactions.request.link.pre")) mustBe true
+    linkElement.contains(messages("cf.cash-account.no.transactions.request.link.previous")) mustBe true
+    linkElement.contains(messages("cf.cash-account.no.transactions.request.link.pre")) mustBe true
+    linkElement.contains(
+      messages("cf.cash-account.no.transactions.request-transactions.download-csv.post-message")
+    ) mustBe true
 
     linkElement.contains(controllers.routes.RequestTransactionsController.onPageLoad().url) mustBe true
   }
