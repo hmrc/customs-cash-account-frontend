@@ -118,8 +118,11 @@ class CashAccountV2Controller @Inject() (
     form: Form[String] = formProvider()
   )(implicit req: IdentifierRequest[AnyContent], appConfig: AppConfig): Future[Result] =
     apiConnector.retrieveCashTransactions(account.number, from, to).map {
-      case Left(errorResponse)     => processErrorResponse(account, errorResponse)
+      case Left(errorResponse)     =>
+        println("/////////////////////// ERROR Response ///////////////////////")
+        processErrorResponse(account, errorResponse, statements)
       case Right(cashTransactions) =>
+        println("/////////////////////// Right Response ///////////////////////")
         if (form.hasErrors) {
           BadRequest(accountsView(form, CashAccountV2ViewModel(req.eori, account, cashTransactions, statements, page)))
         } else {
@@ -127,14 +130,16 @@ class CashAccountV2Controller @Inject() (
         }
     }
 
-  private def processErrorResponse(account: CashAccount, errorResponse: ErrorResponse)(implicit
+  private def processErrorResponse(account: CashAccount, errorResponse: ErrorResponse, statements: Seq[CashStatementsForEori])(implicit
     req: IdentifierRequest[AnyContent],
     appConfig: AppConfig
   ) =
     errorResponse match {
       case NoTransactionsAvailable      => checkBalanceAndDisplayNoTransactionsView(account)
       case TooManyTransactionsRequested => Redirect(routes.CashAccountV2Controller.tooManyTransactions())
-      case _                            => Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
+      case _                            =>
+        val hasStatements: Boolean = statements.exists(_.currentStatements.nonEmpty)
+        Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag, Some(hasStatements)))
     }
 
   private def checkBalanceAndDisplayNoTransactionsView(

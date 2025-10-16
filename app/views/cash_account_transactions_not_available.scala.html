@@ -16,6 +16,7 @@
 
 @import helpers.Formatters
 @import config.AppConfig
+@import models.FileRole.CDSCashAccount
 
 @this(
         main_template: Layout,
@@ -25,11 +26,14 @@
         inset: components.inset,
         link: components.link,
         newTabLink: components.newTabLink,
+        notificationPanelComponent: components.notification_panel,
+
 )
 
 @(
     accountModel: CashAccountViewModel,
-    transactionsTimeout: Boolean
+    transactionsTimeout: Boolean,
+    hasStatements: Option[Boolean] = Some(false)
 )(
     implicit request: Request[_],
     messages: Messages,
@@ -42,6 +46,15 @@
     fullWidth = true,
     help = true
 ) {
+
+    @notificationPanelComponent(
+    showNotification = hasStatements,
+    preMessage = messages("cf.cash-account.requested.statements.available.text.pre"),
+    linkUrl = appConfig.requestedStatements(CDSCashAccount),
+    linkText = messages("cf.cash-account.requested.statements.available.link.text"),
+    postMessage = messages("cf.cash-account.requested.statements.available.text.post")
+    )
+
     @cash_account_balance(accountModel)
 
     @if(transactionsTimeout) {

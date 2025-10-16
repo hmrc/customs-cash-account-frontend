@@ -106,17 +106,15 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
   }
 
   private def shouldContainNoTransactionAvailableSection(implicit view: Document): Assertion = {
-    val noTransactionAvailableSection: String = view.getElementById("no-transactions-available").text()
+    val noTransactionAvailableSection: String = view.getElementById("no-transactions-available").html()
 
     println("-----------------" + noTransactionAvailableSection)
     println(
       "-----------------" + messages("cf.cash-account.detail.transactions-not-available")
-        .replaceAll("<br\\s*/?>", "")
-        .trim
     )
 
     noTransactionAvailableSection.contains(
-      messages("cf.cash-account.detail.transactions-not-available").replaceAll("<br\\s*/?>", "").trim
+      messages("cf.cash-account.detail.transactions-not-available")
     ) mustBe true
 
   }
