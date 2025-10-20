@@ -42,7 +42,7 @@ class AppConfigSpec extends SpecBase {
       appConfig.countdown mustBe 120
       appConfig.numberOfMonthsOfCashTransactionsToShow mustBe 6
       appConfig.numberOfDaysToShow mustBe 5
-      appConfig.fixedTimeTesting mustBe true
+      appConfig.fixedTimeTesting mustBe false
       appConfig.transactionsTimeoutFlag mustBe false
 
       appConfig.helpMakeGovUkBetterUrl mustBe
