@@ -16,12 +16,16 @@
 
 package views
 
+import config.AppConfig
+import models.FileRole.CDSCashAccount
 import models.domain.CAN
 import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
+import play.twirl.api.HtmlFormat
 import views.html.cash_account_transactions_not_available
+import utils.Utils.notificationPanelComponent
 
 class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
 
@@ -30,7 +34,7 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
     "display transactionsTimeout section" when {
 
       "transactionsTimeout is true" in new Setup {
-        implicit val view: Document = viewDoc(model, transactionsTimeout = true)
+        implicit val view: Document = viewDoc(model, transactionsTimeout = true, hasStatement = Some(false))
 
         titleShouldBeCorrect(view, "cf.cash-account.detail.title")
 
@@ -51,7 +55,7 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
     "display unable to show payment section" when {
 
       "transactionsTimeout is false" in new Setup {
-        implicit val view: Document = viewDoc(model, transactionsTimeout = false)
+        implicit val view: Document = viewDoc(model, transactionsTimeout = false, hasStatement = Some(false))
 
         titleShouldBeCorrect(view, "cf.cash-account.detail.title")
 
@@ -61,9 +65,26 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
 
         shouldContainPaymentSection
 
-        checkUnavailabilityOfTransactionTimeOutSection
+        shouldContainNoTransactionAvailableSection
+
+        shouldNotContainLinkElement
 
         shouldContainHelpAndSupportSection
+      }
+    }
+
+    "Display notification banner section" when {
+
+      "Statements are available to download" in new Setup {
+        implicit val view: Document = viewDoc(model, transactionsTimeout = true, hasStatement = Some(true))
+
+        shouldContainNotificationBanner
+      }
+
+      "Statements are not available to download" in new Setup {
+        implicit val view: Document = viewDoc(model, transactionsTimeout = true, hasStatement = Some(false))
+
+        shouldNotContainNotificationBanner
       }
     }
   }
@@ -80,13 +101,18 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
     val cashAcc: CashAccount        = CashAccount(accNumber, owner, AccountStatusOpen, bal)
     val model: CashAccountViewModel = CashAccountViewModel(eori, cashAcc)
 
-    def viewDoc(accountModel: CashAccountViewModel, transactionsTimeout: Boolean): Document =
+    def viewDoc(
+      accountModel: CashAccountViewModel,
+      transactionsTimeout: Boolean,
+      hasStatement: Option[Boolean]
+    ): Document =
       Jsoup.parse(
         app.injector
           .instanceOf[cash_account_transactions_not_available]
           .apply(
             accountModel,
-            transactionsTimeout
+            transactionsTimeout,
+            hasStatement
           )
           .body
       )
@@ -106,45 +132,35 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
   }
 
   private def shouldContainNoTransactionAvailableSection(implicit view: Document): Assertion = {
-    val noTransactionAvailableSection: String = view.getElementById("no-transactions-available").html()
+    view
+      .getElementById("no-transactions-available1-first-line")
+      .text()
+      .contains(messages("cf.cash-account.detail.transactions-not-available.first.line")) mustBe true
 
-    println("-----------------" + noTransactionAvailableSection)
-    println(
-      "-----------------" + messages("cf.cash-account.detail.transactions-not-available")
-    )
-
-    noTransactionAvailableSection.contains(
-      messages("cf.cash-account.detail.transactions-not-available")
-    ) mustBe true
-
+    view
+      .getElementById("no-transactions-available-second-line")
+      .text()
+      .contains(messages("cf.cash-account.detail.transactions-not-available.second.line")) mustBe true
   }
 
   private def shouldContainLinkElement(implicit view: Document): Assertion = {
-    val linkElement: String = view.getElementsByClass("govuk-!-margin-bottom-9").html()
+    val linkElementText: String = view.getElementById("CSV-Request-Link-Text").text()
+    val linkElementURL: String  = view.getElementById("CSV-Request-Link-Text").html()
 
-    linkElement.contains(messages("cf.cash-account.no.transactions.request.link.previous")) mustBe true
-    linkElement.contains(messages("cf.cash-account.no.transactions.request.link.pre")) mustBe true
-    linkElement.contains(
-      messages("cf.cash-account.no.transactions.request-transactions.download-csv.post-message")
+    linkElementText.contains(messages("cf.cash-account.no.transactions.request.link.previous")) mustBe true
+    linkElementText.contains(messages("cf.cash-account.no.transactions.request.link.pre")) mustBe true
+    linkElementText.contains(
+      messages("cf.cash-account.transactions.request-transactions.download-csv.post-message")
     ) mustBe true
 
-    linkElement.contains(controllers.routes.RequestTransactionsController.onPageLoad().url) mustBe true
+    linkElementURL.contains(controllers.routes.RequestTransactionsController.onPageLoad().url) mustBe true
   }
+
+  private def shouldNotContainLinkElement(implicit view: Document): Assertion =
+    view.getElementById("CSV-Request-Link-Text") mustBe null
 
   private def checkUnavailabilityOfPaymentSection(implicit view: Document): Assertion =
     view.text().contains(messages("cf.cash-account.detail.transactions-not-available")) mustBe false
-
-  private def checkUnavailabilityOfTransactionTimeOutSection(implicit view: Document): Assertion = {
-    view
-      .getElementById("no-transactions-available")
-      .text()
-      .contains(messages("cf.cash-account.detail.transactions-not-available.first")) mustBe false
-
-    view
-      .getElementById("no-transactions-available")
-      .text()
-      .contains(messages("cf.cash-account.detail.transactions-not-available.second")) mustBe false
-  }
 
   private def shouldContainPaymentSection(implicit view: Document): Assertion =
     view.text().contains(messages("cf.cash-account.detail.transactions-not-available")) mustBe false
@@ -161,4 +177,20 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
 
     helpAndSupportLink.contains(appConfig.cashAccountForCdsDeclarationsUrl) mustBe true
   }
+
+  private def shouldContainNotificationBanner(implicit view: Document): Assertion = {
+    val notificationBanner    = view.getElementById("notification-panel").text()
+    val notificationBannerUrl = view.getElementById("notification-panel").html()
+
+    notificationBanner.contains(messages("cf.cash-account.requested.statements.available.text.pre")) mustBe true
+    notificationBanner.contains(messages("cf.cash-account.requested.statements.available.link.text")) mustBe true
+    notificationBanner.contains(messages("cf.cash-account.requested.statements.available.text.post")) mustBe true
+
+    notificationBannerUrl.contains(appConfig.requestedStatements(CDSCashAccount)) mustBe true
+
+  }
+
+  private def shouldNotContainNotificationBanner(implicit view: Document): Assertion =
+    view.getElementById("notification-panel") mustBe null
+
 }

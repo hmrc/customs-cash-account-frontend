@@ -48,7 +48,7 @@
 ) {
 
     @notificationPanelComponent(
-    showNotification = hasStatements,
+    showNotification = hasStatements.getOrElse(false),
     preMessage = messages("cf.cash-account.requested.statements.available.text.pre"),
     linkUrl = appConfig.requestedStatements(CDSCashAccount),
     linkText = messages("cf.cash-account.requested.statements.available.link.text"),
@@ -57,28 +57,30 @@
 
     @cash_account_balance(accountModel)
 
+    @p(
+    message = "cf.cash-account.detail.transactions-not-available.first.line",
+    id = Some("no-transactions-available1-first-line"),
+    classes = "govuk-body govuk-!-margin-top-7"
+    )
+    
+    @p(
+    message =  "cf.cash-account.detail.transactions-not-available.second.line",
+    id = Some("no-transactions-available-second-line"),
+    classes = "govuk-body govuk-!-margin-top-7"
+    )
     @if(transactionsTimeout) {
-        @p(
-        "cf.cash-account.detail.transactions-not-available",
-        id = Some("no-transactions-available"),
-        classes = "govuk-body govuk-!-margin-top-7"
-        )
-
+        
         @link(
             "cf.cash-account.no.transactions.request.link.previous",
             controllers.routes.RequestTransactionsController.onPageLoad().url,
+            pId = Some("CSV-Request-Link-Text"),
             preLinkMessage = Some("cf.cash-account.no.transactions.request.link.pre"),
-            postLinkMessage = Some("cf.cash-account.no.transactions.request-transactions.download-csv.post-message"),
+            postLinkMessage = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
             pClass = "govuk-body govuk-!-margin-bottom-9",
             linkSentence = true,
             enableLineBreakBeforePostMessage = true
         )
     } else {
-        @p(
-            "cf.cash-account.detail.transactions-not-available",
-            id = Some("no-transactions-available"),
-            classes = "govuk-body govuk-!-margin-top-7"
-        )
     }
 
     @h2(
