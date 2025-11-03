@@ -133,7 +133,7 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
 
   private def shouldContainNoTransactionAvailableSection(implicit view: Document): Assertion = {
     view
-      .getElementById("no-transactions-available1-first-line")
+      .getElementById("no-transactions-available-first-line")
       .text()
       .contains(messages("cf.cash-account.detail.transactions-not-available.first.line")) mustBe true
 
