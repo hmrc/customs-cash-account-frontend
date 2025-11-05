@@ -87,6 +87,8 @@ cf.cash-account.detail.transfer-out=Trosglwyddo i gyfrif arall
 cf.cash-account.detail.transfer-out.v2 = Trosglwyddo i gyfrif Arian
 cf.cash-account.detail.account-not-available=Ni allwn ddangos eich cyfrif ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
 cf.cash-account.detail.transactions-not-available=Mae problem wrth ddangos eich trafodion ar hyn o bryd.<br/> Gallwch roi cynnig arall arni nes ymlaen.
+cf.cash-account.detail.transactions-not-available.first.line=Mae problem wrth ddangos eich trafodion ar hyn o bryd.
+cf.cash-account.detail.transactions-not-available.second.line=Gallwch roi cynnig arall arni nes ymlaen.
 cf.cash-account.detail.transactions-not-available.first=Mae’n ddrwg gennym – ni allwn ddangos eich trafodion ar hyn o bryd.
 cf.cash-account.detail.transactions-not-available.second=Gallwch chwilio am drafodion blaenorol a’u lawrlwytho gan ddefnyddio’r cysylltiad isod.
 cf.cash-account.detail.show-mrn=Dangos MRN
@@ -211,6 +213,8 @@ cf.cash-account.detail.no-transactions-with-balance.p1=Nid oes unrhyw drafodion 
 
 # Cash Transactions Request
 # --------------------------------------------------------------
+cf.cash-account.no.transactions.request.link.pre=Fel arall,
+cf.cash-account.no.transactions.request.link.previous=gwnewch gais erbyn dyddiad a lawrlwytho eich trafodion fel ffeil CSV.
 cf.cash-account.transactions.request.link.heading=Trafodion blaenorol
 cf.cash-account.transactions.request.support.heading=Help a chymorth
 cf.cash-account.transactions.request.support.pre=Os oes angen help arnoch

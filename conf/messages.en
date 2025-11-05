@@ -87,6 +87,8 @@ cf.cash-account.detail.transfer-out=Transfer to another account
 cf.cash-account.detail.transfer-out.v2 = Transfer to Cash account {0}
 cf.cash-account.detail.account-not-available=We are unable to show your account at the moment. Please try again later.
 cf.cash-account.detail.transactions-not-available=There is a problem displaying your transactions at the moment. <br/>You can try again later.
+cf.cash-account.detail.transactions-not-available.first.line=There is a problem displaying your transactions at the moment.
+cf.cash-account.detail.transactions-not-available.second.line=You can try again later.
 cf.cash-account.detail.transactions-not-available.first=Sorry, we are unable to show your transactions at this moment.
 cf.cash-account.detail.transactions-not-available.second=You can search and download previous transactions using the link below.
 cf.cash-account.detail.show-mrn=Show MRN
@@ -211,6 +213,8 @@ cf.cash-account.detail.no-transactions-with-balance.p1=There are no transactions
 
 # Cash Transactions Request
 # --------------------------------------------------------------
+cf.cash-account.no.transactions.request.link.pre=Alternatively,
+cf.cash-account.no.transactions.request.link.previous=request by date and download your transactions as a CSV file
 cf.cash-account.transactions.request.link.heading=Previous transactions
 cf.cash-account.transactions.request.support.heading=Help and Support
 cf.cash-account.transactions.request.support.pre=If you need help
