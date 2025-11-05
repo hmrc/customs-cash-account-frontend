@@ -43,7 +43,7 @@ class AppConfigSpec extends SpecBase {
       appConfig.numberOfMonthsOfCashTransactionsToShow mustBe 6
       appConfig.numberOfDaysToShow mustBe 5
       appConfig.fixedTimeTesting mustBe false
-      appConfig.transactionsTimeoutFlag mustBe false
+      appConfig.transactionsTimeoutFlag mustBe true
 
       appConfig.helpMakeGovUkBetterUrl mustBe
         "https://survey.take-part-in-research.service.gov.uk/jfe/form/SV_74GjifgnGv6GsMC?Source=BannerList_HMRC_CDS_MIDVA"
