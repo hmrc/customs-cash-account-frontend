@@ -214,7 +214,7 @@ cf.cash-account.detail.no-transactions-with-balance.p1=Nid oes unrhyw drafodion 
 # Cash Transactions Request
 # --------------------------------------------------------------
 cf.cash-account.no.transactions.request.link.pre=Fel arall,
-cf.cash-account.no.transactions.request.link.previous=gwnewch gais erbyn dyddiad a lawrlwytho eich trafodion fel ffeil CSV.
+cf.cash-account.no.transactions.request.link.previous=gwnewch gais erbyn dyddiad a lawrlwytho eich trafodion fel ffeil CSV
 cf.cash-account.transactions.request.link.heading=Trafodion blaenorol
 cf.cash-account.transactions.request.support.heading=Help a chymorth
 cf.cash-account.transactions.request.support.pre=Os oes angen help arnoch

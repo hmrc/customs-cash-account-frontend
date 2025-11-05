@@ -153,7 +153,7 @@ class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
       messages("cf.cash-account.transactions.request-transactions.download-csv.post-message")
     ) mustBe true
 
-    linkElementURL.contains(controllers.routes.RequestTransactionsController.onPageLoad().url) mustBe true
+    linkElementURL.contains(controllers.routes.SelectTransactionsController.onPageLoad().url) mustBe true
   }
 
   private def shouldNotContainLinkElement(implicit view: Document): Assertion =
