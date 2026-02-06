@@ -34,7 +34,7 @@ class CashAccountDeclarationDetailsSearchNoResultSpec extends SpecBase with Guid
       .body
   )
 
-  override val titleMsgKey: String                = "cf.cash-account.detail.title"
+  override val titleMsgKey: String                = "cf.cash-account.detail.declaration.search-title"
   override val backLink: Option[String]           = Some(
     controllers.routes.CashAccountV2Controller.showAccountDetails(Some(1)).url
   )

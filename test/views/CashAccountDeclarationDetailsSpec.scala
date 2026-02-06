@@ -31,7 +31,7 @@ class CashAccountDeclarationDetailsSpec extends ViewTestHelper {
 
     "render the correct title and headings" in new Setup {
 
-      titleShouldBeCorrect(viewDoc, "cf.cash-account.detail.title")
+      titleShouldBeCorrect(viewDoc, "cf.cash-account.detail.declaration.title")
 
       viewDoc.getElementsByTag("h1").text() mustBe messages("cf.cash-account.detail.declaration.title")
 

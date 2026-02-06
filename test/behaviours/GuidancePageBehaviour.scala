@@ -34,6 +34,7 @@ trait GuidancePageBehaviour {
   val helpAndSupportLink: Option[String]                             = None
   val otherComponentGuidanceList: List[ComponentDetailsForAssertion] = List.empty
   val linksToVerify: List[LinkDetails]                               = List.empty
+  val searchInputValue: String
 
   implicit lazy val app: Application                        = application
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest()
@@ -41,7 +42,7 @@ trait GuidancePageBehaviour {
   def guidancePage(): Unit =
 
     "display correct title" in {
-      view.title() mustBe s"${messages(titleMsgKey)} - ${messages("service.name")} - GOV.UK"
+      view.title() mustBe s"${messages(titleMsgKey,searchInputValue)} - ${messages("service.name")} - GOV.UK"
     }
 
     "display correct back link" in {
