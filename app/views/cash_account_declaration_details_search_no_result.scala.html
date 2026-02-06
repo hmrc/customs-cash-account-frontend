@@ -36,7 +36,7 @@
 )
 
 @main_template(
-  pageTitle = Some(messages("cf.cash-account.detail.title")),
+  pageTitle = Some(messages("cf.cash-account.detail.declaration.search-title",searchInput)),
   backLink = Some(routes.CashAccountV2Controller.showAccountDetails(page = pageNumber).url),
   fullWidth = false
 ) {

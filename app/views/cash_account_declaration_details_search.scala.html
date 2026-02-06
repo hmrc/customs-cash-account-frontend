@@ -21,7 +21,7 @@
 @(viewModel: DeclarationDetailSearchViewModel, pageNumber: Option[Int])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  pageTitle = Some(messages("cf.cash-account.detail.title")),
+  pageTitle = Some(messages("cf.cash-account.detail.declaration.search-title")),
   backLink = Some(routes.CashAccountV2Controller.showAccountDetails(page = pageNumber).url),
   fullWidth = false
 ) {

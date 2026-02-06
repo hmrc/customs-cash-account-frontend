@@ -24,7 +24,7 @@
 
 @(summary: ResultsPageSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(pageTitle = Some(messages("cf.cash-account.detail.title")),
+@main_template(pageTitle = Some(messages("cf.cash-account.transactions.result.no.transactions")),
     backLink = Some(controllers.routes.RequestTransactionsController.onPageLoad().url),
     fullWidth = false,
     help = true
