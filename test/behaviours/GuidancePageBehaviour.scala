@@ -42,7 +42,7 @@ trait GuidancePageBehaviour {
   def guidancePage(): Unit =
 
     "display correct title" in {
-      view.title() mustBe s"${messages(titleMsgKey,searchInputValue)} - ${messages("service.name")} - GOV.UK"
+      view.title() mustBe s"${messages(titleMsgKey, searchInputValue)} - ${messages("service.name")} - GOV.UK"
     }
 
     "display correct back link" in {
