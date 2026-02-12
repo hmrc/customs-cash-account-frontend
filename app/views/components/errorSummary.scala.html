@@ -34,7 +34,8 @@
     }) { errorLinks =>
         @govukErrorSummary(ErrorSummary(
             errorList = errorLinks,
-            title = Text(messages("error.summary.title"))
+            title = Text(messages("error.summary.title")),
+            disableAutoFocus = Some(true)
         ))
     }
 }
