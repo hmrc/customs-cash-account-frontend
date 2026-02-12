@@ -20,7 +20,8 @@
     errors: Seq[FormError],
     errorFieldName: Option[String],
     isErrorKeyUpdateEnabled: Boolean = false,
-    updateFormErrorKeyForTheMessage:Option[(String, String) => String] = None
+    updateFormErrorKeyForTheMessage:Option[(String, String) => String] = None,
+    disableAutoFocus: Option[Boolean] = None
 )(
     implicit messages: Messages
 )
@@ -34,7 +35,8 @@
     }) { errorLinks =>
         @govukErrorSummary(ErrorSummary(
             errorList = errorLinks,
-            title = Text(messages("error.summary.title"))
+            title = Text(messages("error.summary.title")),
+            disableAutoFocus = disableAutoFocus
         ))
     }
 }

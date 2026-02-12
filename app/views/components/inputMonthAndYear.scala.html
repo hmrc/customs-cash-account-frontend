@@ -56,14 +56,16 @@
                 classes = s"govuk-input--width-2 ${monthFieldErrors}",
                 name = s"$id.month",
                 label = Some(messages("date.month")),
-                value = form(s"$id.month").value
+                value = form(s"$id.month").value,
+                attributes = if(form.errors(s"$id.month").nonEmpty || form.errors(s"$id").nonEmpty) Map("autofocus" -> "autofocus") else Map.empty
             ),
             InputItem(
                 id = s"$id.year",
                 classes = s"govuk-input--width-4 ${yearFieldErrors}",
                 name = s"$id.year",
                 label = Some(messages("date.year")),
-                value = form(s"$id.year").value
+                value = form(s"$id.year").value,
+                attributes = if(form.errors(s"$id.year").nonEmpty || form.errors(s"$id").nonEmpty) Map("autofocus" -> "autofocus") else Map.empty
             )
         ),
         hint = hintText.map(hint => Hint(content = Text(messages(hint)))),

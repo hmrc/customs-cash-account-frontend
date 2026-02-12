@@ -36,7 +36,7 @@
 ) {
 
     @formHelper(action = controllers.routes.SelectTransactionsController.onSubmit(), Symbol("autoComplete") -> "off") {
-        @errorSummary(form.errors, errorFieldName = None)
+        @errorSummary(form.errors, errorFieldName = None, disableAutoFocus = Some(true))
 
         @h1("cf.cash-account.transactions.heading")
 

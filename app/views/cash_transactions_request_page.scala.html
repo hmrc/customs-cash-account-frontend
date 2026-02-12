@@ -36,7 +36,7 @@
 ) {
 
     @formHelper(action = controllers.routes.RequestTransactionsController.onSubmit(), Symbol("autoComplete") -> "off") {
-        @errorSummary(form.errors,errorFieldName = None, isErrorKeyUpdateEnabled = true, Some(updateFormErrorKeyForStartAndEndDate()))
+        @errorSummary(form.errors,errorFieldName = None, isErrorKeyUpdateEnabled = true, Some(updateFormErrorKeyForStartAndEndDate()), disableAutoFocus = Some(true))
         @h1("cf.cash-account.transactions.request.heading")
 
         @inputDate(
