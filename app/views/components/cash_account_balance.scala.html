@@ -19,6 +19,7 @@
 @this(
     h1: components.h1,
     h2: components.h2Inner,
+    dlComponent: components.dl,
     p: components.p
 )
 
@@ -28,10 +29,9 @@
     displayLastSixMonthsHeading: Boolean = true
 )(implicit messages: Messages, appConfig: AppConfig)
 
-    @h2(
-        msg = "cf.cash-account.detail.account",
-        innerMsg = model.account.number,
-        id = Some("account-number"),
+    @dlComponent(
+        dtMsg   = messages("cf.cash-account.detail.account", model.account.number),
+        id      = Some("account-number"),
         classes = "govuk-caption-xl"
     )
 
