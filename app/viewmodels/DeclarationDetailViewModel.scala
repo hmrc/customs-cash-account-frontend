@@ -22,7 +22,7 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, SummaryList, SummaryListRow, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, Value}
-import utils.Utils.{emptyH1InnerComponent, emptyH2InnerComponent, emptyString, dlComponent}
+import utils.Utils.{dlComponent, emptyH1InnerComponent, emptyH2InnerComponent, emptyString}
 
 case class DeclarationDetailViewModel(
   eori: String,
