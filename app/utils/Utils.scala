@@ -20,7 +20,7 @@ import config.AppConfig
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
-import views.html.components.{h1, h1Inner, h2, h2Inner, link, newTabLink, notification_panel, p, dlComponent}
+import views.html.components.{h1, h1Inner, h2, h2Inner, link, newTabLink, notification_panel, p, dl}
 import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
 import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 
@@ -42,10 +42,11 @@ object Utils {
   val emptyGovUkTableComponent                        = new GovukTable()
   val emptyH2InnerComponent                           = new h2Inner()
   val emptyH1InnerComponent                           = new h1Inner()
+  val emptyDlComponent                                = new dl()
 
   def dlComponent(dtMsg: String, ddMsg: String, id: Option[String] = None, classes: String = "govuk-caption-xl")(
     implicit messages: Messages): HtmlFormat.Appendable =
-    new dlComponent().apply(dtMsg = dtMsg, ddMsg = ddMsg, id = id, classes = classes)
+    new dl().apply(dtMsg = dtMsg, ddMsg = ddMsg, id = id, classes = classes)
   
   def h2Component(
     msgKey: String,
