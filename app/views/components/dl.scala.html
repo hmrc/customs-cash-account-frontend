@@ -18,7 +18,6 @@
 
 @(dtMsg: String, ddMsg: String, id: Option[String] = None, classes: String = "govuk-caption-xl")
 
-<dl @{id.fold("")(id => s"""id="$id"""")} class="@classes">
-    <dt class="govuk-visually-hidden">@dtMsg</dt>
-    <dd>@ddMsg</dd>
+<dl @id.map(i => s"id=$i") class="@classes">
+ <dt>@dtMsg</dt>
 </dl>
