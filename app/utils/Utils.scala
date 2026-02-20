@@ -44,8 +44,8 @@ object Utils {
   val emptyH1InnerComponent                           = new h1Inner()
   val emptyDlComponent                                = new dl()
 
-  def dlComponent(dtMsg: String, id: Option[String] = None, classes: String = "govuk-caption-xl")(
-    implicit messages: Messages
+  def dlComponent(dtMsg: String, id: Option[String] = None, classes: String = "govuk-caption-xl")(implicit
+    messages: Messages
   ): HtmlFormat.Appendable =
     new dl().apply(dtMsg = dtMsg, id = id, classes = classes)
 
