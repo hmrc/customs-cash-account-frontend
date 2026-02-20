@@ -61,7 +61,6 @@ object DeclarationDetailViewModel {
   def subHeader(account: CashAccount)(implicit messages: Messages): Html =
     dlComponent(
       dtMsg = messages("cf.cash-account.detail.account", account.number),
-      ddMsg = account.number,
       id = Some("account-number")
     )
 

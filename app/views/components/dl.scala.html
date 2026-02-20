@@ -16,7 +16,7 @@
 
 @this()
 
-@(dtMsg: String, ddMsg: String, id: Option[String] = None, classes: String = "govuk-caption-xl")
+@(dtMsg: String, id: Option[String] = None, classes: String = "govuk-caption-xl")
 
 <dl @id.map(i => s"id=$i") class="@classes">
  <dt>@dtMsg</dt>

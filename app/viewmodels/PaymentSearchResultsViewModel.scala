@@ -49,7 +49,6 @@ object PaymentSearchResultsViewModel {
     val populateAccountDetails: HtmlFormat.Appendable =
       dlComponent(
         dtMsg = msgs("cf.cash-account.detail.account", account.number),
-        ddMsg = account.number,
         id = Some("account-number")
       )
 
