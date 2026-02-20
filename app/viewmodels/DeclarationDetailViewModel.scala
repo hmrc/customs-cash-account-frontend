@@ -22,7 +22,7 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, SummaryList, SummaryListRow, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, Value}
-import utils.Utils.{emptyH1InnerComponent, emptyH2InnerComponent, emptyString}
+import utils.Utils.{emptyH1InnerComponent, emptyH2InnerComponent, emptyString, dlComponent}
 
 case class DeclarationDetailViewModel(
   eori: String,
@@ -59,11 +59,10 @@ object DeclarationDetailViewModel {
     emptyH1InnerComponent(msg = "cf.cash-account.detail.declaration.title")
 
   def subHeader(account: CashAccount)(implicit messages: Messages): Html =
-    emptyH2InnerComponent(
-      msg = "cf.cash-account.detail.account",
-      innerMsg = account.number,
-      id = Some("account-number"),
-      classes = "govuk-caption-xl"
+    dlComponent(
+      dtMsg = messages("cf.cash-account.detail.account", account.number),
+      ddMsg = account.number,
+      id = Some("account-number")
     )
 
   def declarationSummaryList(declaration: Declaration)(implicit messages: Messages): SummaryList =
