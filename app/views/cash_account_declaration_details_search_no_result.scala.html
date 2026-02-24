@@ -19,7 +19,6 @@
        h2: components.h2,
        h1Inner: components.h1Inner,
        h2Inner: components.h2Inner,
-       dlComponent: components.dl,
        p: components.p,
        ul: components.unorderedList,
        link: components.link,
@@ -42,11 +41,12 @@
   fullWidth = false
 ) {
 
-    @dlComponent(
-        dtMsg   = messages("cf.cash-account.detail.account", accountNumber),
-        id      = Some("account-number"),
-        classes = "govuk-caption-xl"
-    )
+  @h2Inner(
+     msg = "cf.cash-account.detail.account",
+     innerMsg = accountNumber,
+     id = Some("account-number"),
+     classes = "govuk-caption-xl"
+  )
 
   @h1Inner(
      msg = "cf.cash-account.detail.declaration.search-title",

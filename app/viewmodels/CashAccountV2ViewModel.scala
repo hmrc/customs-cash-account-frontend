@@ -68,7 +68,7 @@ object CashAccountV2ViewModel {
     val hasMaxTransactionsExceeded: Boolean = cashTrans.maxTransactionsExceeded.getOrElse(false)
 
     val cashAccountBalance: HtmlFormat.Appendable =
-      new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyDlComponent, emptyPComponent)
+      new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
         .apply(model = CashAccountViewModel(eori, account), displayLastSixMonthsHeading = false)
 
     val totalDailyStatementsSize: Int = CashAccountDailyStatementsViewModel(cashTrans, None).dailyStatements.size
