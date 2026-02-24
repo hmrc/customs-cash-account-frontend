@@ -21,6 +21,7 @@
        h2Inner: components.h2Inner,
        p: components.p,
        ul: components.unorderedList,
+        spanHeading: components.spanHeading,
        link: components.link,
        newTabLink: components.newTabLink
 )
@@ -41,11 +42,10 @@
   fullWidth = false
 ) {
 
-  @h2Inner(
-     msg = "cf.cash-account.detail.account",
-     innerMsg = accountNumber,
-     id = Some("account-number"),
-     classes = "govuk-caption-xl"
+  @spanHeading(
+    msg   = messages("cf.cash-account.detail.account", accountNumber),
+    id      = Some("account-number"),
+    classes = "govuk-caption-xl"
   )
 
   @h1Inner(

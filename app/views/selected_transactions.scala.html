@@ -21,6 +21,7 @@
         formHelper: FormWithCSRF,
         h1: components.h1,
         h2: components.h2,
+        spanHeading: components.spanHeading,
         p: components.p,
         summaryList: components.summaryList,
         button: components.button,
@@ -42,11 +43,10 @@
 ) {
     @formHelper(action = controllers.routes.SelectedTransactionsController.onSubmit(), Symbol("autoComplete") -> "off") {
 
-            @h2(
-                msg = "cf.cash-account.transactions.request.review.account",
-                id = Some("cash-account.number"),
-                classes = "govuk-caption-xl",
-                extraContent = Some(accountNumber)
+            @spanHeading(
+                msg = s"${messages("cf.cash-account.transactions.request.review.account")} $accountNumber",
+                id = Some("account-number"),
+                classes = "govuk-caption-xl"
             )
 
             @h1("cf.cash-account.transactions.request.review.heading")
