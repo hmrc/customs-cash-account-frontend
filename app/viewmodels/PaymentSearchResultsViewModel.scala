@@ -23,7 +23,8 @@ import play.twirl.api.HtmlFormat
 import views.html.components.payment_search_results
 import play.api.i18n.Messages
 import utils.Utils.{
-  emptyGovUkTableComponent, emptyH1InnerComponent, h2Component, h2InnerComponent, hmrcNewTabLinkComponent
+  emptyGovUkTableComponent, emptyH1InnerComponent, emptySpanHeadingComponent, h2Component, h2InnerComponent,
+  hmrcNewTabLinkComponent
 }
 import viewmodels.pagination.ListPaginationViewModel
 
@@ -47,10 +48,9 @@ object PaymentSearchResultsViewModel {
   )(implicit msgs: Messages, config: AppConfig): PaymentSearchResultsViewModel = {
 
     val populateAccountDetails: HtmlFormat.Appendable =
-      h2InnerComponent(
-        id = Some("account-number"),
-        innerMsg = account.number,
-        msgKey = "cf.cash-account.detail.account"
+      emptySpanHeadingComponent(
+        msg = msgs("cf.cash-account.detail.account", account.number),
+        id = Some("account-number")
       )
 
     val totalDailyStatementsSize: Int = paymentsWithdrawalsAndTransfers.size

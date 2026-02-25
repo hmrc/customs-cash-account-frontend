@@ -31,8 +31,8 @@ import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
 import utils.TestData.*
 import utils.Utils.{
-  LinkComponentValues, emptyH1Component, emptyH2InnerComponent, emptyPComponent, h2Component, hmrcNewTabLinkComponent,
-  linkComponent, notificationPanelComponent, pComponent
+  LinkComponentValues, emptyH1Component, emptyH2InnerComponent, emptyPComponent, emptySpanHeadingComponent, h2Component,
+  hmrcNewTabLinkComponent, linkComponent, notificationPanelComponent, pComponent
 }
 import viewmodels.pagination.ListPaginationViewModel
 import views.html.components.{cash_account_balance, daily_statements_v2}
@@ -149,7 +149,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     account: CashAccount
   )(implicit msgs: Messages, appConfig: AppConfig): Assertion = {
     val expectedAccBalance: HtmlFormat.Appendable =
-      new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
+      new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptySpanHeadingComponent, emptyPComponent)
         .apply(model = CashAccountViewModel(eori, account), displayLastSixMonthsHeading = false)
 
     accBalance mustBe expectedAccBalance
@@ -172,7 +172,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     account: CashAccount
   )(implicit msgs: Messages, appConfig: AppConfig): Assertion = {
     val expectedAccBalance: HtmlFormat.Appendable =
-      new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptyPComponent)
+      new cash_account_balance(emptyH1Component, emptyH2InnerComponent, emptySpanHeadingComponent, emptyPComponent)
         .apply(model = CashAccountViewModel(eori, account), displayLastSixMonthsHeading = false)
 
     accBalance mustBe expectedAccBalance
