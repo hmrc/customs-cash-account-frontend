@@ -23,7 +23,8 @@ import play.twirl.api.HtmlFormat
 import views.html.components.payment_search_results
 import play.api.i18n.Messages
 import utils.Utils.{
-  emptyGovUkTableComponent, emptyH1InnerComponent, h2Component, h2InnerComponent, hmrcNewTabLinkComponent, emptySpanHeadingComponent
+  emptyGovUkTableComponent, emptyH1InnerComponent, emptySpanHeadingComponent, h2Component, h2InnerComponent,
+  hmrcNewTabLinkComponent
 }
 import viewmodels.pagination.ListPaginationViewModel
 

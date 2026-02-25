@@ -23,7 +23,7 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, SummaryList, SummaryListRow, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, Value}
-import utils.Utils.{emptyH1InnerComponent, emptyH2InnerComponent, emptyString, emptySpanHeadingComponent}
+import utils.Utils.{emptyH1InnerComponent, emptyH2InnerComponent, emptySpanHeadingComponent, emptyString}
 
 import java.time.LocalDate
 

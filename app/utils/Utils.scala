@@ -42,10 +42,10 @@ object Utils {
   val emptyGovUkTableComponent                        = new GovukTable()
   val emptyH2InnerComponent                           = new h2Inner()
   val emptyH1InnerComponent                           = new h1Inner()
-  val emptySpanHeadingComponent                              = new spanHeading()
+  val emptySpanHeadingComponent                       = new spanHeading()
 
   def spanHeadingComponent(msg: String, id: Option[String] = None, classes: String = "govuk-caption-xl")(implicit
-                                                                                                  messages: Messages
+    messages: Messages
   ): HtmlFormat.Appendable =
     new spanHeading().apply(msg = msg, id = id, classes = classes)
 

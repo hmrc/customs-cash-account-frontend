@@ -31,8 +31,8 @@ import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
 import utils.TestData.*
 import utils.Utils.{
-  LinkComponentValues, emptyH1Component, emptyH2InnerComponent, emptyPComponent, h2Component, hmrcNewTabLinkComponent,
-  linkComponent, notificationPanelComponent, pComponent, emptySpanHeadingComponent
+  LinkComponentValues, emptyH1Component, emptyH2InnerComponent, emptyPComponent, emptySpanHeadingComponent, h2Component,
+  hmrcNewTabLinkComponent, linkComponent, notificationPanelComponent, pComponent
 }
 import viewmodels.pagination.ListPaginationViewModel
 import views.html.components.{cash_account_balance, daily_statements_v2}
