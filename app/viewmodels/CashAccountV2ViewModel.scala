@@ -49,6 +49,7 @@ case class CashAccountV2ViewModel(
   dailyStatementsSection: Option[DailyStatementsSection] = None,
   tooManyTransactionsSection: Option[TooManyTransactionsSection] = None,
   downloadCSVFileLinkUrl: HtmlFormat.Appendable,
+  requestTransactionsInsetText: HtmlFormat.Appendable,
   helpAndSupportGuidance: GuidanceRow,
   paginationModel: Option[ListPaginationViewModel] = None
 )
@@ -81,6 +82,7 @@ object CashAccountV2ViewModel {
       dailyStatementsSection = populateDailyStatementsSection(cashTrans, pageNo),
       tooManyTransactionsSection = populateTooManyTransactionsSection(hasMaxTransactionsExceeded),
       downloadCSVFileLinkUrl = downloadCSVFileLinkUrl(hasMaxTransactionsExceeded),
+      requestTransactionsInsetText = requestTransactionsInsetText(),
       helpAndSupportGuidance = helpAndSupport,
       paginationModel = populatePaginationModel(pageNo, totalDailyStatementsSize)
     )
@@ -129,7 +131,7 @@ object CashAccountV2ViewModel {
   )(implicit msgs: Messages): Option[TooManyTransactionsSection] =
     if (hasMaxTransactionsExceeded) {
       val heading = h2Component(
-        msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
+        msgKey = "cf.cash-account.transactions.transactions-for-last-seven-months.heading",
         id = Some("last-six-month-transactions-heading")
       )
 
@@ -155,7 +157,6 @@ object CashAccountV2ViewModel {
           preLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint02"),
           linkMessageKey = "cf.cash-account.transactions.too-many-transactions.hint03",
           postLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint04"),
-          enableLineBreakBeforePostMessage = true,
           pClass = "govuk-body govuk-!-margin-bottom-9"
         )
       )
@@ -167,11 +168,17 @@ object CashAccountV2ViewModel {
           linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
           location = controllers.routes.SelectTransactionsController.onPageLoad().url,
           postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
-          enableLineBreakBeforePostMessage = true,
           linkSentence = true
         )
       )
     }
+
+  private def requestTransactionsInsetText()(implicit msgs: Messages): HtmlFormat.Appendable =
+    insetComponent(
+      InsetComponentValues(
+        msg = "cf.cash-account.transactions.request-transactions.insetMessage"
+      )
+    )
 
   private def helpAndSupport(implicit appConfig: AppConfig, messages: Messages): GuidanceRow =
     GuidanceRow(

@@ -18,9 +18,9 @@ package utils
 
 import config.AppConfig
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
-import views.html.components.{h1, h1Inner, h2, h2Inner, link, newTabLink, notification_panel, p, spanHeading}
+import play.twirl.api.{Html, HtmlFormat}
+import uk.gov.hmrc.govukfrontend.views.html.components.{GovukInsetText, GovukTable}
+import views.html.components.{h1, h1Inner, h2, h2Inner, inset, link, newTabLink, notification_panel, p, spanHeading}
 import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcNewTabLink
 import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 
@@ -43,6 +43,7 @@ object Utils {
   val emptyH2InnerComponent                           = new h2Inner()
   val emptyH1InnerComponent                           = new h1Inner()
   val emptySpanHeadingComponent                       = new spanHeading()
+  val emptyGovukInsetText                             = new GovukInsetText()
 
   def spanHeadingComponent(msg: String, id: Option[String] = None, classes: String = "govuk-caption-xl")(implicit
     messages: Messages
@@ -102,6 +103,13 @@ object Utils {
       enableLineBreakBeforePostMessage = input.enableLineBreakBeforePostMessage
     )
 
+  def insetComponent(input: InsetComponentValues)(implicit messages: Messages): HtmlFormat.Appendable =
+    new inset(emptyGovukInsetText).apply(
+      msg = input.msg,
+      id = input.id,
+      additionalContent = input.additionalContent
+    )
+
   def pComponent(messageKey: String, classes: String = "govuk-body", id: Option[String] = None, bold: Boolean = false)(
     implicit messages: Messages
   ): HtmlFormat.Appendable =
@@ -138,6 +146,12 @@ object Utils {
     pClass: String = "govuk-body",
     linkMessage: Option[String] = None,
     enableLineBreakBeforePostMessage: Boolean = false
+  )
+
+  case class InsetComponentValues(
+    msg: String = emptyString,
+    id: Option[String] = None,
+    additionalContent: Option[Html] = None
   )
 
   case class DetailsHint(

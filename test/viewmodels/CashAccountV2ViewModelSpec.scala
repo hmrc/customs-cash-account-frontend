@@ -182,7 +182,7 @@ class CashAccountV2ViewModelSpec extends SpecBase {
     section: TooManyTransactionsSection
   )(implicit msgs: Messages): Assertion = {
     section.heading mustBe h2Component(
-      msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
+      msgKey = "cf.cash-account.transactions.transactions-for-last-seven-months.heading",
       id = Some("last-six-month-transactions-heading")
     )
 

@@ -116,7 +116,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
     dailyStatementsViewModel: CashAccountDailyStatementsViewModel
   )(implicit msgs: Messages): Assertion = {
     val headingComponent = h2Component(
-      msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
+      msgKey = "cf.cash-account.transactions.transactions-for-last-seven-months.heading",
       id = Some("transactions-for-last-six-months-heading")
     )
 
@@ -127,8 +127,8 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
     dailyStatementsViewModel: CashAccountDailyStatementsViewModel
   )(implicit msgs: Messages): Assertion = {
     val paragraphComponent = pComponent(
-      messageKey = "cf.cash-account.transactions.no-transactions-for-last-six-months",
-      id = Some("no-transactions-for-last-six-months-text")
+      messageKey = "cf.cash-account.transactions.no-transactions-for-last-seven-months",
+      id = Some("no-transactions-for-last-seven-months-text")
     )
 
     dailyStatementsViewModel.noTransFromLastSixMonthsText.getOrElse(emptyPComponent) mustBe paragraphComponent

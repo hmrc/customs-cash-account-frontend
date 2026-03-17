@@ -58,7 +58,7 @@ cf.cash-account.withdraw-funds.guidance.link.aria-label=Withdraw funds from your
 cf.cash-account.detail.csv.download=Download CSV
 cf.cash-account.detail.csv-definition=Change selected dates
 cf.cash-account.detail.csv=Download transactions as <abbr title="Comma-Separated Values. Can be used with most spreadsheet programs.">CSV</abbr>
-cf.cash-account.detail.payments-heading=Your transactions for the last 6 months
+cf.cash-account.detail.payments-heading=Your transactions for the last 7 months
 cf.cash-account.detail.date=Date
 cf.cash-account.detail.movement-reference-number=Movement Reference Number
 cf.cash-account.detail.mrn=MRN
@@ -108,7 +108,7 @@ cf.cash-account.detail.declaration.search-no-results-invalid-input-mrn = an inco
 cf.cash-account.detail.declaration.search-no-results-invalid-input-payment-amount = a payment amount that was not found
 cf.cash-account.detail.declaration.search-no-results-invalid-input-pound-sign = a payment amount that does not include ‘£’
 cf.cash-account.detail.total.paid=Total paid
-cf.cash-account.detail.last-transactions=Your transactions for the last 6 months
+cf.cash-account.detail.last-transactions=Your transactions for the last 7 months
 
 # Timeout Messages
 # ----------------------------------------------------------
@@ -305,17 +305,19 @@ cf.cash-account.transactions.request.review.account=Account:
 
 cf.cash-account.transactions.no-transactions.message = There are no transactions to display.
 cf.cash-account.transactions.request-transactions.heading = Request transactions
-cf.cash-account.transactions.transactions-for-last-six-months.heading = Your transactions for the last 6 months
-cf.cash-account.transactions.no-transactions-for-last-six-months = There are no transactions from the last 6 months to display.
+cf.cash-account.transactions.transactions-for-last-seven-months.heading = Your transactions for the last 7 months
+cf.cash-account.transactions.no-transactions-for-last-seven-months = There are no transactions from the last 7 months to display.
 cf.cash-account.transactions.request-transactions.download-csv.url = Request by date and download your transactions as a CSV file
-cf.cash-account.transactions.request-transactions.download-csv.post-message = The CSV file will be available to download within 48 hours.
+cf.cash-account.transactions.request-transactions.download-csv.post-message = We will send you an email when your transactions are ready to download.
 cf.cash-account.transactions.search-for-transactions.heading = Search for transactions
 cf.cash-account.transactions.search-for-transactions.hint = You can search by <abbr title="Movement Reference Number">MRN</abbr>, <abbr title="Unique Consignment Reference">UCR</abbr> or exact payment amount that includes ‘£’
+
+cf.cash-account.transactions.request-transactions.insetMessage = Requested transactions will only be available to view and download for 10 days. After 10 days, the requested files will be deleted and you may need to request them again.
 
 cf.cash-account.transactions.too-many-transactions.hint01 = There are too many transactions for the last 6  months to display
 cf.cash-account.transactions.too-many-transactions.hint02 = but you can
 cf.cash-account.transactions.too-many-transactions.hint03 = request and download your transactions as a CSV file.
-cf.cash-account.transactions.too-many-transactions.hint04 = The CSV file will be available to download within 48 hours.
+cf.cash-account.transactions.too-many-transactions.hint04 = We will send you an email when your transactions are ready to download.
 
 cf.cash-account.transactions.confirmation.statements=We received your request for transactions
 cf.cash-account.transactions.confirmation.next=What happens next

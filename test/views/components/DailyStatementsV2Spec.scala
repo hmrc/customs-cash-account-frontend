@@ -54,14 +54,14 @@ class DailyStatementsV2Spec extends ViewTestHelper {
 
   private def shouldDisplayTransForLastSixMonthsHeading(viewDocument: Document)(implicit msgs: Messages) =
     viewDocument.getElementById("transactions-for-last-six-months-heading").text() mustBe
-      msgs("cf.cash-account.transactions.transactions-for-last-six-months.heading")
+      msgs("cf.cash-account.transactions.transactions-for-last-seven-months.heading")
 
   private def shouldDisplayNoTransactionsFromLastSixMonthsMessage(viewDocument: Document)(implicit msgs: Messages) =
-    viewDocument.getElementById("no-transactions-for-last-six-months-text").text() mustBe
-      msgs("cf.cash-account.transactions.no-transactions-for-last-six-months")
+    viewDocument.getElementById("no-transactions-for-last-seven-months-text").text() mustBe
+      msgs("cf.cash-account.transactions.no-transactions-for-last-seven-months")
 
   private def shouldNotDisplayNoTransactionsFromLastSixMonthsMessage(viewDocument: Document) =
-    Option(viewDocument.getElementById("no-transactions-for-last-six-months-text")) mustBe empty
+    Option(viewDocument.getElementById("no-transactions-for-last-seven-months-text")) mustBe empty
 
   private def shouldDisplayTableHeaders(viewDocument: Document)(implicit msgs: Messages) = {
     viewDocument.html().contains(msgs("cf.cash-account.detail.date")) mustBe true

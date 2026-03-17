@@ -314,7 +314,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) must
-            include regex messages("cf.cash-account.transactions.no-transactions-for-last-six-months")
+            include regex messages("cf.cash-account.transactions.no-transactions-for-last-seven-months")
         }
       }
 
@@ -661,6 +661,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
           dailyStatementsSection = None,
           tooManyTransactionsSection = None,
           downloadCSVFileLinkUrl = HtmlFormat.empty,
+          requestTransactionsInsetText = HtmlFormat.empty,
           helpAndSupportGuidance = GuidanceRow(HtmlFormat.empty, None, None),
           paginationModel = None
         )
