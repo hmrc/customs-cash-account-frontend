@@ -201,7 +201,6 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
         location = controllers.routes.SelectTransactionsController.onPageLoad().url,
         postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
-        enableLineBreakBeforePostMessage = true,
         linkSentence = true
       )
     )
@@ -216,7 +215,6 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         preLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint02"),
         linkMessageKey = "cf.cash-account.transactions.too-many-transactions.hint03",
         postLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint04"),
-        enableLineBreakBeforePostMessage = true,
         pClass = "govuk-body govuk-!-margin-bottom-9"
       )
     )
