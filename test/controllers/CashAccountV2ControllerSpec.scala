@@ -314,7 +314,7 @@ class CashAccountV2ControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) must
-            include regex messages("cf.cash-account.transactions.no-transactions-for-last-seven-months")
+            include regex messages("cf.cash-account.transactions.no-transactions-for-last-six-months")
         }
       }
 

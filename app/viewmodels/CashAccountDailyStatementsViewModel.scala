@@ -87,14 +87,14 @@ object CashAccountDailyStatementsViewModel {
 
   private def transForLastSixMonthsHeading(implicit msgs: Messages): HtmlFormat.Appendable =
     h2Component(
-      msgKey = "cf.cash-account.transactions.transactions-for-last-seven-months.heading",
+      msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
       id = Some("transactions-for-last-six-months-heading")
     )
 
   private def noTransFromLastSixMonthsText(implicit msgs: Messages): HtmlFormat.Appendable =
     pComponent(
-      messageKey = "cf.cash-account.transactions.no-transactions-for-last-seven-months",
-      id = Some("no-transactions-for-last-seven-months-text")
+      messageKey = "cf.cash-account.transactions.no-transactions-for-last-six-months",
+      id = Some("no-transactions-for-last-six-months-text")
     )
 
   private def populateDailyStatementViewModelList(

@@ -131,7 +131,7 @@ object CashAccountV2ViewModel {
   )(implicit msgs: Messages): Option[TooManyTransactionsSection] =
     if (hasMaxTransactionsExceeded) {
       val heading = h2Component(
-        msgKey = "cf.cash-account.transactions.transactions-for-last-seven-months.heading",
+        msgKey = "cf.cash-account.transactions.transactions-for-last-six-months.heading",
         id = Some("last-six-month-transactions-heading")
       )
 

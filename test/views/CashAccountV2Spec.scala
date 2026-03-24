@@ -188,7 +188,7 @@ class CashAccountV2Spec extends ViewTestHelper {
     tableRowsElementsByClass.size() must be > 0
 
     viewDocument.getElementById("transactions-for-last-six-months-heading").text() mustBe
-      msgs("cf.cash-account.transactions.transactions-for-last-seven-months.heading")
+      msgs("cf.cash-account.transactions.transactions-for-last-six-months.heading")
   }
 
   private def shouldNotContainCashAccountDailyStatements(viewDocument: Document) = {

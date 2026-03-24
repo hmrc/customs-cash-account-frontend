@@ -300,8 +300,8 @@ cf.cash-account.transactions.request.review.account=Cyfrif:
 
 cf.cash-account.transactions.no-transactions.message = Nid oes unrhyw drafodion i'w harddangos.
 cf.cash-account.transactions.request-transactions.heading = Gofyn am drafodion
-cf.cash-account.transactions.transactions-for-last-seven-months.heading = Eich trafodion ar gyfer y chwe mis diwethaf
-cf.cash-account.transactions.no-transactions-for-last-seven-months = Nid oes unrhyw drafodion o’r 6 mis diwethaf i’w harddangos.
+cf.cash-account.transactions.transactions-for-last-six-months.heading = Eich trafodion ar gyfer y chwe mis diwethaf
+cf.cash-account.transactions.no-transactions-for-last-six-months = Nid oes unrhyw drafodion o’r 6 mis diwethaf i’w harddangos.
 cf.cash-account.transactions.request-transactions.download-csv.url = Gofynnwch yn ôl dyddiad a lawrlwytho’ch trafodion fel ffeil CSV
 cf.cash-account.transactions.request-transactions.download-csv.post-message = Bydd y ffeil CSV ar gael i’w lawrlwytho cyn pen 48 awr.
 cf.cash-account.transactions.search-for-transactions.heading = Chwilio am drafodion
