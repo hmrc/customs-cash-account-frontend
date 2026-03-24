@@ -24,6 +24,7 @@ import utils.Utils.*
 import play.twirl.api.HtmlFormat
 import views.html.components.{cash_account_balance, daily_statements_v2}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.pagination.ListPaginationViewModel
 
 import scala.collection.Seq
@@ -150,6 +151,12 @@ object CashAccountV2ViewModel {
     hasMaxTransactionsExceeded: Boolean
   )(implicit msgs: Messages): HtmlFormat.Appendable =
     if (hasMaxTransactionsExceeded) {
+      HtmlFormat.fill(Seq(
+      h2Component(
+        msgKey = "cf.cash-account.transactions.request-transactions.heading",
+        id = Some("request-transactions-heading"),
+        classes = "govuk-heading-m govuk-!-margin-top-9"
+      ),
       linkComponent(
         LinkComponentValues(
           pId = Some("download-scv-file"),
@@ -159,7 +166,9 @@ object CashAccountV2ViewModel {
           postLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint04"),
           pClass = "govuk-body govuk-!-margin-bottom-9"
         )
-      )
+      )))
+      
+      
 
     } else {
       linkComponent(
