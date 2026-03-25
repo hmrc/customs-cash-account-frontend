@@ -314,8 +314,8 @@ cf.cash-account.transactions.search-for-transactions.hint = You can search by <a
 
 cf.cash-account.transactions.request-transactions.insetMessage = Requested transactions will only be available to view and download for 10 days. After 10 days, the requested files will be deleted and you may need to request them again.
 
-cf.cash-account.transactions.too-many-transactions.hint01 = There are too many transactions for the last 6  months to display
-cf.cash-account.transactions.too-many-transactions.hint02 = but you can
+cf.cash-account.transactions.too-many-transactions.hint01 = There are too many transactions for the last 6  months to display.
+cf.cash-account.transactions.too-many-transactions.hint02 = But you can
 cf.cash-account.transactions.too-many-transactions.hint03 = request and download your transactions as a CSV file.
 cf.cash-account.transactions.too-many-transactions.hint04 = We will send you an email when your transactions are ready to download.
 

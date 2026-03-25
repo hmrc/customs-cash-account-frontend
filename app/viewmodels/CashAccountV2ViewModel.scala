@@ -151,7 +151,7 @@ object CashAccountV2ViewModel {
     hasMaxTransactionsExceeded: Boolean
   )(implicit msgs: Messages): HtmlFormat.Appendable =
     if (hasMaxTransactionsExceeded) {
-      HtmlFormat.fill(Seq(
+      HtmlFormat.fill(List(
       h2Component(
         msgKey = "cf.cash-account.transactions.request-transactions.heading",
         id = Some("request-transactions-heading"),
@@ -167,8 +167,6 @@ object CashAccountV2ViewModel {
           pClass = "govuk-body govuk-!-margin-bottom-9"
         )
       )))
-      
-      
 
     } else {
       linkComponent(
