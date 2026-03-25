@@ -161,10 +161,10 @@ object CashAccountV2ViewModel {
         LinkComponentValues(
           pId = Some("download-scv-file"),
           location = controllers.routes.SelectTransactionsController.onPageLoad().url,
-          preLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint02"),
-          linkMessageKey = "cf.cash-account.transactions.too-many-transactions.hint03",
-          postLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint04"),
-          pClass = "govuk-body govuk-!-margin-bottom-9"
+          preLinkMessageKey = Some("cf.cash-account.no.transactions.request.link.pre"),
+          linkMessageKey = "cf.cash-account.no.transactions.request.link.previous",
+          postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
+          linkSentence = true
         )
       )))
 
