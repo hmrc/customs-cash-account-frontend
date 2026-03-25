@@ -424,8 +424,10 @@ class CashAccountV2ControllerSpec extends SpecBase {
       running(app) {
         val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
         val result  = route(app, request).value
-        contentAsString(result) must include(messages(s"cf.cash-account.transactions.request-transactions.download-csv.post-message"))
-        
+        contentAsString(result) must include(
+          messages(s"cf.cash-account.transactions.request-transactions.download-csv.post-message")
+        )
+
       }
     }
 

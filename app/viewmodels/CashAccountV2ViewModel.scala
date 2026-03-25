@@ -151,22 +151,25 @@ object CashAccountV2ViewModel {
     hasMaxTransactionsExceeded: Boolean
   )(implicit msgs: Messages): HtmlFormat.Appendable =
     if (hasMaxTransactionsExceeded) {
-      HtmlFormat.fill(List(
-      h2Component(
-        msgKey = "cf.cash-account.transactions.request-transactions.heading",
-        id = Some("request-transactions-heading"),
-        classes = "govuk-heading-m govuk-!-margin-top-9"
-      ),
-      linkComponent(
-        LinkComponentValues(
-          pId = Some("download-scv-file"),
-          location = controllers.routes.SelectTransactionsController.onPageLoad().url,
-          preLinkMessageKey = Some("cf.cash-account.no.transactions.request.link.pre"),
-          linkMessageKey = "cf.cash-account.no.transactions.request.link.previous",
-          postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
-          linkSentence = true
+      HtmlFormat.fill(
+        List(
+          h2Component(
+            msgKey = "cf.cash-account.transactions.request-transactions.heading",
+            id = Some("request-transactions-heading"),
+            classes = "govuk-heading-m govuk-!-margin-top-9"
+          ),
+          linkComponent(
+            LinkComponentValues(
+              pId = Some("download-scv-file"),
+              location = controllers.routes.SelectTransactionsController.onPageLoad().url,
+              preLinkMessageKey = Some("cf.cash-account.no.transactions.request.link.pre"),
+              linkMessageKey = "cf.cash-account.no.transactions.request.link.previous",
+              postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
+              linkSentence = true
+            )
+          )
         )
-      )))
+      )
 
     } else {
       linkComponent(
