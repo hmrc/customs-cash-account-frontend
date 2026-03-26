@@ -222,7 +222,9 @@ class CashAccountV2ControllerSpec extends SpecBase {
             appConfig
           ).toString()
 
-          contentAsString(result) must include regex "search and download any previous transactions as a CSV file"
+          contentAsString(
+            result
+          ) must include regex "We will send you an email when your transactions are ready to download."
         }
       }
 
