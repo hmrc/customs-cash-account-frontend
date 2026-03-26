@@ -25,7 +25,8 @@
   errorSummary: components.errorSummary,
   button: components.button,
   inputText: components.inputText,
-  pagination: GovukPagination
+  pagination: GovukPagination,
+  govukInsetText : GovukInsetText
 )
 
 @(
@@ -83,6 +84,8 @@
   }
 
   @viewModel.downloadCSVFileLinkUrl
+
+  @viewModel.requestTransactionsInsetText
 
   @defining(viewModel.helpAndSupportGuidance) { (helpAndSupport) =>
     @helpAndSupport.h2Heading

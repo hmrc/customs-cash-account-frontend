@@ -303,14 +303,16 @@ cf.cash-account.transactions.request-transactions.heading = Gofyn am drafodion
 cf.cash-account.transactions.transactions-for-last-six-months.heading = Eich trafodion ar gyfer y chwe mis diwethaf
 cf.cash-account.transactions.no-transactions-for-last-six-months = Nid oes unrhyw drafodion o’r 6 mis diwethaf i’w harddangos.
 cf.cash-account.transactions.request-transactions.download-csv.url = Gofynnwch yn ôl dyddiad a lawrlwytho’ch trafodion fel ffeil CSV
-cf.cash-account.transactions.request-transactions.download-csv.post-message = Bydd y ffeil CSV ar gael i’w lawrlwytho cyn pen 48 awr.
+cf.cash-account.transactions.request-transactions.download-csv.post-message = Byddwn yn anfon e-bost atoch pan fydd eich trafodion yn barod i’w lawrlwytho.
 cf.cash-account.transactions.search-for-transactions.heading = Chwilio am drafodion
 cf.cash-account.transactions.search-for-transactions.hint = Gallwch chwilio yn ôl Cyfeirnod Symud <abbr title="Cyfeirnod Symud (MRN)">(MRN)</abbr>, Cyfeirnod Unigryw y Llwyth <abbr title="Cyfeirnod Unigryw y Llwyth (UCR)">(UCR)</abbr> neu union swm y taliad sy’n cynnwys ‘£’
 
-cf.cash-account.transactions.too-many-transactions.hint01 = Mae yna ormod o drafodion i’w dangos ar gyfer y 6 mis diwethaf,
-cf.cash-account.transactions.too-many-transactions.hint02 = ond gallwch
+cf.cash-account.transactions.request-transactions.insetMessage = Bydd trafodion a ofynnwyd amdanynt ar gael i’w gweld a’u lawrlwytho am 10 diwrnod yn unig. Ar ôl 10 diwrnod, bydd y ffeiliau a ofynnwyd amdanynt yn cael eu dileu, ac mae’n bosibl y bydd angen i chi wneud cais amdanynt eto.
+
+cf.cash-account.transactions.too-many-transactions.hint01 = Mae yna ormod o drafodion i’w dangos ar gyfer y 6 mis diwethaf.
+cf.cash-account.transactions.too-many-transactions.hint02 = Bnd gallwch
 cf.cash-account.transactions.too-many-transactions.hint03 = wneud cais i gael eich trafodion ar ffurf ffeil CSV a’i lawrlwytho.
-cf.cash-account.transactions.too-many-transactions.hint04 = Bydd y ffeil CSV ar gael i’w lawrlwytho cyn pen 48 awr.
+cf.cash-account.transactions.too-many-transactions.hint04 = Byddwn yn anfon e-bost atoch pan fydd eich trafodion yn barod i’w lawrlwytho.
 
 site.continue=Cadarnhau ac anfon
 

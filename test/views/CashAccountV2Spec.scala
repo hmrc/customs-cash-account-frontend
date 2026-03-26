@@ -160,9 +160,9 @@ class CashAccountV2Spec extends ViewTestHelper {
   )(implicit msgs: Messages) = {
     val element: Element = viewDocument.getElementById("download-scv-file")
     element.getElementsByAttribute("href").text() mustBe
-      msgs("cf.cash-account.transactions.too-many-transactions.hint03")
+      msgs("cf.cash-account.no.transactions.request.link.previous")
 
-    element.html().contains(msgs("cf.cash-account.transactions.too-many-transactions.hint03")) mustBe true
+    element.html().contains(msgs("cf.cash-account.no.transactions.request.link.previous")) mustBe true
   }
 
   private def shouldContainCorrectHelpAndSupportGuidance(viewDocument: Document)(implicit msgs: Messages) = {

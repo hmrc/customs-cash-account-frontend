@@ -79,15 +79,17 @@ class CashAccountNoTransactionsWithBalanceSpec extends ViewTestHelper {
       messages("cf.cash-account.detail.no-transactions-with-balance.p1")
 
   private def shouldContainMissingDocHeadingMsg(implicit view: Document): Assertion =
-    view.getElementById("missing-documents-guidance-heading").text() mustBe
-      messages("cf.cash-account.transactions.request.link.heading")
+    view.getElementById("request-transactions-heading").text() mustBe
+      messages("cf.cash-account.transactions.request-transactions.heading")
 
   private def shouldContainRequestTransactionsLink(implicit view: Document): Assertion = {
     val linkElement: String = view.getElementsByClass("govuk-!-margin-bottom-9").html()
 
-    linkElement.contains(messages("cf.cash-account.transactions.request.link.previous")) mustBe true
+    linkElement.contains(messages("cf.cash-account.transactions.request-transactions.download-csv.url")) mustBe true
 
-    linkElement.contains(messages("cf.cash-account.transactions.request.link.pre")) mustBe true
+    linkElement.contains(
+      messages("cf.cash-account.transactions.request-transactions.download-csv.post-message")
+    ) mustBe true
 
     linkElement.contains(controllers.routes.RequestTransactionsController.onPageLoad().url) mustBe true
   }

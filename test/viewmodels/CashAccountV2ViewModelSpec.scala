@@ -201,7 +201,6 @@ class CashAccountV2ViewModelSpec extends SpecBase {
         linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
         location = controllers.routes.SelectTransactionsController.onPageLoad().url,
         postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
-        enableLineBreakBeforePostMessage = true,
         linkSentence = true
       )
     )
@@ -209,15 +208,23 @@ class CashAccountV2ViewModelSpec extends SpecBase {
   private def shouldProduceCorrectDownloadCSVFileLinkForMaxTransactionExceeded(
     link: HtmlFormat.Appendable
   )(implicit msgs: Messages): Assertion =
-    link mustBe linkComponent(
-      LinkComponentValues(
-        pId = Some("download-scv-file"),
-        location = controllers.routes.SelectTransactionsController.onPageLoad().url,
-        preLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint02"),
-        linkMessageKey = "cf.cash-account.transactions.too-many-transactions.hint03",
-        postLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint04"),
-        enableLineBreakBeforePostMessage = true,
-        pClass = "govuk-body govuk-!-margin-bottom-9"
+    link mustBe HtmlFormat.fill(
+      List(
+        h2Component(
+          msgKey = "cf.cash-account.transactions.request-transactions.heading",
+          id = Some("request-transactions-heading"),
+          classes = "govuk-heading-m govuk-!-margin-top-9"
+        ),
+        linkComponent(
+          LinkComponentValues(
+            pId = Some("download-scv-file"),
+            location = controllers.routes.SelectTransactionsController.onPageLoad().url,
+            preLinkMessageKey = Some("cf.cash-account.no.transactions.request.link.pre"),
+            linkMessageKey = "cf.cash-account.no.transactions.request.link.previous",
+            postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
+            linkSentence = true
+          )
+        )
       )
     )
 

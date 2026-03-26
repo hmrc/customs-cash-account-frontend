@@ -24,6 +24,7 @@ import utils.Utils.*
 import play.twirl.api.HtmlFormat
 import views.html.components.{cash_account_balance, daily_statements_v2}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import viewmodels.pagination.ListPaginationViewModel
 
 import scala.collection.Seq
@@ -49,6 +50,7 @@ case class CashAccountV2ViewModel(
   dailyStatementsSection: Option[DailyStatementsSection] = None,
   tooManyTransactionsSection: Option[TooManyTransactionsSection] = None,
   downloadCSVFileLinkUrl: HtmlFormat.Appendable,
+  requestTransactionsInsetText: HtmlFormat.Appendable,
   helpAndSupportGuidance: GuidanceRow,
   paginationModel: Option[ListPaginationViewModel] = None
 )
@@ -81,6 +83,7 @@ object CashAccountV2ViewModel {
       dailyStatementsSection = populateDailyStatementsSection(cashTrans, pageNo),
       tooManyTransactionsSection = populateTooManyTransactionsSection(hasMaxTransactionsExceeded),
       downloadCSVFileLinkUrl = downloadCSVFileLinkUrl(hasMaxTransactionsExceeded),
+      requestTransactionsInsetText = requestTransactionsInsetText(),
       helpAndSupportGuidance = helpAndSupport,
       paginationModel = populatePaginationModel(pageNo, totalDailyStatementsSize)
     )
@@ -148,15 +151,23 @@ object CashAccountV2ViewModel {
     hasMaxTransactionsExceeded: Boolean
   )(implicit msgs: Messages): HtmlFormat.Appendable =
     if (hasMaxTransactionsExceeded) {
-      linkComponent(
-        LinkComponentValues(
-          pId = Some("download-scv-file"),
-          location = controllers.routes.SelectTransactionsController.onPageLoad().url,
-          preLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint02"),
-          linkMessageKey = "cf.cash-account.transactions.too-many-transactions.hint03",
-          postLinkMessageKey = Some("cf.cash-account.transactions.too-many-transactions.hint04"),
-          enableLineBreakBeforePostMessage = true,
-          pClass = "govuk-body govuk-!-margin-bottom-9"
+      HtmlFormat.fill(
+        List(
+          h2Component(
+            msgKey = "cf.cash-account.transactions.request-transactions.heading",
+            id = Some("request-transactions-heading"),
+            classes = "govuk-heading-m govuk-!-margin-top-9"
+          ),
+          linkComponent(
+            LinkComponentValues(
+              pId = Some("download-scv-file"),
+              location = controllers.routes.SelectTransactionsController.onPageLoad().url,
+              preLinkMessageKey = Some("cf.cash-account.no.transactions.request.link.pre"),
+              linkMessageKey = "cf.cash-account.no.transactions.request.link.previous",
+              postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
+              linkSentence = true
+            )
+          )
         )
       )
 
@@ -167,11 +178,17 @@ object CashAccountV2ViewModel {
           linkMessageKey = "cf.cash-account.transactions.request-transactions.download-csv.url",
           location = controllers.routes.SelectTransactionsController.onPageLoad().url,
           postLinkMessageKey = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
-          enableLineBreakBeforePostMessage = true,
           linkSentence = true
         )
       )
     }
+
+  private def requestTransactionsInsetText()(implicit msgs: Messages): HtmlFormat.Appendable =
+    insetComponent(
+      InsetComponentValues(
+        msg = "cf.cash-account.transactions.request-transactions.insetMessage"
+      )
+    )
 
   private def helpAndSupport(implicit appConfig: AppConfig, messages: Messages): GuidanceRow =
     GuidanceRow(

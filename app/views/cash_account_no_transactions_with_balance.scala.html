@@ -22,7 +22,8 @@
         p: components.p,
         link: components.link,
         cash_account_balance: components.cash_account_balance,
-        newTabLink: components.newTabLink
+        newTabLink: components.newTabLink,
+        govukInsetText : GovukInsetText
 )
 
 @(accountModel: CashAccountViewModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -42,18 +43,20 @@
     )
 
     @h2(
-        "cf.cash-account.transactions.request.link.heading",
-        id = Some("missing-documents-guidance-heading"),
+        msg = "cf.cash-account.transactions.request-transactions.heading",
+        id = Some("request-transactions-heading"),
         classes = "govuk-heading-m govuk-!-margin-top-9"
     )
 
     @link(
-        "cf.cash-account.transactions.request.link.previous",
-        controllers.routes.RequestTransactionsController.onPageLoad().url,
-        preLinkMessage = Some("cf.cash-account.transactions.request.link.pre"),
+        "cf.cash-account.transactions.request-transactions.download-csv.url",
+        controllers.routes.SelectTransactionsController.onPageLoad().url,
+        postLinkMessage = Some("cf.cash-account.transactions.request-transactions.download-csv.post-message"),
         pClass = "govuk-body govuk-!-margin-bottom-9",
-        linkSentence = true
     )
+    @govukInsetText(InsetText(
+        content = Text(messages("cf.cash-account.transactions.request-transactions.insetMessage"))
+    ))
 
     @h2(
         msg = "cf.cash-account.transactions.request.support.heading",
