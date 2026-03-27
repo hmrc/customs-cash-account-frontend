@@ -9,7 +9,6 @@ site.search.again = Search again
 
 service.name=Manage import duties and VAT accounts
 
-
 # BETA Banner
 # ----------------------------------------------------------
 feedback.before = This is a new service - your
@@ -32,7 +31,6 @@ cf.cash-account.csv.excise=Excise
 cf.cash-account.csv.credit=Credit
 cf.cash-account.csv.debit=Debit
 cf.cash-account.csv.balance=Balance
-
 
 cf.cash-account.csv.closing-balance=Closing balance
 cf.cash-account.csv.opening-balance=Opening balance
@@ -117,7 +115,6 @@ timeout.message = For security reasons, you will be signed out of this service i
 timeout.keepAlive = Stay signed in
 timeout.signOut = Sign out
 
-
 # Not subscribed to CDS
 # ----------------------------------------------------------
 cf.not-subscribed-to-cds.detail.title=Not registered with CDS
@@ -162,7 +159,6 @@ cf.verify.your.email.change.button=Verify or change email address
 
 # Date Format
 # ----------------------------------------------------------
-
 month.1 = January
 month.2 = February
 month.3 = March
@@ -177,7 +173,6 @@ month.11 = November
 month.12 = December
 month.to = to
 
-
 #Pagination
 # ----------------------------------------------------------
 cf.pager.prev=Previous
@@ -187,7 +182,6 @@ cf.pager.summary.of=of
 cf.pager.summary.to=to
 cf.pager.summary.accessibility=set of pages
 cf.pager.transactions=days of transactions
-
 
 # No transactions available
 # ----------------------------------------------------------
@@ -342,7 +336,6 @@ cf.cash-account.duplicate.header = We are already processing a request for {0} t
 cf.cash-account.duplicate.message = Requested transactions can take up to 48 hours before they are available to download.
 cf.cash-account.duplicate.link = Back to cash account
 
-
 #Pagination
 pagination.number-of-movements.singular.with-search-param = Showing {0} result matching {1}
 pagination.number-of-movements.plural.with-search-param = Showing {0} results matching {1}
@@ -354,7 +347,6 @@ pagination.searchResults = Search results pagination
 pagination.results = Showing {0} to {1} of {2} results
 pagination.results.search = Showing {0} to {1} of {2} results matching {3}
 
-pagination.page = Page {0}
 pagination.next = Next
 pagination.next.hidden = Next page
 pagination.previous = Previous

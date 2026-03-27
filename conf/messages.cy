@@ -9,7 +9,6 @@ site.search.again = Chwilio eto
 
 service.name=Rheoli tollau mewnforio a chyfrifon TAW
 
-
 # BETA Banner
 # ----------------------------------------------------------
 feedback.before=Gwasanaeth newydd yw hwn – bydd eich
@@ -33,7 +32,6 @@ cf.cash-account.csv.credit=Credyd
 cf.cash-account.csv.debit=Debyd
 cf.cash-account.csv.balance=Balans
 
-
 cf.cash-account.csv.closing-balance=Balans Cau
 cf.cash-account.csv.opening-balance=Balans Agor
 cf.cash-account.csv.declaration=Datganiad
@@ -45,8 +43,6 @@ cf.cash-account.csv.withdrawal.account-ending=(i’r cyfrif sy’n gorffen gyda 
 cf.cash-account.csv.filename=Trafodion_Cyfrif_Arian_Parod_{0}.CSV
 cf.cash-account.detail.closing-balance=Balans Cau {0}
 cf.cash-account.detail.opening-balance=Balans Agor
-cf.cash-account.detail.importerEori=<abbr title="Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)">EORI</abbr> y mewnforiwr
-
 
 # Cash Account detail view
 cf.cash-account.detail.title=Cyfrif arian parod
@@ -60,6 +56,7 @@ cf.cash-account.withdraw-funds.guidance.link.aria-label=Codi arian o’ch cyfrif
 cf.cash-account.detail.csv.download=Lawrlwytho CSV
 cf.cash-account.detail.csv-definition=Newid y dyddiadau a ddewiswyd
 cf.cash-account.detail.csv=Lawrlwythwch drafodion ar ffurf <abbr title="Gwerthoedd wedi’u gwahanu gan goma. Gellir defnyddio CSV gyda’r rhan fwyaf o raglenni taenlen.">CSV</abbr>
+cf.cash-account.detail.payments-heading=Eich trafodion ar gyfer y chwe mis diwethaf
 cf.cash-account.detail.date=Dyddiad
 cf.cash-account.detail.movement-reference-number=Cyfeirnod Symud (MRN)
 cf.cash-account.detail.mrn=MRN
@@ -70,6 +67,7 @@ cf.cash-account.detail.Declarationucr=UCR y datganiad
 cf.cash-account.detail.declarant=Datganwr
 cf.cash-account.detail.eori=EORI
 cf.cash-account.detail.eori-definition=Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)
+cf.cash-account.detail.importerEori=<abbr title="Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)">EORI</abbr> y mewnforiwr
 cf.cash-account.detail.transaction-type = Math o drafodyn
 cf.cash-account.detail.credit = Credyd
 cf.cash-account.detail.debit = Debyd
@@ -117,7 +115,6 @@ timeout.message=Am resymau diogelwch, cewch eich allgofnodi o’r gwasanaeth hwn
 timeout.keepAlive=Parhau i fod wedi’ch mewngofnodi
 timeout.signOut=Allgofnodi
 
-
 # Not subscribed to CDS
 # ----------------------------------------------------------
 cf.not-subscribed-to-cds.detail.title=Heb gofrestru â’r Gwasanaeth Datgan Tollau (CDS)
@@ -136,7 +133,6 @@ cf.error.not-found.message.address-pasted-wrong=Os gwnaethoch ludo’r cyfeiriad
 cf.error.not-found.message.go-to-home-page-text1=Gallwch fynd
 cf.error.not-found.message.go-to-home-page-text2=yn ôl i reoli tollau mewnforio a chyfrifon TAW
 cf.accounts.view-customs-account=rheoli tollau mewnforio a chyfrifon TAW
-
 
 # Undeliverable Email Address
 # ----------------------------------------------------------
@@ -177,7 +173,6 @@ month.11=Tachwedd
 month.12=Rhagfyr
 month.to=i
 
-
 #Pagination
 # ----------------------------------------------------------
 cf.pager.prev=Blaenorol
@@ -187,7 +182,6 @@ cf.pager.summary.of=o
 cf.pager.summary.to=i
 cf.pager.summary.accessibility=set o dudalennau
 cf.pager.transactions=diwrnodau trafodion
-
 
 # No transactions available
 # ----------------------------------------------------------
@@ -337,12 +331,10 @@ cf.cash-account.detail.transactions-caption=Eich trafodion ar gyfer {0}
 cf.cash-account.topup.withdrawal.detail.heading=Help gydag ychwanegiadau a chodiadau arianls
 cf.cash-account.topup.withdrawal.detail.text=Gall ychwanegiadau gymryd hyd at un diwrnod gwaith i ddangos ar y dudalen hon. Mae arian fel arfer ar gael i’w ddefnyddio cyn pen awr ar ôl gwneud y trosglwyddiad o’ch banc. Gall codiadau arian gymryd hyd at 15 diwrnod gwaith i’r arian gyrraedd eich cyfrif banc.
 cf.cash-account.detail.available-balance=Y balans sydd ar gael {0}
-cf.cash-account.detail.payments-heading=Eich trafodion ar gyfer y chwe mis diwethaf
 
 cf.cash-account.duplicate.header = Rydym eisoes yn prosesu cais ar gyfer mis {0} i fis {1}
 cf.cash-account.duplicate.message = Gall trafodion y gofynnir amdanynt gymryd hyd at 48 awr cyn eu bod ar gael i’w lawrlwytho.
 cf.cash-account.duplicate.link = Yn ôl i’r cyfrif arian parod
-
 
 #Pagination
 pagination.number-of-movements.singular.with-search-param = Yn dangos {0} canlyniad yn cyfateb i {1}
@@ -355,10 +347,10 @@ pagination.searchResults = Tudaleniad canlyniadau chwilio
 pagination.results = Yn dangos {0} i {1} o {2} canlyniad
 pagination.results.search = Yn dangos {0} i {1} o {2} canlyniad yn cyfateb i {3}
 
-pagination.previous = Blaenorol
-pagination.previous.hidden = Tudalen flaenorol
 pagination.next = Nesaf
 pagination.next.hidden = Tudalen nesaf
+pagination.previous = Blaenorol
+pagination.previous.hidden = Tudalen flaenorol
 pagination.ellipses = ...
 pagination.ellipses.hidden = Ellipses
 
