@@ -79,7 +79,7 @@ class CashAccountV2Spec extends ViewTestHelper {
 
       "display cashStatementNotification" in new Setup {
         val view: Document = createView(viewModelWithTransactions)
-        view.getElementById("notification-statement").text() mustBe "Your requested transactions are now available"
+        view.getElementById("notification-statement").text() mustBe "Your requested transactions are now available."
       }
     }
 

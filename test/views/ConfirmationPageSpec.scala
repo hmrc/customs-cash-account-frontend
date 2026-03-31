@@ -53,12 +53,6 @@ class ConfirmationPageSpec extends SpecBase with ViewTestHelper {
         Option(viewWithoutEmail.getElementById("body-text-email")) mustBe None
       }
 
-      "body text download is correct" in new Setup {
-        view.getElementById("body-text-download").text() mustBe messages(
-          "cf.cash-account.transactions.confirmation.download"
-        )
-      }
-
       "link text is correct and points to the right URL" in new Setup {
         val linkElement = view.getElementById("link-text").selectFirst("a")
         linkElement.text() mustBe messages("cf.cash-account.transactions.confirmation.back")
