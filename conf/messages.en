@@ -250,7 +250,7 @@ cf.cash-account.transactions.result.download.transactions=Download the CSV file 
 # Requested Cash Statement Notification Panel
 cf.cash-account.requested.statements.available.text.pre=Your
 cf.cash-account.requested.statements.available.link.text=requested transactions
-cf.cash-account.requested.statements.available.text.post=are now available
+cf.cash-account.requested.statements.available.text.post=are now available.
 
 # V1 Date Form Errors (will be removed)
 cf.form.error.year.length = Year must include 4 numbers

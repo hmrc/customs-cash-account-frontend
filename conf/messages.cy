@@ -250,7 +250,7 @@ cf.cash-account.transactions.result.download.transactions=Lawrlwythwch ffeil CSV
 # Requested Cash Statement Notification Panel
 cf.cash-account.requested.statements.available.text.pre=Mae’r
 cf.cash-account.requested.statements.available.link.text=trafodion y gwnaethoch gais amdanynt
-cf.cash-account.requested.statements.available.text.post=bellach ar gael
+cf.cash-account.requested.statements.available.text.post=bellach ar gael.
 
 # V1 Date Form Errors (will be removed)
 cf.form.error.year.length = Mae’n rhaid i’r flwyddyn gynnwys pedwar rhif
@@ -296,7 +296,7 @@ cf.cash-account.transactions.no-transactions.message = Nid oes unrhyw drafodion 
 cf.cash-account.transactions.request-transactions.heading = Gofyn am drafodion
 cf.cash-account.transactions.transactions-for-last-six-months.heading = Eich trafodion ar gyfer y chwe mis diwethaf
 cf.cash-account.transactions.no-transactions-for-last-six-months = Nid oes unrhyw drafodion o’r 6 mis diwethaf i’w harddangos.
-cf.cash-account.transactions.request-transactions.download-csv.url = Gofynnwch yn ôl dyddiad a lawrlwytho’ch trafodion fel ffeil CSV
+cf.cash-account.transactions.request-transactions.download-csv.url = Gwneud cais erbyn dyddiad a lawrlwytho eich trafodion fel ffeil CSV
 cf.cash-account.transactions.request-transactions.download-csv.post-message = Byddwn yn anfon e-bost atoch pan fydd eich trafodion yn barod i’w lawrlwytho.
 cf.cash-account.transactions.search-for-transactions.heading = Chwilio am drafodion
 cf.cash-account.transactions.search-for-transactions.hint = Gallwch chwilio yn ôl Cyfeirnod Symud <abbr title="Cyfeirnod Symud (MRN)">(MRN)</abbr>, Cyfeirnod Unigryw y Llwyth <abbr title="Cyfeirnod Unigryw y Llwyth (UCR)">(UCR)</abbr> neu union swm y taliad sy’n cynnwys ‘£’
