@@ -315,7 +315,7 @@ cf.cash-account.transactions.too-many-transactions.hint04 = We will send you an 
 
 cf.cash-account.transactions.confirmation.statements=We received your request for transactions
 cf.cash-account.transactions.confirmation.next=What happens next
-cf.cash-account.transactions.confirmation.email=We’ll send an email within 48 hours to <strong>{0}</strong> when your request is processed.
+cf.cash-account.transactions.confirmation.email=We will send an email to <strong>{0}</strong> when your transactions are ready to download from the cash account page.
 cf.cash-account.transactions.confirmation.download=You’ll be able to download your transactions from the cash account transactions page.
 cf.cash-account.transactions.confirmation.back=Back to Manage import duties and VAT accounts homepage
 

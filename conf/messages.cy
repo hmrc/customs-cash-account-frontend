@@ -317,7 +317,7 @@ cf.cash-account.transactions.request.date.hint-end-date.v2=Er enghraifft, 3 2021
 
 cf.cash-account.transactions.confirmation.statements=Mae’ch cais am drafodion wedi dod i law
 cf.cash-account.transactions.confirmation.next=Yr hyn sy’n digwydd nesaf
-cf.cash-account.transactions.confirmation.email=Byddwn yn anfon e-bost at <strong>{0}</strong> cyn pen 48 awr pan fydd eich cais wedi’i brosesu.
+cf.cash-account.transactions.confirmation.email=Byddwn yn anfon e-bost <strong>{0}</strong> pan fydd eich trafodion yn barod i’w lawrlwytho o’r dudalen cyfrif arian parod.
 cf.cash-account.transactions.confirmation.download=Byddwch yn gallu lawrlwytho’ch trafodion o’r dudalen trafodion cyfrifon arian parod.
 cf.cash-account.transactions.confirmation.back=Yn ôl i hafan ‘Rheoli tollau mewnforio a chyfrifon TAW’
 

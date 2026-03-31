@@ -24,7 +24,8 @@
   newTabLink: components.newTabLink,
   p: components.p,
   h2: components.h2,
-  govukPanel: GovukPanel
+  govukPanel: GovukPanel,
+  govukInsetText : GovukInsetText
 )
 
 @(
@@ -61,10 +62,10 @@
     )
   }
 
-  @p(
-    message = s"${messages("cf.cash-account.transactions.confirmation.download")}",
-    id=Some("body-text-download")
-  )
+
+    @govukInsetText(InsetText(
+        content = Text(messages("cf.cash-account.transactions.request-transactions.insetMessage"))
+    ))
 
   @link(
     linkMessage = Some(messages(s"cf.cash-account.transactions.confirmation.back")),
