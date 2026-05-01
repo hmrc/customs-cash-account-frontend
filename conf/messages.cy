@@ -11,9 +11,8 @@ service.name=Rheoli tollau mewnforio a chyfrifon TAW
 
 # BETA Banner
 # ----------------------------------------------------------
-feedback.before=Gwasanaeth newydd yw hwn – bydd eich
-feedback.link=adborth
-feedback.after=yn ein helpu i’w wella.
+feedback.text = Gwasanaeth newydd yw hwn. Rhowch help i ni ei wella, a {0}.
+feedback.link = rhoi eich adborth (yn agor tab newydd)
 
 # Common messages
 cf.common.newTab.notice = (yn agor mewn tab newydd)

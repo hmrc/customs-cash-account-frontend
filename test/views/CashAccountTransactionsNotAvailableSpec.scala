@@ -16,16 +16,13 @@
 
 package views
 
-import config.AppConfig
 import models.FileRole.CDSCashAccount
 import models.domain.CAN
 import models.{AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
-import play.twirl.api.HtmlFormat
 import views.html.cash_account_transactions_not_available
-import utils.Utils.notificationPanelComponent
 
 class CashAccountTransactionsNotAvailableSpec extends ViewTestHelper {
 

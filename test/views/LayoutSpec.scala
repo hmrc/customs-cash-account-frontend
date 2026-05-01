@@ -100,7 +100,7 @@ class LayoutSpec extends SpecBase {
   private def shouldContainCorrectBanners(viewDoc: Document) = {
     viewDoc
       .getElementsByClass("govuk-phase-banner")
-      .text() mustBe "BETA This is a new service - your feedback will help us to improve it."
+      .text() mustBe "Beta This is a new service. Help us improve it and give your feedback (opens in new tab) ."
 
     viewDoc
       .getElementsByClass("hmrc-user-research-banner")
