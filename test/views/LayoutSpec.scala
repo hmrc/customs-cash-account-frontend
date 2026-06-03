@@ -104,7 +104,7 @@ class LayoutSpec extends SpecBase {
 
     viewDoc
       .getElementsByClass("hmrc-user-research-banner")
-      .text() mustBe "Help make GOV.UK better Sign up to take part in research (opens in new tab)" +
+      .text() mustBe "You may receive a voucher for feedback Join our research panel (opens in new tab)" +
       " Hide message Hide message. I do not want to take part in research"
   }
 
