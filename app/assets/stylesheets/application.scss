@@ -4,4 +4,6 @@ $hmrc-assets-path: "/customs/cash-account/assets/lib/hmrc-frontend/hmrc/";
 $govuk-suppressed-warnings: (libssl);
 
 @import "lib/govuk-frontend/dist/govuk/base";
+@import "../utils/custom";
+@import "../components/table";
 
