@@ -33,11 +33,17 @@ class CashAccountDeclarationDetailsSearchSpec extends ViewTestHelper {
 
     "render the correct title and headings" in new Setup {
 
-      titleShouldBeCorrect(viewDoc, "cf.cash-account.detail.declaration.search-title")
+      titleShouldBeCorrect(
+        viewDoc,
+        "cf.cash-account.detail.declaration.search-title",
+        movementReferenceNumber
+      )
 
-      viewDoc.getElementsByTag("h1").text() mustBe s"Search results for $movementReferenceNumber"
+      viewDoc.getElementsByTag("h1").text() mustBe
+        s"Search results for $movementReferenceNumber"
 
-      val accountNumber = s"${messages("cf.cash-account.detail.account", number)}"
+      val accountNumber: String =
+        messages("cf.cash-account.detail.account", number)
 
       viewDoc.getElementById("account-number").text() mustBe accountNumber
     }
