@@ -119,7 +119,7 @@ class CashAccountDeclarationDetailsSearchSpec extends ViewTestHelper {
       app.injector.instanceOf[cash_account_declaration_details_search]
 
     val viewDoc: Document = Jsoup.parse(
-      cashAccountDeclarationDetails.apply(viewModel, pageNumber)(request, messages).body
+      cashAccountDeclarationDetails.apply(viewModel, pageNumber, movementReferenceNumber)(request, messages).body
     )
   }
 }
