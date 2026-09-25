@@ -33,11 +33,17 @@ class CashAccountDeclarationDetailsSearchSpec extends ViewTestHelper {
 
     "render the correct title and headings" in new Setup {
 
-      titleShouldBeCorrect(viewDoc, "cf.cash-account.detail.declaration.search-title")
+      titleShouldBeCorrect(
+        viewDoc,
+        "cf.cash-account.detail.declaration.search-title",
+        movementReferenceNumber
+      )
 
-      viewDoc.getElementsByTag("h1").text() mustBe s"Search results for $movementReferenceNumber"
+      viewDoc.getElementsByTag("h1").text() mustBe
+        s"Search results for $movementReferenceNumber"
 
-      val accountNumber = s"${messages("cf.cash-account.detail.account", number)}"
+      val accountNumber: String =
+        messages("cf.cash-account.detail.account", number)
 
       viewDoc.getElementById("account-number").text() mustBe accountNumber
     }
@@ -119,7 +125,7 @@ class CashAccountDeclarationDetailsSearchSpec extends ViewTestHelper {
       app.injector.instanceOf[cash_account_declaration_details_search]
 
     val viewDoc: Document = Jsoup.parse(
-      cashAccountDeclarationDetails.apply(viewModel, pageNumber)(request, messages).body
+      cashAccountDeclarationDetails.apply(viewModel, pageNumber, movementReferenceNumber)(request, messages).body
     )
   }
 }
