@@ -44,6 +44,7 @@ class SelectTransactionsFormProvider @Inject() (implicit clock: Clock) extends S
             beforeCurrentDate(errorKey = "cf.form.error.start-future-date")
           )
           .verifying(
+            //TODO change this to have only one error message with dynamic year
             checkDates(
               systemStartDateErrorKey = "cf.form.error.startDate.date-earlier-than-system-start-date",
               taxYearErrorKey = "cf.form.error.start.date-too-far-in-past"
@@ -64,6 +65,7 @@ class SelectTransactionsFormProvider @Inject() (implicit clock: Clock) extends S
             beforeCurrentDate(errorKey = "cf.form.error.end-future-date")
           )
           .verifying(
+            //TODO change this to have only one error message with dynamic year
             checkDates(
               systemStartDateErrorKey = "cf.form.error.endDate.date-earlier-than-system-start-date",
               taxYearErrorKey = "cf.form.error.end.date-too-far-in-past"

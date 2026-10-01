@@ -63,6 +63,7 @@ trait ConstraintsV2 {
     clock: Clock
   ): Constraint[LocalDate] = Constraint {
 
+    // TODO: probably we need to delet this one bellow as we only care about CY-6 rule
     case request if Period.between(request, etmpStatementsDate).toTotalMonths > 0 =>
       Invalid(ValidationError(systemStartDateErrorKey))
 

@@ -29,6 +29,7 @@ import repositories.RequestedTransactionsCache
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.*
 
+import java.time.{Clock, LocalDate}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,6 +38,7 @@ class SelectTransactionsController @Inject() (
   formProvider: SelectTransactionsFormProvider,
   view: select_transactions,
   cache: RequestedTransactionsCache,
+  clock: Clock,
   implicit val mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc)
@@ -67,6 +69,9 @@ class SelectTransactionsController @Inject() (
         value => processCustomValidation(value)
       )
   }
+
+  //TODO: add creation of dynamic hint, e.g. use LocalDate.now(clock).minusOney - 1 year
+  def test: LocalDate = LocalDate.now(clock).minusYears(1)
 
   private def processCustomValidation(
     value: CashTransactionDates
