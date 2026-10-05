@@ -105,6 +105,11 @@ class FormattersSpec extends SpecBase {
       formatCurrencyAmount(BigDecimal(wholeValueWithFiveDigits)) mustBe "£54,000.00"
       formatCurrencyAmount(BigDecimal(valueWithSixDigitsWithTwoDecimalPoints)) mustBe "£554,678.56"
     }
+
+    "return result with negative sign when value is less than 0" in {
+      formatCurrencyAmount(BigDecimal(-33899.43)) mustBe "-£33,899.43"
+      formatCurrencyAmount(BigDecimal(-500.00)) mustBe "-£500.00"
+    }
   }
 
   "dateAsMonth" should {
