@@ -23,9 +23,7 @@ import models.{
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount}
-import utils.Utils.{
-  LinkComponentValues, emptyString, h2Component, linkComponent, pComponent
-}
+import utils.Utils.{LinkComponentValues, emptyString, h2Component, linkComponent, pComponent}
 
 import java.time.LocalDate
 import scala.math.Ordered.orderingToOrdered

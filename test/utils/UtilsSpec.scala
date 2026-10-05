@@ -175,7 +175,6 @@ class UtilsSpec extends SpecBase {
     }
   }
 
-
   "notificationPanelComponent" should {
     "create the component correctly with provided input" in new Setup {
       val showNotification = true
