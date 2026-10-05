@@ -77,6 +77,45 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
 
   }
 
+  "debit amounts" should {
+
+    "display negative declaration amount as -£X" in new Setup {
+      val viewModel = CashAccountDailyStatementsViewModel(cashTransactions, None)
+
+      val declarationDebits: Seq[String] = viewModel.dailyStatements
+        .filter(_.transactionType.exists(_.mrnLink.isDefined))
+        .flatMap(_.debit)
+
+      declarationDebits.foreach { debit =>
+        debit mustBe Formatters.formatCurrencyAmount(AMOUNT)
+      }
+    }
+
+    "display negative withdrawal amount as -£X" in new Setup {
+      val viewModel = CashAccountDailyStatementsViewModel(cashTransactions, None)
+
+      val withdrawalDebits: Seq[String] = viewModel.dailyStatements
+        .filter(_.transactionType.exists(_.textString.exists(_.contains("Withdrawal") || _.contains("withdrawal"))))
+        .flatMap(_.debit)
+
+      withdrawalDebits.foreach { debit =>
+        debit mustBe Formatters.formatCurrencyAmount(-432.87)
+      }
+    }
+
+    "display negative transfer-out amount as -£X" in new Setup {
+      val viewModel = CashAccountDailyStatementsViewModel(cashTransactions, None)
+
+      val transferDebits: Seq[String] = viewModel.dailyStatements
+        .filter(_.transactionType.exists(_.textString.exists(_.contains("Transfer") || _.contains("transfer"))))
+        .flatMap(_.debit)
+
+      transferDebits.foreach { debit =>
+        debit mustBe Formatters.formatCurrencyAmount(-432.87)
+      }
+    }
+  }
+
   "DailyStatementViewModel.compare" should {
 
     "sort the data in the correct order" in new Setup {

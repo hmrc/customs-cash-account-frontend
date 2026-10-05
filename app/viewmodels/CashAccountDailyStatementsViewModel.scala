@@ -24,7 +24,7 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount}
 import utils.Utils.{
-  LinkComponentValues, emptyString, h2Component, linkComponent, pComponent, prependNegativeSignWithAmount
+  LinkComponentValues, emptyString, h2Component, linkComponent, pComponent
 }
 
 import java.time.LocalDate
@@ -145,7 +145,7 @@ object CashAccountDailyStatementsViewModel {
             )
           )
         ),
-        debit = Some(prependNegativeSignWithAmount(formatCurrencyAmount(declaration.amount))),
+        debit = Some(formatCurrencyAmount(declaration.amount)),
         balance = None
       )
     }
@@ -190,10 +190,10 @@ object CashAccountDailyStatementsViewModel {
   private def populateDebitAmount(transaction: Transaction): Option[String] =
     transaction.transactionType match {
       case Payment    => None
-      case Withdrawal => Some(prependNegativeSignWithAmount(formatCurrencyAmount(transaction.amount)))
+      case Withdrawal => Some(formatCurrencyAmount(transaction.amount))
       case Transfer   =>
         if (transaction.amount < 0) {
-          Some(prependNegativeSignWithAmount(formatCurrencyAmount(transaction.amount)))
+          Some(formatCurrencyAmount(transaction.amount))
         } else {
           None
         }

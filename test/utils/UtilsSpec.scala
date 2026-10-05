@@ -52,12 +52,6 @@ class UtilsSpec extends SpecBase {
     }
   }
 
-  "negativeSign" should {
-    "return correct value" in {
-      negativeSign mustBe "-"
-    }
-  }
-
   "poundSymbol" should {
     "return correct value" in {
       poundSymbol mustBe "£"
@@ -181,13 +175,6 @@ class UtilsSpec extends SpecBase {
     }
   }
 
-  "prependNegativeSignWithAmount" should {
-    "prepend - sign with amount" in {
-      val testAmount = "400.00"
-
-      prependNegativeSignWithAmount(testAmount) mustBe "-400.00"
-    }
-  }
 
   "notificationPanelComponent" should {
     "create the component correctly with provided input" in new Setup {

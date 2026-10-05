@@ -30,7 +30,6 @@ object Utils {
   val period: String      = "."
   val hyphen              = "-"
   val singleSpace         = " "
-  val negativeSign        = "-"
   val poundSymbol         = "£"
 
   val emptyH1Component: h1                            = new h1()
@@ -129,9 +128,6 @@ object Utils {
       postLinkMessage = postLinkMessage,
       classes = classes
     )
-
-  def prependNegativeSignWithAmount(amount: String): String =
-    s"$negativeSign$amount"
 
   case class LinkComponentValues(
     linkMessageKey: String = emptyString,
