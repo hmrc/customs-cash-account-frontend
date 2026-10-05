@@ -16,6 +16,10 @@
 
 package viewmodels
 
+import helpers.Formatters
+import helpers.Formatters.yyyyMMddDateFormatter
+import models.response
+import models.response.PaymentsWithdrawalsAndTransfer
 import utils.SpecBase
 import utils.TestData.*
 
@@ -33,6 +37,40 @@ class PaymentSearchResultStatementsViewModelSpec extends SpecBase {
         viewModel01.dailyStatements.map(_.date) mustEqual Seq(DATE_AUG_17, DATE_AUG_16, DATE_AUG_15)
         viewModel01.hasTransactions mustBe true
         viewModel01.noTransactionsMessage mustBe None
+      }
+
+      "display negative withdrawal amount as -£X" in {
+        val withdrawalDetails = PaymentsWithdrawalsAndTransfer.apply(
+          valueDate = DATE_AUG_17.format(yyyyMMddDateFormatter),
+          postingDate = DATE_AUG_17.format(yyyyMMddDateFormatter),
+          paymentReference = PAYMENT_REF_TEXT,
+          amount = -103.10,
+          `type` = response.PaymentType.Withdrawal,
+          bankAccount = BANK_ACC_NUMBER,
+          sortCode = SORT_CODE
+        )
+
+        val viewModel = PaymentSearchResultStatementsViewModel(Seq(withdrawalDetails), None)
+        val debit     = viewModel.dailyStatements.flatMap(_.debit).headOption
+
+        debit mustBe Some(Formatters.formatCurrencyAmount(-103.10))
+      }
+
+      "display negative transfer-out amount as -£X" in {
+        val transferDetails = PaymentsWithdrawalsAndTransfer.apply(
+          valueDate = DATE_AUG_17.format(yyyyMMddDateFormatter),
+          postingDate = DATE_AUG_17.format(yyyyMMddDateFormatter),
+          paymentReference = PAYMENT_REF_TEXT,
+          amount = -102.10,
+          `type` = response.PaymentType.Transfer,
+          bankAccount = BANK_ACC_NUMBER,
+          sortCode = SORT_CODE
+        )
+
+        val viewModel = PaymentSearchResultStatementsViewModel(Seq(transferDetails), None)
+        val debit     = viewModel.dailyStatements.flatMap(_.debit).headOption
+
+        debit mustBe Some(Formatters.formatCurrencyAmount(-102.10))
       }
 
       "cash transactions are not present" in {
