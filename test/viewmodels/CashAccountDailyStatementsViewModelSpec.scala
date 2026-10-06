@@ -87,7 +87,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
         .flatMap(_.debit)
 
       declarationDebits.foreach { debit =>
-        debit mustBe Formatters.formatCurrencyAmount(AMOUNT)
+        debit mustBe "&#8722;£400.00"
       }
     }
 
@@ -101,7 +101,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
         .flatMap(_.debit)
 
       withdrawalDebits.foreach { debit =>
-        debit mustBe Formatters.formatCurrencyAmount(-432.87)
+        debit mustBe "&#8722;£432.87"
       }
     }
 
@@ -113,7 +113,7 @@ class CashAccountDailyStatementsViewModelSpec extends SpecBase {
         .flatMap(_.debit)
 
       transferDebits.foreach { debit =>
-        debit mustBe Formatters.formatCurrencyAmount(-432.87)
+        debit mustBe "&#8722;£432.87"
       }
     }
   }
