@@ -17,7 +17,7 @@
 package viewmodels
 
 import config.AppConfig
-import helpers.Formatters.{formatCurrencyAmount, yyyyMMddDateFormatter}
+import helpers.Formatters.{formatCurrencyAmount, formatSignedCurrencyAmount, yyyyMMddDateFormatter}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import utils.Utils.pComponent
@@ -113,10 +113,10 @@ object PaymentSearchResultStatementsViewModel {
     valueObject.`type` match {
       case response.PaymentType.Payment    => None
       case response.PaymentType.Withdrawal =>
-        Some(formatCurrencyAmount(valueObject.amount))
+        Some(formatSignedCurrencyAmount(valueObject.amount))
       case response.PaymentType.Transfer   =>
         if (valueObject.amount < 0) {
-          Some(formatCurrencyAmount(valueObject.amount))
+          Some(formatSignedCurrencyAmount(valueObject.amount))
         } else {
           None
         }
