@@ -16,7 +16,6 @@
 
 package viewmodels
 
-import helpers.Formatters
 import helpers.Formatters.yyyyMMddDateFormatter
 import models.response
 import models.response.PaymentsWithdrawalsAndTransfer
@@ -53,7 +52,7 @@ class PaymentSearchResultStatementsViewModelSpec extends SpecBase {
         val viewModel = PaymentSearchResultStatementsViewModel(Seq(withdrawalDetails), None)
         val debit     = viewModel.dailyStatements.flatMap(_.debit).headOption
 
-        debit mustBe Some(Formatters.formatSignedCurrencyAmount(-103.10))
+        debit mustBe Some("&#8722;£103.10")
       }
 
       "display negative transfer-out amount as -£X" in {
@@ -70,7 +69,7 @@ class PaymentSearchResultStatementsViewModelSpec extends SpecBase {
         val viewModel = PaymentSearchResultStatementsViewModel(Seq(transferDetails), None)
         val debit     = viewModel.dailyStatements.flatMap(_.debit).headOption
 
-        debit mustBe Some(Formatters.formatSignedCurrencyAmount(-102.10))
+        debit mustBe Some("&#8722;£102.10")
       }
 
       "cash transactions are not present" in {
