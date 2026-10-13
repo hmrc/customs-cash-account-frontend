@@ -28,8 +28,13 @@ trait ViewTestHelper extends SpecBase {
   implicit lazy val app: Application                        = application
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest()
 
-  def titleShouldBeCorrect(view: Document, titleMsgKey: String): Assertion =
-    view.title() mustBe s"${messages(titleMsgKey)} - ${messages("service.name")} - GOV.UK"
+  def titleShouldBeCorrect(
+    view: Document,
+    titleMsgKey: String,
+    args: Any*
+  ): Assertion =
+    view.title() mustBe
+      s"${messages(titleMsgKey, args*)} - ${messages("service.name")} - GOV.UK"
 
   def shouldContainBackLinkUrl(view: Document, url: String): Assertion = view.html().contains(url) mustBe true
 

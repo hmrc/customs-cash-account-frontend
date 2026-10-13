@@ -70,6 +70,9 @@ object Formatters {
 
     numberFormat.setMaximumFractionDigits(maxDecimalPlaces)
     numberFormat.setMinimumFractionDigits(maxDecimalPlaces)
-    numberFormat.format(amount.abs)
+    numberFormat.format(amount)
   }
+
+  def formatSignedCurrencyAmount(amount: BigDecimal): String =
+    s"&#8722;${formatCurrencyAmount(amount.abs)}"
 }

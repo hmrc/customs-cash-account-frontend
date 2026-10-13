@@ -22,10 +22,8 @@ import models.{
 }
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount}
-import utils.Utils.{
-  LinkComponentValues, emptyString, h2Component, linkComponent, pComponent, prependNegativeSignWithAmount
-}
+import helpers.Formatters.{dateAsDayMonthAndYear, formatCurrencyAmount, formatSignedCurrencyAmount}
+import utils.Utils.{LinkComponentValues, emptyString, h2Component, linkComponent, pComponent}
 
 import java.time.LocalDate
 import scala.math.Ordered.orderingToOrdered
@@ -145,7 +143,7 @@ object CashAccountDailyStatementsViewModel {
             )
           )
         ),
-        debit = Some(prependNegativeSignWithAmount(formatCurrencyAmount(declaration.amount))),
+        debit = Some(formatSignedCurrencyAmount(declaration.amount)),
         balance = None
       )
     }
@@ -190,10 +188,10 @@ object CashAccountDailyStatementsViewModel {
   private def populateDebitAmount(transaction: Transaction): Option[String] =
     transaction.transactionType match {
       case Payment    => None
-      case Withdrawal => Some(prependNegativeSignWithAmount(formatCurrencyAmount(transaction.amount)))
+      case Withdrawal => Some(formatSignedCurrencyAmount(transaction.amount))
       case Transfer   =>
         if (transaction.amount < 0) {
-          Some(prependNegativeSignWithAmount(formatCurrencyAmount(transaction.amount)))
+          Some(formatSignedCurrencyAmount(transaction.amount))
         } else {
           None
         }

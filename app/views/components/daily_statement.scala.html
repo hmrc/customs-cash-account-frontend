@@ -63,7 +63,7 @@
                     classes = "govuk-table__cell--numeric amount",
                     content = HtmlContent(
                         s"""<span class="hmrc-responsive-table__heading" aria-hidden="true">${messages("cf.cash-account.detail.amount")}</span>
-                            &#8722;${Formatters.formatCurrencyAmount(declaration.amount)}
+                            ${Formatters.formatSignedCurrencyAmount(declaration.amount)}
                             """
                     )
                 )
@@ -90,7 +90,7 @@
                     }
                 }",
                 messages("cf.cash-account.detail.amount"),
-                s"&#8722;${Formatters.formatCurrencyAmount(withdrawal.amount)}"
+                s"${Formatters.formatSignedCurrencyAmount(withdrawal.amount)}"
             )
         } ++ dailyStatement.topUps.map { topUp =>
             TransactionRow(
@@ -104,7 +104,7 @@
                 messages("cf.cash-account.detail.transactions"),
                 messages("cf.cash-account.detail.transfer-out"),
                 messages("cf.cash-account.detail.amount"),
-                s"&#8722;${Formatters.formatCurrencyAmount(transferOut.amount)}"
+                s"${Formatters.formatSignedCurrencyAmount(transferOut.amount)}"
             )
         } ++ dailyStatement.transfersIn.map { transferIn =>
             TransactionRow(

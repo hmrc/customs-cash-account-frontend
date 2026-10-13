@@ -132,7 +132,8 @@ class DeclarationDetailController @Inject() (
     cashAccResDetail.declarations.flatMap(_.headOption.map(_.declaration)) match {
 
       case Some(declarationSearch) =>
-        Ok(searchView(DeclarationDetailSearchViewModel(searchValue, account, declarationSearch), page))
+        val viewModel = DeclarationDetailSearchViewModel(searchValue, account, declarationSearch)
+        Ok(searchView(viewModel, page, searchValue))
 
       case None =>
         Ok(noSearchResultView(page, account.number, searchValue))

@@ -91,6 +91,23 @@ class CashAccountBalanceSpec extends SpecBase {
         shouldNotDisplayLastTransactionsText(componentView)
       }
 
+      "model has negative available balance and showBalance is true" in new Setup {
+        val negativeBalance: BigDecimal   = BigDecimal(-33899.43)
+        val balancesValue: CDSCashBalance = CDSCashBalance(Some(negativeBalance))
+        val cashAccount: CashAccount      =
+          CashAccount(number = accNumber, owner = eori, status = AccountStatusOpen, balances = balancesValue)
+        val model: CashAccountViewModel   = CashAccountViewModel(eori, cashAccount)
+
+        val componentView: Document = view(model)
+
+        shouldDisplayAccountNumberWithText(componentView, accNumber)
+        shouldDisplayCashAccountHeading(componentView)
+        componentView
+          .getElementById("balance-available")
+          .text() mustBe formatCurrencyAmount(negativeBalance)
+        shouldDisplayLastTransactionsText(componentView)
+      }
+
       "displayLastSixMonthsHeading is false and showBalance is true" in new Setup {
         val balancesValue: CDSCashBalance = CDSCashBalance(Some(BigDecimal(accountBalance)))
 

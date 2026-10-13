@@ -52,12 +52,6 @@ class UtilsSpec extends SpecBase {
     }
   }
 
-  "negativeSign" should {
-    "return correct value" in {
-      negativeSign mustBe "-"
-    }
-  }
-
   "poundSymbol" should {
     "return correct value" in {
       poundSymbol mustBe "£"
@@ -178,14 +172,6 @@ class UtilsSpec extends SpecBase {
   "emptyH1InnerComponent" should {
     "return the empty h1Inner component" in {
       emptyH1InnerComponent mustBe new h1Inner()
-    }
-  }
-
-  "prependNegativeSignWithAmount" should {
-    "prepend - sign with amount" in {
-      val testAmount = "400.00"
-
-      prependNegativeSignWithAmount(testAmount) mustBe "-400.00"
     }
   }
 
