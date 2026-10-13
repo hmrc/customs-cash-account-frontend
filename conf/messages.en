@@ -259,10 +259,10 @@ cf.form.error.end.date-number-invalid = Enter a real date for the end date
 cf.form.error.end.date.invalid.day = Enter a day between 1 and 31
 
 # Date form error
-cf.form.error.start.date-too-far-in-past=The from date cannot be older than 6 years from now.
-cf.form.error.end.date-too-far-in-past=The to date cannot be older than 6 years from now.
-cf.form.error.startDate.date-earlier-than-system-start-date=The from date must be on or after October 2019
-cf.form.error.endDate.date-earlier-than-system-start-date=The to date must be on or after October 2019
+cf.form.error.start.date-too-far-in-past=You can only request statements issued since April {0}.
+cf.form.error.end.date-too-far-in-past=You can only request statements issued since April {0}.
+cf.form.error.startDate.date-earlier-than-system-start-date=You can only request statements issued since April {0}
+cf.form.error.endDate.date-earlier-than-system-start-date=You can only request statements issued since April {0}
 cf.form.error.start.date-number-missing=Enter the start date you want to request transactions from
 cf.form.error.end.date-number-missing=Enter the end date you want to request transactions to
 cf.form.error.start-future-date=The from date cannot be in the future
@@ -289,8 +289,8 @@ error.browser.title.prefix = Error:
 
 cf.cash-account.transactions.title=Which cash account transactions do you need?
 cf.cash-account.transactions.heading=Which cash account transactions do you need?
-cf.cash-account.transactions.request.date.hint-start-date.v2=Start date must be after October 2019. For example, 3 2021.
-cf.cash-account.transactions.request.date.hint-end-date.v2=For example, 3 2021.
+cf.cash-account.transactions.request.date.hint-start-date.v2=For example, {0} {1}.
+cf.cash-account.transactions.request.date.hint-end-date.v2=For example, {0} {1}.
 
 cf.cash-account.transactions.request.review.heading=Selected cash account transactions
 cf.cash-account.transactions.request.review.change=Change

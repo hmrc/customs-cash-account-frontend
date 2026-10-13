@@ -49,6 +49,7 @@ object TestData {
   val YEAR_2021 = 2021
   val YEAR_2022 = 2022
   val YEAR_2023 = 2023
+  val YEAR_CURRENT: Int = LocalDate.now().getYear
 
   val TAX_TYPE: TaxType   = TaxType(Some("a"), "a", AMOUNT)
   val TAX_GROUP: TaxGroup = TaxGroup(ImportVat, AMOUNT, Seq(TAX_TYPE))
@@ -112,8 +113,8 @@ object TestData {
   val DATE_AUG_17: LocalDate = LocalDate.of(YEAR_2021, MONTH_8, DAY_17)
 
   val cachedDates: CashTransactionDates = CashTransactionDates(
-    start = LocalDate.of(YEAR_2022, MONTH_8, DAY_15),
-    end = LocalDate.of(YEAR_2023, MONTH_10, DAY_11)
+    start = LocalDate.of(YEAR_CURRENT-2, MONTH_8, DAY_15),
+    end = LocalDate.of(YEAR_CURRENT-1, MONTH_10, DAY_11)
   )
 
   val PAYMENT_DETAILS_01: PaymentsWithdrawalsAndTransfer = PaymentsWithdrawalsAndTransfer.apply(

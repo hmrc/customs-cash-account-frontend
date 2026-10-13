@@ -22,10 +22,11 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.html.select_transactions
 import forms.SelectTransactionsFormProvider
+import forms.mappings.ConstraintsV2
 
-import java.time.Clock
+import java.time.{Clock, LocalDate}
 
-class SelectTransactionsSpec extends ViewTestHelper {
+class SelectTransactionsSpec extends ViewTestHelper with ConstraintsV2 {
 
   "SelectTransactions" should {
 
@@ -45,12 +46,16 @@ class SelectTransactionsSpec extends ViewTestHelper {
       "start hint is displayed" in new Setup {
         view
           .getElementsByClass("govuk-hint")
-          .text()
-          .contains("Start date must be after October 2019. For example, 3 2021.") mustBe true
+          .first.text()
+          .contains("For example, 9 2025.") mustBe true
       }
 
       "end hint is displayed" in new Setup {
-        view.getElementsByClass("govuk-hint").text().contains("For example, 3 2021") mustBe true
+        view.getElementsByClass("govuk-hint").get(1).text() mustBe messages("cf.cash-account.transactions.request.date.hint-end-date.v2", "9","2025")
+      }
+
+      "both start & end hint are displayed" in new Setup {
+        view.getElementsByClass("govuk-hint").size() mustBe 2
       }
 
       "end field must be Displayed" in new Setup {
@@ -65,9 +70,13 @@ class SelectTransactionsSpec extends ViewTestHelper {
 
   trait Setup {
     val dateText = "Month Year"
+    val hintExampleDate = LocalDate.of(2025, 9, 1)
+
+    lazy val earliestDateMessage: String =
+      messages("cf.form.error.start.date-too-far-in-past", "2020")
 
     implicit val clk: Clock              = Clock.systemUTC()
     val form: Form[CashTransactionDates] = new SelectTransactionsFormProvider().apply()
-    val view: Document                   = Jsoup.parse(app.injector.instanceOf[select_transactions].apply(form).body)
+    val view: Document                   = Jsoup.parse(app.injector.instanceOf[select_transactions].apply(form,minTaxYear(using clk).startYear , hintExampleDate).body)
   }
 }

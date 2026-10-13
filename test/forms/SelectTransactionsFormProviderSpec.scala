@@ -93,19 +93,6 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
 
         checkForError(form, formData, expectedErrors)
       }
-
-      "start date is not within ETMP statement date period" in new SetUp {
-        val startDate: Map[String, String] =
-          populateFormValueMap(startKey, month10AsString, (etmpStatementYear - 1).toString)
-
-        val validEndDate: Map[String, String] = populateFormValueMap(endKey, month10AsString, year2021AsString)
-        val formData: Map[String, String]     = startDate ++ validEndDate
-
-        val expectedErrors: Seq[FormError] =
-          error(startKey, "cf.form.error.startDate.date-earlier-than-system-start-date")
-
-        checkForError(form, formData, expectedErrors)
-      }
     }
 
     "transform start date correctly" when {
@@ -198,19 +185,6 @@ class SelectTransactionsFormProviderSpec extends SpecBase {
 
         val formData: Map[String, String]  = startDate ++ endDate
         val expectedErrors: Seq[FormError] = error("end.year", invalidEndYearKey)
-
-        checkForError(form, formData, expectedErrors)
-      }
-
-      "end date is not within ETMP statement date period" in new SetUp {
-        val validStartDate: Map[String, String] =
-          populateFormValueMap(startKey, month10AsString, year2021AsString)
-
-        val endDate: Map[String, String] =
-          populateFormValueMap(endKey, month10AsString, (etmpStatementYear - 1).toString)
-
-        val formData: Map[String, String]  = validStartDate ++ endDate
-        val expectedErrors: Seq[FormError] = error(endKey, "cf.form.error.endDate.date-earlier-than-system-start-date")
 
         checkForError(form, formData, expectedErrors)
       }

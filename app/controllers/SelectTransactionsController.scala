@@ -19,17 +19,18 @@ package controllers
 import config.AppConfig
 import controllers.actions.*
 import forms.SelectTransactionsFormProvider
-import models.*
+import models.{CashTransactionDates, *}
 import models.request.IdentifierRequest
 import org.slf4j.{Logger, LoggerFactory}
 import play.api.data.Form
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.RequestedTransactionsCache
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.*
+import forms.mappings.ConstraintsV2
 
-import java.time.{Clock, LocalDate}
+import java.time.{Clock, LocalDate, LocalDateTime}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,9 +43,10 @@ class SelectTransactionsController @Inject() (
   implicit val mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc)
-    with I18nSupport {
+    with I18nSupport
+    with ConstraintsV2 {
 
-  val log: Logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
+  private val log: Logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
 
   def form: Form[CashTransactionDates] = formProvider()
 
@@ -52,12 +54,12 @@ class SelectTransactionsController @Inject() (
     cache
       .get(request.eori)
       .map {
-        case Some(cachedDates) => Ok(view(form.fill(cachedDates)))
-        case None              => Ok(view(form))
+        case Some(cachedDates) => Ok(view(form.fill(cachedDates), minTaxYear(using clock).startYear, hintExampleDate))
+        case None              => Ok(view(form,minTaxYear(using clock).startYear, hintExampleDate))
       }
       .recover { case e =>
         log.error(s"Unable to retrieve cached data: ${e.getMessage}")
-        Ok(view(form))
+        Ok(view(form,minTaxYear(using clock).startYear, hintExampleDate))
       }
   }
 
@@ -65,20 +67,19 @@ class SelectTransactionsController @Inject() (
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, minTaxYear(using clock).startYear, hintExampleDate))),
         value => processCustomValidation(value)
       )
   }
 
-  //TODO: add creation of dynamic hint, e.g. use LocalDate.now(clock).minusOney - 1 year
-  def test: LocalDate = LocalDate.now(clock).minusYears(1)
+  private def hintExampleDate: LocalDate = LocalDateTime.now(clock).toLocalDate.minusYears(1)
 
   private def processCustomValidation(
     value: CashTransactionDates
   )(implicit request: IdentifierRequest[AnyContent]): Future[Result] =
     customValidation(value, form) match {
       case Some(formWithErrors) =>
-        Future.successful(BadRequest(view(formWithErrors)))
+        Future.successful(BadRequest(view(formWithErrors,minTaxYear(using clock).startYear, hintExampleDate)))
       case None                 =>
         cache.set(request.eori, value).map { _ =>
           Redirect(routes.SelectedTransactionsController.onPageLoad())
@@ -88,19 +89,34 @@ class SelectTransactionsController @Inject() (
   private def customValidation(
     dates: CashTransactionDates,
     form: Form[CashTransactionDates]
-  ): Option[Form[CashTransactionDates]] = {
+  )(implicit messages: Messages): Option[Form[CashTransactionDates]] = {
 
-    def populateErrors(startMessage: String, endMessage: String): Form[CashTransactionDates] =
+    def populateErrors(message: String) : Form[CashTransactionDates] =
       form
-        .withError("start", startMessage)
-        .withError("end", endMessage)
+        .withError("start", message)
+        .withError("end", message)
         .fill(dates)
 
     dates match {
       case CashTransactionDates(start, end) if start.isAfter(end) =>
-        Some(populateErrors("cf.form.error.start-after-end", "cf.form.error.end-before-start"))
+        Some(form.withError("end","cf.form.error.end-before-start", minTaxYear(using clock).startYear.toString).fill(dates))
 
+      case CashTransactionDates(start, end) if isDateMoreThanSixTaxYearsOld(start) || isDateMoreThanSixTaxYearsOld(end) =>
+        val message = messages("cf.form.error.start.date-too-far-in-past", minTaxYear(using clock).startYear.toString)
+        Some(
+          populateErrors(
+              messages(
+                message
+              )
+          )
+            .fill(dates)
+        )
       case _ => None
     }
+  }
+
+  private def isDateMoreThanSixTaxYearsOld(requestedDate: LocalDate): Boolean = {
+    val dayOfMonthThatTaxYearStartsOn = 6
+    minTaxYear(using clock).starts.isAfter(requestedDate.withDayOfMonth(dayOfMonthThatTaxYearStartsOn))
   }
 }
