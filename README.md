@@ -76,7 +76,7 @@ After the successful [deployment pipeline](https://build.tax.service.gov.uk/job/
 - [customs-cash-account-frontend in the MDTP Catalogue](https://catalogue.tax.service.gov.uk/repositories/customs-cash-account-frontend)
 
 ## Jenkins Pipeline
-- Front End Build and Deployment Pipeline
+Front End Build and Deployment Pipeline
  -  [Build pipeline](https://build.tax.service.gov.uk/job/BordersAndTradeLiveServices/job/CDSFinancials/job/customs-cash-account-frontend/)
  -  [Deployment pipeline](https://build.tax.service.gov.uk/job/BordersAndTradeLiveServices/job/CDSFinancials/job/customs-cash-account-frontend-pipeline/)
 The acceptance test Jenkins jobs (smoke and regression) are listed in the customs-cash-account-acceptance-tests [README](https://github.com/hmrc/customs-cash-account-acceptance-tests#customs-cash-account-acceptance-tests).
@@ -202,3 +202,6 @@ sbt scalafmtAll
 ### Run all checks
 This is an sbt command alias specific to this project. It will run a scala style check, run unit tests, run integration tests and produce a coverage report:
 > `sbt runAllChecks`
+
+## License
+This code is open source software licensed under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
