@@ -259,6 +259,7 @@ cf.form.error.end.date-number-invalid = Nodwch ddyddiad go iawn ar gyfer y dyddi
 cf.form.error.end.date.invalid.day = Nodwch ddiwrnod rhwng 1 a 31
 
 # Date form error
+cf.form.error.date-too-far-in-past=XXXXXXXXXXXXXXXX April {0}.
 cf.form.error.start.date-too-far-in-past=Ni all y dyddiad ‘o’ fod yn fwy na 6 o flynyddoedd ers nawr.
 cf.form.error.end.date-too-far-in-past=Ni all y dyddiad ‘i’ fod yn fwy na 6 o flynyddoedd ers nawr.
 cf.form.error.startDate.date-earlier-than-system-start-date=Mae’n rhaid i’r dyddiad ‘o’ fod ar neu ar ôl mis Hydref 2019

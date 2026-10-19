@@ -259,6 +259,7 @@ cf.form.error.end.date-number-invalid = Enter a real date for the end date
 cf.form.error.end.date.invalid.day = Enter a day between 1 and 31
 
 # Date form error
+cf.form.error.date-too-far-in-past=You can only request statements made since April {0}.
 cf.form.error.start.date-too-far-in-past=You can only request statements issued since April {0}.
 cf.form.error.end.date-too-far-in-past=You can only request statements issued since April {0}.
 cf.form.error.startDate.date-earlier-than-system-start-date=You can only request statements issued since April {0}

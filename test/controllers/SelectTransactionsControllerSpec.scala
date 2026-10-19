@@ -52,9 +52,9 @@ class SelectTransactionsControllerSpec extends SpecBase {
         val doc  = Jsoup.parse(body)
 
         doc.select("""input[name="start.month"]""").attr("value") mustBe "8"
-        doc.select("""input[name="start.year"]""").attr("value") mustBe (CURRENT_YEAR-2).toString
+        doc.select("""input[name="start.year"]""").attr("value") mustBe (CURRENT_YEAR - 2).toString
         doc.select("""input[name="end.month"]""").attr("value") mustBe "10"
-        doc.select("""input[name="end.year"]""").attr("value") mustBe (CURRENT_YEAR-1).toString
+        doc.select("""input[name="end.year"]""").attr("value") mustBe (CURRENT_YEAR - 1).toString
       }
     }
 
@@ -96,10 +96,10 @@ class SelectTransactionsControllerSpec extends SpecBase {
           .withFormUrlEncodedBody(
             "start.day"   -> day,
             "start.month" -> "11",
-            "start.year"  -> (CURRENT_YEAR-1).toString,
+            "start.year"  -> (CURRENT_YEAR - 1).toString,
             "end.day"     -> "10",
             "end.month"   -> "11",
-            "end.year"    -> (CURRENT_YEAR-1).toString
+            "end.year"    -> (CURRENT_YEAR - 1).toString
           )
 
       running(app) {

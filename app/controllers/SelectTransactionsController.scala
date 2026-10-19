@@ -55,11 +55,11 @@ class SelectTransactionsController @Inject() (
       .get(request.eori)
       .map {
         case Some(cachedDates) => Ok(view(form.fill(cachedDates), minTaxYear(using clock).startYear, hintExampleDate))
-        case None              => Ok(view(form,minTaxYear(using clock).startYear, hintExampleDate))
+        case None              => Ok(view(form, minTaxYear(using clock).startYear, hintExampleDate))
       }
       .recover { case e =>
         log.error(s"Unable to retrieve cached data: ${e.getMessage}")
-        Ok(view(form,minTaxYear(using clock).startYear, hintExampleDate))
+        Ok(view(form, minTaxYear(using clock).startYear, hintExampleDate))
       }
   }
 
@@ -67,7 +67,8 @@ class SelectTransactionsController @Inject() (
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, minTaxYear(using clock).startYear, hintExampleDate))),
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, minTaxYear(using clock).startYear, hintExampleDate))),
         value => processCustomValidation(value)
       )
   }
@@ -79,7 +80,7 @@ class SelectTransactionsController @Inject() (
   )(implicit request: IdentifierRequest[AnyContent]): Future[Result] =
     customValidation(value, form) match {
       case Some(formWithErrors) =>
-        Future.successful(BadRequest(view(formWithErrors,minTaxYear(using clock).startYear, hintExampleDate)))
+        Future.successful(BadRequest(view(formWithErrors, minTaxYear(using clock).startYear, hintExampleDate)))
       case None                 =>
         cache.set(request.eori, value).map { _ =>
           Redirect(routes.SelectedTransactionsController.onPageLoad())
@@ -91,7 +92,7 @@ class SelectTransactionsController @Inject() (
     form: Form[CashTransactionDates]
   )(implicit messages: Messages): Option[Form[CashTransactionDates]] = {
 
-    def populateErrors(message: String) : Form[CashTransactionDates] =
+    def populateErrors(message: String): Form[CashTransactionDates] =
       form
         .withError("start", message)
         .withError("end", message)
@@ -99,15 +100,20 @@ class SelectTransactionsController @Inject() (
 
     dates match {
       case CashTransactionDates(start, end) if start.isAfter(end) =>
-        Some(form.withError("end","cf.form.error.end-before-start", minTaxYear(using clock).startYear.toString).fill(dates))
+        Some(
+          form
+            .withError("end", "cf.form.error.end-before-start", minTaxYear(using clock).startYear.toString)
+            .fill(dates)
+        )
 
-      case CashTransactionDates(start, end) if isDateMoreThanSixTaxYearsOld(start) || isDateMoreThanSixTaxYearsOld(end) =>
+      case CashTransactionDates(start, end)
+          if isDateMoreThanSixTaxYearsOld(start) || isDateMoreThanSixTaxYearsOld(end) =>
         val message = messages("cf.form.error.start.date-too-far-in-past", minTaxYear(using clock).startYear.toString)
         Some(
           populateErrors(
-              messages(
-                message
-              )
+            messages(
+              message
+            )
           )
             .fill(dates)
         )

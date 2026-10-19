@@ -52,10 +52,10 @@ class RequestTransactionsControllerSpec extends SpecBase {
 
         doc.select("""input[name="start.day"]""").attr("value") mustBe "15"
         doc.select("""input[name="start.month"]""").attr("value") mustBe "8"
-        doc.select("""input[name="start.year"]""").attr("value") mustBe (CURRENT_YEAR-2).toString
+        doc.select("""input[name="start.year"]""").attr("value") mustBe (CURRENT_YEAR - 2).toString
         doc.select("""input[name="end.day"]""").attr("value") mustBe "11"
         doc.select("""input[name="end.month"]""").attr("value") mustBe "10"
-        doc.select("""input[name="end.year"]""").attr("value") mustBe (CURRENT_YEAR-1).toString
+        doc.select("""input[name="end.year"]""").attr("value") mustBe (CURRENT_YEAR - 1).toString
       }
     }
 
@@ -96,10 +96,10 @@ class RequestTransactionsControllerSpec extends SpecBase {
           .withFormUrlEncodedBody(
             "start.day"   -> "1",
             "start.month" -> "11",
-            "start.year"  -> (CURRENT_YEAR-1).toString,
+            "start.year"  -> (CURRENT_YEAR - 1).toString,
             "end.day"     -> "10",
             "end.month"   -> "11",
-            "end.year"    -> (CURRENT_YEAR-1).toString
+            "end.year"    -> (CURRENT_YEAR - 1).toString
           )
 
       running(app) {

@@ -46,12 +46,17 @@ class SelectTransactionsSpec extends ViewTestHelper with ConstraintsV2 {
       "start hint is displayed" in new Setup {
         view
           .getElementsByClass("govuk-hint")
-          .first.text()
+          .first
+          .text()
           .contains("For example, 9 2025.") mustBe true
       }
 
       "end hint is displayed" in new Setup {
-        view.getElementsByClass("govuk-hint").get(1).text() mustBe messages("cf.cash-account.transactions.request.date.hint-end-date.v2", "9","2025")
+        view.getElementsByClass("govuk-hint").get(1).text() mustBe messages(
+          "cf.cash-account.transactions.request.date.hint-end-date.v2",
+          "9",
+          "2025"
+        )
       }
 
       "both start & end hint are displayed" in new Setup {
@@ -69,7 +74,7 @@ class SelectTransactionsSpec extends ViewTestHelper with ConstraintsV2 {
   }
 
   trait Setup {
-    val dateText = "Month Year"
+    val dateText        = "Month Year"
     val hintExampleDate = LocalDate.of(2025, 9, 1)
 
     lazy val earliestDateMessage: String =
@@ -77,6 +82,8 @@ class SelectTransactionsSpec extends ViewTestHelper with ConstraintsV2 {
 
     implicit val clk: Clock              = Clock.systemUTC()
     val form: Form[CashTransactionDates] = new SelectTransactionsFormProvider().apply()
-    val view: Document                   = Jsoup.parse(app.injector.instanceOf[select_transactions].apply(form,minTaxYear(using clk).startYear , hintExampleDate).body)
+    val view: Document                   = Jsoup.parse(
+      app.injector.instanceOf[select_transactions].apply(form, minTaxYear(using clk).startYear, hintExampleDate).body
+    )
   }
 }
