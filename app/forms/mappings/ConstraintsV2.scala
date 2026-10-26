@@ -54,16 +54,6 @@ trait ConstraintsV2 {
     taxYearFor(currentDate).back(maximumNumberOfYears)
   }
 
-  def checkDates(taxYearErrorKey: String)(implicit
-    clock: Clock
-  ): Constraint[LocalDate] = Constraint {
-
-    case request if minTaxYear().starts.isAfter(request.withDayOfMonth(dayOfMonthThatTaxYearStartsOn)) =>
-      Invalid(ValidationError(taxYearErrorKey, minTaxYear.startYear.toString))
-
-    case _ => Valid
-  }
-
   protected def validateSearchInput(errorKey: String): Constraint[String] = Constraint { input =>
     val patterns = Seq(mrnRegex, paymentRegex, ucrRegex)
 

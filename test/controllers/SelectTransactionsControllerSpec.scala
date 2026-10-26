@@ -216,6 +216,18 @@ class SelectTransactionsControllerSpec extends SpecBase {
       running(app) {
         val result = route(app, request).value
         status(result) mustBe BAD_REQUEST
+
+        val body          = contentAsString(result)
+        val doc           = Jsoup.parse(body)
+        val cy6StartError =
+          messages("cf.form.error.start.date-too-far-in-past", (CURRENT_YEAR - 6).toString)
+        val cy6EndError   =
+          messages("cf.form.error.end.date-too-far-in-past", (CURRENT_YEAR - 6).toString)
+
+        doc.getElementById("start-error").text() must include(cy6StartError)
+        doc.getElementById("end-error").text()   must include(cy6EndError)
+        body                                     must not include "October " + (CURRENT_YEAR - 7).toString
+
       }
     }
 

@@ -22,7 +22,7 @@ import forms.SelectTransactionsFormProvider
 import models.{CashTransactionDates, *}
 import models.request.IdentifierRequest
 import org.slf4j.{Logger, LoggerFactory}
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.RequestedTransactionsCache
@@ -92,34 +92,55 @@ class SelectTransactionsController @Inject() (
     form: Form[CashTransactionDates]
   )(implicit messages: Messages): Option[Form[CashTransactionDates]] = {
 
-    def populateErrors(message: String): Form[CashTransactionDates] =
-      form
-        .withError("start", message)
-        .withError("end", message)
-        .fill(dates)
+    val CashTransactionDates(start, end) = dates
 
-    dates match {
-      case CashTransactionDates(start, end) if start.isAfter(end) =>
-        Some(
-          form
-            .withError("end", "cf.form.error.end-before-start", minTaxYear(using clock).startYear.toString)
-            .fill(dates)
-        )
+    val futureDateErrors   = Seq(futureDateError("start", start), futureDateError("end", end)).flatten
+    val tooFarInPastErrors =
+      Seq(tooFarInPastError("start", start), tooFarInPastError("end", end)).flatten
 
-      case CashTransactionDates(start, end)
-          if isDateMoreThanSixTaxYearsOld(start) || isDateMoreThanSixTaxYearsOld(end) =>
-        val message = messages("cf.form.error.start.date-too-far-in-past", minTaxYear(using clock).startYear.toString)
-        Some(
-          populateErrors(
-            messages(
-              message
-            )
-          )
-            .fill(dates)
-        )
-      case _ => None
-    }
+    val errors: Seq[FormError] =
+      if (futureDateErrors.nonEmpty) {
+        futureDateErrors
+      } else if (end.isBefore(start)) {
+        Seq(FormError("end", "cf.form.error.end-before-start"))
+      } else {
+        tooFarInPastErrors
+      }
+
+    if (errors.isEmpty) None else Some(errors.foldLeft(form)(_.withError(_)).fill(dates))
+
   }
+
+  private def today: LocalDate = LocalDateTime.now(clock).toLocalDate
+
+  private def futureDateError(field: String, date: LocalDate): Option[FormError] =
+    if (date.isAfter(today)) {
+      Some(FormError(field, s"cf.form.error.$field-future-date"))
+    } else {
+      None
+    }
+
+  private def tooFarInPastError(field: String, date: LocalDate)(implicit
+    messages: Messages
+  ): Option[FormError] =
+    if (isBeforeEarliestDate(date)) {
+      val earliest = minTaxYear(using clock).starts.withDayOfMonth(1)
+
+      Some(
+        FormError(
+          field,
+          messages(
+            s"cf.form.error.$field.date-too-far-in-past",
+            earliest.getYear.toString
+          )
+        )
+      )
+    } else {
+      None
+    }
+
+  private def isBeforeEarliestDate(requestedDate: LocalDate): Boolean =
+    requestedDate.withDayOfMonth(1).isBefore(minTaxYear(using clock).starts.withDayOfMonth(1))
 
   private def isDateMoreThanSixTaxYearsOld(requestedDate: LocalDate): Boolean = {
     val dayOfMonthThatTaxYearStartsOn = 6
