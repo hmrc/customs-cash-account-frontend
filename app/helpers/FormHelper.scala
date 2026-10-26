@@ -20,11 +20,9 @@ object FormHelper {
 
   def updateFormErrorKeyForStartAndEndDate(): (String, String) => String = (key: String, errorMsg: String) => {
     val futureStartDateMsgKey  = "cf.form.error.start-future-date"
-//    val etmpStartDateMsgKey    = "cf.form.error.startDate.date-earlier-than-system-start-date"
     val taxYearStartDateMsgKey = "cf.form.error.start.date-too-far-in-past"
 
     val futureEndDateMsgKey  = "cf.form.error.end-future-date"
-//    val etmpEndDateMsgKey    = "cf.form.error.endDate.date-earlier-than-system-start-date"
     val taxYearEndDateMsgKey = "cf.form.error.end.date-too-far-in-past"
 
     val startDateMsgKeyList = List(futureStartDateMsgKey, taxYearStartDateMsgKey)
