@@ -259,28 +259,29 @@ cf.form.error.end.date-number-invalid = Enter a real date for the end date
 cf.form.error.end.date.invalid.day = Enter a day between 1 and 31
 
 # Date form error
-cf.form.error.start.date-too-far-in-past=The from date cannot be older than 6 years from now.
-cf.form.error.end.date-too-far-in-past=The to date cannot be older than 6 years from now.
-cf.form.error.startDate.date-earlier-than-system-start-date=The from date must be on or after October 2019
-cf.form.error.endDate.date-earlier-than-system-start-date=The to date must be on or after October 2019
-cf.form.error.start.date-number-missing=Enter the start date you want to request transactions from
-cf.form.error.end.date-number-missing=Enter the end date you want to request transactions to
-cf.form.error.start-future-date=The from date cannot be in the future
-cf.form.error.end-future-date=The to date cannot be in the future
+cf.form.error.date-too-far-in-past=You can only request transactions made since April {0}.
+cf.form.error.start.date-too-far-in-past=Start date must be after April {0}
+cf.form.error.end.date-too-far-in-past=End date must be after April {0}
+cf.form.error.startDate.date-earlier-than-system-start-date=Start date must be after April {0}
+cf.form.error.endDate.date-earlier-than-system-start-date=End date must be after April {0}
+cf.form.error.start.date-number-missing=Enter a start month and year
+cf.form.error.end.date-number-missing=Enter an end month and year
+cf.form.error.start-future-date=Start date must be in the past
+cf.form.error.end-future-date=End date must be in the past
 cf.form.error.start-after-end=The from date cannot be after the to date
-cf.form.error.end-before-start=The to date cannot be before the from date
+cf.form.error.end-before-start=End date must be on or after the start date
 
-cf.form.error.start.date.missing.month=Enter the month you want to request transactions from
-cf.form.error.start.date.missing.year=Enter the year you want to request transactions from
-cf.form.error.start.date.invalid.month=Enter a month between 1 and 12 for the start date
+cf.form.error.start.date.missing.month=Start date must include a month
+cf.form.error.start.date.missing.year=Start date must include a year
+cf.form.error.start.date.invalid.month=The month of your start date must be a number between 1 and 12
 cf.form.error.start.date.invalid.year=Enter a real year for the start date
-cf.form.error.start.date.invalid.real-date=Enter a real date for the start date
+cf.form.error.start.date.invalid.real-date=The month of your start date must be a number between 1 and 12 and the year must be a real year
 
-cf.form.error.end.date.missing.month=Enter the month you want to request transactions to
-cf.form.error.end.date.missing.year=Enter the year you want to request transactions to
-cf.form.error.end.date.invalid.month=Enter a month between 1 and 12 for the end date
+cf.form.error.end.date.missing.month=End date must include a month
+cf.form.error.end.date.missing.year=End date must include a year
+cf.form.error.end.date.invalid.month=The month of your end date must be a number between 1 and 12
 cf.form.error.end.date.invalid.year=Enter a real year for the end date
-cf.form.error.end.date.invalid.real-date=Enter a real date for the end date
+cf.form.error.end.date.invalid.real-date=The month of your end date must be a number between 1 and 12 and the year must be a real year
 
 cf.searchTransactions.form.error.required = Please enter a value
 
@@ -289,8 +290,8 @@ error.browser.title.prefix = Error:
 
 cf.cash-account.transactions.title=Which cash account transactions do you need?
 cf.cash-account.transactions.heading=Which cash account transactions do you need?
-cf.cash-account.transactions.request.date.hint-start-date.v2=Start date must be after October 2019. For example, 3 2021.
-cf.cash-account.transactions.request.date.hint-end-date.v2=For example, 3 2021.
+cf.cash-account.transactions.request.date.hint-start-date.v2=For example, {0} {1}.
+cf.cash-account.transactions.request.date.hint-end-date.v2=For example, {0} {1}.
 
 cf.cash-account.transactions.request.review.heading=Selected cash account transactions
 cf.cash-account.transactions.request.review.change=Change

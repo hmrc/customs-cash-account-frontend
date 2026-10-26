@@ -26,11 +26,6 @@ import java.time.{Clock, LocalDate, LocalDateTime, Period}
 
 trait ConstraintsV2 {
 
-  private val date  = 1
-  private val month = 10
-  private val year  = 2019
-
-  private lazy val etmpStatementsDate: LocalDate = LocalDate.of(year, month, date)
   private lazy val dayOfMonthThatTaxYearStartsOn = 6
 
   val log: LoggerLike = Logger(this.getClass)
@@ -52,24 +47,11 @@ trait ConstraintsV2 {
     case _                                                            => Valid
   }
 
-  private def minTaxYear()(implicit clock: Clock): TaxYear = {
+  def minTaxYear(implicit clock: Clock): TaxYear = {
     lazy val currentDate: LocalDate = LocalDateTime.now(clock).toLocalDate
     val maximumNumberOfYears        = 6
 
     taxYearFor(currentDate).back(maximumNumberOfYears)
-  }
-
-  def checkDates(systemStartDateErrorKey: String, taxYearErrorKey: String)(implicit
-    clock: Clock
-  ): Constraint[LocalDate] = Constraint {
-
-    case request if Period.between(request, etmpStatementsDate).toTotalMonths > 0 =>
-      Invalid(ValidationError(systemStartDateErrorKey))
-
-    case request if minTaxYear().starts.isAfter(request.withDayOfMonth(dayOfMonthThatTaxYearStartsOn)) =>
-      Invalid(ValidationError(taxYearErrorKey))
-
-    case _ => Valid
   }
 
   protected def validateSearchInput(errorKey: String): Constraint[String] = Constraint { input =>

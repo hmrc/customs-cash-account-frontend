@@ -33,22 +33,12 @@ class FormHelperSpec extends SpecBase {
 
         FormHelper.updateFormErrorKeyForStartAndEndDate()(
           startKey,
-          "cf.form.error.startDate.date-earlier-than-system-start-date"
-        ) shouldBe s"$startKey.day"
-
-        FormHelper.updateFormErrorKeyForStartAndEndDate()(
-          startKey,
           "cf.form.error.start.date-too-far-in-past"
         ) shouldBe s"$startKey.day"
 
         FormHelper.updateFormErrorKeyForStartAndEndDate()(
           endKey,
           "cf.form.error.end-future-date"
-        ) shouldBe s"$endKey.day"
-
-        FormHelper.updateFormErrorKeyForStartAndEndDate()(
-          endKey,
-          "cf.form.error.endDate.date-earlier-than-system-start-date"
         ) shouldBe s"$endKey.day"
 
         FormHelper.updateFormErrorKeyForStartAndEndDate()(

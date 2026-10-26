@@ -35,7 +35,9 @@ import scala.concurrent.Future
 class SelectTransactionsControllerSpec extends SpecBase {
 
   "onPageLoad" should {
+    val CURRENT_YEAR = LocalDate.now().getYear
     "return OK when cached data present and populated dates" in new Setup {
+
       when(mockRequestedTransactionsCache.get(eqTo(eori)))
         .thenReturn(Future.successful(Some(cachedDates)))
 
@@ -50,9 +52,9 @@ class SelectTransactionsControllerSpec extends SpecBase {
         val doc  = Jsoup.parse(body)
 
         doc.select("""input[name="start.month"]""").attr("value") mustBe "8"
-        doc.select("""input[name="start.year"]""").attr("value") mustBe "2022"
+        doc.select("""input[name="start.year"]""").attr("value") mustBe (CURRENT_YEAR - 2).toString
         doc.select("""input[name="end.month"]""").attr("value") mustBe "10"
-        doc.select("""input[name="end.year"]""").attr("value") mustBe "2023"
+        doc.select("""input[name="end.year"]""").attr("value") mustBe (CURRENT_YEAR - 1).toString
       }
     }
 
@@ -85,6 +87,7 @@ class SelectTransactionsControllerSpec extends SpecBase {
   }
 
   "onSubmit" should {
+    val CURRENT_YEAR = LocalDate.now().getYear
     "redirect to requested transactions page when valid data has been submitted" in new Setup {
       when(mockRequestedTransactionsCache.set(any, any)).thenReturn(Future.successful(true))
 
@@ -93,10 +96,10 @@ class SelectTransactionsControllerSpec extends SpecBase {
           .withFormUrlEncodedBody(
             "start.day"   -> day,
             "start.month" -> "11",
-            "start.year"  -> "2020",
+            "start.year"  -> (CURRENT_YEAR - 1).toString,
             "end.day"     -> "10",
             "end.month"   -> "11",
-            "end.year"    -> "2020"
+            "end.year"    -> (CURRENT_YEAR - 1).toString
           )
 
       running(app) {
@@ -204,15 +207,27 @@ class SelectTransactionsControllerSpec extends SpecBase {
           .withFormUrlEncodedBody(
             "start.day"   -> "1",
             "start.month" -> "10",
-            "start.year"  -> "2000",
+            "start.year"  -> (CURRENT_YEAR - 7).toString,
             "end.day"     -> "1",
             "end.month"   -> "10",
-            "end.year"    -> "2000"
+            "end.year"    -> (CURRENT_YEAR - 7).toString
           )
 
       running(app) {
         val result = route(app, request).value
         status(result) mustBe BAD_REQUEST
+
+        val body          = contentAsString(result)
+        val doc           = Jsoup.parse(body)
+        val cy6StartError =
+          messages("cf.form.error.start.date-too-far-in-past", (CURRENT_YEAR - 6).toString)
+        val cy6EndError   =
+          messages("cf.form.error.end.date-too-far-in-past", (CURRENT_YEAR - 6).toString)
+
+        doc.getElementById("start-error").text() must include(cy6StartError)
+        doc.getElementById("end-error").text()   must include(cy6EndError)
+        body                                     must not include "October " + (CURRENT_YEAR - 7).toString
+
       }
     }
 

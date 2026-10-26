@@ -39,16 +39,7 @@ class SelectTransactionsFormProvider @Inject() (implicit clock: Clock) extends S
           invalidMonth = "cf.form.error.start.date.invalid.month",
           invalidYear = "cf.form.error.start.date.invalid.year",
           invalidDate = "cf.form.error.start.date.invalid.real-date"
-        ).transform(_.withDayOfMonth(1), date => LocalDate.from(date))
-          .verifying(
-            beforeCurrentDate(errorKey = "cf.form.error.start-future-date")
-          )
-          .verifying(
-            checkDates(
-              systemStartDateErrorKey = "cf.form.error.startDate.date-earlier-than-system-start-date",
-              taxYearErrorKey = "cf.form.error.start.date-too-far-in-past"
-            )
-          ),
+        ),
         "end"   -> localDate(
           emptyStartMonth = "cf.form.error.start.date.missing.month",
           emptyStartYear = "cf.form.error.start.date.missing.year",
@@ -59,25 +50,7 @@ class SelectTransactionsFormProvider @Inject() (implicit clock: Clock) extends S
           invalidMonth = "cf.form.error.end.date.invalid.month",
           invalidYear = "cf.form.error.end.date.invalid.year",
           invalidDate = "cf.form.error.end.date.invalid.real-date"
-        ).transform(transformToEndDate, date => LocalDate.from(date))
-          .verifying(
-            beforeCurrentDate(errorKey = "cf.form.error.end-future-date")
-          )
-          .verifying(
-            checkDates(
-              systemStartDateErrorKey = "cf.form.error.endDate.date-earlier-than-system-start-date",
-              taxYearErrorKey = "cf.form.error.end.date-too-far-in-past"
-            )
-          )
+        )
       )(CashTransactionDates.apply)(ctd => Some(Tuple.fromProductTyped(ctd)))
     )
-
-  private def transformToEndDate(date: LocalDate) = {
-    val today      = LocalDate.now
-    val todayMonth = today.getMonthValue
-    val todayYear  = today.getYear
-
-    if ((todayYear == date.getYear) && (todayMonth == date.getMonthValue)) { today.minusDays(1) }
-    else { YearMonth.of(date.getYear, date.getMonthValue).atEndOfMonth() }
-  }
 }

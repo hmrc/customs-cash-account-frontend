@@ -35,7 +35,7 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 class RequestTransactionsControllerSpec extends SpecBase {
 
   "onPageLoad" should {
-
+    val CURRENT_YEAR = LocalDate.now().getYear
     "return OK when cached data present and populate form" in new Setup {
       when(mockRequestedTransactionsCache.get(eqTo(eori)))
         .thenReturn(Future.successful(Some(cachedDates)))
@@ -52,10 +52,10 @@ class RequestTransactionsControllerSpec extends SpecBase {
 
         doc.select("""input[name="start.day"]""").attr("value") mustBe "15"
         doc.select("""input[name="start.month"]""").attr("value") mustBe "8"
-        doc.select("""input[name="start.year"]""").attr("value") mustBe "2022"
+        doc.select("""input[name="start.year"]""").attr("value") mustBe (CURRENT_YEAR - 2).toString
         doc.select("""input[name="end.day"]""").attr("value") mustBe "11"
         doc.select("""input[name="end.month"]""").attr("value") mustBe "10"
-        doc.select("""input[name="end.year"]""").attr("value") mustBe "2023"
+        doc.select("""input[name="end.year"]""").attr("value") mustBe (CURRENT_YEAR - 1).toString
       }
     }
 
@@ -87,7 +87,7 @@ class RequestTransactionsControllerSpec extends SpecBase {
   }
 
   "onSubmit" should {
-
+    val CURRENT_YEAR = LocalDate.now().getYear
     "redirect to requested transactions page when valid data has been submitted" in new Setup {
       when(mockRequestedTransactionsCache.set(any, any)).thenReturn(Future.successful(true))
 
@@ -96,10 +96,10 @@ class RequestTransactionsControllerSpec extends SpecBase {
           .withFormUrlEncodedBody(
             "start.day"   -> "1",
             "start.month" -> "11",
-            "start.year"  -> "2020",
+            "start.year"  -> (CURRENT_YEAR - 1).toString,
             "end.day"     -> "10",
             "end.month"   -> "11",
-            "end.year"    -> "2020"
+            "end.year"    -> (CURRENT_YEAR - 1).toString
           )
 
       running(app) {
@@ -207,10 +207,10 @@ class RequestTransactionsControllerSpec extends SpecBase {
           .withFormUrlEncodedBody(
             "start.day"   -> "1",
             "start.month" -> "10",
-            "start.year"  -> "2000",
+            "start.year"  -> (CURRENT_YEAR - 7).toString,
             "end.day"     -> "1",
             "end.month"   -> "10",
-            "end.year"    -> "2000"
+            "end.year"    -> (CURRENT_YEAR - 7).toString
           )
 
       running(app) {

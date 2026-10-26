@@ -23,10 +23,13 @@
     button: components.button,
     errorSummary: components.errorSummary,
     h1: components.h1,
-    p:components.p
+    p:components.p,
+    inset: components.inset
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_],
+earliestRequestableYear: Int,
+hintExampleDate: java.time.LocalDate )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
     pageTitle = Some(title(form,messages("cf.cash-account.transactions.title"),section = None, titleMessageArgs = Seq())),
@@ -40,11 +43,16 @@
 
         @h1("cf.cash-account.transactions.heading")
 
+        @inset(
+            messages("cf.form.error.date-too-far-in-past", earliestRequestableYear.toString),
+            id = Some("earliest-requestable-year")
+        )
+
         @inputMonthAndYear(
             form,
             messages("cf.cash-account.transactions.request.from"),
             legendClasses ="govuk-fieldset__legend--s",
-            hintText = Some(messages("cf.cash-account.transactions.request.date.hint-start-date.v2")),
+            hintText = Some(messages("cf.cash-account.transactions.request.date.hint-start-date.v2", hintExampleDate.getMonthValue.toString, hintExampleDate.getYear.toString)),
             id = "start",
             legendAsPageHeading = false,
             legendHiddenContent = Some(s"cf.cash-account.transactions.request.legend.hidden.start")
@@ -54,7 +62,7 @@
             form,
             messages("cf.cash-account.transactions.request.to"),
             legendClasses ="govuk-fieldset__legend--s",
-            hintText = Some(messages("cf.cash-account.transactions.request.date.hint-end-date.v2")),
+            hintText = Some(messages("cf.cash-account.transactions.request.date.hint-end-date.v2", hintExampleDate.getMonthValue.toString, hintExampleDate.getYear.toString)),
             id = "end",
             legendAsPageHeading = false,
             legendHiddenContent = Some(s"cf.cash-account.transactions.request.legend.hidden.end")
