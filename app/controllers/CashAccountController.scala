@@ -38,8 +38,9 @@ class CashAccountController @Inject() (
     extends FrontendController(mcc)
     with I18nSupport {
 
-  def showAccountDetails(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
-    Redirect(routes.CashAccountV2Controller.showAccountDetails(page))
+  def showAccountDetails(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail) {
+    implicit request =>
+      Redirect(routes.CashAccountV2Controller.showAccountDetails(page))
   }
 
   def tooManyTransactions(): Action[AnyContent] = authenticate.async { implicit request =>
