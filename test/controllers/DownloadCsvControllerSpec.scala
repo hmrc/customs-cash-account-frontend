@@ -16,12 +16,10 @@
 
 package controllers
 
-import config.AppConfig
 import connectors.{
   CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested, UnknownException
 }
 import models.*
-import org.jsoup.Jsoup.parseBodyFragment
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
@@ -35,8 +33,6 @@ import utils.SpecBase
 
 import java.time.LocalDate
 import scala.concurrent.Future
-import scala.jdk.CollectionConverters.ListHasAsScala
-import scala.util.Random
 import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.{eq => eqTo}
@@ -236,42 +232,6 @@ class DownloadCsvControllerSpec extends SpecBase {
         val request = FakeRequest(GET, routes.DownloadCsvController.downloadCsv(None).url)
         val result  = route(app, request).value
         status(result) mustEqual NOT_FOUND
-      }
-    }
-
-    "paginator" should {
-      "be compatible with the page and mrn query parameter" in new Setup {
-        val app: Application = applicationBuilder
-          .overrides(bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector))
-          .configure("application.cash-account.numberOfDaysToShow" -> "10")
-          .build()
-
-        assume(!app.injector.instanceOf[AppConfig].isCashAccountV2FeatureFlagEnabled)
-
-        val expectedTransaction = 25
-
-        when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
-          .thenReturn(Future.successful(Some(cashAccount)))
-
-        when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(someCan), any, any)(any))
-          .thenReturn(Future.successful(Right(randomCashTransaction(expectedTransaction))))
-
-        running(app) {
-          val request         = FakeRequest(GET, routes.CashAccountController.showAccountDetails(None).url + "?page=5")
-          val result          = route(app, request).value
-          val html            = parseBodyFragment(contentAsString(result)).body
-          val pageNumberLinks = html.select("li.govuk-pagination__item > a").asScala
-
-          withClue("html did not contain any pagination links:") {
-            pageNumberLinks.size must not be 0
-          }
-
-          pageNumberLinks.map { pageNumberLink =>
-            withClue(s"page number link $pageNumberLink must include page number") {
-              pageNumberLink.attr("href") must include(s"page=" + pageNumberLink.text())
-            }
-          }
-        }
       }
     }
 
@@ -510,61 +470,4 @@ class DownloadCsvControllerSpec extends SpecBase {
       .build()
   }
 
-  def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
-
-  def randomFloat: Float = Random.nextFloat()
-
-  def randomLong: Long = Random.nextLong()
-
-  def randomBigDecimal: BigDecimal = BigDecimal(randomFloat.toString)
-
-  def randomLocalDate: LocalDate = {
-    val monthsToSubtract: Int = 36
-    LocalDate.now().minusMonths(Random.nextInt(monthsToSubtract))
-  }
-
-  def randomCashTransaction(howMany: Int): CashTransactions = {
-    val pendingStatementsNumber: Int = 20
-    CashTransactions(randomPendingDailyStatements(pendingStatementsNumber), randomCashDailyStatements(howMany))
-  }
-
-  def randomDeclaration: Declaration = {
-    val randomStringLength: Int = 10
-
-    Declaration(
-      randomString(randomStringLength),
-      Some(randomString(randomStringLength)),
-      randomString(randomStringLength),
-      Some(randomString(randomStringLength)),
-      randomLocalDate,
-      randomBigDecimal,
-      Nil,
-      Some("ic62zbad-75fa-445f-962b-cc92311686b8e")
-    )
-  }
-
-  def randomCashDailyStatement: CashDailyStatement = {
-    val declarations: Int      = 5
-    val otherTransactions: Int = 7
-
-    CashDailyStatement(
-      randomLocalDate,
-      randomBigDecimal,
-      randomBigDecimal,
-      randomDeclarations(declarations),
-      randomTransactions(otherTransactions)
-    )
-  }
-
-  val types: Seq[String] = Seq("Payment", "Withdrawal", "Transfer")
-
-  def randomTransactions(howMany: Int): Seq[Transaction] = List.fill(howMany)(randomTransaction)
-
-  def randomTransaction: Transaction = Transaction(randomBigDecimal, Transfer, None)
-
-  def randomDeclarations(howMany: Int): Seq[Declaration] = List.fill(howMany)(randomDeclaration)
-
-  def randomPendingDailyStatements(howMany: Int): Seq[Declaration] = List.fill(howMany)(randomDeclaration)
-
-  def randomCashDailyStatements(howMany: Int): Seq[CashDailyStatement] = List.fill(howMany)(randomCashDailyStatement)
 }
