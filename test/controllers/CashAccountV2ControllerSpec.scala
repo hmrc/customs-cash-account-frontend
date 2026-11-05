@@ -27,6 +27,7 @@ import models.{
   AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement, CashTransactions,
   Declaration, Payment, Transaction, Transfer, Withdrawal
 }
+import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
 import play.api.Application
@@ -36,6 +37,7 @@ import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
+import uk.gov.hmrc.auth.core.retrieve.Email
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
 import views.html.{
@@ -45,6 +47,7 @@ import views.html.{
 
 import java.time.LocalDate
 import scala.concurrent.Future
+import scala.jdk.CollectionConverters.*
 import scala.util.Random
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -56,6 +59,46 @@ import utils.TestData.eori
 class CashAccountV2ControllerSpec extends SpecBase {
 
   "show account details" must {
+    "include the requested page in pagination links" in new Setup {
+      val transactions = cashTransactionResponse.copy(
+        cashDailyStatements = (1 to 35).map { day =>
+          cashDailyStatements.head.copy(date = LocalDate.of(2026, 1, 1).plusDays(day))
+        }
+      )
+
+      when(mockDataStoreConnector.getEmail(any)(any))
+        .thenReturn(Future.successful(Right(Email("cash@example.com"))))
+      when(mockRequestedTransactionsCache.clear(eqTo(eori)))
+        .thenReturn(Future.successful(true))
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(Right(transactions)))
+      when(mockSdesConnector.getCashStatements(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Seq.empty))
+
+      val app: Application = applicationBuilder
+        .overrides(
+          bind[CustomsDataStoreConnector].toInstance(mockDataStoreConnector),
+          bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache),
+          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
+          bind[SdesConnector].toInstance(mockSdesConnector)
+        )
+        .build()
+
+      running(app) {
+        val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(2)).url)
+        val result  = route(app, request).value
+
+        status(result) mustBe OK
+        val pageLinks = Jsoup.parse(contentAsString(result)).select("li.govuk-pagination__item > a").asScala
+        pageLinks must not be empty
+        val pageUrls = pageLinks.map(_.attr("href"))
+        pageUrls must contain(routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
+        pageUrls must contain(routes.CashAccountV2Controller.showAccountDetails(Some(2)).url)
+      }
+    }
+
     "Clear cached transaction dates if present and return OK" in new Setup {
 
       when(mockRequestedTransactionsCache.clear(eqTo(eori)))

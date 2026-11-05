@@ -16,22 +16,15 @@
 
 package controllers
 
-import cats.instances.future.*
 import config.{AppConfig, ErrorHandler}
-import connectors.{CustomsFinancialsApiConnector, NoTransactionsAvailable, TooManyTransactionsRequested}
+import connectors.CustomsFinancialsApiConnector
 import controllers.actions.{EmailAction, IdentifierAction}
-import helpers.CashAccountUtils
 import models.*
-import models.request.IdentifierRequest
-import org.slf4j.LoggerFactory
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import repositories.RequestedTransactionsCache
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import viewmodels.CashTransactionsViewModel
 import views.html.*
 
-import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,78 +32,15 @@ class CashAccountController @Inject() (
   authenticate: IdentifierAction,
   verifyEmail: EmailAction,
   apiConnector: CustomsFinancialsApiConnector,
-  showAccountsView: cash_account,
   unavailable: cash_account_not_available,
-  transactionsUnavailable: cash_account_transactions_not_available,
-  noTransactions: cash_account_no_transactions,
-  showAccountsExceededThreshold: cash_account_exceeded_threshold,
-  noTransactionsWithBalance: cash_account_no_transactions_with_balance,
-  cashAccountUtils: CashAccountUtils,
-  cache: RequestedTransactionsCache
+  showAccountsExceededThreshold: cash_account_exceeded_threshold
 )(implicit mcc: MessagesControllerComponents, ec: ExecutionContext, eh: ErrorHandler, appConfig: AppConfig)
     extends FrontendController(mcc)
     with I18nSupport {
 
-  private val logger = LoggerFactory.getLogger("application." + getClass.getCanonicalName)
-
-  def showAccountDetails(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail).async {
-    implicit request =>
-      if (appConfig.isCashAccountV2FeatureFlagEnabled) {
-        Future.successful(Redirect(routes.CashAccountV2Controller.showAccountDetails(page)))
-      } else {
-
-        cache.clear(request.eori).recover { case e =>
-          logger.error(s"Cache clear failed: ${e.getMessage}")
-        }
-
-        val eventualMaybeCashAccount = apiConnector.getCashAccount(request.eori)
-
-        eventualMaybeCashAccount
-          .flatMap {
-            case Some(cashAccount) =>
-              val (from, to) = cashAccountUtils.transactionDateRange()
-              showAccountWithTransactionDetails(cashAccount, from, to, page)
-            case None              =>
-              eh.notFoundTemplate.map(NotFound(_))
-          }
-          .recover { case e =>
-            logger.error(s"Unable to retrieve account details: ${e.getMessage}")
-            Redirect(routes.CashAccountController.showAccountUnavailable)
-          }
-      }
+  def showAccountDetails(page: Option[Int]): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
+    Redirect(routes.CashAccountV2Controller.showAccountDetails(page))
   }
-
-  private def showAccountWithTransactionDetails(
-    account: CashAccount,
-    from: LocalDate,
-    to: LocalDate,
-    page: Option[Int]
-  )(implicit req: IdentifierRequest[AnyContent], appConfig: AppConfig): Future[Result] =
-    apiConnector.retrieveCashTransactions(account.number, from, to).map {
-      case Left(errorResponse) =>
-        errorResponse match {
-          case NoTransactionsAvailable =>
-            account.balances.AvailableAccountBalance match {
-              case Some(v) if v == 0 => Ok(noTransactions(CashAccountViewModel(req.eori, account)))
-              case Some(_)           => Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
-              case None              => Ok(noTransactions(CashAccountViewModel(req.eori, account)))
-            }
-
-          case TooManyTransactionsRequested => Redirect(routes.CashAccountController.tooManyTransactions())
-
-          case _ =>
-            Ok(transactionsUnavailable(CashAccountViewModel(req.eori, account), appConfig.transactionsTimeoutFlag))
-        }
-
-      case Right(cashTransactions) =>
-        if (cashTransactions.availableTransactions) {
-          Ok(
-            showAccountsView(CashAccountViewModel(req.eori, account), CashTransactionsViewModel(cashTransactions, page))
-          )
-        } else {
-          Ok(noTransactionsWithBalance(CashAccountViewModel(req.eori, account)))
-        }
-    }
 
   def tooManyTransactions(): Action[AnyContent] = authenticate.async { implicit request =>
     apiConnector.getCashAccount(request.eori) flatMap {
