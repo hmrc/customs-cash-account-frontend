@@ -74,7 +74,7 @@ class SelectedTransactionsControllerSpec extends SpecBase {
       running(app) {
         val result = route(app, request).value
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.CashAccountController.showAccountUnavailable.url
+        redirectLocation(result).value mustBe routes.CashAccountV2Controller.showAccountUnavailable.url
       }
     }
 
@@ -184,7 +184,7 @@ class SelectedTransactionsControllerSpec extends SpecBase {
           val result = route(app, request).value
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.CashAccountController.showAccountDetails(None).url)
+          redirectLocation(result) mustBe Some(routes.CashAccountV2Controller.showAccountDetails(None).url)
         }
       }
     }
@@ -201,7 +201,7 @@ class SelectedTransactionsControllerSpec extends SpecBase {
         val result = route(app, request).value
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.CashAccountController.showAccountDetails(None).url)
+        redirectLocation(result) mustBe Some(routes.CashAccountV2Controller.showAccountDetails(None).url)
       }
     }
   }
@@ -232,7 +232,7 @@ class SelectedTransactionsControllerSpec extends SpecBase {
       running(app) {
         val result = route(app, request).value
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.CashAccountController.showAccountDetails(None).url)
+        redirectLocation(result) mustBe Some(routes.CashAccountV2Controller.showAccountDetails(None).url)
       }
     }
 
@@ -248,7 +248,7 @@ class SelectedTransactionsControllerSpec extends SpecBase {
         val result = route(app, request).value
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.CashAccountController.showAccountDetails(None).url)
+        redirectLocation(result) mustBe Some(routes.CashAccountV2Controller.showAccountDetails(None).url)
       }
     }
   }

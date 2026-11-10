@@ -87,7 +87,7 @@ class DownloadCsvController @Inject() (
                                       Ok(
                                         tooManyResults(
                                           new ResultsPageSummary(from, to),
-                                          controllers.routes.CashAccountController.showAccountDetails(None).url
+                                          controllers.routes.CashAccountV2Controller.showAccountDetails(None).url
                                         )
                                       )
                                     case NoTransactionsAvailable      =>

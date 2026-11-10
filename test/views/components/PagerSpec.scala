@@ -42,7 +42,7 @@ class PagerSpec extends ViewTestHelper {
           override val itemsPerPage: Int         = 2
           override val requestedPage: Int        = 1
           override val urlForPage: Int => String =
-            e => controllers.routes.CashAccountController.showAccountDetails(Some(e)).url
+            e => controllers.routes.CashAccountV2Controller.showAccountDetails(Some(e)).url
         }
 
         implicit val view: Document = viewDoc(model)
@@ -59,7 +59,7 @@ class PagerSpec extends ViewTestHelper {
         override val itemsPerPage: Int                    = 1
         override val requestedPage: Int                   = 1
         override val urlForPage: Int => String            =
-          e => controllers.routes.CashAccountController.showAccountDetails(Some(e)).url
+          e => controllers.routes.CashAccountV2Controller.showAccountDetails(Some(e)).url
       }
 
       implicit val view: Document = viewDoc(model)

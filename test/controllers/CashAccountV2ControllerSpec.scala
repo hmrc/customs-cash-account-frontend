@@ -59,7 +59,7 @@ import utils.TestData.eori
 class CashAccountV2ControllerSpec extends SpecBase {
 
   "show account details" must {
-    "include the requested page in pagination links" in new Setup {
+    "serve the unversioned account page with working pagination links" in new Setup {
       val transactions = cashTransactionResponse.copy(
         cashDailyStatements = (1 to 35).map { day =>
           cashDailyStatements.head.copy(date = LocalDate.of(2026, 1, 1).plusDays(day))
@@ -87,15 +87,15 @@ class CashAccountV2ControllerSpec extends SpecBase {
         .build()
 
       running(app) {
-        val request = FakeRequest(GET, routes.CashAccountV2Controller.showAccountDetails(Some(2)).url)
+        val request = FakeRequest(GET, "/customs/cash-account?page=2")
         val result  = route(app, request).value
 
         status(result) mustBe OK
         val pageLinks = Jsoup.parse(contentAsString(result)).select("li.govuk-pagination__item > a").asScala
         pageLinks must not be empty
         val pageUrls = pageLinks.map(_.attr("href"))
-        pageUrls must contain(routes.CashAccountV2Controller.showAccountDetails(Some(1)).url)
-        pageUrls must contain(routes.CashAccountV2Controller.showAccountDetails(Some(2)).url)
+        pageUrls must contain("/customs/cash-account?page=1")
+        pageUrls must contain("/customs/cash-account?page=2")
       }
     }
 

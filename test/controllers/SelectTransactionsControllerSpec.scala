@@ -42,7 +42,7 @@ class SelectTransactionsControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Some(cachedDates)))
 
       val request: FakeRequest[AnyContentAsEmpty.type] =
-        fakeRequest(GET, routes.SelectTransactionsController.onPageLoad().url)
+        fakeRequest(GET, "/customs/cash-account/request-cash-transactions")
 
       running(app) {
         val result = route(app, request).value

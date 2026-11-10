@@ -49,7 +49,7 @@ case class CashTransactionsViewModel(cashTransactions: CashTransactions, page: O
 
   override val itemsPerPage: Int         = appConfig.numberOfDaysToShow
   override val requestedPage: Int        = page.getOrElse(1)
-  override val urlForPage: Int => String = e => controllers.routes.CashAccountController.showAccountDetails(Some(e)).url
+  override val urlForPage: Int => String = e => controllers.routes.CashAccountV2Controller.showAccountDetails(Some(e)).url
 }
 
 object CashTransactionsViewModel {

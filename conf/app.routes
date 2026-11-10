@@ -3,23 +3,18 @@
 GET         /assets/*file                           controllers.Assets.versioned(path = "/public", file: Asset)
 ->          /hmrc-frontend                          hmrcfrontend.Routes
 
-GET         /                                       controllers.CashAccountController.showAccountDetails(page: Option[Int])
-GET         /v2                                     controllers.CashAccountV2Controller.showAccountDetails(page: Option[Int])
-POST        /v2                                     controllers.CashAccountV2Controller.onSubmit(page: Option[Int])
+GET         /                                       controllers.CashAccountV2Controller.showAccountDetails(page: Option[Int])
+POST        /                                       controllers.CashAccountV2Controller.onSubmit(page: Option[Int])
 
-GET         /too-many-transactions                  controllers.CashAccountController.tooManyTransactions()
-GET         /v2/too-many-transactions               controllers.CashAccountV2Controller.tooManyTransactions()
+GET         /too-many-transactions                  controllers.CashAccountV2Controller.tooManyTransactions()
 
-GET         /request-cash-transactions              controllers.RequestTransactionsController.onPageLoad()
-POST        /request-cash-transactions              controllers.RequestTransactionsController.onSubmit()
+GET         /request-cash-transactions              controllers.SelectTransactionsController.onPageLoad()
+POST        /request-cash-transactions              controllers.SelectTransactionsController.onSubmit()
 GET         /requested-cash-transactions            controllers.RequestedTransactionsController.onPageLoad()
 GET         /too-many-requested-cash-transactions   controllers.RequestedTransactionsController.tooManyTransactionsRequested(range: models.RequestedDateRange)
 
 GET         /verify-your-email                      controllers.EmailController.showUnverified()
 GET         /undeliverable-email                    controllers.EmailController.showUndeliverable()
-
-GET         /request-cash-transactions/v2          controllers.SelectTransactionsController.onPageLoad()
-POST        /request-cash-transactions/v2          controllers.SelectTransactionsController.onSubmit()
 
 GET         /selected-cash-transactions            controllers.SelectedTransactionsController.onPageLoad()
 POST        /selected-cash-transactions            controllers.SelectedTransactionsController.onSubmit()
@@ -31,8 +26,7 @@ GET         /requested-duplicate-dates             controllers.SelectedTransacti
 GET         /too-many-selected-transactions        controllers.SelectedTransactionsController.tooManyTransactionsSelected(range: models.RequestedDateRange)
 GET         /selected-confirmation                 controllers.ConfirmationPageController.onPageLoad()
 
-GET         /account-unavailable                    controllers.CashAccountController.showAccountUnavailable
-GET         /v2/account-unavailable                 controllers.CashAccountV2Controller.showAccountUnavailable
+GET         /account-unavailable                    controllers.CashAccountV2Controller.showAccountUnavailable
 GET         /not-subscribed-for-cds                 controllers.UnauthorisedController.onPageLoad
 
 GET         /logout-survey                          controllers.LogoutController.logout

@@ -30,12 +30,12 @@
 
 @main_template(
     pageTitle = Some(title(form,messages("cf.cash-account.transactions.request.title"),section = None, titleMessageArgs = Seq())),
-    backLink = Some(controllers.routes.CashAccountController.showAccountDetails(None).url),
+    backLink = Some(controllers.routes.CashAccountV2Controller.showAccountDetails(None).url),
     fullWidth = false,
     help = true
 ) {
 
-    @formHelper(action = controllers.routes.RequestTransactionsController.onSubmit(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.routes.SelectTransactionsController.onSubmit(), Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors,errorFieldName = None, isErrorKeyUpdateEnabled = true, Some(updateFormErrorKeyForStartAndEndDate()))
         @h1("cf.cash-account.transactions.request.heading")
 
