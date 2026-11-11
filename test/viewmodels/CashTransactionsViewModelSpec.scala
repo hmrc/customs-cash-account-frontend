@@ -30,7 +30,7 @@ class CashTransactionsViewModelSpec extends SpecBase {
     "select the requested transactions in descending date order and link to the unversioned account page" in new Setup {
       when(mockAppConfig.numberOfDaysToShow).thenReturn(2)
 
-      val statements = (1 to 6).map { day =>
+      val statements     = (1 to 6).map { day =>
         cashDailyStatements.head.copy(date = LocalDate.of(2026, 1, day))
       }
       val paginatedModel =
@@ -47,7 +47,7 @@ class CashTransactionsViewModelSpec extends SpecBase {
     "use the last available page when the requested page exceeds the remaining transactions" in new Setup {
       when(mockAppConfig.numberOfDaysToShow).thenReturn(2)
 
-      val statements = (1 to 5).map { day =>
+      val statements     = (1 to 5).map { day =>
         cashDailyStatements.head.copy(date = LocalDate.of(2026, 1, day))
       }
       val paginatedModel =
