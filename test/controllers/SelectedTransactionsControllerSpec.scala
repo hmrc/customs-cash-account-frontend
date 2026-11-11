@@ -23,7 +23,7 @@ import models.*
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.{Materializer, SystemMaterializer}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{never, verify, when}
 import play.api.Application
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
@@ -117,6 +117,78 @@ class SelectedTransactionsControllerSpec extends SpecBase {
   }
 
   "OnSubmit" must {
+
+    "redirect duplicate statement requests with their selected months preserved" in new Setup {
+      val dates = CashTransactionDates(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 2, 1))
+
+      when(mockRequestedTransactionsCache.get(eqTo(eori)))
+        .thenReturn(Future.successful(Some(dates)))
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+      when(mockCustomsFinancialsApiConnector.postCashAccountStatementRequest(any, any, any, any)(any))
+        .thenReturn(Future.successful(Left(EntryAlreadyExists)))
+
+      running(app) {
+        val request = fakeRequest(POST, "/customs/cash-account/selected-cash-transactions")
+        val result  = route(app, request).value
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.SelectedTransactionsController
+          .duplicateDates("cf.cash-account.duplicate.header", "January 2026", "February 2026")
+          .url
+        verify(mockCustomsFinancialsApiConnector)
+          .postCashAccountStatementRequest(eqTo(eori), eqTo(cashAccountNumber), eqTo(dates.start), eqTo(dates.end))(any)
+      }
+    }
+
+    "redirect to the unversioned account page when the statement request returns an unexpected error" in new Setup {
+      when(mockRequestedTransactionsCache.get(eqTo(eori)))
+        .thenReturn(Future.successful(Some(CashTransactionDates(fromDate, toDate))))
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+      when(mockCustomsFinancialsApiConnector.postCashAccountStatementRequest(any, any, any, any)(any))
+        .thenReturn(Future.successful(Left(UnknownException)))
+
+      running(app) {
+        val request = fakeRequest(POST, "/customs/cash-account/selected-cash-transactions")
+        val result  = route(app, request).value
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe "/customs/cash-account"
+      }
+    }
+
+    "return to the unversioned account page without submitting when cached dates have expired" in new Setup {
+      when(mockRequestedTransactionsCache.get(eqTo(eori)))
+        .thenReturn(Future.successful(None))
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+
+      running(app) {
+        val request = fakeRequest(POST, "/customs/cash-account/selected-cash-transactions")
+        val result  = route(app, request).value
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe "/customs/cash-account"
+        verify(mockCustomsFinancialsApiConnector, never()).postCashAccountStatementRequest(any, any, any, any)(any)
+      }
+    }
+
+    "return to the unversioned account page without submitting when the account is unavailable" in new Setup {
+      when(mockRequestedTransactionsCache.get(eqTo(eori)))
+        .thenReturn(Future.successful(Some(CashTransactionDates(fromDate, toDate))))
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(None))
+
+      running(app) {
+        val request = fakeRequest(POST, "/customs/cash-account/selected-cash-transactions")
+        val result  = route(app, request).value
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe "/customs/cash-account"
+        verify(mockCustomsFinancialsApiConnector, never()).postCashAccountStatementRequest(any, any, any, any)(any)
+      }
+    }
 
     "redirect to selected-confirmation page when cash account statement is submitted successfully" in new Setup {
 

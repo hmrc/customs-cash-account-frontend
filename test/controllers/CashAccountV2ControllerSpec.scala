@@ -18,16 +18,19 @@ package controllers
 
 import config.AppConfig
 import connectors.{
-  CustomsDataStoreConnector, CustomsFinancialsApiConnector, NoTransactionsAvailable, SdesConnector,
+  CustomsDataStoreConnector, CustomsFinancialsApiConnector, ErrorResponse, NoTransactionsAvailable, SdesConnector,
   TooManyTransactionsRequested, UnknownException
 }
 import forms.SearchTransactionsFormProvider
+import models.FileRole.CDSCashAccount
 import models.email.{UndeliverableEmail, UnverifiedEmail}
+import models.metadata.CashStatementFileMetadata
 import models.{
-  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement, CashTransactions,
-  Declaration, Payment, Transaction, Transfer, Withdrawal
+  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement, CashStatementFile,
+  CashTransactions, Declaration, FileFormat, Payment, Transaction, Transfer, Withdrawal
 }
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
 import play.api.Application
@@ -596,6 +599,37 @@ class CashAccountV2ControllerSpec extends SpecBase {
     }
   }
 
+  "statement notifications on the unversioned account page" must {
+    "display the statement download link when current and requested statements are returned" in new StatementSetup {
+      val currentCsv = currentStatement.copy(
+        filename = "current.csv",
+        metadata = currentStatement.metadata.copy(fileFormat = FileFormat.Csv)
+      )
+
+      val document = accountPage(Seq(currentStatement, currentCsv, requestedStatement))
+
+      val links = document.select("#notification-panel a")
+      links.size() mustBe 1
+      links.first().attr("href") mustBe appConfig.requestedStatements(CDSCashAccount)
+      links.first().text() mustBe messages("cf.cash-account.requested.statements.available.link.text")
+    }
+
+    "hide the current-statement notification when only requested statements are returned" in new StatementSetup {
+      val document = accountPage(Seq(requestedStatement))
+
+      document.select("#notification-panel").isEmpty mustBe true
+      document.select("form[action='/customs/cash-account']").size() mustBe 1
+    }
+
+    "retain the statement download link when transactions cannot be retrieved" in new StatementSetup {
+      val document = accountPage(Seq(currentStatement), Left(UnknownException))
+
+      document.select("#notification-panel a").attr("href") mustBe appConfig.requestedStatements(CDSCashAccount)
+      document.getElementById("no-transactions-available-first-line").text() mustBe
+        messages("cf.cash-account.detail.transactions-not-available.first.line")
+    }
+  }
+
   "showAccountUnavailable" must {
     "return OK" in new Setup {
       val app: Application = applicationBuilder
@@ -790,6 +824,67 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
+  }
+
+  trait StatementSetup extends Setup {
+    val currentStatement: CashStatementFile = CashStatementFile(
+      filename = "current.pdf",
+      downloadURL = "/current-statement",
+      size = 100L,
+      metadata = CashStatementFileMetadata(
+        periodStartYear = 2026,
+        periodStartMonth = 1,
+        periodStartDay = 1,
+        periodEndYear = 2026,
+        periodEndMonth = 1,
+        periodEndDay = 31,
+        fileFormat = FileFormat.Pdf,
+        fileRole = CDSCashAccount,
+        statementRequestId = None
+      )
+    )
+
+    val requestedStatement: CashStatementFile = currentStatement.copy(
+      filename = "requested.pdf",
+      metadata = currentStatement.metadata.copy(
+        periodStartMonth = 2,
+        periodEndMonth = 2,
+        periodEndDay = 28,
+        statementRequestId = Some("statement-request")
+      )
+    )
+
+    def accountPage(
+      statements: Seq[CashStatementFile],
+      transactions: Either[ErrorResponse, CashTransactions] = Right(cashTransactionResponse)
+    ): Document = {
+      when(mockDataStoreConnector.getEmail(any)(any))
+        .thenReturn(Future.successful(Right(Email("cash@example.com"))))
+      when(mockRequestedTransactionsCache.clear(eqTo(eori)))
+        .thenReturn(Future.successful(true))
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(transactions))
+      when(mockSdesConnector.getCashStatements(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(statements))
+
+      val app: Application = applicationBuilder
+        .overrides(
+          bind[CustomsDataStoreConnector].toInstance(mockDataStoreConnector),
+          bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache),
+          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
+          bind[SdesConnector].toInstance(mockSdesConnector)
+        )
+        .build()
+
+      running(app) {
+        val result = route(app, FakeRequest(GET, "/customs/cash-account")).value
+
+        status(result) mustBe OK
+        Jsoup.parse(contentAsString(result))
+      }
+    }
   }
 
   trait Setup {
