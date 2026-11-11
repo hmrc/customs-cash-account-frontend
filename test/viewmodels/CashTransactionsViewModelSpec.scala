@@ -26,6 +26,40 @@ import org.mockito.Mockito.when
 
 class CashTransactionsViewModelSpec extends SpecBase {
 
+  "account pagination" should {
+    "select the requested transactions in descending date order and link to the unversioned account page" in new Setup {
+      when(mockAppConfig.numberOfDaysToShow).thenReturn(2)
+
+      val statements = (1 to 6).map { day =>
+        cashDailyStatements.head.copy(date = LocalDate.of(2026, 1, day))
+      }
+      val paginatedModel =
+        CashTransactionsViewModel(CashTransactions(Seq.empty, statements), Some(2))(mockAppConfig)
+
+      paginatedModel.currentPage mustBe 2
+      paginatedModel.visibleItems mustBe Seq(
+        PaginatedDailyStatement(statements(3)),
+        PaginatedDailyStatement(statements(2))
+      )
+      paginatedModel.urlForPage(paginatedModel.currentPage) mustBe "/customs/cash-account?page=2"
+    }
+
+    "use the last available page when the requested page exceeds the remaining transactions" in new Setup {
+      when(mockAppConfig.numberOfDaysToShow).thenReturn(2)
+
+      val statements = (1 to 5).map { day =>
+        cashDailyStatements.head.copy(date = LocalDate.of(2026, 1, day))
+      }
+      val paginatedModel =
+        CashTransactionsViewModel(CashTransactions(Seq.empty, statements), Some(99))(mockAppConfig)
+
+      paginatedModel.currentPage mustBe 3
+      paginatedModel.isLastPage mustBe true
+      paginatedModel.visibleItems mustBe Seq(PaginatedDailyStatement(statements.head))
+      paginatedModel.urlForPage(paginatedModel.currentPage) mustBe "/customs/cash-account?page=3"
+    }
+  }
+
   "CashAccountDailyStatementsViewModel" should {
 
     "sort cash daily statements in date descending order" in new Setup {
