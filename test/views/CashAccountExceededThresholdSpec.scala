@@ -92,7 +92,7 @@ class CashAccountExceededThresholdSpec extends ViewTestHelper {
 
     linkElement.contains(messages("cf.cash-account.transactions.request.link.post")) mustBe true
 
-    linkElement.contains(controllers.routes.RequestTransactionsController.onPageLoad().url) mustBe true
+    linkElement.contains(controllers.routes.SelectTransactionsController.onPageLoad().url) mustBe true
   }
 
   private def shouldContainNewTabLink(implicit view: Document): Assertion = {

@@ -59,7 +59,7 @@ class ConfirmationPageController @Inject() (
 
     result.recover { case e: Exception =>
       log.error(s"Failed to load ConfirmationPageController $e")
-      Redirect(routes.CashAccountController.showAccountUnavailable)
+      Redirect(routes.CashAccountV2Controller.showAccountUnavailable)
     }
   }
 
@@ -76,6 +76,6 @@ class ConfirmationPageController @Inject() (
 
       case _ =>
         log.error(s"Failed to load checkDatesAndEmailAndRedirect $optionalDates")
-        Redirect(routes.CashAccountController.showAccountUnavailable)
+        Redirect(routes.CashAccountV2Controller.showAccountUnavailable)
     }
 }

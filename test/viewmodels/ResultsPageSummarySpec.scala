@@ -58,7 +58,7 @@ class ResultsPageSummarySpec extends SpecBase {
         val summaryList: SummaryListRow = resultPageSummary02.rowsV2(false)
 
         shouldProduceCorrectDatesRangeText(summaryList, "March 2022 to April 2022")
-        shouldContainCorrectLinkForAction(summaryList, "request-cash-transactions/v2")
+        shouldContainCorrectLinkForAction(summaryList, "request-cash-transactions")
         shouldNotHaveClasses(summaryList)
         shouldNotHaveSecondValue(summaryList)
       }
@@ -68,7 +68,7 @@ class ResultsPageSummarySpec extends SpecBase {
         val summaryList: SummaryListRow = resultPageSummary02.rowsV2()
 
         shouldProduceCorrectDatesRangeText(summaryList, "March 2022 to April 2022.")
-        shouldContainCorrectLinkForAction(summaryList, "request-cash-transactions/v2")
+        shouldContainCorrectLinkForAction(summaryList, "request-cash-transactions")
         shouldNotHaveClasses(summaryList)
         shouldNotHaveSecondValue(summaryList)
       }

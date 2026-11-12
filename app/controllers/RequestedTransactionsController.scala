@@ -55,7 +55,7 @@ class RequestedTransactionsController @Inject() (
     getCachedDatesAndDisplayRequestedTransactions(request.eori)
       .recover { case e =>
         logger.error(s"Unable to retrieve account details requested: ${e.getMessage}")
-        Redirect(routes.CashAccountController.showAccountUnavailable)
+        Redirect(routes.CashAccountV2Controller.showAccountUnavailable)
       }
   }
 
@@ -69,7 +69,7 @@ class RequestedTransactionsController @Inject() (
             showAccountWithTransactionDetails(account, dates.start, dates.end)
           case None          => eh.notFoundTemplate.map(NotFound(_))
         }
-      case None        => Future.successful(Redirect(routes.RequestTransactionsController.onPageLoad()))
+      case None        => Future.successful(Redirect(routes.SelectTransactionsController.onPageLoad()))
     }
 
   private def showAccountWithTransactionDetails(account: CashAccount, from: LocalDate, to: LocalDate)(implicit
@@ -92,7 +92,7 @@ class RequestedTransactionsController @Inject() (
         Ok(
           resultView(
             new ResultsPageSummary(from, to),
-            controllers.routes.CashAccountController.showAccountDetails(None).url
+            controllers.routes.CashAccountV2Controller.showAccountDetails(None).url
           )
         )
     }
@@ -102,7 +102,7 @@ class RequestedTransactionsController @Inject() (
       Ok(
         tooManyResults(
           new ResultsPageSummary(dateRange.from, dateRange.to),
-          controllers.routes.RequestTransactionsController.onPageLoad().url
+          controllers.routes.SelectTransactionsController.onPageLoad().url
         )
       )
     }

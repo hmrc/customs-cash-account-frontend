@@ -18,15 +18,19 @@ package controllers
 
 import config.AppConfig
 import connectors.{
-  CustomsDataStoreConnector, CustomsFinancialsApiConnector, NoTransactionsAvailable, SdesConnector,
+  CustomsDataStoreConnector, CustomsFinancialsApiConnector, ErrorResponse, NoTransactionsAvailable, SdesConnector,
   TooManyTransactionsRequested, UnknownException
 }
 import forms.SearchTransactionsFormProvider
+import models.FileRole.CDSCashAccount
 import models.email.{UndeliverableEmail, UnverifiedEmail}
+import models.metadata.CashStatementFileMetadata
 import models.{
-  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement, CashTransactions,
-  Declaration, Payment, Transaction, Transfer, Withdrawal
+  AccountStatusOpen, CDSCashBalance, CashAccount, CashAccountViewModel, CashDailyStatement, CashStatementFile,
+  CashTransactions, Declaration, FileFormat, Payment, Transaction, Transfer, Withdrawal
 }
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
 import play.api.Application
@@ -36,6 +40,7 @@ import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
+import uk.gov.hmrc.auth.core.retrieve.Email
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.SpecBase
 import views.html.{
@@ -45,6 +50,7 @@ import views.html.{
 
 import java.time.LocalDate
 import scala.concurrent.Future
+import scala.jdk.CollectionConverters.*
 import scala.util.Random
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -56,6 +62,46 @@ import utils.TestData.eori
 class CashAccountV2ControllerSpec extends SpecBase {
 
   "show account details" must {
+    "serve the unversioned account page with working pagination links" in new Setup {
+      val transactions = cashTransactionResponse.copy(
+        cashDailyStatements = (1 to 35).map { day =>
+          cashDailyStatements.head.copy(date = LocalDate.of(2026, 1, 1).plusDays(day))
+        }
+      )
+
+      when(mockDataStoreConnector.getEmail(any)(any))
+        .thenReturn(Future.successful(Right(Email("cash@example.com"))))
+      when(mockRequestedTransactionsCache.clear(eqTo(eori)))
+        .thenReturn(Future.successful(true))
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(Right(transactions)))
+      when(mockSdesConnector.getCashStatements(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Seq.empty))
+
+      val app: Application = applicationBuilder
+        .overrides(
+          bind[CustomsDataStoreConnector].toInstance(mockDataStoreConnector),
+          bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache),
+          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
+          bind[SdesConnector].toInstance(mockSdesConnector)
+        )
+        .build()
+
+      running(app) {
+        val request = FakeRequest(GET, "/customs/cash-account?page=2")
+        val result  = route(app, request).value
+
+        status(result) mustBe OK
+        val pageLinks = Jsoup.parse(contentAsString(result)).select("li.govuk-pagination__item > a").asScala
+        pageLinks must not be empty
+        val pageUrls = pageLinks.map(_.attr("href"))
+        pageUrls must contain("/customs/cash-account?page=1")
+        pageUrls must contain("/customs/cash-account?page=2")
+      }
+    }
+
     "Clear cached transaction dates if present and return OK" in new Setup {
 
       when(mockRequestedTransactionsCache.clear(eqTo(eori)))
@@ -553,6 +599,37 @@ class CashAccountV2ControllerSpec extends SpecBase {
     }
   }
 
+  "statement notifications on the unversioned account page" must {
+    "display the statement download link when current and requested statements are returned" in new StatementSetup {
+      val currentCsv = currentStatement.copy(
+        filename = "current.csv",
+        metadata = currentStatement.metadata.copy(fileFormat = FileFormat.Csv)
+      )
+
+      val document = accountPage(Seq(currentStatement, currentCsv, requestedStatement))
+
+      val links = document.select("#notification-panel a")
+      links.size() mustBe 1
+      links.first().attr("href") mustBe appConfig.requestedStatements(CDSCashAccount)
+      links.first().text() mustBe messages("cf.cash-account.requested.statements.available.link.text")
+    }
+
+    "hide the current-statement notification when only requested statements are returned" in new StatementSetup {
+      val document = accountPage(Seq(requestedStatement))
+
+      document.select("#notification-panel").isEmpty mustBe true
+      document.select("form[action='/customs/cash-account']").size() mustBe 1
+    }
+
+    "retain the statement download link when transactions cannot be retrieved" in new StatementSetup {
+      val document = accountPage(Seq(currentStatement), Left(UnknownException))
+
+      document.select("#notification-panel a").attr("href") mustBe appConfig.requestedStatements(CDSCashAccount)
+      document.getElementById("no-transactions-available-first-line").text() mustBe
+        messages("cf.cash-account.detail.transactions-not-available.first.line")
+    }
+  }
+
   "showAccountUnavailable" must {
     "return OK" in new Setup {
       val app: Application = applicationBuilder
@@ -747,6 +824,67 @@ class CashAccountV2ControllerSpec extends SpecBase {
       }
     }
 
+  }
+
+  trait StatementSetup extends Setup {
+    val currentStatement: CashStatementFile = CashStatementFile(
+      filename = "current.pdf",
+      downloadURL = "/current-statement",
+      size = 100L,
+      metadata = CashStatementFileMetadata(
+        periodStartYear = 2026,
+        periodStartMonth = 1,
+        periodStartDay = 1,
+        periodEndYear = 2026,
+        periodEndMonth = 1,
+        periodEndDay = 31,
+        fileFormat = FileFormat.Pdf,
+        fileRole = CDSCashAccount,
+        statementRequestId = None
+      )
+    )
+
+    val requestedStatement: CashStatementFile = currentStatement.copy(
+      filename = "requested.pdf",
+      metadata = currentStatement.metadata.copy(
+        periodStartMonth = 2,
+        periodEndMonth = 2,
+        periodEndDay = 28,
+        statementRequestId = Some("statement-request")
+      )
+    )
+
+    def accountPage(
+      statements: Seq[CashStatementFile],
+      transactions: Either[ErrorResponse, CashTransactions] = Right(cashTransactionResponse)
+    ): Document = {
+      when(mockDataStoreConnector.getEmail(any)(any))
+        .thenReturn(Future.successful(Right(Email("cash@example.com"))))
+      when(mockRequestedTransactionsCache.clear(eqTo(eori)))
+        .thenReturn(Future.successful(true))
+      when(mockCustomsFinancialsApiConnector.getCashAccount(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(Some(cashAccount)))
+      when(mockCustomsFinancialsApiConnector.retrieveCashTransactions(eqTo(cashAccountNumber), any, any)(any))
+        .thenReturn(Future.successful(transactions))
+      when(mockSdesConnector.getCashStatements(eqTo(eori))(any, any))
+        .thenReturn(Future.successful(statements))
+
+      val app: Application = applicationBuilder
+        .overrides(
+          bind[CustomsDataStoreConnector].toInstance(mockDataStoreConnector),
+          bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache),
+          bind[CustomsFinancialsApiConnector].toInstance(mockCustomsFinancialsApiConnector),
+          bind[SdesConnector].toInstance(mockSdesConnector)
+        )
+        .build()
+
+      running(app) {
+        val result = route(app, FakeRequest(GET, "/customs/cash-account")).value
+
+        status(result) mustBe OK
+        Jsoup.parse(contentAsString(result))
+      }
+    }
   }
 
   trait Setup {

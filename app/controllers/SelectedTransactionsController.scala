@@ -55,7 +55,7 @@ class SelectedTransactionsController @Inject() (
     getCachedDatesAndDisplaySelectedTransactions(request.eori)
       .recover { case e =>
         logger.error(s"Unable to retrieve account details requested: ${e.getMessage}")
-        Redirect(routes.CashAccountController.showAccountUnavailable)
+        Redirect(routes.CashAccountV2Controller.showAccountUnavailable)
       }
   }
 
@@ -81,7 +81,7 @@ class SelectedTransactionsController @Inject() (
 
     result.flatten.recover { case _: Exception =>
       logger.error("failed to submit data for SelectedTransactionsController")
-      Redirect(routes.CashAccountController.showAccountDetails(None))
+      Redirect(routes.CashAccountV2Controller.showAccountDetails(None))
     }
   }
 
@@ -101,13 +101,13 @@ class SelectedTransactionsController @Inject() (
           )
         }
         .getOrElse {
-          Redirect(routes.CashAccountController.showAccountDetails(None))
+          Redirect(routes.CashAccountV2Controller.showAccountDetails(None))
         }
     }
 
     result.recover { case _: Exception =>
       logger.error("failed to get dates from cache for tooManyTransactionsRequested")
-      Redirect(routes.CashAccountController.showAccountDetails(None))
+      Redirect(routes.CashAccountV2Controller.showAccountDetails(None))
     }
   }
 
@@ -149,10 +149,10 @@ class SelectedTransactionsController @Inject() (
 
           case Left(errorResponse: ErrorResponse) =>
             logErrorMessage(errorResponse)
-            Redirect(routes.CashAccountController.showAccountDetails(None))
+            Redirect(routes.CashAccountV2Controller.showAccountDetails(None))
         }
 
-      case _ => Future.successful(Redirect(routes.CashAccountController.showAccountDetails(None)))
+      case _ => Future.successful(Redirect(routes.CashAccountV2Controller.showAccountDetails(None)))
     }
 
   private def logErrorMessage(errorResponse: ErrorResponse): Unit =

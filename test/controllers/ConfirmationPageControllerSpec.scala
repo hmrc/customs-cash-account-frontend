@@ -93,7 +93,7 @@ class ConfirmationPageControllerSpec extends SpecBase {
     running(app) {
       val result = route(app, request).value
       status(result) mustBe SEE_OTHER
-      redirectLocation(result).value mustBe routes.CashAccountController.showAccountUnavailable.url
+      redirectLocation(result).value mustBe routes.CashAccountV2Controller.showAccountUnavailable.url
     }
   }
 
@@ -107,7 +107,7 @@ class ConfirmationPageControllerSpec extends SpecBase {
     running(app) {
       val result = route(app, request).value
       status(result) mustBe SEE_OTHER
-      redirectLocation(result).value mustBe routes.CashAccountController.showAccountUnavailable.url
+      redirectLocation(result).value mustBe routes.CashAccountV2Controller.showAccountUnavailable.url
     }
   }
 

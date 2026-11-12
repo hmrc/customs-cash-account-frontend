@@ -63,14 +63,6 @@ class AppConfigSpec extends SpecBase {
     }
   }
 
-  "isCashAccountV2FeatureFlagEnabled" should {
-    "return the correct value" in {
-      assume(!appConfig.isCashAccountV2FeatureFlagEnabled)
-
-      appConfig.isCashAccountV2FeatureFlagEnabled mustBe false
-    }
-  }
-
   "numberOfRecordsPerPage" should {
     "return the correct value" in {
       appConfig.numberOfRecordsPerPage mustBe 30

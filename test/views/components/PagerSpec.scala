@@ -31,6 +31,27 @@ class PagerSpec extends ViewTestHelper {
 
   "view" should {
 
+    "link to the previous and next unversioned account pages from a middle page" in new Setup {
+      val view = viewDoc(pageModel(6))
+
+      view.select(".govuk-pagination__prev a").attr("href") mustBe "/customs/cash-account?page=5"
+      view.select(".govuk-pagination__next a").attr("href") mustBe "/customs/cash-account?page=7"
+      view.select(".govuk-pagination__list a").text() mustBe "4 5 6 7 8"
+      view.select(".govuk-pagination__item--current a").attr("href") mustBe "/customs/cash-account?page=6"
+      view.select(".govuk-pagination__prev").text() must include(messages("cf.pager.prev"))
+      view.select(".govuk-pagination__prev .govuk-visually-hidden").text() mustBe
+        messages("cf.pager.summary.accessibility")
+    }
+
+    "show the previous unversioned account page and omit the next link on the last page" in new Setup {
+      val view = viewDoc(pageModel(12))
+
+      view.select(".govuk-pagination__prev a").attr("href") mustBe "/customs/cash-account?page=11"
+      view.select(".govuk-pagination__next").isEmpty mustBe true
+      view.select(".govuk-pagination__list a").text() mustBe "8 9 10 11 12"
+      view.select(".govuk-pagination__item--current a").attr("href") mustBe "/customs/cash-account?page=12"
+    }
+
     "display correct contents" when {
 
       "data does not fit in one page" in new Setup {
@@ -42,7 +63,7 @@ class PagerSpec extends ViewTestHelper {
           override val itemsPerPage: Int         = 2
           override val requestedPage: Int        = 1
           override val urlForPage: Int => String =
-            e => controllers.routes.CashAccountController.showAccountDetails(Some(e)).url
+            e => controllers.routes.CashAccountV2Controller.showAccountDetails(Some(e)).url
         }
 
         implicit val view: Document = viewDoc(model)
@@ -59,7 +80,7 @@ class PagerSpec extends ViewTestHelper {
         override val itemsPerPage: Int                    = 1
         override val requestedPage: Int                   = 1
         override val urlForPage: Int => String            =
-          e => controllers.routes.CashAccountController.showAccountDetails(Some(e)).url
+          e => controllers.routes.CashAccountV2Controller.showAccountDetails(Some(e)).url
       }
 
       implicit val view: Document = viewDoc(model)
@@ -76,6 +97,14 @@ class PagerSpec extends ViewTestHelper {
       CashDailyStatement(date, BigDecimal(amount), BigDecimal(amount), Nil, Nil)
 
     val paginatedTransactions: PaginatedDailyStatement = PaginatedDailyStatement(cashDailyStatement)
+
+    def pageModel(page: Int): Paginated = new Paginated {
+      override val allItems: Seq[PaginatedTransactions] = Seq.fill(12)(paginatedTransactions)
+      override val itemsPerPage: Int                    = 1
+      override val requestedPage: Int                   = page
+      override val urlForPage: Int => String            =
+        number => controllers.routes.CashAccountV2Controller.showAccountDetails(Some(number)).url
+    }
 
     def viewDoc(model: Paginated): Document = Jsoup.parse(app.injector.instanceOf[pager].apply(model).body)
   }

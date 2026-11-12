@@ -17,9 +17,10 @@
 package controllers
 
 import connectors.CustomsFinancialsApiConnector
+import models.CashTransactionDates
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import play.api.Application
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -29,7 +30,7 @@ import repositories.RequestedTransactionsCache
 import utils.TestData.{cachedDates, eori}
 import utils.SpecBase
 
-import java.time.LocalDate
+import java.time.{Clock, Instant, LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
 class SelectTransactionsControllerSpec extends SpecBase {
@@ -42,7 +43,7 @@ class SelectTransactionsControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Some(cachedDates)))
 
       val request: FakeRequest[AnyContentAsEmpty.type] =
-        fakeRequest(GET, routes.SelectTransactionsController.onPageLoad().url)
+        fakeRequest(GET, "/customs/cash-account/request-cash-transactions")
 
       running(app) {
         val result = route(app, request).value
@@ -87,6 +88,35 @@ class SelectTransactionsControllerSpec extends SpecBase {
   }
 
   "onSubmit" should {
+    "accept month-and-year fields on the unversioned endpoint and preserve the selected dates" in new Setup {
+      val dates                 = CashTransactionDates(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 3, 1))
+      val clock                 = Clock.fixed(Instant.parse("2026-11-11T12:00:00Z"), ZoneOffset.UTC)
+      val fixedApp: Application = applicationBuilder
+        .overrides(
+          bind[Clock].toInstance(clock),
+          bind[RequestedTransactionsCache].toInstance(mockRequestedTransactionsCache)
+        )
+        .build()
+
+      when(mockRequestedTransactionsCache.set(eqTo(eori), eqTo(dates)))
+        .thenReturn(Future.successful(true))
+
+      running(fixedApp) {
+        val request = fakeRequest(POST, "/customs/cash-account/request-cash-transactions")
+          .withFormUrlEncodedBody(
+            "start.month" -> "1",
+            "start.year"  -> "2026",
+            "end.month"   -> "3",
+            "end.year"    -> "2026"
+          )
+        val result  = route(fixedApp, request).value
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe "/customs/cash-account/selected-cash-transactions"
+        verify(mockRequestedTransactionsCache).set(eqTo(eori), eqTo(dates))
+      }
+    }
+
     val CURRENT_YEAR = LocalDate.now().getYear
     "redirect to requested transactions page when valid data has been submitted" in new Setup {
       when(mockRequestedTransactionsCache.set(any, any)).thenReturn(Future.successful(true))
